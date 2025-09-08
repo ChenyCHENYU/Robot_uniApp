@@ -5,8 +5,18 @@
   // language - current active spelling language
   "language": "en",
   // words - list of words to be always considered correct
-  "words": ["dcloudio"],
-  "ignorePaths": ["README.md", "package.json", ".gitignore", "manifest.json"],
+  "words": [
+    "autoscan",
+    "dcloudio",
+    "easycom",
+    "uview"
+  ],
+  "ignorePaths": [
+    "README.md",
+    "package.json",
+    ".gitignore",
+    "manifest.json"
+  ],
   // flagWords - list of words to be always considered incorrect
   // This is useful for offensive words and common spelling errors.
   "flagWords": []

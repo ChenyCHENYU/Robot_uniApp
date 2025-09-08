@@ -1,4 +1,16 @@
-import { createApp } from "vue";
-import App from "./App.vue";
+import { createSSRApp } from 'vue'
+import App from './App.vue'
 
-createApp(App).mount("#app");
+// 引入 uview-plus
+import uviewPlus from 'uview-plus'
+
+export function createApp() {
+  const app = createSSRApp(App)
+  
+  // 使用 uview-plus
+  app.use(uviewPlus)
+  
+  return {
+    app
+  }
+}
