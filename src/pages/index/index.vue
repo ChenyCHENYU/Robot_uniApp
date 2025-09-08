@@ -16,7 +16,7 @@
         <view class="stats-grid">
           <view class="stat-card" v-for="stat in stats" :key="stat.id" @click="handleStatClick(stat)">
             <view class="stat-icon" :style="{ backgroundColor: stat.color }">
-              <u-icon :name="stat.icon" size="20" color="#fff"></u-icon>
+              <text class="emoji-icon">{{ stat.emoji }}</text>
             </view>
             <view class="stat-info">
               <text class="stat-value">{{ stat.value }}</text>
@@ -38,7 +38,7 @@
         <view class="actions-grid">
           <view class="action-item" v-for="action in quickActions" :key="action.id" @click="handleActionClick(action)">
             <view class="action-icon" :style="{ backgroundColor: action.color }">
-              <u-icon :name="action.icon" size="24" color="#fff"></u-icon>
+              <text class="emoji-icon">{{ action.emoji }}</text>
             </view>
             <text class="action-label">{{ action.label }}</text>
           </view>
@@ -139,7 +139,7 @@ const stats = ref([
     id: 1,
     label: 'AI对话',
     value: '128',
-    icon: 'chat-fill',
+    emoji: '💬',
     color: '#00D4FF',
     trend: 15.8
   },
@@ -147,7 +147,7 @@ const stats = ref([
     id: 2,
     label: '任务执行',
     value: '24',
-    icon: 'checkmark-circle-fill',
+    emoji: '✅',
     color: '#00E676',
     trend: 8.3
   },
@@ -155,7 +155,7 @@ const stats = ref([
     id: 3,
     label: '智能分析',
     value: '36',
-    icon: 'bar-chart-fill',
+    emoji: '📊',
     color: '#FF6B6B',
     trend: 12.5
   },
@@ -163,7 +163,7 @@ const stats = ref([
     id: 4,
     label: '学习进度',
     value: '89%',
-    icon: 'school-fill',
+    emoji: '🎓',
     color: '#9C27B0',
     trend: 5.2
   }
@@ -171,12 +171,12 @@ const stats = ref([
 
 // 快捷功能
 const quickActions = ref([
-  { id: 1, label: 'AI对话', icon: 'chat-fill', color: '#00D4FF' },
-  { id: 2, label: '智能助手', icon: 'robot-fill', color: '#00E676' },
-  { id: 3, label: '语音交互', icon: 'mic-fill', color: '#FF6B6B' },
-  { id: 4, label: '图像识别', icon: 'camera-fill', color: '#FF9800' },
-  { id: 5, label: '数据分析', icon: 'bar-chart-fill', color: '#9C27B0' },
-  { id: 6, label: '设置中心', icon: 'setting-fill', color: '#8E8E93' }
+  { id: 1, label: 'AI对话', emoji: '🤖', color: '#00D4FF' },
+  { id: 2, label: '智能助手', emoji: '🧠', color: '#00E676' },
+  { id: 3, label: '语音交互', emoji: '🎤', color: '#FF6B6B' },
+  { id: 4, label: '图像识别', emoji: '📷', color: '#FF9800' },
+  { id: 5, label: '数据分析', emoji: '📈', color: '#9C27B0' },
+  { id: 6, label: '设置中心', emoji: '⚙️', color: '#8E8E93' }
 ])
 
 // 最近动态
@@ -311,7 +311,7 @@ onMounted(() => {
 
 .main-content {
   flex: 1;
-  padding-bottom: 160rpx; /* 留出 tabbar 空间 */
+  padding-bottom: 140rpx; /* 根据优化后的tabbar高度调整底部留白 */
 }
 
 .stats-section {
@@ -337,6 +337,11 @@ onMounted(() => {
         align-items: center;
         justify-content: center;
         margin-bottom: 20rpx;
+        
+        .emoji-icon {
+          font-size: 28rpx;
+          line-height: 1;
+        }
       }
       
       .stat-info {
@@ -411,6 +416,11 @@ onMounted(() => {
         justify-content: center;
         margin-bottom: 16rpx;
         box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.1);
+        
+        .emoji-icon {
+          font-size: 36rpx;
+          line-height: 1;
+        }
       }
       
       .action-label {
