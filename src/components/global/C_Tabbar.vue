@@ -31,7 +31,7 @@
           >
             <u-icon
               :name="currentIndex === index ? item.activeIcon : item.icon"
-              :size="currentIndex === index ? 28 : 24"
+              :size="currentIndex === index ? 24 : 20"
               :color="currentIndex === index ? '#ffffff' : inactiveColor"
             />
           </view>
@@ -42,7 +42,7 @@
             :value="item.badge"
             :max="99"
             absolute
-            offset="8,-8"
+            :offset="[8, -8]"
             bgColor="#FF3B30"
             color="#ffffff"
             size="mini"
@@ -224,8 +224,8 @@ defineExpose({
   display: flex;
   align-items: center;
   justify-content: space-around;
-  padding: 16rpx 20rpx 20rpx;
-  min-height: 120rpx;
+  padding: 12rpx 20rpx 16rpx;
+  min-height: 100rpx;
 }
 
 .tab-item {
@@ -235,11 +235,11 @@ defineExpose({
   align-items: center;
   justify-content: center;
   position: relative;
-  padding: 16rpx 8rpx;
+  padding: 12rpx 6rpx;
   transition: all 0.3s ease;
 
   &.is-active {
-    transform: translateY(-6rpx);
+    transform: translateY(-4rpx);
   }
 }
 
@@ -248,8 +248,8 @@ defineExpose({
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 120rpx;
-  height: 120rpx;
+  width: 100rpx;
+  height: 100rpx;
   pointer-events: none;
 }
 
@@ -268,14 +268,14 @@ defineExpose({
 
 .icon-wrapper {
   position: relative;
-  margin-bottom: 8rpx;
+  margin-bottom: 6rpx;
   z-index: 2;
 }
 
 .icon-bg {
-  width: 80rpx;
-  height: 80rpx;
-  border-radius: 24rpx;
+  width: 68rpx;
+  height: 68rpx;
+  border-radius: 20rpx;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -286,13 +286,13 @@ defineExpose({
   &.is-active {
     background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
     border-color: rgba(0, 212, 255, 0.3);
-    box-shadow: 0 8rpx 32rpx rgba(0, 212, 255, 0.3);
-    transform: scale(1.1);
+    box-shadow: 0 6rpx 24rpx rgba(0, 212, 255, 0.3);
+    transform: scale(1.08);
   }
 }
 
 .tab-label {
-  font-size: 22rpx;
+  font-size: 20rpx;
   color: #8e8e93;
   font-weight: 500;
   transition: all 0.3s ease;

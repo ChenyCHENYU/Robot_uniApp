@@ -56,7 +56,7 @@
             :value="notificationCount"
             :max="99"
             absolute
-            offset="8,-8"
+            :offset="[8, -8]"
             bgColor="#FF3B30"
             color="#ffffff"
             size="mini"
