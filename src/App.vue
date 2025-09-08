@@ -5,25 +5,38 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { onLaunch, onShow } from '@dcloudio/uni-app'
+import { useAppStore } from '@/stores/modules/app'
+import { useUserStore } from '@/stores/modules/user'
 
-// 响应式数据
-const isReady = ref(false)
+const appStore = useAppStore()
+const userStore = useUserStore()
 
-// 页面加载完成
-onMounted(() => {
-  console.log('App mounted')
-  
-  // 检查 uview-plus 是否正确加载
-  if (uni.$u) {
-    console.log('uview-plus版本:', uni.$u.config?.version || '3.5.39')
-    console.log('uview-plus 加载成功')
-  } else {
-    console.warn('uview-plus 未正确加载')
-  }
-  
-  isReady.value = true
+// 应用启动
+onLaunch(() => {
+  console.log('App Launch')
+  initApp()
 })
+
+onShow(() => {
+  console.log('App Show')
+})
+
+// 初始化应用
+const initApp = async () => {
+  // 初始化系统信息
+  await appStore.initSystemInfo()
+  
+  // 如果已登录，尝试获取最新用户信息
+  if (userStore.isLoggedIn && userStore.token) {
+    try {
+      await userStore.fetchUserInfo()
+    } catch (error) {
+      // 获取用户信息失败，可能 token 已过期
+      console.warn('获取用户信息失败:', error)
+    }
+  }
+}
 </script>
 
 <!-- 注意：uni-app 的应用生命周期需要用 Options API -->
