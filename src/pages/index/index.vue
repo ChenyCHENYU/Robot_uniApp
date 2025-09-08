@@ -1,149 +1,551 @@
 <template>
-  <view class="container">
-    <view class="test-section">
-      <text class="title">uview-plus 组件测试</text>
-      
-      <!-- 测试基础组件 -->
-      <view class="test-item">
-        <text class="label">按钮组件:</text>
-        <u-button type="primary" text="主要按钮" @click="handleClick"></u-button>
-        <u-button type="success" text="成功按钮" size="small"></u-button>
+  <view class="dashboard">
+    <!-- 头部信息 -->
+    <view class="header">
+      <view class="user-info">
+        <image class="avatar" :src="userInfo.avatar || '/static/logo.png'" mode="aspectFill"></image>
+        <view class="info">
+          <text class="greeting">{{ greeting }}</text>
+          <text class="username">{{ userInfo.nickname || '智能助手用户' }}</text>
+        </view>
       </view>
-      
-      <!-- 测试图标组件 -->
-      <view class="test-item">
-        <text class="label">图标组件:</text>
-        <u-icon name="heart-fill" color="#ff0000" size="40"></u-icon>
-        <u-icon name="star-fill" color="#ffa500" size="40"></u-icon>
-        <u-icon name="thumb-up-fill" color="#007aff" size="40"></u-icon>
-      </view>
-      
-      <!-- 测试加载组件 -->
-      <view class="test-item">
-        <text class="label">加载组件:</text>
-        <u-loading-icon mode="spinner" size="30" color="#007aff"></u-loading-icon>
-        <u-loading-icon mode="circle" size="30" color="#19be6b"></u-loading-icon>
-      </view>
-      
-      <!-- 测试标签组件 -->
-      <view class="test-item">
-        <text class="label">标签组件:</text>
-        <u-tag text="默认标签" mode="light"></u-tag>
-        <u-tag text="主色标签" type="primary"></u-tag>
-        <u-tag text="成功标签" type="success"></u-tag>
-      </view>
-      
-      <!-- 测试通知栏 -->
-      <view class="test-item">
-        <text class="label">通知栏:</text>
-        <u-notice-bar 
-          :text="noticeText" 
-          mode="closable"
-          color="#007aff"
-        ></u-notice-bar>
-      </view>
-      
-      <!-- 调试信息 -->
-      <view class="debug-info">
-        <text class="debug-title">调试信息:</text>
-        <text class="debug-text">uview-plus 状态: {{ uviewStatus }}</text>
-        <text class="debug-text">版本信息: {{ versionInfo }}</text>
+      <view class="actions">
+        <view class="status-indicator">
+          <view class="status-dot"></view>
+          <text class="status-text">AI在线</text>
+        </view>
+        <u-icon name="bell" size="24" color="#fff" @click="handleNotification"></u-icon>
+        <u-icon name="setting" size="24" color="#fff" @click="handleSettings" style="margin-left: 32rpx;"></u-icon>
       </view>
     </view>
+    
+    <!-- 数据统计卡片 -->
+    <view class="stats-section">
+      <view class="stats-grid">
+        <view class="stat-card" v-for="stat in stats" :key="stat.id" @click="handleStatClick(stat)">
+          <view class="stat-icon" :style="{ backgroundColor: stat.color }">
+            <u-icon :name="stat.icon" size="20" color="#fff"></u-icon>
+          </view>
+          <view class="stat-info">
+            <text class="stat-value">{{ stat.value }}</text>
+            <text class="stat-label">{{ stat.label }}</text>
+          </view>
+          <view class="stat-trend" :class="{ 'trend-up': stat.trend > 0, 'trend-down': stat.trend < 0 }">
+            <u-icon :name="stat.trend > 0 ? 'arrow-up' : 'arrow-down'" size="12"></u-icon>
+            <text>{{ Math.abs(stat.trend) }}%</text>
+          </view>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 快捷功能 -->
+    <view class="quick-actions">
+      <view class="section-title">
+        <text>快捷功能</text>
+      </view>
+      <view class="actions-grid">
+        <view class="action-item" v-for="action in quickActions" :key="action.id" @click="handleActionClick(action)">
+          <view class="action-icon" :style="{ backgroundColor: action.color }">
+            <u-icon :name="action.icon" size="24" color="#fff"></u-icon>
+          </view>
+          <text class="action-label">{{ action.label }}</text>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 最近动态 -->
+    <view class="recent-activities">
+      <view class="section-title">
+        <text>最近动态</text>
+        <text class="more-btn" @click="handleMoreActivities">查看更多</text>
+      </view>
+      <view class="activity-list">
+        <view class="activity-item" v-for="activity in recentActivities" :key="activity.id">
+          <view class="activity-avatar">
+            <image :src="activity.avatar" mode="aspectFill"></image>
+          </view>
+          <view class="activity-content">
+            <text class="activity-text">{{ activity.content }}</text>
+            <text class="activity-time">{{ activity.time }}</text>
+          </view>
+          <view class="activity-status" :class="activity.status">
+            <text>{{ getStatusText(activity.status) }}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 底部导航占位 -->
+    <view class="bottom-safe"></view>
   </view>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { useUserStore } from '@/stores/modules/user'
 
-// 响应式数据
-const noticeText = ref('这是一个测试通知栏，用于验证 uview-plus 组件是否正常工作')
-const uviewStatus = ref('检测中...')
-const versionInfo = ref('未知')
+const userStore = useUserStore()
+
+// 计算属性
+const userInfo = computed(() => userStore.userInfo || {})
+const greeting = computed(() => {
+  const hour = new Date().getHours()
+  if (hour < 12) return '早上好'
+  if (hour < 18) return '下午好'
+  return '晚上好'
+})
+
+// 数据统计
+const stats = ref([
+  {
+    id: 1,
+    label: 'AI对话',
+    value: '128',
+    icon: 'chat',
+    color: '#00D4FF',
+    trend: 15.8
+  },
+  {
+    id: 2,
+    label: '任务执行',
+    value: '24',
+    icon: 'checkmark-circle',
+    color: '#00E676',
+    trend: 8.3
+  },
+  {
+    id: 3,
+    label: '智能分析',
+    value: '36',
+    icon: 'trending-up',
+    color: '#FF6B6B',
+    trend: 12.5
+  },
+  {
+    id: 4,
+    label: '学习进度',
+    value: '89%',
+    icon: 'school',
+    color: '#9C27B0',
+    trend: 5.2
+  }
+])
+
+// 快捷功能
+const quickActions = ref([
+  { id: 1, label: 'AI对话', icon: 'chat', color: '#00D4FF' },
+  { id: 2, label: '智能助手', icon: 'robot', color: '#00E676' },
+  { id: 3, label: '语音交互', icon: 'mic', color: '#FF6B6B' },
+  { id: 4, label: '图像识别', icon: 'camera', color: '#FF9800' },
+  { id: 5, label: '数据分析', icon: 'bar-chart', color: '#9C27B0' },
+  { id: 6, label: '设置中心', icon: 'setting', color: '#8E8E93' }
+])
+
+// 最近动态
+const recentActivities = ref([
+  {
+    id: 1,
+    content: 'AI助手完成了数据分析报告',
+    time: '2分钟前',
+    avatar: '/static/logo.png',
+    status: 'completed'
+  },
+  {
+    id: 2,
+    content: '语音识别模块需要更新',
+    time: '15分钟前',
+    avatar: '/static/logo.png',
+    status: 'pending'
+  },
+  {
+    id: 3,
+    content: '机器学习模型训练完成',
+    time: '1小时前',
+    avatar: '/static/logo.png',
+    status: 'completed'
+  },
+  {
+    id: 4,
+    content: '系统性能优化建议',
+    time: '2小时前',
+    avatar: '/static/logo.png',
+    status: 'warning'
+  }
+])
 
 // 方法
-const handleClick = () => {
+const handleNotification = () => {
   uni.showToast({
-    title: '按钮点击成功!',
-    icon: 'success'
+    title: '暂无新通知',
+    icon: 'none'
   })
 }
 
-// 检测函数
-const checkUviewStatus = () => {
-  if (typeof uni !== 'undefined' && uni.$u) {
-    uviewStatus.value = '✅ 加载成功'
-    versionInfo.value = uni.$u.config?.version || '3.5.39'
-    console.log('✅ uview-plus 检测成功:', uni.$u)
-  } else {
-    uviewStatus.value = '❌ 加载失败'
-    versionInfo.value = '无法获取'
-    console.error('❌ uview-plus 未正确加载')
+const handleSettings = () => {
+  uni.showActionSheet({
+    itemList: ['个人资料', '账户设置', '退出登录'],
+    success: (res) => {
+      if (res.tapIndex === 2) {
+        uni.showModal({
+          title: '提示',
+          content: '确定要退出登录吗？',
+          success: (modalRes) => {
+            if (modalRes.confirm) {
+              userStore.logout()
+            }
+          }
+        })
+      } else {
+        uni.showToast({
+          title: '功能开发中',
+          icon: 'none'
+        })
+      }
+    }
+  })
+}
+
+const handleStatClick = (stat) => {
+  uni.showToast({
+    title: `查看${stat.label}详情`,
+    icon: 'none'
+  })
+}
+
+const handleActionClick = (action) => {
+  uni.showToast({
+    title: `打开${action.label}`,
+    icon: 'none'
+  })
+}
+
+const handleMoreActivities = () => {
+  uni.showToast({
+    title: '跳转到动态列表',
+    icon: 'none'
+  })
+}
+
+const getStatusText = (status) => {
+  const statusMap = {
+    completed: '已完成',
+    pending: '待处理',
+    warning: '需关注'
   }
+  return statusMap[status] || '未知'
 }
 
 // 生命周期
 onMounted(() => {
-  // 延迟检测，确保所有初始化完成
-  setTimeout(checkUviewStatus, 200)
+  // 检查登录状态
+  if (!userStore.isLoggedIn) {
+    uni.reLaunch({
+      url: '/pages/index/login/index'
+    })
+    return
+  }
+  
+  console.log('工作台加载完成')
 })
 </script>
 
 <style lang="scss" scoped>
-.container {
-  padding: 20rpx;
+.dashboard {
   min-height: 100vh;
   background-color: #f5f7fa;
 }
 
-.test-section {
-  background: white;
-  border-radius: 10rpx;
-  padding: 30rpx;
-  margin-bottom: 20rpx;
-}
-
-.title {
-  font-size: 32rpx;
-  font-weight: bold;
-  color: $uni-color-title;
-  margin-bottom: 30rpx;
-  display: block;
-}
-
-.test-item {
-  margin-bottom: 40rpx;
+.header {
+  background: linear-gradient(135deg, #00D4FF 0%, #0099CC 50%, #006699 100%);
+  padding: 80rpx 40rpx 40rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
   
-  .label {
-    display: block;
-    font-size: 28rpx;
-    color: $uni-text-color;
-    margin-bottom: 20rpx;
-    font-weight: 500;
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 20"><defs><pattern id="circuit" x="0" y="0" width="100" height="20" patternUnits="userSpaceOnUse"><path d="M0 10h10v-2h10v4h10v-2h10v2h10v-4h10v2h10v2h10v-4h10v2h10" stroke="rgba(255,255,255,0.1)" stroke-width="0.5" fill="none"/></pattern></defs><rect width="100" height="20" fill="url(%23circuit)"/></svg>') repeat;
+    opacity: 0.3;
+  }
+  
+  .user-info {
+    display: flex;
+    align-items: center;
+    
+    .avatar {
+      width: 80rpx;
+      height: 80rpx;
+      border-radius: 50%;
+      margin-right: 24rpx;
+      border: 3rpx solid rgba(255, 255, 255, 0.3);
+    }
+    
+    .info {
+      .greeting {
+        display: block;
+        font-size: 28rpx;
+        color: rgba(255, 255, 255, 0.8);
+        margin-bottom: 8rpx;
+      }
+      
+      .username {
+        display: block;
+        font-size: 36rpx;
+        font-weight: bold;
+        color: #fff;
+      }
+    }
+  }
+  
+  .actions {
+    display: flex;
+    align-items: center;
+    gap: 24rpx;
+    
+    .status-indicator {
+      display: flex;
+      align-items: center;
+      gap: 12rpx;
+      background: rgba(255, 255, 255, 0.15);
+      padding: 16rpx 24rpx;
+      border-radius: 50rpx;
+      border: 1rpx solid rgba(255, 255, 255, 0.2);
+      
+      .status-dot {
+        width: 16rpx;
+        height: 16rpx;
+        border-radius: 50%;
+        background: #00E676;
+        animation: pulse 2s ease-in-out infinite;
+      }
+      
+      .status-text {
+        font-size: 24rpx;
+        color: #fff;
+        font-weight: 500;
+      }
+    }
   }
 }
 
-.debug-info {
-  margin-top: 40rpx;
-  padding: 20rpx;
-  background-color: #f8f9fa;
-  border-radius: 8rpx;
-  border-left: 4rpx solid $uni-color-primary;
+.stats-section {
+  padding: 40rpx;
   
-  .debug-title {
-    display: block;
-    font-size: 28rpx;
-    font-weight: bold;
-    color: $uni-color-title;
-    margin-bottom: 15rpx;
+  .stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24rpx;
+    
+    .stat-card {
+      background: #fff;
+      border-radius: 20rpx;
+      padding: 32rpx;
+      box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+      position: relative;
+      
+      .stat-icon {
+        width: 60rpx;
+        height: 60rpx;
+        border-radius: 16rpx;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20rpx;
+      }
+      
+      .stat-info {
+        .stat-value {
+          display: block;
+          font-size: 48rpx;
+          font-weight: bold;
+          color: #333;
+          margin-bottom: 8rpx;
+        }
+        
+        .stat-label {
+          display: block;
+          font-size: 24rpx;
+          color: #999;
+        }
+      }
+      
+      .stat-trend {
+        position: absolute;
+        top: 32rpx;
+        right: 32rpx;
+        display: flex;
+        align-items: center;
+        gap: 8rpx;
+        font-size: 20rpx;
+        
+        &.trend-up {
+          color: #34C759;
+        }
+        
+        &.trend-down {
+          color: #FF3B30;
+        }
+      }
+    }
+  }
+}
+
+.quick-actions {
+  padding: 0 40rpx 40rpx;
+  
+  .section-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32rpx;
+    
+    text {
+      font-size: 32rpx;
+      font-weight: bold;
+      color: #333;
+    }
   }
   
-  .debug-text {
-    display: block;
-    font-size: 24rpx;
-    color: $uni-text-color-grey;
-    margin-bottom: 8rpx;
-    font-family: 'Courier New', monospace;
+  .actions-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32rpx;
+    
+    .action-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      
+      .action-icon {
+        width: 100rpx;
+        height: 100rpx;
+        border-radius: 24rpx;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 16rpx;
+        box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.1);
+      }
+      
+      .action-label {
+        font-size: 24rpx;
+        color: #666;
+        text-align: center;
+      }
+    }
+  }
+}
+
+.recent-activities {
+  padding: 0 40rpx 40rpx;
+  
+  .section-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32rpx;
+    
+    text {
+      font-size: 32rpx;
+      font-weight: bold;
+      color: #333;
+      
+      &.more-btn {
+        font-size: 28rpx;
+        font-weight: normal;
+        color: #007AFF;
+      }
+    }
+  }
+  
+  .activity-list {
+    background: #fff;
+    border-radius: 20rpx;
+    padding: 24rpx;
+    box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+    
+    .activity-item {
+      display: flex;
+      align-items: center;
+      padding: 24rpx 0;
+      border-bottom: 1rpx solid #f5f5f5;
+      
+      &:last-child {
+        border-bottom: none;
+      }
+      
+      .activity-avatar {
+        width: 64rpx;
+        height: 64rpx;
+        border-radius: 50%;
+        margin-right: 24rpx;
+        overflow: hidden;
+        
+        image {
+          width: 100%;
+          height: 100%;
+        }
+      }
+      
+      .activity-content {
+        flex: 1;
+        
+        .activity-text {
+          display: block;
+          font-size: 28rpx;
+          color: #333;
+          margin-bottom: 8rpx;
+        }
+        
+        .activity-time {
+          display: block;
+          font-size: 24rpx;
+          color: #999;
+        }
+      }
+      
+      .activity-status {
+        padding: 8rpx 16rpx;
+        border-radius: 16rpx;
+        font-size: 20rpx;
+        
+        &.completed {
+          background: #e8f5e8;
+          color: #34C759;
+        }
+        
+        &.pending {
+          background: #fff3e0;
+          color: #FF9500;
+        }
+        
+        &.warning {
+          background: #ffebee;
+          color: #FF3B30;
+        }
+      }
+    }
+  }
+}
+
+.bottom-safe {
+  height: 120rpx;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.7;
   }
 }
 </style>

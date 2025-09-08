@@ -11,6 +11,7 @@ import http from "@/utils/http";
 
 // 用户相关API - 一行定义一个接口
 export const login = (data) => http.post("/auth/login", data);
+export const logout = () => http.post("/auth/logout"); // 添加 logout 接口
 export const getUserInfo = () => http.get("/user/info", {}, { silent: true }); // 静默请求
 export const updateUser = (data) => http.put("/user/info", data);
 export const getUserList = (params) => http.get("/user/list", params);

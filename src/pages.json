@@ -8,9 +8,16 @@
   },
   "pages": [
     {
+      "path": "pages/index/login/index",
+      "style": {
+        "navigationBarTitleText": "登录",
+        "navigationStyle": "custom"
+      }
+    },
+    {
       "path": "pages/index/index",
       "style": {
-        "navigationBarTitleText": "uni-app"
+        "navigationBarTitleText": "RobotApp 主控台"
       }
     }
   ],
