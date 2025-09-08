@@ -1,25 +1,20 @@
 <template>
   <view class="content">
-    <image class="logo" src="/static/logo.png"></image>
+    <image class="logo" :src="logoPath" />
     <view class="text-area">
       <text class="title">{{ title }}</text>
     </view>
   </view>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      title: 'Hello',
-    }
-  },
-  onLoad() {},
-  methods: {},
-}
+<script setup>
+import { ref } from 'vue'
+
+const title = ref('Hello')
+const logoPath = '/static/logo.png'
 </script>
 
-<style>
+<style scoped>
 .content {
   display: flex;
   flex-direction: column;
