@@ -19,6 +19,24 @@
       "style": {
         "navigationBarTitleText": "RobotApp 主控台"
       }
+    },
+    {
+      "path": "pages/chat/index",
+      "style": {
+        "navigationBarTitleText": "AI对话"
+      }
+    },
+    {
+      "path": "pages/robot/index",
+      "style": {
+        "navigationBarTitleText": "机器人管理"
+      }
+    },
+    {
+      "path": "pages/profile/index",
+      "style": {
+        "navigationBarTitleText": "个人中心"
+      }
     }
   ],
   "globalStyle": {

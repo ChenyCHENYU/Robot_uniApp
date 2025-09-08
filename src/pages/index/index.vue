@@ -1,82 +1,80 @@
 <template>
   <view class="dashboard">
-    <!-- 头部信息 -->
-    <view class="header">
-      <view class="user-info">
-        <image class="avatar" :src="userInfo.avatar || '/static/logo.png'" mode="aspectFill"></image>
-        <view class="info">
-          <text class="greeting">{{ greeting }}</text>
-          <text class="username">{{ userInfo.nickname || '智能助手用户' }}</text>
-        </view>
-      </view>
-      <view class="actions">
-        <view class="status-indicator">
-          <view class="status-dot"></view>
-          <text class="status-text">AI在线</text>
-        </view>
-        <u-icon name="bell" size="24" color="#fff" @click="handleNotification"></u-icon>
-        <u-icon name="setting" size="24" color="#fff" @click="handleSettings" style="margin-left: 32rpx;"></u-icon>
-      </view>
-    </view>
+    <!-- 头部组件 -->
+    <C_Header 
+      default-nickname="CHENY"
+      :notification-count="notificationCount"
+      @user-click="handleUserClick"
+      @notification-click="handleNotificationClick"
+      @settings-click="handleSettingsClick"
+    />
     
-    <!-- 数据统计卡片 -->
-    <view class="stats-section">
-      <view class="stats-grid">
-        <view class="stat-card" v-for="stat in stats" :key="stat.id" @click="handleStatClick(stat)">
-          <view class="stat-icon" :style="{ backgroundColor: stat.color }">
-            <u-icon :name="stat.icon" size="20" color="#fff"></u-icon>
-          </view>
-          <view class="stat-info">
-            <text class="stat-value">{{ stat.value }}</text>
-            <text class="stat-label">{{ stat.label }}</text>
-          </view>
-          <view class="stat-trend" :class="{ 'trend-up': stat.trend > 0, 'trend-down': stat.trend < 0 }">
-            <u-icon :name="stat.trend > 0 ? 'arrow-up' : 'arrow-down'" size="12"></u-icon>
-            <text>{{ Math.abs(stat.trend) }}%</text>
+    <!-- 主要内容区域 -->
+    <view class="main-content">
+      <!-- 数据统计卡片 -->
+      <view class="stats-section">
+        <view class="stats-grid">
+          <view class="stat-card" v-for="stat in stats" :key="stat.id" @click="handleStatClick(stat)">
+            <view class="stat-icon" :style="{ backgroundColor: stat.color }">
+              <u-icon :name="stat.icon" size="20" color="#fff"></u-icon>
+            </view>
+            <view class="stat-info">
+              <text class="stat-value">{{ stat.value }}</text>
+              <text class="stat-label">{{ stat.label }}</text>
+            </view>
+            <view class="stat-trend" :class="{ 'trend-up': stat.trend > 0, 'trend-down': stat.trend < 0 }">
+              <u-icon :name="stat.trend > 0 ? 'arrow-up' : 'arrow-down'" size="12"></u-icon>
+              <text>{{ Math.abs(stat.trend) }}%</text>
+            </view>
           </view>
         </view>
       </view>
-    </view>
-    
-    <!-- 快捷功能 -->
-    <view class="quick-actions">
-      <view class="section-title">
-        <text>快捷功能</text>
-      </view>
-      <view class="actions-grid">
-        <view class="action-item" v-for="action in quickActions" :key="action.id" @click="handleActionClick(action)">
-          <view class="action-icon" :style="{ backgroundColor: action.color }">
-            <u-icon :name="action.icon" size="24" color="#fff"></u-icon>
+      
+      <!-- 快捷功能 -->
+      <view class="quick-actions">
+        <view class="section-title">
+          <text>快捷功能</text>
+        </view>
+        <view class="actions-grid">
+          <view class="action-item" v-for="action in quickActions" :key="action.id" @click="handleActionClick(action)">
+            <view class="action-icon" :style="{ backgroundColor: action.color }">
+              <u-icon :name="action.icon" size="24" color="#fff"></u-icon>
+            </view>
+            <text class="action-label">{{ action.label }}</text>
           </view>
-          <text class="action-label">{{ action.label }}</text>
         </view>
       </view>
-    </view>
-    
-    <!-- 最近动态 -->
-    <view class="recent-activities">
-      <view class="section-title">
-        <text>最近动态</text>
-        <text class="more-btn" @click="handleMoreActivities">查看更多</text>
-      </view>
-      <view class="activity-list">
-        <view class="activity-item" v-for="activity in recentActivities" :key="activity.id">
-          <view class="activity-avatar">
-            <image :src="activity.avatar" mode="aspectFill"></image>
-          </view>
-          <view class="activity-content">
-            <text class="activity-text">{{ activity.content }}</text>
-            <text class="activity-time">{{ activity.time }}</text>
-          </view>
-          <view class="activity-status" :class="activity.status">
-            <text>{{ getStatusText(activity.status) }}</text>
+      
+      <!-- 最近动态 -->
+      <view class="recent-activities">
+        <view class="section-title">
+          <text>最近动态</text>
+          <text class="more-btn" @click="handleMoreActivities">查看更多</text>
+        </view>
+        <view class="activity-list">
+          <view class="activity-item" v-for="activity in recentActivities" :key="activity.id">
+            <view class="activity-avatar">
+              <image :src="activity.avatar" mode="aspectFill"></image>
+            </view>
+            <view class="activity-content">
+              <text class="activity-text">{{ activity.content }}</text>
+              <text class="activity-time">{{ activity.time }}</text>
+            </view>
+            <view class="activity-status" :class="activity.status">
+              <text>{{ getStatusText(activity.status) }}</text>
+            </view>
           </view>
         </view>
       </view>
     </view>
     
-    <!-- 底部导航占位 -->
-    <view class="bottom-safe"></view>
+    <!-- 底部导航 -->
+    <C_Tabbar 
+      v-model="currentTab"
+      :tab-list="tabList"
+      :fixed="true"
+      @change="handleTabChange"
+    />
   </view>
 </template>
 
@@ -85,6 +83,46 @@ import { ref, computed, onMounted } from 'vue'
 import { useUserStore } from '@/stores/modules/user'
 
 const userStore = useUserStore()
+
+// 响应式数据
+const currentTab = ref(0)
+const notificationCount = ref(3)
+
+// Tabbar 配置
+const tabList = ref([
+  {
+    id: 'home',
+    text: '首页',
+    icon: 'home',
+    activeIcon: 'home-fill',
+    path: '/pages/index/index',
+    badge: 0
+  },
+  {
+    id: 'chat',
+    text: 'AI对话',
+    icon: 'chat',
+    activeIcon: 'chat-fill', 
+    path: '/pages/chat/index',
+    badge: 2
+  },
+  {
+    id: 'robot',
+    text: '机器人',
+    icon: 'robot',
+    activeIcon: 'robot',
+    path: '/pages/robot/index',
+    badge: 0
+  },
+  {
+    id: 'profile',
+    text: '我的',
+    icon: 'account',
+    activeIcon: 'account-fill',
+    path: '/pages/profile/index',
+    badge: 0
+  }
+])
 
 // 计算属性
 const userInfo = computed(() => userStore.userInfo || {})
@@ -101,7 +139,7 @@ const stats = ref([
     id: 1,
     label: 'AI对话',
     value: '128',
-    icon: 'chat',
+    icon: 'chat-fill',
     color: '#00D4FF',
     trend: 15.8
   },
@@ -109,7 +147,7 @@ const stats = ref([
     id: 2,
     label: '任务执行',
     value: '24',
-    icon: 'checkmark-circle',
+    icon: 'checkmark-circle-fill',
     color: '#00E676',
     trend: 8.3
   },
@@ -117,7 +155,7 @@ const stats = ref([
     id: 3,
     label: '智能分析',
     value: '36',
-    icon: 'trending-up',
+    icon: 'bar-chart-fill',
     color: '#FF6B6B',
     trend: 12.5
   },
@@ -125,7 +163,7 @@ const stats = ref([
     id: 4,
     label: '学习进度',
     value: '89%',
-    icon: 'school',
+    icon: 'school-fill',
     color: '#9C27B0',
     trend: 5.2
   }
@@ -133,12 +171,12 @@ const stats = ref([
 
 // 快捷功能
 const quickActions = ref([
-  { id: 1, label: 'AI对话', icon: 'chat', color: '#00D4FF' },
-  { id: 2, label: '智能助手', icon: 'robot', color: '#00E676' },
-  { id: 3, label: '语音交互', icon: 'mic', color: '#FF6B6B' },
-  { id: 4, label: '图像识别', icon: 'camera', color: '#FF9800' },
-  { id: 5, label: '数据分析', icon: 'bar-chart', color: '#9C27B0' },
-  { id: 6, label: '设置中心', icon: 'setting', color: '#8E8E93' }
+  { id: 1, label: 'AI对话', icon: 'chat-fill', color: '#00D4FF' },
+  { id: 2, label: '智能助手', icon: 'robot-fill', color: '#00E676' },
+  { id: 3, label: '语音交互', icon: 'mic-fill', color: '#FF6B6B' },
+  { id: 4, label: '图像识别', icon: 'camera-fill', color: '#FF9800' },
+  { id: 5, label: '数据分析', icon: 'bar-chart-fill', color: '#9C27B0' },
+  { id: 6, label: '设置中心', icon: 'setting-fill', color: '#8E8E93' }
 ])
 
 // 最近动态
@@ -174,14 +212,22 @@ const recentActivities = ref([
 ])
 
 // 方法
-const handleNotification = () => {
+// 头部组件事件
+const handleUserClick = (userInfo) => {
   uni.showToast({
-    title: '暂无新通知',
+    title: '查看用户资料',
     icon: 'none'
   })
 }
 
-const handleSettings = () => {
+const handleNotificationClick = (count) => {
+  uni.showToast({
+    title: `有${count}条新通知`,
+    icon: 'none'
+  })
+}
+
+const handleSettingsClick = () => {
   uni.showActionSheet({
     itemList: ['个人资料', '账户设置', '退出登录'],
     success: (res) => {
@@ -205,6 +251,12 @@ const handleSettings = () => {
   })
 }
 
+// Tabbar 事件
+const handleTabChange = ({ item, index }) => {
+  console.log('切换到:', item.text, '索引:', index)
+}
+
+// 原有方法
 const handleStatClick = (stat) => {
   uni.showToast({
     title: `查看${stat.label}详情`,
@@ -253,85 +305,13 @@ onMounted(() => {
 .dashboard {
   min-height: 100vh;
   background-color: #f5f7fa;
+  display: flex;
+  flex-direction: column;
 }
 
-.header {
-  background: linear-gradient(135deg, #00D4FF 0%, #0099CC 50%, #006699 100%);
-  padding: 80rpx 40rpx 40rpx;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  position: relative;
-  
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 20"><defs><pattern id="circuit" x="0" y="0" width="100" height="20" patternUnits="userSpaceOnUse"><path d="M0 10h10v-2h10v4h10v-2h10v2h10v-4h10v2h10v2h10v-4h10v2h10" stroke="rgba(255,255,255,0.1)" stroke-width="0.5" fill="none"/></pattern></defs><rect width="100" height="20" fill="url(%23circuit)"/></svg>') repeat;
-    opacity: 0.3;
-  }
-  
-  .user-info {
-    display: flex;
-    align-items: center;
-    
-    .avatar {
-      width: 80rpx;
-      height: 80rpx;
-      border-radius: 50%;
-      margin-right: 24rpx;
-      border: 3rpx solid rgba(255, 255, 255, 0.3);
-    }
-    
-    .info {
-      .greeting {
-        display: block;
-        font-size: 28rpx;
-        color: rgba(255, 255, 255, 0.8);
-        margin-bottom: 8rpx;
-      }
-      
-      .username {
-        display: block;
-        font-size: 36rpx;
-        font-weight: bold;
-        color: #fff;
-      }
-    }
-  }
-  
-  .actions {
-    display: flex;
-    align-items: center;
-    gap: 24rpx;
-    
-    .status-indicator {
-      display: flex;
-      align-items: center;
-      gap: 12rpx;
-      background: rgba(255, 255, 255, 0.15);
-      padding: 16rpx 24rpx;
-      border-radius: 50rpx;
-      border: 1rpx solid rgba(255, 255, 255, 0.2);
-      
-      .status-dot {
-        width: 16rpx;
-        height: 16rpx;
-        border-radius: 50%;
-        background: #00E676;
-        animation: pulse 2s ease-in-out infinite;
-      }
-      
-      .status-text {
-        font-size: 24rpx;
-        color: #fff;
-        font-weight: 500;
-      }
-    }
-  }
+.main-content {
+  flex: 1;
+  padding-bottom: 160rpx; /* 留出 tabbar 空间 */
 }
 
 .stats-section {
@@ -532,10 +512,6 @@ onMounted(() => {
       }
     }
   }
-}
-
-.bottom-safe {
-  height: 120rpx;
 }
 
 @keyframes pulse {
