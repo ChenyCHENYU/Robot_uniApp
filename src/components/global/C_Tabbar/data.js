@@ -137,8 +137,8 @@ export const defaultTabList = [
   {
     id: "robot",
     text: "机器人",
-    icon: "robot",
-    activeIcon: "robot",
+    icon: "R",
+    activeIcon: "R",
     path: "/pages/robot/index",
     badge: 0,
   },

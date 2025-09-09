@@ -1,7 +1,14 @@
 <template>
-  <view class="homepage">
-    <!-- 顶部横幅 -->
-    <view class="hero-section">
+  <C_Layout
+    :notification-count="notificationCount"
+    @user-click="handleUserClick"
+    @notification-click="handleNotificationClick"
+    @settings-click="handleSettingsClick"
+    @tab-change="handleTabChange"
+  >
+    <view class="homepage">
+      <!-- 顶部横幅 -->
+      <view class="hero-section">
       <view class="hero-content">
         <!-- 项目标识 -->
         <view class="project-header">
@@ -141,14 +148,22 @@
         <text class="project-author">Created with ❤️ by ChenY</text>
       </view>
     </view>
-  </view>
+    </view>
+  </C_Layout>
 </template>
 
 <script setup>
 import { ref } from 'vue'
+import { useUserStore } from '@/stores/modules/user'
 
 // 版本信息
 const version = ref('1.0.0')
+
+// 通知数量
+const notificationCount = ref(0)
+
+// 用户Store
+const userStore = useUserStore()
 
 // 支持平台
 const supportedPlatforms = ref([
@@ -269,6 +284,96 @@ const quickCommands = ref([
 ])
 
 // 事件处理
+const handleUserClick = (user) => {
+  uni.showToast({
+    title: '查看用户资料',
+    icon: 'none'
+  })
+}
+
+const handleNotificationClick = (count) => {
+  uni.showToast({
+    title: `有${count}条新通知`,
+    icon: 'none'
+  })
+}
+
+const handleSettingsClick = () => {
+  // 显示设置菜单
+  uni.showActionSheet({
+    itemList: ['个人设置', '主题切换', '关于应用', '退出登录'],
+    success: (res) => {
+      const { tapIndex } = res
+      switch (tapIndex) {
+        case 0:
+          // 个人设置
+          uni.showToast({
+            title: '个人设置功能开发中',
+            icon: 'none'
+          })
+          break
+        case 1:
+          // 主题切换
+          uni.showToast({
+            title: '主题切换功能开发中',
+            icon: 'none'
+          })
+          break
+        case 2:
+          // 关于应用
+          uni.showModal({
+            title: 'Robot UniApp',
+            content: `版本: v${version.value}\n企业级跨平台应用开发框架\n基于 Vue3 + UniApp`,
+            showCancel: false,
+            confirmText: '确定'
+          })
+          break
+        case 3:
+          // 退出登录
+          handleLogout()
+          break
+      }
+    }
+  })
+}
+
+const handleTabChange = ({ item, index }) => {
+  console.log('切换到:', item.text, '索引:', index)
+}
+
+// 退出登录处理
+const handleLogout = () => {
+  uni.showModal({
+    title: '提示',
+    content: '确定要退出登录吗？',
+    success: (res) => {
+      if (res.confirm) {
+        // 显示Loading
+        uni.showLoading({
+          title: '退出中...'
+        })
+        
+        // 执行退出登录
+        userStore.logout().then(() => {
+          uni.hideLoading()
+          uni.showToast({
+            title: '退出成功',
+            icon: 'success'
+          })
+        }).catch((error) => {
+          uni.hideLoading()
+          uni.showToast({
+            title: '退出失败，请重试',
+            icon: 'error'
+          })
+          console.error('退出登录错误:', error)
+        })
+      }
+    }
+  })
+}
+
+// 原有事件处理
 const handleStart = () => {
   uni.showToast({
     title: '开始你的开发之旅',
@@ -286,7 +391,7 @@ const handleDocs = () => {
 
 <style lang="scss" scoped>
 .homepage {
-  min-height: 100vh;
+  // 移除原有的最小高度和背景，因为C_Layout会处理这些
   background: linear-gradient(180deg, #f8faff 0%, #f1f5f9 100%);
 }
 

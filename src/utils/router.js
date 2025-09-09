@@ -2,7 +2,7 @@
  * @Author: ChenYu ycyplus@gmail.com
  * @Date: 2025-09-08 15:53:45
  * @LastEditors: ChenYu ycyplus@gmail.com
- * @LastEditTime: 2025-09-09 09:59:25
+ * @LastEditTime: 2025-09-09 16:38:49
  * @FilePath: \Robot_uniApp\src\utils\router.js
  * @Description: 路由封装和权限控制
  * Copyright (c) 2025 by CHENY, All Rights Reserved 😎.
@@ -11,7 +11,7 @@
 // 使用依赖注入模式，避免循环引用
 let userStoreInstance = null;
 
-// 设置 store 实例（由 main.js 在初始化后调用）
+// 设置 store 实例（由 main.js 在初始化后调用）C
 export function setUserStore(store) {
   userStoreInstance = store;
 }
