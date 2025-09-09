@@ -109,7 +109,7 @@ export function useLoginData() {
         userInfo: {
           id: 1,
           username: form.username,
-          nickname: "智能用户",
+          nickname: "CHENY",
           avatar: "/static/avatar.png",
           email: "user@example.com",
         },
