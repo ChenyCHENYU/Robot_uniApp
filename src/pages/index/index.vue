@@ -259,27 +259,27 @@ const advantages = ref([
 
 // 应用场景
 const applicationScenarios = ref([
-  { name: '电商应用', desc: '商城、购物车、支付', icon: '🛒' },
-  { name: '社交应用', desc: '聊天、动态、社区', icon: '💬' },
-  { name: '办公应用', desc: '审批、协作、管理', icon: '💼' },
-  { name: '工具应用', desc: '实用工具、生活服务', icon: '🔨' },
-  { name: '内容应用', desc: '新闻、视频、音乐', icon: '📰' },
-  { name: '教育应用', desc: '在线学习、考试', icon: '📚' }
+  { name: '企业管理', desc: 'ERP、CRM、HR系统', icon: '🏢' },
+  { name: '供应链管理', desc: '物流、仓储、配送', icon: '📦' },
+  { name: '制造业', desc: 'MES、质量管理、设备监控', icon: '🏭' },
+  { name: '政务服务', desc: '办事大厅、审批流程', icon: '🏛️' },
+  { name: '医疗健康', desc: '诊疗系统、健康管理', icon: '🏥' },
+  { name: '金融服务', desc: '银行、保险、支付', icon: '🏦' }
 ])
 
 // 快速命令
 const quickCommands = ref([
   {
     desc: '克隆项目',
-    command: 'git clone <your-repo-url>'
+    command: 'git clone git@github.com:ChenyCHENYU/Robot_uniApp.git'
   },
   {
     desc: '安装依赖',
     command: 'npm install'
   },
   {
-    desc: '启动开发',
-    command: 'npm run dev:h5'
+    desc: '启动开发（默认h5）',
+    command: 'npm run dev'
   }
 ])
 
