@@ -1,12 +1,4 @@
-/**
- * @Author: ChenYu ycyplus@gmail.com
- * @Date: 2025-09-09 
- * @LastEditors: ChenYu ycyplus@gmail.com
- * @LastEditTime: 2025-09-09
- * @FilePath: \\Robot_uniApp\\src\\pages\\login\\index.scss
- * @Description: 登录页面样式
- * Copyright (c) 2025 by CHENY, All Rights Reserved 😎.
- */
+
 
 .login-page {
   min-height: 100vh;
@@ -21,6 +13,7 @@
   width: 100%;
   height: 100%;
   z-index: 1;
+  overflow: hidden;
 }
 
 .bg-gradient {
@@ -29,20 +22,108 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, 
-    #667eea 0%, 
-    #764ba2 25%, 
-    #f093fb 50%, 
-    #f5576c 75%, 
-    #4facfe 100%);
-  background-size: 400% 400%;
-  animation: gradientShift 15s ease infinite;
+  background:
+      /* 主渐变层 - 深邃的太空色调 */
+      radial-gradient(ellipse at top, rgba(16, 25, 58, 0.9) 0%, rgba(8, 12, 25, 0.95) 70%),
+      linear-gradient(135deg,
+        rgba(30, 41, 82, 0.8) 0%,
+        rgba(16, 25, 58, 0.9) 25%,
+        rgba(8, 12, 25, 0.95) 50%,
+        rgba(2, 6, 15, 0.98) 75%,
+        rgba(0, 0, 0, 1) 100%);
+    background-size: 150% 150%, 400% 400%;
+    animation: gradientShift 20s ease infinite;
+  
+    /* 添加纹理效果 */
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image:
+        radial-gradient(circle at 25% 25%, rgba(120, 160, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 75% 75%, rgba(255, 120, 200, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 50% 10%, rgba(0, 200, 255, 0.06) 0%, transparent 40%);
+      animation: textureFloat 25s ease-in-out infinite;
+    }
+  
+    /* 添加光效层 */
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background:
+        linear-gradient(45deg, transparent 40%, rgba(255, 255, 255, 0.02) 50%, transparent 60%),
+        radial-gradient(ellipse at center, rgba(100, 150, 255, 0.03) 0%, transparent 70%);
+      animation: lightSweep 30s ease infinite;
+    }
 }
 
 @keyframes gradientShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  0% {
+      background-position: 0% 50%, 0% 50%;
+      transform: scale(1);
+    }
+  
+    25% {
+      background-position: 50% 25%, 25% 75%;
+      transform: scale(1.02);
+    }
+  
+    50% {
+      background-position: 100% 50%, 100% 50%;
+      transform: scale(1);
+    }
+  
+    75% {
+      background-position: 50% 75%, 75% 25%;
+      transform: scale(1.02);
+    }
+  
+    100% {
+      background-position: 0% 50%, 0% 50%;
+      transform: scale(1);
+    }
+  }
+  
+  @keyframes textureFloat {
+  
+    0%,
+    100% {
+      transform: translate(0, 0) rotate(0deg);
+      opacity: 0.6;
+    }
+  
+    33% {
+      transform: translate(30rpx, -20rpx) rotate(120deg);
+      opacity: 0.8;
+    }
+  
+    66% {
+      transform: translate(-20rpx, 30rpx) rotate(240deg);
+      opacity: 0.4;
+    }
+  }
+  
+  @keyframes lightSweep {
+    0% {
+      transform: translateX(-100%) rotate(45deg);
+      opacity: 0;
+    }
+  
+    50% {
+      opacity: 1;
+    }
+  
+    100% {
+      transform: translateX(100%) rotate(45deg);
+      opacity: 0;
+    }
 }
 
 .floating-shapes {
@@ -51,64 +132,88 @@
   left: 0;
   width: 100%;
   height: 100%;
+  pointer-events: none;
   
   .shape {
     position: absolute;
-    background: rgba(255, 255, 255, 0.1);
     border-radius: 50%;
-    animation: float 20s ease-in-out infinite;
+    animation: float 25s ease-in-out infinite;
+      filter: blur(1rpx);
     
     &.shape-1 {
-      width: 200rpx;
-      height: 200rpx;
-      top: 10%;
-      left: 10%;
+      width: 240rpx;
+        height: 240rpx;
+        top: 8%;
+        left: 8%;
+        background: radial-gradient(circle, rgba(100, 150, 255, 0.12) 0%, rgba(120, 160, 255, 0.06) 40%, transparent 70%);
       animation-delay: 0s;
     }
     
     &.shape-2 {
-      width: 150rpx;
-      height: 150rpx;
-      top: 20%;
-      right: 15%;
-      animation-delay: -5s;
+      width: 180rpx;
+        height: 180rpx;
+        top: 25%;
+        right: 12%;
+        background: radial-gradient(circle, rgba(255, 120, 200, 0.1) 0%, rgba(255, 140, 220, 0.05) 40%, transparent 70%);
+        animation-delay: -8s;
     }
     
     &.shape-3 {
-      width: 300rpx;
-      height: 300rpx;
-      bottom: 30%;
-      left: -50rpx;
-      animation-delay: -10s;
+      width: 320rpx;
+        height: 320rpx;
+        bottom: 35%;
+        left: -60rpx;
+        background: radial-gradient(circle, rgba(0, 200, 255, 0.08) 0%, rgba(50, 220, 255, 0.04) 40%, transparent 70%);
+        animation-delay: -15s;
     }
     
     &.shape-4 {
-      width: 100rpx;
-      height: 100rpx;
-      bottom: 10%;
-      right: 20%;
-      animation-delay: -15s;
+      width: 120rpx;
+        height: 120rpx;
+        bottom: 15%;
+        right: 18%;
+        background: radial-gradient(circle, rgba(200, 100, 255, 0.1) 0%, rgba(220, 120, 255, 0.05) 40%, transparent 70%);
+        animation-delay: -22s;
     }
     
     &.shape-5 {
-      width: 250rpx;
-      height: 250rpx;
-      top: 60%;
-      right: -80rpx;
-      animation-delay: -7s;
+      width: 280rpx;
+        height: 280rpx;
+        top: 55%;
+        right: -90rpx;
+        background: radial-gradient(circle, rgba(255, 200, 100, 0.08) 0%, rgba(255, 220, 120, 0.04) 40%, transparent 70%);
+        animation-delay: -12s;
+      }
+      
+      /* 新增更多装饰性元素 */
+      &.shape-6 {
+        width: 160rpx;
+        height: 160rpx;
+        top: 45%;
+        left: 5%;
+        background: radial-gradient(circle, rgba(150, 255, 150, 0.06) 0%, rgba(170, 255, 170, 0.03) 40%, transparent 70%);
+        animation-delay: -18s;
     }
   }
 }
 
 @keyframes float {
   0%, 100% {
-    transform: translateY(0px) rotate(0deg);
+    transform: translateY(0rpx) translateX(0rpx) rotate(0deg) scale(1);
+      opacity: 0.6;
   }
-  33% {
-    transform: translateY(-30rpx) rotate(120deg);
+                                25% {
+                                  transform: translateY(-40rpx) translateX(20rpx) rotate(90deg) scale(1.1);
+                                  opacity: 0.8;
   }
-  66% {
-    transform: translateY(20rpx) rotate(240deg);
+                                50% {
+                                  transform: translateY(-10rpx) translateX(-30rpx) rotate(180deg) scale(0.9);
+                                  opacity: 0.4;
+                                }
+                
+                                75% {
+                                  transform: translateY(30rpx) translateX(10rpx) rotate(270deg) scale(1.05);
+                                  opacity: 0.7;
   }
 }
 
@@ -133,17 +238,23 @@
     .logo-bg {
       width: 140rpx;
       height: 140rpx;
-      background: rgba(255, 255, 255, 0.15);
-      border: 2rpx solid rgba(255, 255, 255, 0.2);
+      background:
+          linear-gradient(145deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.08) 100%),
+          radial-gradient(circle at 30% 30%, rgba(120, 160, 255, 0.15) 0%, transparent 70%);
+        border: 2rpx solid rgba(255, 255, 255, 0.25);
       border-radius: 35rpx;
       display: flex;
       align-items: center;
       justify-content: center;
-      backdrop-filter: blur(20rpx);
-      box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(25rpx);
+        box-shadow:
+          0 8rpx 32rpx rgba(0, 0, 0, 0.3),
+          inset 0 1rpx 0 rgba(255, 255, 255, 0.3),
+          inset 0 -1rpx 0 rgba(0, 0, 0, 0.1);
       position: relative;
       overflow: hidden;
       
+      /* 增强的光泽效果 */
       &::before {
         content: '';
         position: absolute;
@@ -151,11 +262,27 @@
         left: -50%;
         width: 200%;
         height: 200%;
-        background: linear-gradient(45deg, 
-          transparent, 
-          rgba(255, 255, 255, 0.1), 
-          transparent);
-        animation: shine 3s ease-in-out infinite;
+        background:
+            linear-gradient(45deg,
+              transparent 30%,
+              rgba(255, 255, 255, 0.2) 50%,
+              transparent 70%);
+          animation: shine 4s ease-in-out infinite;
+        }
+        
+        /* 添加内发光效果 */
+        &::after {
+          content: '';
+          position: absolute;
+          top: 4rpx;
+          left: 4rpx;
+          right: 4rpx;
+          bottom: 4rpx;
+          border-radius: 31rpx;
+          background: linear-gradient(145deg,
+              rgba(255, 255, 255, 0.1) 0%,
+              rgba(255, 255, 255, 0.02) 100%);
+          pointer-events: none;
       }
     }
   }
@@ -184,34 +311,81 @@
 }
 
 @keyframes shine {
-  0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-  50% { transform: translateX(100%) translateY(100%) rotate(45deg); }
-  100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+  0% {
+      transform: translateX(-120%) translateY(-120%) rotate(45deg);
+      opacity: 0;
+    }
+  
+    50% {
+      opacity: 1;
+    }
+  
+    100% {
+      transform: translateX(120%) translateY(120%) rotate(45deg);
+      opacity: 0;
+    }
+  }
+  
+  @keyframes cardGlow {
+  
+    0%,
+    100% {
+      transform: translateX(-50%) translateY(-50%) scale(0.8);
+      opacity: 0.3;
+    }
+  
+    50% {
+      transform: translateX(-50%) translateY(-50%) scale(1.2);
+      opacity: 0.1;
+    }
 }
 
 .glass-card {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1rpx solid rgba(255, 255, 255, 0.2);
+  background:
+      linear-gradient(145deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.06) 100%),
+      radial-gradient(circle at 20% 20%, rgba(120, 160, 255, 0.08) 0%, transparent 50%);
+    border: 1rpx solid rgba(255, 255, 255, 0.25);
   border-radius: 32rpx;
   padding: 60rpx 50rpx;
-  backdrop-filter: blur(20rpx);
-  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(25rpx);
+    box-shadow:
+      0 12rpx 40rpx rgba(0, 0, 0, 0.4),
+      0 4rpx 12rpx rgba(0, 0, 0, 0.2),
+      inset 0 1rpx 0 rgba(255, 255, 255, 0.3),
+      inset 0 -1rpx 0 rgba(0, 0, 0, 0.1);
   position: relative;
   overflow: hidden;
   
+  /* 增强的顶部高光 */
   &::before {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
-    height: 1rpx;
+    height: 2rpx;
     background: linear-gradient(90deg, 
       transparent, 
-      rgba(255, 255, 255, 0.6), 
+      rgba(255, 255, 255, 0.8) 20%,
+        rgba(120, 160, 255, 0.6) 50%,
+        rgba(255, 255, 255, 0.8) 80%,
       transparent);
   }
   
+    /* 添加动态光效 */
+    &::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle,
+          rgba(255, 255, 255, 0.03) 0%,
+          transparent 70%);
+      animation: cardGlow 8s ease-in-out infinite;
+      pointer-events: none;
+    }
   .card-header {
     text-align: center;
     margin-bottom: 50rpx;
@@ -338,20 +512,23 @@
   text-align: center;
   padding: 30rpx 40rpx;
   z-index: 2;
-  background: rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(10rpx);
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0.2) 100%);
+    backdrop-filter: blur(15rpx);
+    border-top: 1rpx solid rgba(255, 255, 255, 0.1);
   
   .copyright {
     display: block;
     font-size: 24rpx;
-    color: rgba(255, 255, 255, 0.7);
+    color: rgba(255, 255, 255, 0.8);
     margin-bottom: 8rpx;
+    text-shadow: 0 1rpx 2rpx rgba(0, 0, 0, 0.3);
   }
   
   .version {
     display: block;
     font-size: 20rpx;
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(255, 255, 255, 0.6);
+      text-shadow: 0 1rpx 2rpx rgba(0, 0, 0, 0.3);
   }
 }
 
@@ -362,4 +539,28 @@
 
 :deep(.u-checkbox__icon-wrap) {
   border-color: rgba(255, 255, 255, 0.3) !important;
+}
+// 优化输入框焦点效果
+:deep(.u-input--focused) {
+  .u-input__content__field-wrapper__field {
+    color: #ffffff !important;
+  }
+}
+
+// 增强按钮样式
+:deep(.u-button) {
+  background: linear-gradient(135deg,
+      rgba(0, 212, 255, 0.8) 0%,
+      rgba(0, 150, 255, 0.9) 100%) !important;
+  border: none !important;
+  box-shadow:
+    0 8rpx 24rpx rgba(0, 212, 255, 0.3),
+    inset 0 1rpx 0 rgba(255, 255, 255, 0.2) !important;
+
+  &:active {
+    transform: scale(0.98) !important;
+    box-shadow:
+      0 4rpx 12rpx rgba(0, 212, 255, 0.4),
+      inset 0 1rpx 0 rgba(255, 255, 255, 0.2) !important;
+  }
 }

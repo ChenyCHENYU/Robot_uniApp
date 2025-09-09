@@ -2,9 +2,9 @@
  * @Author: ChenYu ycyplus@gmail.com
  * @Date: 2025-09-08 15:34:18
  * @LastEditors: ChenYu ycyplus@gmail.com
- * @LastEditTime: 2025-09-09 14:03:46
+ * @LastEditTime: 2025-09-09 14:09:35
  * @FilePath: \Robot_uniApp\src\pages\login\index.vue
- * @Description: 登录页面 - 主模板文件
+ * @Description: 登录页面
  * Copyright (c) 2025 by CHENY, All Rights Reserved 😎. 
 -->
 <template>
@@ -18,6 +18,7 @@
         <view class="shape shape-3"></view>
         <view class="shape shape-4"></view>
         <view class="shape shape-5"></view>
+        <view class="shape shape-6"></view>
       </view>
     </view>
 
@@ -45,7 +46,7 @@
         </view>
         <text class="app-name">Robot App</text>
         <text class="app-desc">机器人移动跨端应用框架</text>
-        <text class="app-version">让你的开发和体验更加丝滑</text>
+        <text class="app-version">让您的开发和体验更加丝滑</text>
       </view>
 
       <!-- 玻璃风登录卡片 -->
