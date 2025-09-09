@@ -13,21 +13,14 @@ import { useUserStore } from "@/stores/modules/user";
 import {
   required,
   length,
-  username as usernameRule,
-  email,
+  quickValidate,
+  validateWithToast,
 } from "@/utils/v_verify";
 
 export function useLoginData() {
   const userStore = useUserStore();
   const loading = ref(false);
   const rememberLogin = ref(["remember"]);
-  const formRef = ref(null); // 表单引用
-
-  // 错误状态管理
-  const errors = reactive({
-    username: "",
-    password: "",
-  });
 
   // 表单数据
   const form = reactive({
@@ -83,16 +76,25 @@ export function useLoginData() {
     boxShadow: "0 8rpx 32rpx rgba(0, 212, 255, 0.3)",
   };
 
+  // 字段失焦验证
+  const handleFieldBlur = (field) => {
+    const value = form[field];
+    const fieldRules = rules[field];
+    const result = quickValidate(value, fieldRules, field);
+
+    if (!result.valid) {
+      uni.showToast({
+        title: result.message,
+        icon: "none",
+        duration: 2000,
+      });
+    }
+  };
+
   // 登录处理
   const handleLogin = async () => {
-    // 先进行表单验证
-    try {
-      await validateForm();
-    } catch (error) {
-      uni.showToast({
-        title: "请检查输入信息",
-        icon: "none",
-      });
+    // 使用弹框验证表单
+    if (!validateWithToast(form, rules)) {
       return;
     }
 
@@ -170,89 +172,11 @@ export function useLoginData() {
     await handleLogin();
   };
 
-  // 表单验证函数
-  const validateForm = () => {
-    return new Promise((resolve, reject) => {
-      const usernameValid = validateField("username");
-      const passwordValid = validateField("password");
-
-      if (usernameValid && passwordValid) {
-        resolve();
-      } else {
-        reject(new Error("表单验证失败"));
-      }
-    });
-  };
-
-  // 清空表单
-  const clearForm = () => {
-    form.username = "";
-    form.password = "";
-    rememberLogin.value = [];
-    resetFormValidation();
-  };
-
-  // 重置表单验证
-  const resetFormValidation = () => {
-    errors.username = "";
-    errors.password = "";
-  };
-
-  // 单字段验证
-  const validateField = (field) => {
-    const value = form[field];
-
-    if (field === "username") {
-      if (!value || value.trim() === "") {
-        errors.username = "用户名不能为空";
-        return false;
-      }
-      if (value.length < 3 || value.length > 20) {
-        errors.username = "用户名长度在3-20位之间";
-        return false;
-      }
-      // 检查用户名或邮箱格式
-      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      const usernamePattern = /^[a-zA-Z0-9_]{3,20}$/;
-      if (!emailPattern.test(value) && !usernamePattern.test(value)) {
-        errors.username = "请输入正确的用户名或邮箱格式";
-        return false;
-      }
-      errors.username = "";
-      return true;
-    }
-
-    if (field === "password") {
-      if (!value || value.trim() === "") {
-        errors.password = "密码不能为空";
-        return false;
-      }
-      if (value.length < 6 || value.length > 20) {
-        errors.password = "密码长度在6-20位之间";
-        return false;
-      }
-      errors.password = "";
-      return true;
-    }
-
-    return true;
-  };
-
-  // 清除字段错误
-  const clearFieldError = (field) => {
-    if (errors[field]) {
-      errors[field] = "";
-    }
-  };
-
   return {
     // 响应式数据
     loading,
     rememberLogin,
     form,
-    errors,
-    rules,
-    formRef,
     glassInputStyle,
     glassButtonStyle,
 
@@ -261,10 +185,6 @@ export function useLoginData() {
     handleForgotPassword,
     handleWechatLogin,
     handleQuickLogin,
-    validateForm,
-    validateField,
-    clearFieldError,
-    clearForm,
-    resetFormValidation,
+    handleFieldBlur,
   };
 }

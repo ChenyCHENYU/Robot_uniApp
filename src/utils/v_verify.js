@@ -289,3 +289,108 @@ export const RULE_COMBOS = {
 
 // 导出正则表达式常量，供外部使用
 export { REGEX_PATTERNS };
+
+/**
+ * @description: 快速验证方法 - 直接返回验证结果
+ * @param value 要验证的值
+ * @param rules 验证规则数组
+ * @param field 字段名
+ * @returns {Object} { valid: boolean, message: string }
+ */
+export function quickValidate(value, rules, field = '字段') {
+  if (!rules || rules.length === 0) {
+    return { valid: true, message: '' };
+  }
+
+  for (const rule of rules) {
+    // 必填验证
+    if (rule.required && (!value || String(value).trim() === '')) {
+      return { valid: false, message: rule.message || `${field}不能为空` };
+    }
+
+    // 如果值为空且不是必填，跳过后续验证
+    if (!value && !rule.required) {
+      continue;
+    }
+
+    // 自定义验证器
+    if (rule.validator && typeof rule.validator === 'function') {
+      let errorMsg = '';
+      try {
+        rule.validator(rule, value, (error) => {
+          if (error) {
+            errorMsg = error.message || error;
+          }
+        });
+        if (errorMsg) {
+          return { valid: false, message: errorMsg };
+        }
+      } catch (err) {
+        return { valid: false, message: err.message || '验证失败' };
+      }
+    }
+
+    // 长度验证
+    if (value && rule.min !== undefined) {
+      const len = String(value).length;
+      if (len < rule.min || (rule.max !== undefined && len > rule.max)) {
+        const message = rule.message || 
+          (rule.max ? `${field}长度需在${rule.min}-${rule.max}位之间` : `${field}长度至少${rule.min}位`);
+        return { valid: false, message };
+      }
+    }
+
+    // 正则验证
+    if (value && rule.pattern && !rule.pattern.test(value)) {
+      return { valid: false, message: rule.message || `${field}格式错误` };
+    }
+  }
+
+  return { valid: true, message: '' };
+}
+
+/**
+ * @description: 表单批量验证 - 返回第一个错误
+ * @param formData 表单数据对象
+ * @param rulesConfig 验证规则配置
+ * @returns {Object} { valid: boolean, message: string, field: string }
+ */
+export function validateForm(formData, rulesConfig) {
+  // 按字段顺序验证，返回第一个错误
+  for (const field in rulesConfig) {
+    const value = formData[field];
+    const rules = rulesConfig[field];
+    const result = quickValidate(value, rules, field);
+    
+    if (!result.valid) {
+      return {
+        valid: false,
+        message: result.message,
+        field: field
+      };
+    }
+  }
+  
+  return { valid: true, message: '', field: '' };
+}
+
+/**
+ * @description: 弹框提示验证结果
+ * @param formData 表单数据
+ * @param rulesConfig 验证规则
+ * @param options 选项配置
+ */
+export function validateWithToast(formData, rulesConfig, options = {}) {
+  const result = validateForm(formData, rulesConfig);
+  
+  if (!result.valid) {
+    uni.showToast({
+      title: result.message,
+      icon: 'none',
+      duration: options.duration || 2000
+    });
+    return false;
+  }
+  
+  return true;
+}

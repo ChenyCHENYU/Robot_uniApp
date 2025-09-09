@@ -45,7 +45,7 @@
         <view class="form-wrapper">
           <!-- 用户名输入框 -->
           <view class="input-group">
-            <view class="input-wrapper" :class="{'input-error': errors.username}">
+            <view class="input-wrapper">
               <u-icon
                 name="account"
                 size="20"
@@ -57,16 +57,14 @@
                 border="none"
                 :customStyle="glassInputStyle"
                 placeholderStyle="color: rgba(255,255,255,0.6)"
-                @blur="validateField('username')"
-                @input="clearFieldError('username')"
+                @blur="handleFieldBlur('username')"
               />
             </view>
-            <view v-if="errors.username" class="error-text">{{ errors.username }}</view>
           </view>
 
           <!-- 密码输入框 -->
           <view class="input-group">
-            <view class="input-wrapper" :class="{'input-error': errors.password}">
+            <view class="input-wrapper">
               <u-icon
                 name="lock"
                 size="20"
@@ -79,11 +77,9 @@
                 border="none"
                 :customStyle="glassInputStyle"
                 placeholderStyle="color: rgba(255,255,255,0.6)"
-                @blur="validateField('password')"
-                @input="clearFieldError('password')"
+                @blur="handleFieldBlur('password')"
               />
             </view>
-            <view v-if="errors.password" class="error-text">{{ errors.password }}</view>
           </view>
         </view>
 
@@ -151,8 +147,6 @@ const {
   loading,
   rememberLogin,
   form,
-  errors,
-  formRef,
   glassInputStyle,
   glassButtonStyle,
 
@@ -161,11 +155,7 @@ const {
   handleForgotPassword,
   handleWechatLogin,
   handleQuickLogin,
-  validateForm,
-  validateField,
-  clearFieldError,
-  clearForm,
-  resetFormValidation
+  handleFieldBlur
 } = useLoginData();
 </script>
 

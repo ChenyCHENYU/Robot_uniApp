@@ -1,212 +1,349 @@
-# uni-app 表单验证工具 (v_verify)
+# 表单验证工具 v_verify
 
-一个专为 uni-app 项目设计的简洁、易用的表单验证工具，让表单验证变得超级简单！
+## 🎯 设计理念
 
-## ✨ 特性
+移动端表单验证工具，采用弹框提示方式，简洁优雅，符合移动端交互习惯。当多个字段存在错误时，按顺序只提示第一个错误，保持界面清爽。
 
-- 🚀 **简洁易用**: `rules: [required('用户名'), length('用户名', 3, 20)]`
-- 📱 **uni-app 优化**: 专为 uni-app 框架定制，完美兼容
-- 🎯 **预设规则**: 内置常用验证规则，开箱即用
-- 🔧 **高度可定制**: 支持自定义验证函数和正则表达式
-- 📦 **零依赖**: 无需安装额外依赖
-- 🎨 **TypeScript 友好**: 完整的类型提示支持
+## ✨ 核心特点
+
+- 🚀 **超级简洁** - 一行代码完成验证+提示
+- 📱 **移动端友好** - 弹框提示符合移动端交互习惯  
+- 🎯 **错误有序** - 永远只提示第一个错误，界面清爽
+- 🔧 **零组件依赖** - 直接使用工具方法，无需额外组件
+- ⚡ **高性能** - 验证失败立即停止，不做无效验证
 
 ## 🚀 快速开始
 
-### 1. 基础使用
+### 基础验证规则
 
 ```javascript
-import { required, length, mobile, email } from "@/utils/v_verify";
+import { required, length, mobile, email } from '@/utils/v_verify';
 
-// 在你的数据文件中
-export function useFormData() {
-  const rules = {
-    username: [required("用户名"), length("用户名", 3, 20)],
-    password: [required("密码"), length("密码", 6, 15)],
-    phone: [required("手机号"), mobile("手机号")],
-    email: [email("邮箱")], // 非必填的邮箱验证
-  };
-
-  return { rules };
-}
+// 基础验证规则定义
+const rules = {
+  username: [required('用户名'), length('用户名', 3, 20)],
+  password: [required('密码'), length('密码', 6, 20)],
+  mobile: [required('手机号'), mobile('手机号')],
+  email: [email('邮箱')] // 非必填
+};
 ```
 
-### 2. 在 Vue 组件中使用
+### 三种验证方式
+
+#### 1. 失焦验证（推荐）
+```javascript
+import { quickValidate } from '@/utils/v_verify';
+
+const handleFieldBlur = (field) => {
+  const value = form[field];
+  const fieldRules = rules[field];
+  const result = quickValidate(value, fieldRules, field);
+  
+  if (!result.valid) {
+    uni.showToast({
+      title: result.message,
+      icon: 'none',
+      duration: 2000
+    });
+  }
+};
+```
+
+#### 2. 提交验证（最推荐）
+```javascript
+import { validateWithToast } from '@/utils/v_verify';
+
+const handleSubmit = async () => {
+  // 一行代码完成验证+弹框提示
+  if (!validateWithToast(form, rules)) {
+    return; // 验证失败，已自动弹框提示
+  }
+  
+  // 验证通过，继续提交逻辑
+  console.log('表单验证通过，开始提交');
+};
+```
+
+#### 3. 自定义验证
+```javascript
+import { validateForm } from '@/utils/v_verify';
+
+const customValidate = () => {
+  const result = validateForm(form, rules);
+  
+  if (!result.valid) {
+    console.log(`字段 ${result.field} 验证失败: ${result.message}`);
+    // 自定义处理逻辑
+  }
+};
+```
+
+## 📋 完整示例
+
+### 登录页面完整代码
 
 ```vue
 <template>
-  <u-form :model="form" :rules="rules" ref="formRef">
-    <u-form-item prop="username">
-      <u-input v-model="form.username" placeholder="请输入用户名" />
-    </u-form-item>
-    <u-form-item prop="password">
-      <u-input
-        v-model="form.password"
-        type="password"
-        placeholder="请输入密码"
+  <view>
+    <!-- 用户名输入 -->
+    <view class="input-wrapper">
+      <u-icon name="account" size="20" color="rgba(255,255,255,0.7)"></u-icon>
+      <u-input 
+        v-model="form.username" 
+        placeholder="用户名或邮箱"
+        :border="false"
+        :customStyle="inputStyle"
+        @blur="handleFieldBlur('username')"
       />
-    </u-form-item>
-  </u-form>
+    </view>
+    
+    <!-- 密码输入 -->
+    <view class="input-wrapper">
+      <u-icon name="lock" size="20" color="rgba(255,255,255,0.7)"></u-icon>
+      <u-input 
+        v-model="form.password" 
+        type="password"
+        placeholder="密码"
+        :border="false"
+        :customStyle="inputStyle"
+        @blur="handleFieldBlur('password')"
+      />
+    </view>
+    
+    <u-button @click="handleLogin">登录</u-button>
+  </view>
 </template>
 
 <script setup>
-import { useFormData } from "./data.js";
-const { form, rules } = useFormData();
+import { reactive } from 'vue';
+import { 
+  required, 
+  length, 
+  quickValidate, 
+  validateWithToast 
+} from '@/utils/v_verify';
+
+const form = reactive({
+  username: '',
+  password: ''
+});
+
+const rules = {
+  username: [
+    required('用户名'), 
+    length('用户名', 3, 20),
+    // 自定义验证器
+    {
+      validator: (rule, value, callback) => {
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const usernamePattern = /^[a-zA-Z0-9_]{3,20}$/;
+        
+        if (emailPattern.test(value) || usernamePattern.test(value)) {
+          callback();
+        } else {
+          callback(new Error('请输入正确的用户名或邮箱格式'));
+        }
+      }
+    }
+  ],
+  password: [required('密码'), length('密码', 6, 20)]
+};
+
+const inputStyle = {
+  backgroundColor: 'transparent',
+  color: '#ffffff',
+  fontSize: '32rpx'
+};
+
+// 失焦验证
+const handleFieldBlur = (field) => {
+  const value = form[field];
+  const fieldRules = rules[field];
+  const result = quickValidate(value, fieldRules, field);
+  
+  if (!result.valid) {
+    uni.showToast({
+      title: result.message,
+      icon: 'none',
+      duration: 2000
+    });
+  }
+};
+
+// 提交验证
+const handleLogin = async () => {
+  // 一行代码完成验证
+  if (!validateWithToast(form, rules)) {
+    return;
+  }
+  
+  // 验证通过，执行登录逻辑
+  console.log('开始登录', form);
+};
 </script>
 ```
 
-## 📋 API 文档
+## 📚 API 文档
 
 ### 基础验证规则
 
-| 函数                        | 参数                       | 说明     | 示例                    |
-| --------------------------- | -------------------------- | -------- | ----------------------- |
-| `required(field, trigger?)` | 字段名, 触发方式           | 必填验证 | `required('用户名')`    |
-| `length(field, min, max?)`  | 字段名, 最小长度, 最大长度 | 长度验证 | `length('密码', 6, 20)` |
-| `range(field, min, max)`    | 字段名, 最小值, 最大值     | 数值范围 | `range('年龄', 18, 65)` |
+| 函数 | 参数 | 说明 | 示例 |
+|------|------|------|------|
+| `required(field, trigger?)` | 字段名, 触发方式 | 必填验证 | `required('用户名')` |
+| `length(field, min, max?)` | 字段名, 最小长度, 最大长度 | 长度验证 | `length('密码', 6, 20)` |
+| `range(field, min, max)` | 字段名, 最小值, 最大值 | 数值范围 | `range('年龄', 18, 65)` |
 
 ### 格式验证规则
 
-| 函数                     | 参数   | 说明                       | 示例                     |
-| ------------------------ | ------ | -------------------------- | ------------------------ |
-| `mobile(field?)`         | 字段名 | 手机号验证                 | `mobile('手机号')`       |
-| `email(field?)`          | 字段名 | 邮箱验证                   | `email('邮箱')`          |
-| `username(field?)`       | 字段名 | 用户名验证(字母数字下划线) | `username('用户名')`     |
-| `password(field?)`       | 字段名 | 简单密码验证(6-20 位)      | `password('密码')`       |
-| `strongPassword(field?)` | 字段名 | 强密码验证(含大小写+数字)  | `strongPassword('密码')` |
-| `idCard(field?)`         | 字段名 | 身份证验证                 | `idCard('身份证号')`     |
-| `url(field?)`            | 字段名 | URL 验证                   | `url('网站地址')`        |
-| `ip(field?)`             | 字段名 | IP 地址验证                | `ip('服务器地址')`       |
+| 函数 | 参数 | 说明 | 示例 |
+|------|------|------|------|
+| `mobile(field?)` | 字段名 | 手机号验证 | `mobile('手机号')` |
+| `email(field?)` | 字段名 | 邮箱验证 | `email('邮箱')` |
+| `username(field?)` | 字段名 | 用户名验证 | `username('用户名')` |
+| `password(field?)` | 字段名 | 简单密码验证 | `password('密码')` |
+| `strongPassword(field?)` | 字段名 | 强密码验证 | `strongPassword('密码')` |
+| `idCard(field?)` | 字段名 | 身份证验证 | `idCard('身份证号')` |
 
-### 类型验证规则
+### 核心验证方法
 
-| 函数             | 参数   | 说明           | 示例              |
-| ---------------- | ------ | -------------- | ----------------- |
-| `chinese(field)` | 字段名 | 中文验证       | `chinese('姓名')` |
-| `number(field)`  | 字段名 | 纯数字验证     | `number('数量')`  |
-| `decimal(field)` | 字段名 | 数字或小数验证 | `decimal('金额')` |
+#### quickValidate(value, rules, field)
+单字段快速验证
 
-### 高级验证规则
+**参数**:
+- `value`: 要验证的值
+- `rules`: 验证规则数组  
+- `field`: 字段名称
 
-| 函数                                       | 参数                         | 说明           | 示例                                               |
-| ------------------------------------------ | ---------------------------- | -------------- | -------------------------------------------------- |
-| `confirmPassword(field, getOriginalValue)` | 字段名, 获取原密码函数       | 确认密码验证   | `confirmPassword('确认密码', () => form.password)` |
-| `pattern(field, regex, message?)`          | 字段名, 正则, 错误消息       | 自定义正则验证 | `pattern('QQ号', /^[1-9]\d{4,10}$/)`               |
-| `custom(validateFn, message, trigger?)`    | 验证函数, 错误消息, 触发方式 | 自定义验证     | `custom(v => v > 0, '必须大于0')`                  |
-
-### 预设组合规则
-
-使用 `RULE_COMBOS` 可以快速应用常用的组合规则：
+**返回**: `{ valid: boolean, message: string }`
 
 ```javascript
-import { RULE_COMBOS } from "@/utils/v_verify";
-
-const rules = {
-  username: RULE_COMBOS.username("用户名"), // 必填 + 用户名格式
-  password: RULE_COMBOS.password("密码"), // 必填 + 简单密码
-  strongPassword: RULE_COMBOS.strongPassword("密码"), // 必填 + 强密码
-  email: RULE_COMBOS.email("邮箱"), // 必填 + 邮箱格式
-  mobile: RULE_COMBOS.mobile("手机号"), // 必填 + 手机号格式
-};
+const result = quickValidate('test', [required('用户名')], '用户名');
+if (!result.valid) {
+  console.log(result.message); // "用户名不能为空"
+}
 ```
 
-## 💡 使用示例
+#### validateForm(formData, rulesConfig) 
+表单批量验证，返回第一个错误
 
-### 登录表单
+**参数**:
+- `formData`: 表单数据对象
+- `rulesConfig`: 验证规则配置对象
+
+**返回**: `{ valid: boolean, message: string, field: string }`
 
 ```javascript
-import { required, length } from "@/utils/v_verify";
-
-const loginRules = {
-  username: [required("用户名"), length("用户名", 3, 20)],
-  password: [required("密码"), length("密码", 6, 20)],
-};
+const result = validateForm(form, rules);
+if (!result.valid) {
+  console.log(`字段 ${result.field} 验证失败: ${result.message}`);
+}
 ```
 
-### 注册表单
+#### validateWithToast(formData, rulesConfig, options)
+表单验证并自动弹框提示
+
+**参数**:
+- `formData`: 表单数据对象
+- `rulesConfig`: 验证规则配置对象
+- `options`: 可选配置 `{ duration: 2000 }`
+
+**返回**: `boolean` (验证是否通过)
 
 ```javascript
-import {
-  required,
-  length,
-  mobile,
-  email,
-  confirmPassword,
-} from "@/utils/v_verify";
-
-const registerRules = {
-  username: [required("用户名"), length("用户名", 3, 20)],
-  password: [required("密码"), length("密码", 6, 20)],
-  confirmPassword: [
-    required("确认密码"),
-    confirmPassword("确认密码", () => form.password),
-  ],
-  phone: [required("手机号"), mobile("手机号")],
-  email: [email("邮箱")], // 非必填
-};
+if (!validateWithToast(form, rules, { duration: 3000 })) {
+  return; // 验证失败，已自动弹框提示
+}
+// 验证通过，继续执行
 ```
 
-### 个人信息表单
+## 🔧 自定义验证
 
+### 自定义验证器
 ```javascript
-import { required, chinese, range, pattern } from "@/utils/v_verify";
+const customRules = [
+  {
+    validator: (rule, value, callback) => {
+      if (value && value.includes('admin')) {
+        callback(new Error('用户名不能包含admin'));
+      } else {
+        callback();
+      }
+    },
+    trigger: 'blur'
+  }
+];
+```
+
+### 正则验证
+```javascript
+import { pattern } from '@/utils/v_verify';
+
+const rules = [
+  pattern('QQ号', /^[1-9]\d{4,10}$/, 'QQ号格式错误')
+];
+```
+
+### 自定义函数验证
+```javascript
+import { custom } from '@/utils/v_verify';
+
+const rules = [
+  custom(
+    (value) => value && value.length === 6 && /^\d+$/.test(value),
+    '验证码必须是6位数字'
+  )
+];
+```
+
+## 🎯 最佳实践
+
+### 1. 验证时机
+- **失焦验证**: 用户输入完成后立即反馈
+- **提交验证**: 表单提交前的最终检查
+
+### 2. 错误提示
+- 只显示第一个错误，避免信息过载
+- 使用 `uni.showToast` 弹框提示，符合移动端习惯
+
+### 3. 规则定义
+```javascript
+// 推荐：按业务逻辑分组
+const userRules = {
+  username: [required('用户名'), length('用户名', 3, 20)],
+  password: [required('密码'), length('密码', 6, 20)]
+};
 
 const profileRules = {
-  realName: [required("姓名"), chinese("姓名"), length("姓名", 2, 4)],
-  age: [required("年龄"), range("年龄", 1, 120)],
-  qq: [pattern("QQ号", /^[1-9]\d{4,10}$/, "QQ号格式错误")],
+  nickname: [required('昵称'), length('昵称', 2, 10)],
+  mobile: [required('手机号'), mobile('手机号')]
 };
 ```
 
-### 自定义验证
-
+### 4. 性能优化
 ```javascript
-import { required, custom } from "@/utils/v_verify";
-
-const customRules = {
-  code: [
-    required("验证码"),
-    custom(
-      (value) => value && value.length === 6 && /^\d+$/.test(value),
-      "验证码必须是6位数字"
-    ),
-  ],
+// 验证失败立即停止，提升性能
+const handleSubmit = () => {
+  if (!validateWithToast(form, rules)) {
+    return; // 立即返回，不执行后续逻辑
+  }
+  
+  // 继续执行提交逻辑
 };
 ```
 
-## 🔧 配置说明
+## ⚠️ 注意事项
 
-所有验证规则都支持以下特性：
+1. **非必填字段**: 值为空时自动跳过后续验证
+2. **验证顺序**: 按规则数组顺序执行，遇到第一个错误即停止
+3. **异步验证**: 自定义验证器支持异步，但建议使用同步验证
+4. **错误信息**: 确保错误提示信息简洁明了，便于用户理解
 
-1. **空值处理**: 非必填字段在空值时自动跳过验证
-2. **触发方式**: 默认为 `blur`，可自定义
-3. **错误消息**: 支持自定义错误提示文本
-4. **uni-app 兼容**: 完全兼容 uni-app 的表单组件
+## 🚀 使用场景
 
-## 📝 注意事项
+- ✅ **登录/注册表单** - 用户认证场景
+- ✅ **个人信息编辑** - 用户资料修改
+- ✅ **订单提交** - 电商业务表单
+- ✅ **反馈表单** - 意见建议收集
+- ✅ **设置页面** - 应用配置修改
 
-1. 确保项目中已正确配置路径别名 `@` 指向 `src` 目录
-2. 验证规则按数组顺序执行，遇到第一个错误即停止
-3. 所有非必填字段在空值时会跳过后续验证
-4. 建议将验证规则定义在 `data.js` 文件中，保持代码整洁
-
-## 🎉 现在开始
-
-现在你可以在项目中愉快地使用这个验证工具了！记住，简洁就是美：
-
-```javascript
-// 以前需要这样写
-const rules = {
-  username: [
-    { required: true, message: "请输入用户名", trigger: "blur" },
-    { min: 3, max: 20, message: "用户名长度在3-20位之间", trigger: "blur" },
-  ],
-};
-
-// 现在只需要这样
-const rules = {
-  username: [required("用户名"), length("用户名", 3, 20)],
-};
-```
-
-享受编码的乐趣吧！🚀
+这套验证工具让表单验证变得超级简单，告别重复代码，拥抱优雅开发！🎉
