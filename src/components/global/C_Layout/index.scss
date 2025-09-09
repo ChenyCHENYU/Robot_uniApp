@@ -1,0 +1,279 @@
+// Layout组件样式
+
+// 变量定义
+$layout-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+$content-bg: #ffffff;
+$loading-bg: rgba(0, 0, 0, 0.3);
+$loading-backdrop-blur: 10rpx;
+
+// 主布局容器
+.c-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: $content-bg;
+  position: relative;
+  
+  // Layout类型样式
+  &.layout-none {
+    // 完全自定义，不添加任何样式
+  }
+  
+  &.layout-header-only {
+    .layout-content {
+      flex: 1;
+      overflow-y: auto;
+    }
+  }
+  
+  &.layout-full {
+    .layout-content {
+      flex: 1;
+      overflow-y: auto;
+      // 为Tabbar预留空间
+      padding-bottom: 120rpx;
+    }
+  }
+  
+  // 状态修饰符
+  &.has-header {
+    .layout-content {
+      // Header会自动占据顶部空间
+    }
+  }
+  
+  &.has-tabbar {
+    .layout-content {
+      // Tabbar固定在底部，内容区域需要底部间距
+      margin-bottom: 0;
+    }
+  }
+}
+
+// 内容区域
+.layout-content {
+  flex: 1;
+  position: relative;
+  z-index: 1;
+  transition: $layout-transition;
+  background-color: #ffffff;
+  
+  // 滚动优化
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  
+  // 内容容器的基础样式
+  > .page {
+    min-height: 100%;
+  }
+  
+  > .page-content {
+    position: relative;
+    z-index: 1;
+  }
+  
+  // 确保内容不会被Header遮挡
+  &.with-header {
+    padding-top: 0; // Header是相对定位，不需要额外padding
+  }
+  
+  // 确保内容不会被Tabbar遮挡
+  &.with-tabbar {
+    padding-bottom: 120rpx;
+  }
+}
+
+// 全局Loading遮罩
+.global-loading {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+  background: $loading-bg;
+  backdrop-filter: blur($loading-backdrop-blur);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  .u-loading-page {
+    background: transparent;
+  }
+}
+
+// Header区域样式增强
+.c-layout .c-header {
+  position: relative;
+  z-index: 100;
+  flex-shrink: 0;
+  
+  // 确保Header在布局中的正确定位
+  width: 100%;
+}
+
+// Tabbar区域样式增强
+.c-layout .c-tabbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 99;
+  flex-shrink: 0;
+  
+  // 毛玻璃效果
+  backdrop-filter: blur(20rpx);
+  border-top: 1rpx solid rgba(0, 0, 0, 0.05);
+  
+  // 安全区域适配
+  padding-bottom: constant(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+// 响应式设计
+@media screen and (max-width: 750rpx) {
+  .c-layout {
+    &.layout-full {
+      .layout-content {
+        padding-bottom: 140rpx; // 小屏幕上给Tabbar更多空间
+      }
+    }
+  }
+  
+  .layout-content {
+    &.with-tabbar {
+      padding-bottom: 140rpx;
+    }
+  }
+}
+
+// 横屏适配
+@media screen and (orientation: landscape) {
+  .c-layout {
+    .layout-content {
+      // 横屏时的特殊处理
+      overflow-x: hidden;
+    }
+  }
+}
+
+// 深色模式适配（暂时禁用，使用白色背景）
+/* 
+@media (prefers-color-scheme: dark) {
+  .c-layout {
+    background-color: #1a1a1a;
+  }
+  
+  .layout-content {
+    background-color: #1a1a1a;
+  }
+  
+  .global-loading {
+    background: rgba(0, 0, 0, 0.6);
+  }
+  
+  .c-tabbar {
+    border-top-color: rgba(255, 255, 255, 0.1);
+  }
+}
+*/
+
+// 动画优化
+@media (prefers-reduced-motion: reduce) {
+  .c-layout,
+  .layout-content {
+    transition: none;
+  }
+}
+
+// 针对不同页面的特殊样式
+.c-layout {
+  // 首页特殊样式
+  &[data-page="index"] {
+    .layout-content {
+      background: #ffffff;
+    }
+  }
+  
+  // 聊天页面特殊样式
+  &[data-page="chat"] {
+    .layout-content {
+      background: #ffffff;
+    }
+  }
+  
+  // 个人中心特殊样式
+  &[data-page="profile"] {
+    .layout-content {
+      background: #ffffff;
+    }
+  }
+}
+
+// 页面切换动画（可选）
+.page-enter-active,
+.page-leave-active {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.page-enter-from {
+  opacity: 0;
+  transform: translateX(30rpx);
+}
+
+.page-leave-to {
+  opacity: 0;
+  transform: translateX(-30rpx);
+}
+
+// 工具类
+.layout-padding {
+  padding: 40rpx;
+}
+
+.layout-padding-x {
+  padding-left: 40rpx;
+  padding-right: 40rpx;
+}
+
+.layout-padding-y {
+  padding-top: 40rpx;
+  padding-bottom: 40rpx;
+}
+
+.layout-safe-area {
+  padding-top: constant(safe-area-inset-top);
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: constant(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: constant(safe-area-inset-left);
+  padding-left: env(safe-area-inset-left);
+  padding-right: constant(safe-area-inset-right);
+  padding-right: env(safe-area-inset-right);
+}
+
+// 内容区域变体
+.layout-content {
+  // 无间距内容
+  &.no-padding {
+    padding: 0;
+  }
+  
+  // 自定义间距
+  &.custom-padding {
+    padding: var(--layout-padding, 40rpx);
+  }
+  
+  // 滚动阴影效果
+  &.scroll-shadow {
+    background: 
+      linear-gradient(white 30%, rgba(255,255,255,0)),
+      linear-gradient(rgba(255,255,255,0), white 70%) 0 100%,
+      radial-gradient(closest-side at 50% 0, rgba(0,0,0,.2), rgba(0,0,0,0)),
+      radial-gradient(closest-side at 50% 100%, rgba(0,0,0,.2), rgba(0,0,0,0)) 0 100%;
+    background-repeat: no-repeat;
+    background-color: white;
+    background-size: 100% 40rpx, 100% 40rpx, 100% 14rpx, 100% 14rpx;
+    background-attachment: local, local, scroll, scroll;
+  }
+}

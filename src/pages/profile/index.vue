@@ -4,67 +4,55 @@
  * @Description: 个人中心页面
 -->
 <template>
-  <view class="profile-page">
-    <C_Header default-nickname="个人中心" :show-status="false" />
-    <view class="main-content">
+  <C_Layout
+    :notification-count="notificationCount"
+    @user-click="handleUserClick"
+    @notification-click="handleNotificationClick"
+    @settings-click="handleSettingsClick"
+    @tab-change="handleTabChange"
+  >
+    <view class="profile-content">
       <text>个人中心页面 - 开发中</text>
     </view>
-    <C_Tabbar v-model="currentTab" :tab-list="tabList" :fixed="true" />
-  </view>
+  </C_Layout>
 </template>
 
 <script setup>
 import { ref } from "vue";
 
-const currentTab = ref(3);
-const tabList = ref([
-  {
-    id: "home",
-    text: "首页",
-    icon: "home",
-    activeIcon: "home-fill",
-    path: "/pages/index/index",
-    badge: 0,
-  },
-  {
-    id: "chat",
-    text: "AI对话",
-    icon: "chat",
-    activeIcon: "chat-fill",
-    path: "/pages/chat/index",
-    badge: 0,
-  },
-  {
-    id: "robot",
-    text: "机器人",
-    icon: "robot",
-    activeIcon: "robot",
-    path: "/pages/robot/index",
-    badge: 0,
-  },
-  {
-    id: "profile",
-    text: "我的",
-    icon: "account",
-    activeIcon: "account-fill",
-    path: "/pages/profile/index",
-    badge: 0,
-  },
-]);
+const notificationCount = ref(0);
+
+// 事件处理
+const handleUserClick = (user) => {
+  uni.showToast({
+    title: '查看用户资料',
+    icon: 'none'
+  })
+}
+
+const handleNotificationClick = (count) => {
+  uni.showToast({
+    title: `有${count}条新通知`,
+    icon: 'none'
+  })
+}
+
+const handleSettingsClick = () => {
+  uni.showToast({
+    title: '打开设置',
+    icon: 'none'
+  })
+}
+
+const handleTabChange = ({ item, index }) => {
+  console.log('切换到:', item.text, '索引:', index)
+}
 </script>
 
 <style lang="scss" scoped>
-.profile-page {
-  min-height: 100vh;
-  background-color: #f5f7fa;
-  display: flex;
-  flex-direction: column;
-}
-
-.main-content {
-  flex: 1;
+.profile-content {
   padding: 40rpx;
-  padding-bottom: 160rpx;
+  min-height: calc(100vh - 200rpx);
   display: flex;
   align-items: center;
   justify-content: center;

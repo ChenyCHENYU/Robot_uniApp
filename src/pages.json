@@ -3,7 +3,8 @@
     "autoscan": true,
     "custom": {
       "^u-(.*)": "uview-plus/components/u-$1/u-$1.vue",
-      "^up-(.*)": "uview-plus/components/u-$1/u-$1.vue"
+      "^up-(.*)": "uview-plus/components/u-$1/u-$1.vue",
+      "^C_(.*)": "@/components/global/C_$1/index.vue"
     }
   },
   "pages": [
@@ -17,32 +18,39 @@
     {
       "path": "pages/index/index",
       "style": {
-        "navigationBarTitleText": "Robot App 主控台"
+        "navigationBarTitleText": "Robot App 主控台",
+        "navigationStyle": "custom"
       }
     },
     {
       "path": "pages/chat/index",
       "style": {
-        "navigationBarTitleText": "AI对话"
+        "navigationBarTitleText": "AI对话",
+        "navigationStyle": "custom"
       }
     },
     {
       "path": "pages/robot/index",
       "style": {
-        "navigationBarTitleText": "机器人管理"
+        "navigationBarTitleText": "机器人管理",
+        "navigationStyle": "custom"
       }
     },
     {
       "path": "pages/profile/index",
       "style": {
-        "navigationBarTitleText": "个人中心"
+        "navigationBarTitleText": "个人中心",
+        "navigationStyle": "custom"
       }
     }
   ],
   "globalStyle": {
     "navigationBarTextStyle": "black",
-    "navigationBarTitleText": "uni-app",
+    "navigationBarTitleText": "Robot App",
     "navigationBarBackgroundColor": "#F8F8F8",
-    "backgroundColor": "#F8F8F8"
+    "backgroundColor": "#F8F8F8",
+    "app-plus": {
+      "titleNView": false
+    }
   }
 }

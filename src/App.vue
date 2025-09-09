@@ -63,7 +63,7 @@ export default {
 
 /* 全局样式 */
 page {
-  background-color: #f5f7fa;
+  background-color: #ffffff;
 }
 
 .app {

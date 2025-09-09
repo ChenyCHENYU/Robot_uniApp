@@ -1,16 +1,13 @@
 <template>
-  <view class="dashboard">
-    <!-- 头部组件 -->
-    <C_Header 
-      default-nickname="CHENY"
-      :notification-count="notificationCount"
-      @user-click="handleUserClick"
-      @notification-click="handleNotificationClick"
-      @settings-click="handleSettingsClick"
-    />
-    
-    <!-- 主要内容区域 -->
-    <view class="main-content">
+  <C_Layout
+    :notification-count="notificationCount"
+    @user-click="handleUserClick"
+    @notification-click="handleNotificationClick"
+    @settings-click="handleSettingsClick"
+    @tab-change="handleTabChange"
+  >
+    <!-- 页面主要内容 - 移除了原来的Header和Tabbar -->
+    <view class="dashboard">
       <!-- 数据统计卡片 -->
       <view class="stats-section">
         <view class="stats-grid">
@@ -67,15 +64,7 @@
         </view>
       </view>
     </view>
-    
-    <!-- 底部导航 -->
-    <C_Tabbar 
-      v-model="currentTab"
-      :tab-list="tabList"
-      :fixed="true"
-      @change="handleTabChange"
-    />
-  </view>
+  </C_Layout>
 </template>
 
 <script setup>
@@ -85,53 +74,10 @@ import { useUserStore } from '@/stores/modules/user'
 const userStore = useUserStore()
 
 // 响应式数据
-const currentTab = ref(0)
 const notificationCount = ref(3)
-
-// Tabbar 配置
-const tabList = ref([
-  {
-    id: 'home',
-    text: '首页',
-    icon: 'home',
-    activeIcon: 'home-fill',
-    path: '/pages/index/index',
-    badge: 0
-  },
-  {
-    id: 'chat',
-    text: 'AI对话',
-    icon: 'chat',
-    activeIcon: 'chat-fill', 
-    path: '/pages/chat/index',
-    badge: 2
-  },
-  {
-    id: 'robot',
-    text: '机器人',
-    icon: 'robot',
-    activeIcon: 'robot',
-    path: '/pages/robot/index',
-    badge: 0
-  },
-  {
-    id: 'profile',
-    text: '我的',
-    icon: 'account',
-    activeIcon: 'account-fill',
-    path: '/pages/profile/index',
-    badge: 0
-  }
-])
 
 // 计算属性
 const userInfo = computed(() => userStore.userInfo || {})
-const greeting = computed(() => {
-  const hour = new Date().getHours()
-  if (hour < 12) return '早上好'
-  if (hour < 18) return '下午好'
-  return '晚上好'
-})
 
 // 数据统计
 const stats = ref([
@@ -211,8 +157,7 @@ const recentActivities = ref([
   }
 ])
 
-// 方法
-// 头部组件事件
+// 事件处理方法
 const handleUserClick = (userInfo) => {
   uni.showToast({
     title: '查看用户资料',
@@ -251,12 +196,10 @@ const handleSettingsClick = () => {
   })
 }
 
-// Tabbar 事件
 const handleTabChange = ({ item, index }) => {
   console.log('切换到:', item.text, '索引:', index)
 }
 
-// 原有方法
 const handleStatClick = (stat) => {
   uni.showToast({
     title: `查看${stat.label}详情`,
@@ -303,16 +246,12 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .dashboard {
-  min-height: 100vh;
-  background-color: #f5f7fa;
-  display: flex;
-  flex-direction: column;
+  background-color: transparent; // Layout组件会处理背景
+  min-height: auto; // 让Layout处理高度
+  // 移除原来的 display: flex; flex-direction: column; 等布局样式
 }
 
-.main-content {
-  flex: 1;
-  padding-bottom: 140rpx; /* 根据优化后的tabbar高度调整底部留白 */
-}
+// 移除原来的 .main-content 样式，因为Layout会处理
 
 .stats-section {
   padding: 40rpx;
@@ -521,17 +460,6 @@ onMounted(() => {
         }
       }
     }
-  }
-}
-
-@keyframes pulse {
-  0%, 100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1.2);
-    opacity: 0.7;
   }
 }
 </style>
