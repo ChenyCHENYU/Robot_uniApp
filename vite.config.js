@@ -1,21 +1,18 @@
-/*
- * @Author: ChenYu ycyplus@gmail.com
- * @Date: 2025-09-09 15:22:30
- * @LastEditors: ChenYu ycyplus@gmail.com
- * @LastEditTime: 2025-09-09 15:40:26
- * @FilePath: \Robot_uniApp\vite.config.js
- * @Description: 
- * Copyright (c) 2025 by CHENY, All Rights Reserved 😎. 
- */
 import { defineConfig, loadEnv } from "vite";
 import uni from "@dcloudio/vite-plugin-uni";
 
-export default defineConfig(({ mode }) => {
+export default defineConfig(async ({ mode }) => {
+  // 动态导入 UnoCSS，避免 ESM 模块问题
+  const { default: UnoCSS } = await import("unocss/vite");
+
   // 加载环境变量
   const env = loadEnv(mode, process.cwd(), "");
 
   return {
-    plugins: [uni()],
+    plugins: [
+      UnoCSS(), // 添加 UnoCSS 插件
+      uni(),
+    ],
     css: {
       preprocessorOptions: {
         scss: {

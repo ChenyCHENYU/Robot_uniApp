@@ -8,7 +8,6 @@
     "dev:h5": "uni --mode development -p h5",
     "dev:wx": "uni --mode development -p mp-weixin",
     "dev:app": "uni --mode development -p app",
-    
     "// 生产构建": "",
     "build": "uni build --mode production -p h5",
     "build:h5": "uni build --mode production -p h5",
@@ -16,12 +15,10 @@
     "build:app": "uni build --mode production -p app",
     "build:app-android": "uni build --mode production -p app-android",
     "build:app-ios": "uni build --mode production -p app-ios",
-    
     "// 测试环境": "",
     "test": "uni --mode test -p h5",
     "test:wx": "uni --mode test -p mp-weixin",
     "test:app": "uni --mode test -p app",
-    
     "// 预发布环境": "",
     "staging": "uni --mode staging -p h5",
     "staging:wx": "uni --mode staging -p mp-weixin",
@@ -46,6 +43,11 @@
     "@dcloudio/uni-stacktracey": "3.0.0-4070620250821001",
     "@dcloudio/vite-plugin-uni": "3.0.0-4070620250821001",
     "@uni-helper/unocss-preset-uni": "^0.2.11",
+    "@unocss/preset-attributify": "^66.5.1",
+    "@unocss/preset-icons": "^66.5.1",
+    "@unocss/preset-uno": "^66.5.1",
+    "@unocss/preset-wind3": "^66.5.1",
+    "@unocss/transformer-directives": "^66.5.1",
     "@vue/runtime-core": "^3.4.21",
     "sass": "^1.92.1",
     "unocss": "^66.5.1",

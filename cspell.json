@@ -6,11 +6,13 @@
   "language": "en",
   // words - list of words to be always considered correct
   "words": [
+    "Attributify",
     "autoscan",
     "CHENY",
     "dcloudio",
     "easycom",
     "persistedstate",
+    "unocss",
     "uview",
     "VCONSOLE",
     "VITE",

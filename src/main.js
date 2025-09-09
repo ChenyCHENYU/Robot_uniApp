@@ -4,6 +4,7 @@ import { initRouter } from "./utils/router";
 import { installDirectives } from "./directives";
 import App from "./App.vue";
 import uviewPlus from "uview-plus";
+import "virtual:uno.css";
 
 export function createApp() {
   const app = createSSRApp(App);
