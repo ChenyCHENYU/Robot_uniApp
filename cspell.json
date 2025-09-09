@@ -11,7 +11,8 @@
     "dcloudio",
     "easycom",
     "persistedstate",
-    "uview"
+    "uview",
+    "Wechat"
   ],
   "ignorePaths": [
     "README.md",

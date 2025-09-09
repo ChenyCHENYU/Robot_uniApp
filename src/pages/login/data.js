@@ -1,0 +1,157 @@
+/**
+ * @Author: ChenYu ycyplus@gmail.com
+ * @Date: 2025-09-09
+ * @LastEditors: ChenYu ycyplus@gmail.com
+ * @LastEditTime: 2025-09-09
+ * @FilePath: \Robot_uniApp\src\pages\login\data.js
+ * @Description: 登录页面数据和逻辑
+ * Copyright (c) 2025 by CHENY, All Rights Reserved 😎.
+ */
+
+import { ref, reactive } from "vue";
+import { useUserStore } from "@/stores/modules/user";
+
+export function useLoginData() {
+  const userStore = useUserStore();
+  const loading = ref(false);
+  const rememberLogin = ref(["remember"]);
+
+  // 表单数据
+  const form = reactive({
+    username: "admin",
+    password: "123456",
+  });
+
+  // 表单验证规则
+  const rules = {
+    username: [
+      { required: true, message: "请输入用户名", trigger: "blur" },
+      {
+        min: 3,
+        max: 20,
+        message: "用户名长度在 3 到 20 个字符",
+        trigger: "blur",
+      },
+    ],
+    password: [
+      { required: true, message: "请输入密码", trigger: "blur" },
+      {
+        min: 6,
+        max: 20,
+        message: "密码长度在 6 到 20 个字符",
+        trigger: "blur",
+      },
+    ],
+  };
+
+  // 样式配置
+  const glassInputStyle = {
+    backgroundColor: "transparent",
+    color: "#ffffff",
+    fontSize: "32rpx",
+  };
+
+  const glassButtonStyle = {
+    background:
+      "linear-gradient(135deg, rgba(0, 212, 255, 0.8), rgba(11, 11, 254, 0.8))",
+    border: "1rpx solid rgba(255, 255, 255, 0.2)",
+    backdropFilter: "blur(20rpx)",
+    height: "96rpx",
+    fontSize: "32rpx",
+    fontWeight: "bold",
+    color: "#ffffff",
+    boxShadow: "0 8rpx 32rpx rgba(0, 212, 255, 0.3)",
+  };
+
+  // 登录处理
+  const handleLogin = async () => {
+    loading.value = true;
+    try {
+      // 模拟登录API调用
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      // 模拟登录成功
+      const mockUserData = {
+        token: "mock_token_" + Date.now(),
+        userInfo: {
+          id: 1,
+          username: form.username,
+          nickname: "智能用户",
+          avatar: "/static/avatar.png",
+          email: "user@example.com",
+        },
+        permissions: ["user:read", "user:write"],
+        roles: ["user"],
+      };
+
+      // 更新store
+      userStore.token = mockUserData.token;
+      userStore.userInfo = mockUserData.userInfo;
+      userStore.permissions = mockUserData.permissions;
+      userStore.roles = mockUserData.roles;
+      userStore.isLoggedIn = true;
+      userStore.loginTime = new Date().toISOString();
+
+      uni.showToast({
+        title: "登录成功！",
+        icon: "success",
+      });
+
+      // 延迟跳转到主页
+      setTimeout(() => {
+        uni.reLaunch({
+          url: "/pages/index/index",
+        });
+      }, 1500);
+    } catch (error) {
+      uni.showToast({
+        title: "登录失败，请重试",
+        icon: "none",
+      });
+      console.error("登录失败:", error);
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  // 忘记密码
+  const handleForgotPassword = () => {
+    uni.showToast({
+      title: "请联系管理员重置密码",
+      icon: "none",
+      duration: 2000,
+    });
+  };
+
+  // 微信登录
+  const handleWechatLogin = () => {
+    uni.showToast({
+      title: "微信登录功能开发中",
+      icon: "none",
+    });
+  };
+
+  // 快速体验
+  const handleQuickLogin = async () => {
+    // 直接使用游客账户登录
+    form.username = "guest";
+    form.password = "123456";
+    await handleLogin();
+  };
+
+  return {
+    // 响应式数据
+    loading,
+    rememberLogin,
+    form,
+    rules,
+    glassInputStyle,
+    glassButtonStyle,
+
+    // 方法
+    handleLogin,
+    handleForgotPassword,
+    handleWechatLogin,
+    handleQuickLogin,
+  };
+}

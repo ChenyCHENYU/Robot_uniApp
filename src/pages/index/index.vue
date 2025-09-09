@@ -292,7 +292,7 @@ onMounted(() => {
   // 检查登录状态
   if (!userStore.isLoggedIn) {
     uni.reLaunch({
-      url: '/pages/index/login/index'
+      url: '/pages/login/index'
     })
     return
   }
