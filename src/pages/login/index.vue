@@ -2,7 +2,7 @@
  * @Author: ChenYu ycyplus@gmail.com
  * @Date: 2025-09-08 15:34:18
  * @LastEditors: ChenYu ycyplus@gmail.com
- * @LastEditTime: 2025-09-09
+ * @LastEditTime: 2025-09-09 14:03:46
  * @FilePath: \Robot_uniApp\src\pages\login\index.vue
  * @Description: 登录页面 - 主模板文件
  * Copyright (c) 2025 by CHENY, All Rights Reserved 😎. 
@@ -27,12 +27,25 @@
       <view class="logo-section">
         <view class="logo-wrapper">
           <view class="logo-bg">
-            <u-icon name="robot" size="80" color="#ffffff"></u-icon>
+            <!-- <u-icon name="R" size="80" color="#ffffff"></u-icon> -->
+            <video
+              src="/static/videos/logo.webm"
+              style="width: 140rpx; height: 140rpx"
+              autoplay
+              loop
+              muted
+              :show-play-btn="false"
+              :show-center-play-btn="false"
+              :show-progress="false"
+              :show-fullscreen-btn="false"
+              :enable-progress-gesture="false"
+              object-fit="cover"
+            ></video>
           </view>
         </view>
         <text class="app-name">Robot App</text>
-        <text class="app-desc">智能机器人移动端平台</text>
-        <text class="app-version">让你的体验更加丝滑</text>
+        <text class="app-desc">机器人移动跨端应用框架</text>
+        <text class="app-version">让你的开发和体验更加丝滑</text>
       </view>
 
       <!-- 玻璃风登录卡片 -->
@@ -84,16 +97,16 @@
         </view>
 
         <!-- 记住登录和忘记密码 -->
-          <view class="form-options">
-            <u-checkbox-group v-model="rememberLogin">
-              <u-checkbox name="remember" activeColor="#00D4FF" size="16">
-                <text class="option-text">记住登录</text>
-              </u-checkbox>
-            </u-checkbox-group>
-            <text class="forgot-link" @click="handleForgotPassword"
-              >忘记密码？</text
-            >
-          </view>
+        <view class="form-options">
+          <u-checkbox-group v-model="rememberLogin">
+            <u-checkbox name="remember" activeColor="#00D4FF" size="16">
+              <text class="option-text">记住登录</text>
+            </u-checkbox>
+          </u-checkbox-group>
+          <text class="forgot-link" @click="handleForgotPassword"
+            >忘记密码？</text
+          >
+        </view>
 
         <!-- 登录按钮 -->
         <view class="login-btn-wrapper">
@@ -155,7 +168,7 @@ const {
   handleForgotPassword,
   handleWechatLogin,
   handleQuickLogin,
-  handleFieldBlur
+  handleFieldBlur,
 } = useLoginData();
 </script>
 

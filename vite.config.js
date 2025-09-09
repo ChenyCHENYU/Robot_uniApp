@@ -2,7 +2,7 @@
  * @Author: ChenYu ycyplus@gmail.com
  * @Date: 2025-09-08 11:50:51
  * @LastEditors: ChenYu ycyplus@gmail.com
- * @LastEditTime: 2025-09-09 11:24:44
+ * @LastEditTime: 2025-09-09 11:42:56
  * @FilePath: \Robot_uniApp\vite.config.js
  * @Description:
  * Copyright (c) 2025 by CHENY, All Rights Reserved 😎.
@@ -34,7 +34,6 @@ export default defineConfig(({ mode }) => {
     },
     // 开发服务器配置
     server: {
-      host: "1.9.9.9",
       port: 1999,
       proxy:
         env.VITE_ENV === "development"
