@@ -12,7 +12,13 @@ export const useUserStore = defineStore("user", {
   }),
 
   getters: {
-    avatar: (state) => state.userInfo?.avatar || "/static/robot-avatar.png",
+    // 简化头像逻辑
+    avatar: (state) => {
+      const userAvatar = state.userInfo?.avatar;
+      return userAvatar && userAvatar !== "/static/default-avatar.png"
+        ? userAvatar
+        : "/static/robot-avatar.png";
+    },
     nickname: (state) => state.userInfo?.nickname || "未设置昵称",
     hasPermission: (state) => (permission) =>
       state.permissions.includes(permission),

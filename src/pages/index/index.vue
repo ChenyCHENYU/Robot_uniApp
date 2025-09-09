@@ -283,134 +283,74 @@ const quickCommands = ref([
   }
 ])
 
-// 事件处理
-const handleUserClick = (user) => {
-  uni.showToast({
-    title: '查看用户资料',
-    icon: 'none'
-  })
-}
+// 工具函数 - 提前定义
+const showTodo = (message) => {
+  uni.showToast({ title: message, icon: 'none' });
+};
 
-const handleNotificationClick = (count) => {
-  uni.showToast({
-    title: `有${count}条新通知`,
-    icon: 'none'
-  })
-}
-
-const handleSettingsClick = () => {
-  // 显示设置菜单
-  uni.showActionSheet({
-    itemList: ['个人设置', '主题切换', '关于应用', '退出登录', '清除缓存'],
-    success: (res) => {
-      const { tapIndex } = res
-      switch (tapIndex) {
-        case 0:
-          // 个人设置
-          uni.showToast({
-            title: '个人设置功能开发中',
-            icon: 'none'
-          })
-          break
-        case 1:
-          // 主题切换
-          uni.showToast({
-            title: '主题切换功能开发中',
-            icon: 'none'
-          })
-          break
-        case 2:
-          // 关于应用
-          uni.showModal({
-            title: 'Robot UniApp',
-            content: `版本: v${version.value}\n企业级跨平台应用开发框架\n基于 Vue3 + UniApp`,
-            showCancel: false,
-            confirmText: '确定'
-          })
-          break
-        case 3:
-          // 退出登录
-          handleLogout()
-          break
-        case 4:
-          // 清除缓存数据
-          handleClearCache()
-          break
-      }
-    }
-  })
-}
-
-const handleTabChange = ({ item, index }) => {
-  console.log('切换到:', item.text, '索引:', index)
-}
-
-// 清除缓存处理
-const handleClearCache = () => {
+const showAbout = () => {
   uni.showModal({
-    title: '提示',
-    content: '确定要清除所有缓存数据吗？清除后需要重新登录。',
-    success: (res) => {
-      if (res.confirm) {
-        try {
-          // 清除用户数据
-          userStore.clearUserInfo()
-          
-          // 清除所有本地存储
-          uni.clearStorageSync()
-          
-          uni.showToast({
-            title: '缓存已清除',
-            icon: 'success'
-          })
-          
-          // 延迟跳转到登录页
-          setTimeout(() => {
-            uni.reLaunch({ url: '/pages/login/index' })
-          }, 1500)
-        } catch (error) {
-          uni.showToast({
-            title: '清除失败，请重试',
-            icon: 'error'
-          })
-          console.error('清除缓存错误:', error)
-        }
-      }
-    }
-  })
-}
+    title: 'Robot UniApp',
+    content: `版本: v${version.value}\n企业级跨平台应用开发框架\n基于 Vue3 + UniApp`,
+    showCancel: false,
+    confirmText: '确定'
+  });
+};
 
-// 退出登录处理
+// 退出登录 - 优雅简洁
 const handleLogout = () => {
   uni.showModal({
     title: '提示',
     content: '确定要退出登录吗？',
-    success: (res) => {
-      if (res.confirm) {
-        // 显示Loading
-        uni.showLoading({
-          title: '退出中...'
+    success: ({ confirm }) => {
+      if (!confirm) return;
+      
+      uni.showLoading({ title: '退出中...' });
+      
+      userStore.logout()
+        .then(() => {
+          uni.showToast({ title: '退出成功', icon: 'success' });
         })
-        
-        // 执行退出登录
-        userStore.logout().then(() => {
-          uni.hideLoading()
-          uni.showToast({
-            title: '退出成功',
-            icon: 'success'
-          })
-        }).catch((error) => {
-          uni.hideLoading()
-          uni.showToast({
-            title: '退出失败，请重试',
-            icon: 'error'
-          })
-          console.error('退出登录错误:', error)
+        .catch((error) => {
+          console.error('退出登录错误:', error);
+          uni.showToast({ title: '退出失败，请重试', icon: 'error' });
         })
-      }
+        .finally(() => {
+          uni.hideLoading();
+        });
     }
-  })
-}
+  });
+};
+
+// 设置菜单配置
+const SETTINGS_MENU = [
+  { id: 'profile', label: '个人设置', handler: () => showTodo('个人设置功能开发中') },
+  { id: 'theme', label: '主题切换', handler: () => showTodo('主题切换功能开发中') },
+  { id: 'about', label: '关于应用', handler: showAbout },
+  { id: 'logout', label: '退出登录', handler: handleLogout }
+];
+
+// 事件处理函数
+const handleUserClick = (user) => {
+  uni.showToast({ title: '查看用户资料', icon: 'none' });
+};
+
+const handleNotificationClick = (count) => {
+  uni.showToast({ title: `有${count}条新通知`, icon: 'none' });
+};
+
+const handleSettingsClick = () => {
+  uni.showActionSheet({
+    itemList: SETTINGS_MENU.map(item => item.label),
+    success: ({ tapIndex }) => {
+      SETTINGS_MENU[tapIndex]?.handler();
+    }
+  });
+};
+
+const handleTabChange = ({ item, index }) => {
+  console.log('切换到:', item.text, '索引:', index);
+};
 
 // 原有事件处理
 const handleStart = () => {
@@ -431,16 +371,43 @@ const handleDocs = () => {
 <style lang="scss" scoped>
 .homepage {
   // 移除原有的最小高度和背景，因为C_Layout会处理这些
-  background: linear-gradient(180deg, #f8faff 0%, #f1f5f9 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(248, 250, 255, 0.8) 0%,
+    rgba(241, 245, 249, 0.9) 30%,
+    #f1f5f9 100%
+  );
+  
+  // 添加顶部过渡区域
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 80rpx;
+    background: linear-gradient(
+      180deg,
+      rgba(0, 212, 255, 0.08) 0%,
+      rgba(0, 153, 204, 0.04) 50%,
+      transparent 100%
+    );
+    z-index: 1;
+  }
+  
+  position: relative;
 }
 
-/* 顶部横幅 */
+/* 顶部横幅 - 重新设计 */
 .hero-section {
-  padding: 60rpx 40rpx;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 40rpx 40rpx 80rpx;
   position: relative;
-  overflow: hidden;
+  z-index: 2;
   
+  // 移除原有的重复背景
+  // background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  
+  // 添加精致的光效
   &::before {
     content: '';
     position: absolute;
@@ -448,8 +415,18 @@ const handleDocs = () => {
     left: 0;
     right: 0;
     bottom: 0;
-    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/></svg>');
-    background-size: 100rpx 100rpx;
+    background: 
+      radial-gradient(
+        ellipse at 20% 30%,
+        rgba(0, 212, 255, 0.03) 0%,
+        transparent 50%
+      ),
+      radial-gradient(
+        ellipse at 80% 70%,
+        rgba(102, 126, 234, 0.02) 0%,
+        transparent 50%
+      );
+    z-index: -1;
   }
   
   .hero-content {
@@ -464,14 +441,16 @@ const handleDocs = () => {
     .project-badge {
       display: inline-block;
       padding: 16rpx 32rpx;
-      background: rgba(255, 255, 255, 0.2);
+      background: linear-gradient(135deg, rgba(0, 212, 255, 0.1) 0%, rgba(102, 126, 234, 0.1) 100%);
+      border: 1rpx solid rgba(0, 212, 255, 0.2);
       border-radius: 50rpx;
       margin-bottom: 32rpx;
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(10rpx);
       
       .badge-text {
-        color: #fff;
+        color: #0099cc;
         font-size: 24rpx;
+        font-weight: 600;
       }
     }
     
@@ -480,21 +459,26 @@ const handleDocs = () => {
       
       .title-main {
         display: block;
-        color: #fff;
+        color: #1f2937;
         font-size: 56rpx;
         font-weight: bold;
         margin-bottom: 16rpx;
+        background: linear-gradient(135deg, #0099cc 0%, #667eea 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
       }
       
       .title-desc {
         display: block;
-        color: rgba(255, 255, 255, 0.9);
+        color: #6b7280;
         font-size: 32rpx;
+        font-weight: 500;
       }
     }
     
     .project-intro {
-      color: rgba(255, 255, 255, 0.8);
+      color: #4b5563;
       font-size: 28rpx;
       line-height: 1.6;
       padding: 0 20rpx;
@@ -510,9 +494,17 @@ const handleDocs = () => {
       flex-direction: column;
       align-items: center;
       padding: 24rpx;
-      background: rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.7);
+      border: 1rpx solid rgba(0, 212, 255, 0.1);
       border-radius: 20rpx;
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(10rpx);
+      box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+      
+      &:hover {
+        transform: translateY(-4rpx);
+        box-shadow: 0 8rpx 30rpx rgba(0, 212, 255, 0.15);
+      }
       
       .platform-icon {
         font-size: 40rpx;
@@ -520,8 +512,9 @@ const handleDocs = () => {
       }
       
       .platform-name {
-        color: #fff;
+        color: #374151;
         font-size: 24rpx;
+        font-weight: 500;
       }
     }
   }
@@ -549,12 +542,31 @@ const handleDocs = () => {
 
 /* 核心特色 */
 .features-section {
-  padding: 80rpx 40rpx;
+  padding: 60rpx 40rpx 80rpx;
+  position: relative;
+  
+  // 添加顶部过渡
+  &::before {
+    content: '';
+    position: absolute;
+    top: -40rpx;
+    left: 0;
+    right: 0;
+    height: 80rpx;
+    background: linear-gradient(
+      180deg,
+      rgba(248, 250, 255, 0.5) 0%,
+      #ffffff 100%
+    );
+    z-index: 1;
+  }
   
   .features-grid {
     display: grid;
     grid-template-columns: 1fr;
     gap: 32rpx;
+    position: relative;
+    z-index: 2;
     
     .feature-card {
       display: flex;
@@ -563,6 +575,12 @@ const handleDocs = () => {
       background: #fff;
       border-radius: 24rpx;
       box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.08);
+      transition: all 0.3s ease;
+      
+      &:hover {
+        transform: translateY(-4rpx);
+        box-shadow: 0 12rpx 40rpx rgba(0, 0, 0, 0.12);
+      }
       
       .feature-icon-wrap {
         width: 80rpx;

@@ -15,11 +15,26 @@ export function useHeaderData(props, emit) {
   const appStore = useAppStore();
 
   // 响应式数据
-  const aiStatus = ref("online"); // online, offline, busy
+  const aiStatus = ref("online");
+  const avatarError = ref(false);
 
   // 计算属性
   const userInfo = computed(() => userStore.userInfo || {});
   const safeAreaTop = computed(() => appStore.safeArea.top || 44);
+
+  // 头像显示逻辑 - 简洁优雅
+  const avatarSrc = computed(() => {
+    if (avatarError.value) {
+      return props.defaultAvatar;
+    }
+
+    const userAvatar = userInfo.value?.avatar;
+    if (!userAvatar || userAvatar === "/static/default-avatar.png") {
+      return props.defaultAvatar;
+    }
+
+    return userAvatar;
+  });
 
   const greeting = computed(() => {
     const hour = new Date().getHours();
@@ -52,6 +67,10 @@ export function useHeaderData(props, emit) {
     emit("settingsClick");
   };
 
+  const handleAvatarError = () => {
+    avatarError.value = true;
+  };
+
   const setAiStatus = (status) => {
     aiStatus.value = status;
   };
@@ -59,10 +78,12 @@ export function useHeaderData(props, emit) {
   return {
     // 响应式数据
     aiStatus,
+    avatarError,
 
     // 计算属性
     userInfo,
     safeAreaTop,
+    avatarSrc,
     greeting,
     statusClass,
     statusText,
@@ -71,6 +92,7 @@ export function useHeaderData(props, emit) {
     handleUserClick,
     handleNotification,
     handleSettings,
+    handleAvatarError,
     setAiStatus,
   };
 }

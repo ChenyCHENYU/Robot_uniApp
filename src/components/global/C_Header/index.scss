@@ -10,6 +10,22 @@
   z-index: 100;
   overflow: hidden;
   min-height: 200rpx;
+  // 添加底部过渡效果
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -60rpx;
+      left: 0;
+      right: 0;
+      height: 60rpx;
+      background: linear-gradient(180deg,
+          rgba(0, 212, 255, 0.15) 0%,
+          rgba(0, 153, 204, 0.08) 30%,
+          rgba(248, 250, 255, 0.4) 70%,
+          transparent 100%);
+      z-index: 10;
+      border-radius: 0 0 40rpx 40rpx;
+    }
 }
 
 .background-layers {
@@ -27,9 +43,25 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, #00d4ff 0%, #0099cc 50%, #006699 100%);
+  background: linear-gradient(135deg,
+        #00d4ff 0%,
+        #0099cc 40%,
+        #006699 80%,
+        rgba(0, 102, 153, 0.95) 100%);
   background-size: 300% 300%;
   animation: gradientShift 8s ease-in-out infinite;
+  // 添加微妙的边缘渐变
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 40rpx;
+      background: linear-gradient(180deg,
+          transparent 0%,
+          rgba(248, 250, 255, 0.1) 100%);
+    }
 }
 
 .pattern-overlay {

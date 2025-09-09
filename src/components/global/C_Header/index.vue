@@ -22,8 +22,9 @@
         <view class="avatar-container">
           <image
             class="user-avatar"
-            :src="(userInfo.avatar && userInfo.avatar !== '/static/default-avatar.png') ? userInfo.avatar : defaultAvatar"
+            :src="avatarSrc"
             mode="aspectFill"
+            @error="handleAvatarError"
           />
           <view class="online-indicator" v-if="showStatus">
             <view class="pulse-dot"></view>
@@ -89,10 +90,12 @@ const emit = defineEmits(headerEmits);
 const {
   // 响应式数据
   aiStatus,
+  avatarError,
 
   // 计算属性
   userInfo,
   safeAreaTop,
+  avatarSrc,
   greeting,
   statusClass,
   statusText,
@@ -101,6 +104,7 @@ const {
   handleUserClick,
   handleNotification,
   handleSettings,
+  handleAvatarError,
   setAiStatus,
 } = useHeaderData(props, emit);
 

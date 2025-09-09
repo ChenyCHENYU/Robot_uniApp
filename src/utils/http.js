@@ -2,9 +2,13 @@ import { useUserStore } from "@/stores";
 
 class Http {
   constructor() {
+    // 开发环境使用本地mock，生产环境配置实际API
     this.baseURL =
-      process.env.UNI_APP_API_BASE_URL || "https://api.example.com";
-    this.timeout = 30000;
+      process.env.UNI_APP_API_BASE_URL ||
+      (process.env.NODE_ENV === "development"
+        ? "http://localhost:3000/api"
+        : "https://api.example.com");
+    this.timeout = 10000; // 缩短超时时间
     this.loadingCount = 0;
   }
 
