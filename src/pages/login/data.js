@@ -24,7 +24,7 @@ export function useLoginData() {
 
   // 表单数据
   const form = reactive({
-    username: "admin",
+    username: "CHENY",
     password: "123456",
   });
 

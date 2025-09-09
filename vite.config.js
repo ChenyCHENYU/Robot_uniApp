@@ -1,11 +1,11 @@
 /*
  * @Author: ChenYu ycyplus@gmail.com
- * @Date: 2025-09-08 11:50:51
+ * @Date: 2025-09-09 15:22:30
  * @LastEditors: ChenYu ycyplus@gmail.com
- * @LastEditTime: 2025-09-09 11:42:56
+ * @LastEditTime: 2025-09-09 15:40:26
  * @FilePath: \Robot_uniApp\vite.config.js
- * @Description:
- * Copyright (c) 2025 by CHENY, All Rights Reserved 😎.
+ * @Description: 
+ * Copyright (c) 2025 by CHENY, All Rights Reserved 😎. 
  */
 import { defineConfig, loadEnv } from "vite";
 import uni from "@dcloudio/vite-plugin-uni";
