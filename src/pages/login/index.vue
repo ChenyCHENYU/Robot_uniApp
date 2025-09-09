@@ -42,10 +42,10 @@
           <text class="card-subtitle">请使用您的账户登录</text>
         </view>
 
-        <u-form :model="form" ref="formRef" :rules="rules">
+        <view class="form-wrapper">
           <!-- 用户名输入框 -->
           <view class="input-group">
-            <view class="input-wrapper">
+            <view class="input-wrapper" :class="{'input-error': errors.username}">
               <u-icon
                 name="account"
                 size="20"
@@ -57,13 +57,16 @@
                 border="none"
                 :customStyle="glassInputStyle"
                 placeholderStyle="color: rgba(255,255,255,0.6)"
+                @blur="validateField('username')"
+                @input="clearFieldError('username')"
               />
             </view>
+            <view v-if="errors.username" class="error-text">{{ errors.username }}</view>
           </view>
 
           <!-- 密码输入框 -->
           <view class="input-group">
-            <view class="input-wrapper">
+            <view class="input-wrapper" :class="{'input-error': errors.password}">
               <u-icon
                 name="lock"
                 size="20"
@@ -76,11 +79,15 @@
                 border="none"
                 :customStyle="glassInputStyle"
                 placeholderStyle="color: rgba(255,255,255,0.6)"
+                @blur="validateField('password')"
+                @input="clearFieldError('password')"
               />
             </view>
+            <view v-if="errors.password" class="error-text">{{ errors.password }}</view>
           </view>
+        </view>
 
-          <!-- 记住登录和忘记密码 -->
+        <!-- 记住登录和忘记密码 -->
           <view class="form-options">
             <u-checkbox-group v-model="rememberLogin">
               <u-checkbox name="remember" activeColor="#00D4FF" size="16">
@@ -92,20 +99,19 @@
             >
           </view>
 
-          <!-- 登录按钮 -->
-          <view class="login-btn-wrapper">
-            <u-button
-              @click="handleLogin"
-              :loading="loading"
-              :customStyle="glassButtonStyle"
-              shape="circle"
-            >
-              <text class="btn-text">{{
-                loading ? "登录中..." : "立即登录"
-              }}</text>
-            </u-button>
-          </view>
-        </u-form>
+        <!-- 登录按钮 -->
+        <view class="login-btn-wrapper">
+          <u-button
+            @click="handleLogin"
+            :loading="loading"
+            :customStyle="glassButtonStyle"
+            shape="circle"
+          >
+            <text class="btn-text">{{
+              loading ? "登录中..." : "立即登录"
+            }}</text>
+          </u-button>
+        </view>
 
         <!-- 分割线 -->
         <view class="divider">
@@ -145,7 +151,8 @@ const {
   loading,
   rememberLogin,
   form,
-  rules,
+  errors,
+  formRef,
   glassInputStyle,
   glassButtonStyle,
 
@@ -154,6 +161,11 @@ const {
   handleForgotPassword,
   handleWechatLogin,
   handleQuickLogin,
+  validateForm,
+  validateField,
+  clearFieldError,
+  clearForm,
+  resetFormValidation
 } = useLoginData();
 </script>
 
