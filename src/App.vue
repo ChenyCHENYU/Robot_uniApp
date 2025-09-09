@@ -1,3 +1,12 @@
+<!--
+ * @Author: ChenYu ycyplus@gmail.com
+ * @Date: 2025-09-08 11:50:51
+ * @LastEditors: ChenYu ycyplus@gmail.com
+ * @LastEditTime: 2025-09-09 11:02:43
+ * @FilePath: \Robot_uniApp\src\App.vue
+ * @Description: 主应用组件
+ * Copyright (c) 2025 by CHENY, All Rights Reserved 😎. 
+-->
 <template>
   <view class="app">
     <!-- 应用入口 -->
@@ -14,12 +23,10 @@ const userStore = useUserStore()
 
 // 应用启动
 onLaunch(() => {
-  console.log('App Launch')
   initApp()
 })
 
 onShow(() => {
-  console.log('App Show')
 })
 
 // 初始化应用
@@ -44,15 +51,12 @@ const initApp = async () => {
 export default {
   // uni-app 应用级生命周期
   onLaunch() {
-    console.log('App Launch')
   },
   
   onShow() {
-    console.log('App Show')
   },
   
   onHide() {
-    console.log('App Hide')
   }
 }
 </script>

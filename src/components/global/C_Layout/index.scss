@@ -17,6 +17,9 @@ $loading-backdrop-blur: 10rpx;
   // Layout类型样式
   &.layout-none {
     // 完全自定义，不添加任何样式
+    position: relative;
+      width: 100%;
+      overflow: hidden;
   }
   
   &.layout-header-only {
@@ -39,6 +42,9 @@ $loading-backdrop-blur: 10rpx;
   &.has-header {
     .layout-content {
       // Header会自动占据顶部空间
+      position: relative;
+        z-index: 1;
+        width: 100%;
     }
   }
   
@@ -153,6 +159,8 @@ $loading-backdrop-blur: 10rpx;
     .layout-content {
       // 横屏时的特殊处理
       overflow-x: hidden;
+      min-height: calc(100vh - 120rpx); // 适配横屏高度
+        width: 100%;
     }
   }
 }
@@ -183,6 +191,17 @@ $loading-backdrop-blur: 10rpx;
   .c-layout,
   .layout-content {
     transition: none;
+    animation: none;
+      transform: none;
+      will-change: auto;
+    }
+    
+    // 禁用所有动画效果
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      transform: none !important;
   }
 }
 
