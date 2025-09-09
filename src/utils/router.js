@@ -8,7 +8,30 @@
  * Copyright (c) 2025 by CHENY, All Rights Reserved 😎.
  */
 
-import { useUserStore } from "@/stores";
+// 使用依赖注入模式，避免循环引用
+let userStoreInstance = null;
+
+// 设置 store 实例（由 main.js 在初始化后调用）
+export function setUserStore(store) {
+  userStoreInstance = store;
+}
+
+// 获取当前用户状态（纯函数，无副作用）
+function getCurrentUserState() {
+  if (!userStoreInstance) {
+    return {
+      isLoggedIn: false,
+      permissions: [],
+      roles: []
+    };
+  }
+  
+  return {
+    isLoggedIn: userStoreInstance.isLoggedIn,
+    permissions: userStoreInstance.permissions || [],
+    roles: userStoreInstance.roles || []
+  };
+}
 
 /**
  * 路由配置
@@ -43,16 +66,6 @@ export const routeConfig = {
  */
 class RouterGuard {
   constructor() {
-    this.userStore = null;
-    this.init();
-  }
-
-  init() {
-    // 延迟获取 store，避免循环引用
-    setTimeout(() => {
-      this.userStore = useUserStore();
-    }, 0);
-
     this.interceptRoutes();
   }
 
@@ -91,12 +104,10 @@ class RouterGuard {
     return url.split("?")[0];
   }
 
-  // 权限检查
+  // 权限检查（纯函数，无副作用）
   checkPermission(pagePath) {
-    if (!this.userStore) {
-      return { pass: true };
-    }
-
+    const userState = getCurrentUserState();
+    
     // 白名单直接通过
     if (routeConfig.whiteList.includes(pagePath)) {
       return { pass: true };
@@ -104,7 +115,7 @@ class RouterGuard {
 
     // 检查是否需要登录
     if (routeConfig.authPages.includes(pagePath)) {
-      if (!this.userStore.isLoggedIn) {
+      if (!userState.isLoggedIn) {
         return {
           pass: false,
           type: "auth",
@@ -117,7 +128,7 @@ class RouterGuard {
     // 检查特定权限
     const requiredPermissions = routeConfig.permissionPages[pagePath];
     if (requiredPermissions) {
-      if (!this.userStore.isLoggedIn) {
+      if (!userState.isLoggedIn) {
         return {
           pass: false,
           type: "auth",
@@ -128,8 +139,8 @@ class RouterGuard {
 
       const hasPermission = requiredPermissions.some(
         (permission) =>
-          this.userStore.hasPermission(permission) ||
-          this.userStore.hasRole(permission)
+          userState.permissions.includes(permission) ||
+          userState.roles.includes(permission)
       );
 
       if (!hasPermission) {

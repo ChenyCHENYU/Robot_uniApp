@@ -1,464 +1,726 @@
 <template>
-  <C_Layout
-    :notification-count="notificationCount"
-    @user-click="handleUserClick"
-    @notification-click="handleNotificationClick"
-    @settings-click="handleSettingsClick"
-    @tab-change="handleTabChange"
-  >
-    <!-- 页面主要内容 - 移除了原来的Header和Tabbar -->
-    <view class="dashboard">
-      <!-- 数据统计卡片 -->
-      <view class="stats-section">
-        <view class="stats-grid">
-          <view class="stat-card" v-for="stat in stats" :key="stat.id" @click="handleStatClick(stat)">
-            <view class="stat-icon" :style="{ backgroundColor: stat.color }">
-              <text class="emoji-icon">{{ stat.emoji }}</text>
-            </view>
-            <view class="stat-info">
-              <text class="stat-value">{{ stat.value }}</text>
-              <text class="stat-label">{{ stat.label }}</text>
-            </view>
-            <view class="stat-trend" :class="{ 'trend-up': stat.trend > 0, 'trend-down': stat.trend < 0 }">
-              <u-icon :name="stat.trend > 0 ? 'arrow-up' : 'arrow-down'" size="12"></u-icon>
-              <text>{{ Math.abs(stat.trend) }}%</text>
-            </view>
+  <view class="homepage">
+    <!-- 顶部横幅 -->
+    <view class="hero-section">
+      <view class="hero-content">
+        <!-- 项目标识 -->
+        <view class="project-header">
+          <view class="project-badge">
+            <text class="badge-text">企业级跨平台框架</text>
           </view>
-        </view>
-      </view>
-      
-      <!-- 快捷功能 -->
-      <view class="quick-actions">
-        <view class="section-title">
-          <text>快捷功能</text>
-        </view>
-        <view class="actions-grid">
-          <view class="action-item" v-for="action in quickActions" :key="action.id" @click="handleActionClick(action)">
-            <view class="action-icon" :style="{ backgroundColor: action.color }">
-              <text class="emoji-icon">{{ action.emoji }}</text>
-            </view>
-            <text class="action-label">{{ action.label }}</text>
+          
+          <view class="project-title">
+            <text class="title-main">Robot UniApp</text>
+            <text class="title-desc">一次开发，多端运行</text>
           </view>
+          
+          <text class="project-intro">
+            基于 Vue3 + UniApp 的企业级跨平台应用开发解决方案，支持 H5、小程序、App 多端同步开发
+          </text>
         </view>
-      </view>
-      
-      <!-- 最近动态 -->
-      <view class="recent-activities">
-        <view class="section-title">
-          <text>最近动态</text>
-          <text class="more-btn" @click="handleMoreActivities">查看更多</text>
-        </view>
-        <view class="activity-list">
-          <view class="activity-item" v-for="activity in recentActivities" :key="activity.id">
-            <view class="activity-avatar">
-              <image :src="activity.avatar" mode="aspectFill"></image>
-            </view>
-            <view class="activity-content">
-              <text class="activity-text">{{ activity.content }}</text>
-              <text class="activity-time">{{ activity.time }}</text>
-            </view>
-            <view class="activity-status" :class="activity.status">
-              <text>{{ getStatusText(activity.status) }}</text>
-            </view>
+
+        <!-- 平台支持 -->
+        <view class="platform-support">
+          <view class="platform-item" v-for="platform in supportedPlatforms" :key="platform.name">
+            <text class="platform-icon">{{ platform.icon }}</text>
+            <text class="platform-name">{{ platform.name }}</text>
           </view>
         </view>
       </view>
     </view>
-  </C_Layout>
+
+    <!-- 核心特色 -->
+    <view class="features-section">
+      <view class="section-header">
+        <text class="section-title">核心特色</text>
+        <text class="section-subtitle">企业级移动应用开发能力</text>
+      </view>
+      
+      <view class="features-grid">
+        <view class="feature-card" v-for="feature in coreFeatures" :key="feature.name">
+          <view class="feature-icon-wrap" :style="{ background: feature.gradient }">
+            <text class="feature-icon">{{ feature.icon }}</text>
+          </view>
+          <view class="feature-info">
+            <text class="feature-name">{{ feature.name }}</text>
+            <text class="feature-desc">{{ feature.desc }}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 技术栈 -->
+    <view class="tech-section">
+      <view class="section-header">
+        <text class="section-title">技术架构</text>
+        <text class="section-subtitle">现代化前端技术栈</text>
+      </view>
+      
+      <view class="tech-stack">
+        <view class="tech-category" v-for="category in techStack" :key="category.name">
+          <view class="tech-header">
+            <text class="tech-icon">{{ category.icon }}</text>
+            <text class="tech-name">{{ category.name }}</text>
+          </view>
+          <view class="tech-items">
+            <text class="tech-item" v-for="item in category.items" :key="item">{{ item }}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 开发优势 -->
+    <view class="advantages-section">
+      <view class="section-header">
+        <text class="section-title">开发优势</text>
+        <text class="section-subtitle">高效的开发体验</text>
+      </view>
+      
+      <view class="advantages-list">
+        <view class="advantage-item" v-for="(advantage, index) in advantages" :key="advantage.title">
+          <view class="advantage-number">{{ index + 1 }}</view>
+          <view class="advantage-content">
+            <text class="advantage-title">{{ advantage.title }}</text>
+            <text class="advantage-desc">{{ advantage.desc }}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 应用场景 -->
+    <view class="scenarios-section">
+      <view class="section-header">
+        <text class="section-title">应用场景</text>
+        <text class="section-subtitle">适用于多种业务需求</text>
+      </view>
+      
+      <view class="scenarios-grid">
+        <view class="scenario-card" v-for="scenario in applicationScenarios" :key="scenario.name">
+          <text class="scenario-icon">{{ scenario.icon }}</text>
+          <text class="scenario-name">{{ scenario.name }}</text>
+          <text class="scenario-desc">{{ scenario.desc }}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 快速开始 -->
+    <view class="quickstart-section">
+      <view class="quickstart-content">
+        <text class="quickstart-title">准备开始开发？</text>
+        <text class="quickstart-subtitle">几行命令即可启动你的跨平台应用</text>
+        
+        <view class="command-steps">
+          <view class="command-item" v-for="(cmd, index) in quickCommands" :key="index">
+            <view class="command-step">{{ index + 1 }}</view>
+            <view class="command-content">
+              <text class="command-desc">{{ cmd.desc }}</text>
+              <view class="command-code">
+                <text>{{ cmd.command }}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+        
+        <view class="action-buttons">
+          <view class="action-btn primary" @click="handleStart">
+            <text>开始开发</text>
+          </view>
+          <view class="action-btn secondary" @click="handleDocs">
+            <text>查看文档</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 项目信息 -->
+    <view class="project-info">
+      <view class="info-content">
+        <text class="project-name">Robot UniApp Framework</text>
+        <text class="project-version">v{{ version }}</text>
+        <text class="project-license">MIT License</text>
+        <text class="project-author">Created with ❤️ by ChenY</text>
+      </view>
+    </view>
+  </view>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
-import { useUserStore } from '@/stores/modules/user'
+import { ref } from 'vue'
 
-const userStore = useUserStore()
+// 版本信息
+const version = ref('1.0.0')
 
-// 响应式数据
-const notificationCount = ref(3)
+// 支持平台
+const supportedPlatforms = ref([
+  { name: 'H5', icon: '🌐' },
+  { name: '小程序', icon: '📱' },
+  { name: 'Android', icon: '🤖' },
+  { name: 'iOS', icon: '🍎' }
+])
 
-// 计算属性
-const userInfo = computed(() => userStore.userInfo || {})
-
-// 数据统计
-const stats = ref([
+// 核心特色
+const coreFeatures = ref([
   {
-    id: 1,
-    label: 'AI对话',
-    value: '128',
-    emoji: '💬',
-    color: '#00D4FF',
-    trend: 15.8
+    name: '跨平台开发',
+    desc: '一套代码多端运行',
+    icon: '🚀',
+    gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
   },
   {
-    id: 2,
-    label: '任务执行',
-    value: '24',
-    emoji: '✅',
-    color: '#00E676',
-    trend: 8.3
+    name: '企业级架构',
+    desc: '完整的开发规范',
+    icon: '🏗️',
+    gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)'
   },
   {
-    id: 3,
-    label: '智能分析',
-    value: '36',
-    emoji: '📊',
-    color: '#FF6B6B',
-    trend: 12.5
+    name: '组件丰富',
+    desc: 'uView+ UI组件库',
+    icon: '🧩',
+    gradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)'
   },
   {
-    id: 4,
-    label: '学习进度',
-    value: '89%',
-    emoji: '🎓',
-    color: '#9C27B0',
-    trend: 5.2
+    name: '状态管理',
+    desc: 'Pinia数据管理',
+    icon: '📊',
+    gradient: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)'
+  },
+  {
+    name: '国际化支持',
+    desc: '多语言切换',
+    icon: '🌍',
+    gradient: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)'
+  },
+  {
+    name: '原子化CSS',
+    desc: 'UnoCSS样式引擎',
+    icon: '🎨',
+    gradient: 'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)'
   }
 ])
 
-// 快捷功能
-const quickActions = ref([
-  { id: 1, label: 'AI对话', emoji: '🤖', color: '#00D4FF' },
-  { id: 2, label: '智能助手', emoji: '🧠', color: '#00E676' },
-  { id: 3, label: '语音交互', emoji: '🎤', color: '#FF6B6B' },
-  { id: 4, label: '图像识别', emoji: '📷', color: '#FF9800' },
-  { id: 5, label: '数据分析', emoji: '📈', color: '#9C27B0' },
-  { id: 6, label: '设置中心', emoji: '⚙️', color: '#8E8E93' }
-])
-
-// 最近动态
-const recentActivities = ref([
+// 技术栈
+const techStack = ref([
   {
-    id: 1,
-    content: 'AI助手完成了数据分析报告',
-    time: '2分钟前',
-    avatar: '/static/logo.png',
-    status: 'completed'
+    name: '核心框架',
+    icon: '⚡',
+    items: ['Vue 3', 'UniApp', 'Vite']
   },
   {
-    id: 2,
-    content: '语音识别模块需要更新',
-    time: '15分钟前',
-    avatar: '/static/logo.png',
-    status: 'pending'
+    name: 'UI组件',
+    icon: '🎨',
+    items: ['uView+', 'UnoCSS']
   },
   {
-    id: 3,
-    content: '机器学习模型训练完成',
-    time: '1小时前',
-    avatar: '/static/logo.png',
-    status: 'completed'
+    name: '状态管理',
+    icon: '📦',
+    items: ['Pinia', 'Persist']
   },
   {
-    id: 4,
-    content: '系统性能优化建议',
-    time: '2小时前',
-    avatar: '/static/logo.png',
-    status: 'warning'
+    name: '工具链',
+    icon: '🔧',
+    items: ['Sass', 'Vue-i18n']
   }
 ])
 
-// 事件处理方法
-const handleUserClick = (userInfo) => {
-  uni.showToast({
-    title: '查看用户资料',
-    icon: 'none'
-  })
-}
-
-const handleNotificationClick = (count) => {
-  uni.showToast({
-    title: `有${count}条新通知`,
-    icon: 'none'
-  })
-}
-
-const handleSettingsClick = () => {
-  uni.showActionSheet({
-    itemList: ['个人资料', '账户设置', '退出登录'],
-    success: (res) => {
-      if (res.tapIndex === 2) {
-        uni.showModal({
-          title: '提示',
-          content: '确定要退出登录吗？',
-          success: (modalRes) => {
-            if (modalRes.confirm) {
-              userStore.logout()
-            }
-          }
-        })
-      } else {
-        uni.showToast({
-          title: '功能开发中',
-          icon: 'none'
-        })
-      }
-    }
-  })
-}
-
-const handleTabChange = ({ item, index }) => {
-  console.log('切换到:', item.text, '索引:', index)
-}
-
-const handleStatClick = (stat) => {
-  uni.showToast({
-    title: `查看${stat.label}详情`,
-    icon: 'none'
-  })
-}
-
-const handleActionClick = (action) => {
-  uni.showToast({
-    title: `打开${action.label}`,
-    icon: 'none'
-  })
-}
-
-const handleMoreActivities = () => {
-  uni.showToast({
-    title: '跳转到动态列表',
-    icon: 'none'
-  })
-}
-
-const getStatusText = (status) => {
-  const statusMap = {
-    completed: '已完成',
-    pending: '待处理',
-    warning: '需关注'
+// 开发优势
+const advantages = ref([
+  {
+    title: '快速开发',
+    desc: '丰富的组件库和工具链，大幅提升开发效率'
+  },
+  {
+    title: '多端一致',
+    desc: '统一的开发体验，确保各平台功能和体验一致'
+  },
+  {
+    title: '易于维护',
+    desc: '清晰的项目结构和规范，降低维护成本'
+  },
+  {
+    title: '扩展灵活',
+    desc: '模块化架构设计，支持业务快速扩展'
   }
-  return statusMap[status] || '未知'
+])
+
+// 应用场景
+const applicationScenarios = ref([
+  { name: '电商应用', desc: '商城、购物车、支付', icon: '🛒' },
+  { name: '社交应用', desc: '聊天、动态、社区', icon: '💬' },
+  { name: '办公应用', desc: '审批、协作、管理', icon: '💼' },
+  { name: '工具应用', desc: '实用工具、生活服务', icon: '🔨' },
+  { name: '内容应用', desc: '新闻、视频、音乐', icon: '📰' },
+  { name: '教育应用', desc: '在线学习、考试', icon: '📚' }
+])
+
+// 快速命令
+const quickCommands = ref([
+  {
+    desc: '克隆项目',
+    command: 'git clone <your-repo-url>'
+  },
+  {
+    desc: '安装依赖',
+    command: 'npm install'
+  },
+  {
+    desc: '启动开发',
+    command: 'npm run dev:h5'
+  }
+])
+
+// 事件处理
+const handleStart = () => {
+  uni.showToast({
+    title: '开始你的开发之旅',
+    icon: 'none'
+  })
 }
 
-// 生命周期
-onMounted(() => {
-  // 检查登录状态
-  if (!userStore.isLoggedIn) {
-    uni.reLaunch({
-      url: '/pages/login/index'
-    })
-    return
-  }
-  
-  console.log('工作台加载完成')
-})
+const handleDocs = () => {
+  uni.showToast({
+    title: '查看开发文档',
+    icon: 'none'
+  })
+}
 </script>
 
 <style lang="scss" scoped>
-.dashboard {
-  background-color: transparent; // Layout组件会处理背景
-  min-height: auto; // 让Layout处理高度
-  // 移除原来的 display: flex; flex-direction: column; 等布局样式
+.homepage {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #f8faff 0%, #f1f5f9 100%);
 }
 
-// 移除原来的 .main-content 样式，因为Layout会处理
-
-.stats-section {
-  padding: 40rpx;
+/* 顶部横幅 */
+.hero-section {
+  padding: 60rpx 40rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  position: relative;
+  overflow: hidden;
   
-  .stats-grid {
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/></svg>');
+    background-size: 100rpx 100rpx;
+  }
+  
+  .hero-content {
+    position: relative;
+    z-index: 1;
+  }
+  
+  .project-header {
+    text-align: center;
+    margin-bottom: 60rpx;
+    
+    .project-badge {
+      display: inline-block;
+      padding: 16rpx 32rpx;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50rpx;
+      margin-bottom: 32rpx;
+      backdrop-filter: blur(10px);
+      
+      .badge-text {
+        color: #fff;
+        font-size: 24rpx;
+      }
+    }
+    
+    .project-title {
+      margin-bottom: 24rpx;
+      
+      .title-main {
+        display: block;
+        color: #fff;
+        font-size: 56rpx;
+        font-weight: bold;
+        margin-bottom: 16rpx;
+      }
+      
+      .title-desc {
+        display: block;
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 32rpx;
+      }
+    }
+    
+    .project-intro {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 28rpx;
+      line-height: 1.6;
+      padding: 0 20rpx;
+    }
+  }
+  
+  .platform-support {
+    display: flex;
+    justify-content: space-around;
+    
+    .platform-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24rpx;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 20rpx;
+      backdrop-filter: blur(10px);
+      
+      .platform-icon {
+        font-size: 40rpx;
+        margin-bottom: 12rpx;
+      }
+      
+      .platform-name {
+        color: #fff;
+        font-size: 24rpx;
+      }
+    }
+  }
+}
+
+/* 公共样式 */
+.section-header {
+  text-align: center;
+  margin-bottom: 60rpx;
+  
+  .section-title {
+    display: block;
+    font-size: 48rpx;
+    font-weight: bold;
+    color: #1f2937;
+    margin-bottom: 16rpx;
+  }
+  
+  .section-subtitle {
+    display: block;
+    font-size: 28rpx;
+    color: #6b7280;
+  }
+}
+
+/* 核心特色 */
+.features-section {
+  padding: 80rpx 40rpx;
+  
+  .features-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32rpx;
+    
+    .feature-card {
+      display: flex;
+      align-items: center;
+      padding: 40rpx;
+      background: #fff;
+      border-radius: 24rpx;
+      box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.08);
+      
+      .feature-icon-wrap {
+        width: 80rpx;
+        height: 80rpx;
+        border-radius: 20rpx;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 32rpx;
+        
+        .feature-icon {
+          font-size: 36rpx;
+        }
+      }
+      
+      .feature-info {
+        flex: 1;
+        
+        .feature-name {
+          display: block;
+          font-size: 32rpx;
+          font-weight: bold;
+          color: #1f2937;
+          margin-bottom: 8rpx;
+        }
+        
+        .feature-desc {
+          display: block;
+          font-size: 26rpx;
+          color: #6b7280;
+        }
+      }
+    }
+  }
+}
+
+/* 技术栈 */
+.tech-section {
+  padding: 80rpx 40rpx;
+  background: #fff;
+  
+  .tech-stack {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32rpx;
+    
+    .tech-category {
+      padding: 32rpx;
+      background: linear-gradient(135deg, #f8faff 0%, #f1f5f9 100%);
+      border-radius: 20rpx;
+      border: 1px solid #e5e7eb;
+      
+      .tech-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 24rpx;
+        
+        .tech-icon {
+          font-size: 32rpx;
+          margin-right: 16rpx;
+        }
+        
+        .tech-name {
+          font-size: 28rpx;
+          font-weight: bold;
+          color: #1f2937;
+        }
+      }
+      
+      .tech-items {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16rpx;
+        
+        .tech-item {
+          padding: 8rpx 16rpx;
+          background: #fff;
+          color: #4f46e5;
+          font-size: 22rpx;
+          border-radius: 12rpx;
+          border: 1px solid #e0e7ff;
+        }
+      }
+    }
+  }
+}
+
+/* 开发优势 */
+.advantages-section {
+  padding: 80rpx 40rpx;
+  
+  .advantages-list {
+    .advantage-item {
+      display: flex;
+      align-items: flex-start;
+      padding: 32rpx;
+      background: #fff;
+      border-radius: 20rpx;
+      margin-bottom: 24rpx;
+      box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+      
+      .advantage-number {
+        width: 56rpx;
+        height: 56rpx;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: #fff;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        margin-right: 24rpx;
+        font-size: 24rpx;
+      }
+      
+      .advantage-content {
+        flex: 1;
+        
+        .advantage-title {
+          display: block;
+          font-size: 30rpx;
+          font-weight: bold;
+          color: #1f2937;
+          margin-bottom: 8rpx;
+        }
+        
+        .advantage-desc {
+          display: block;
+          font-size: 26rpx;
+          color: #6b7280;
+          line-height: 1.5;
+        }
+      }
+    }
+  }
+}
+
+/* 应用场景 */
+.scenarios-section {
+  padding: 80rpx 40rpx;
+  background: #fff;
+  
+  .scenarios-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 24rpx;
     
-    .stat-card {
-      background: #fff;
-      border-radius: 20rpx;
+    .scenario-card {
       padding: 32rpx;
-      box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
-      position: relative;
+      text-align: center;
+      background: linear-gradient(135deg, #f8faff 0%, #f1f5f9 100%);
+      border-radius: 20rpx;
+      border: 1px solid #e5e7eb;
       
-      .stat-icon {
-        width: 60rpx;
-        height: 60rpx;
-        border-radius: 16rpx;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: 20rpx;
-        
-        .emoji-icon {
-          font-size: 28rpx;
-          line-height: 1;
-        }
-      }
-      
-      .stat-info {
-        .stat-value {
-          display: block;
-          font-size: 48rpx;
-          font-weight: bold;
-          color: #333;
-          margin-bottom: 8rpx;
-        }
-        
-        .stat-label {
-          display: block;
-          font-size: 24rpx;
-          color: #999;
-        }
-      }
-      
-      .stat-trend {
-        position: absolute;
-        top: 32rpx;
-        right: 32rpx;
-        display: flex;
-        align-items: center;
-        gap: 8rpx;
-        font-size: 20rpx;
-        
-        &.trend-up {
-          color: #34C759;
-        }
-        
-        &.trend-down {
-          color: #FF3B30;
-        }
-      }
-    }
-  }
-}
-
-.quick-actions {
-  padding: 0 40rpx 40rpx;
-  
-  .section-title {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 32rpx;
-    
-    text {
-      font-size: 32rpx;
-      font-weight: bold;
-      color: #333;
-    }
-  }
-  
-  .actions-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 32rpx;
-    
-    .action-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      
-      .action-icon {
-        width: 100rpx;
-        height: 100rpx;
-        border-radius: 24rpx;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+      .scenario-icon {
+        font-size: 48rpx;
         margin-bottom: 16rpx;
-        box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.1);
-        
-        .emoji-icon {
-          font-size: 36rpx;
-          line-height: 1;
-        }
+        display: block;
       }
       
-      .action-label {
-        font-size: 24rpx;
-        color: #666;
-        text-align: center;
+      .scenario-name {
+        display: block;
+        font-size: 28rpx;
+        font-weight: bold;
+        color: #1f2937;
+        margin-bottom: 8rpx;
+      }
+      
+      .scenario-desc {
+        display: block;
+        font-size: 22rpx;
+        color: #6b7280;
       }
     }
   }
 }
 
-.recent-activities {
-  padding: 0 40rpx 40rpx;
+/* 快速开始 */
+.quickstart-section {
+  padding: 80rpx 40rpx;
+  background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
   
-  .section-title {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 32rpx;
+  .quickstart-content {
+    text-align: center;
     
-    text {
-      font-size: 32rpx;
+    .quickstart-title {
+      display: block;
+      font-size: 48rpx;
       font-weight: bold;
-      color: #333;
+      color: #fff;
+      margin-bottom: 16rpx;
+    }
+    
+    .quickstart-subtitle {
+      display: block;
+      font-size: 28rpx;
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 60rpx;
+    }
+    
+    .command-steps {
+      margin-bottom: 60rpx;
       
-      &.more-btn {
+      .command-item {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 32rpx;
+        text-align: left;
+        
+        .command-step {
+          width: 48rpx;
+          height: 48rpx;
+          background: #4f46e5;
+          color: #fff;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: bold;
+          margin-right: 24rpx;
+          font-size: 22rpx;
+        }
+        
+        .command-content {
+          flex: 1;
+          
+          .command-desc {
+            display: block;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 26rpx;
+            margin-bottom: 12rpx;
+          }
+          
+          .command-code {
+            padding: 16rpx 20rpx;
+            background: #000;
+            border-radius: 8rpx;
+            font-family: 'Courier New', monospace;
+            
+            text {
+              color: #10b981;
+              font-size: 22rpx;
+            }
+          }
+        }
+      }
+    }
+    
+    .action-buttons {
+      display: flex;
+      gap: 24rpx;
+      justify-content: center;
+      
+      .action-btn {
+        padding: 24rpx 48rpx;
+        border-radius: 16rpx;
         font-size: 28rpx;
-        font-weight: normal;
-        color: #007AFF;
+        font-weight: bold;
+        
+        &.primary {
+          background: #4f46e5;
+          color: #fff;
+        }
+        
+        &.secondary {
+          background: transparent;
+          color: #fff;
+          border: 2rpx solid #4f46e5;
+        }
       }
     }
   }
+}
+
+/* 项目信息 */
+.project-info {
+  padding: 60rpx 40rpx;
+  background: #f8faff;
   
-  .activity-list {
-    background: #fff;
-    border-radius: 20rpx;
-    padding: 24rpx;
-    box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+  .info-content {
+    text-align: center;
     
-    .activity-item {
-      display: flex;
-      align-items: center;
-      padding: 24rpx 0;
-      border-bottom: 1rpx solid #f5f5f5;
-      
-      &:last-child {
-        border-bottom: none;
-      }
-      
-      .activity-avatar {
-        width: 64rpx;
-        height: 64rpx;
-        border-radius: 50%;
-        margin-right: 24rpx;
-        overflow: hidden;
-        
-        image {
-          width: 100%;
-          height: 100%;
-        }
-      }
-      
-      .activity-content {
-        flex: 1;
-        
-        .activity-text {
-          display: block;
-          font-size: 28rpx;
-          color: #333;
-          margin-bottom: 8rpx;
-        }
-        
-        .activity-time {
-          display: block;
-          font-size: 24rpx;
-          color: #999;
-        }
-      }
-      
-      .activity-status {
-        padding: 8rpx 16rpx;
-        border-radius: 16rpx;
-        font-size: 20rpx;
-        
-        &.completed {
-          background: #e8f5e8;
-          color: #34C759;
-        }
-        
-        &.pending {
-          background: #fff3e0;
-          color: #FF9500;
-        }
-        
-        &.warning {
-          background: #ffebee;
-          color: #FF3B30;
-        }
-      }
+    .project-name {
+      display: block;
+      font-size: 32rpx;
+      font-weight: bold;
+      color: #1f2937;
+      margin-bottom: 8rpx;
+    }
+    
+    .project-version,
+    .project-license {
+      display: block;
+      font-size: 24rpx;
+      color: #6b7280;
+      margin-bottom: 8rpx;
+    }
+    
+    .project-author {
+      display: block;
+      font-size: 24rpx;
+      color: #9ca3af;
     }
   }
 }
