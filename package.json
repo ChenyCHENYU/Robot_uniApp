@@ -22,7 +22,9 @@
     "// 预发布环境": "",
     "staging": "uni --mode staging -p h5",
     "staging:wx": "uni --mode staging -p mp-weixin",
-    "staging:app": "uni --mode staging -p app"
+    "staging:app": "uni --mode staging -p app",
+    "// 推送代码": "",
+    "push": "git push origin main && git push gitee main && git push gitcode main"
   },
   "dependencies": {
     "@dcloudio/uni-app": "3.0.0-4070620250821001",
