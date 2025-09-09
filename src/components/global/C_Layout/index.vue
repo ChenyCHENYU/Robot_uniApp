@@ -134,7 +134,7 @@ const showTabbar = computed(() => {
 const headerConfig = computed(() => {
   const config = getHeaderConfig(currentPath.value);
   return {
-    defaultAvatar: "/static/logo.png",
+    defaultAvatar: "/static/robot-avatar.png",
     defaultNickname: "CHENY",
     enableAnimations: true,
     ...config,

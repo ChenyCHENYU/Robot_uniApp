@@ -22,7 +22,7 @@
         <view class="avatar-container">
           <image
             class="user-avatar"
-            :src="userInfo.avatar || defaultAvatar"
+            :src="(userInfo.avatar && userInfo.avatar !== '/static/default-avatar.png') ? userInfo.avatar : defaultAvatar"
             mode="aspectFill"
           />
           <view class="online-indicator" v-if="showStatus">

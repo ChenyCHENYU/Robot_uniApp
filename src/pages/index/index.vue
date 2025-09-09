@@ -301,7 +301,7 @@ const handleNotificationClick = (count) => {
 const handleSettingsClick = () => {
   // 显示设置菜单
   uni.showActionSheet({
-    itemList: ['个人设置', '主题切换', '关于应用', '退出登录'],
+    itemList: ['个人设置', '主题切换', '关于应用', '退出登录', '清除缓存'],
     success: (res) => {
       const { tapIndex } = res
       switch (tapIndex) {
@@ -332,6 +332,10 @@ const handleSettingsClick = () => {
           // 退出登录
           handleLogout()
           break
+        case 4:
+          // 清除缓存数据
+          handleClearCache()
+          break
       }
     }
   })
@@ -339,6 +343,41 @@ const handleSettingsClick = () => {
 
 const handleTabChange = ({ item, index }) => {
   console.log('切换到:', item.text, '索引:', index)
+}
+
+// 清除缓存处理
+const handleClearCache = () => {
+  uni.showModal({
+    title: '提示',
+    content: '确定要清除所有缓存数据吗？清除后需要重新登录。',
+    success: (res) => {
+      if (res.confirm) {
+        try {
+          // 清除用户数据
+          userStore.clearUserInfo()
+          
+          // 清除所有本地存储
+          uni.clearStorageSync()
+          
+          uni.showToast({
+            title: '缓存已清除',
+            icon: 'success'
+          })
+          
+          // 延迟跳转到登录页
+          setTimeout(() => {
+            uni.reLaunch({ url: '/pages/login/index' })
+          }, 1500)
+        } catch (error) {
+          uni.showToast({
+            title: '清除失败，请重试',
+            icon: 'error'
+          })
+          console.error('清除缓存错误:', error)
+        }
+      }
+    }
+  })
 }
 
 // 退出登录处理

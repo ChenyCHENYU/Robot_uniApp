@@ -80,7 +80,7 @@ export const headerProps = {
   // 默认头像
   defaultAvatar: {
     type: String,
-    default: "/static/logo.png",
+    default: "/static/robot-avatar.png",
   },
   // 默认昵称
   defaultNickname: {

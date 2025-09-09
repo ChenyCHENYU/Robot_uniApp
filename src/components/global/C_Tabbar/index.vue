@@ -35,7 +35,16 @@
             class="icon-bg"
             :class="{ 'is-active': currentIndex === index }"
           >
+            <!-- 如果有自定义文字，显示文字，否则显示图标 -->
+            <text 
+              v-if="item.showText"
+              class="custom-text-icon"
+              :class="{ 'is-active': currentIndex === index }"
+            >
+              {{ item.showText }}
+            </text>
             <u-icon
+              v-else
               :name="currentIndex === index ? item.activeIcon : item.icon"
               :size="currentIndex === index ? 20 : 18"
               :color="currentIndex === index ? '#ffffff' : inactiveColor"

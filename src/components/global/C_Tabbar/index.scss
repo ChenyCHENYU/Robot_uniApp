@@ -124,6 +124,18 @@
   }
 }
 
+// 自定义文字图标样式
+.custom-text-icon {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #8e8e93;
+  transition: all 0.3s ease;
+
+  &.is-active {
+    color: #ffffff;
+    font-size: 30rpx;
+  }
+}
 .tab-label {
   font-size: 18rpx;
   color: #8e8e93;

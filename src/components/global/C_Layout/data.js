@@ -81,10 +81,11 @@ export const tabbarConfig = {
     {
       id: "robot",
       text: "机器人",
-      icon: "robot",
-      activeIcon: "robot",
+      icon: "android-circle",
+      activeIcon: "android-circle-fill",
       path: "/pages/robot/index",
       badge: 0,
+      showText: "R", // 自定义显示文字
     },
     {
       id: "profile",
