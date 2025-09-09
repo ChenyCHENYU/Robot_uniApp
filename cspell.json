@@ -12,6 +12,8 @@
     "easycom",
     "persistedstate",
     "uview",
+    "VCONSOLE",
+    "VITE",
     "Wechat"
   ],
   "ignorePaths": [
