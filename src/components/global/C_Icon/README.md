@@ -17,7 +17,7 @@
 # 组件已集成在项目中，确保安装相关依赖
 
 # UnoCSS 图标依赖（需安装对应的图标集文件）
-pnpm add -D @iconify-json/mdi
+pnpm add @iconify-json/mdi
 # uView+ UI库
 pnpm i uview-plus
 ```
