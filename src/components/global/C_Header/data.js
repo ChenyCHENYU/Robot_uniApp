@@ -67,6 +67,10 @@ export function useHeaderData(props, emit) {
     emit("settingsClick");
   };
 
+  const handleBack = () => {
+    emit("backClick");
+  };
+
   const handleAvatarError = () => {
     avatarError.value = true;
   };
@@ -92,6 +96,7 @@ export function useHeaderData(props, emit) {
     handleUserClick,
     handleNotification,
     handleSettings,
+    handleBack,
     handleAvatarError,
     setAiStatus,
   };
@@ -124,7 +129,22 @@ export const headerProps = {
     type: Number,
     default: 0,
   },
+  // 是否显示返回按钮
+  showBack: {
+    type: Boolean,
+    default: false,
+  },
+  // 页面标题（显示返回按钮时使用）
+  title: {
+    type: String,
+    default: "",
+  },
 };
 
 // Emits 定义
-export const headerEmits = ["userClick", "notificationClick", "settingsClick"];
+export const headerEmits = [
+  "userClick",
+  "notificationClick",
+  "settingsClick",
+  "backClick",
+];

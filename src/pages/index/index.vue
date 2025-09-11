@@ -33,6 +33,11 @@
             <text class="platform-name">{{ platform.name }}</text>
           </view>
         </view>
+        
+        <!-- 测试入口 -->
+        <view class="test-entry">
+          <button class="test-btn" @click="goToTestNav">测试返回功能</button>
+        </view>
       </view>
     </view>
 
@@ -366,6 +371,13 @@ const handleDocs = () => {
     icon: 'none'
   })
 }
+
+// 测试跳转功能
+const goToTestNav = () => {
+  uni.navigateTo({
+    url: "/pages/test-nav/index"
+  });
+}
 </script>
 
 <style lang="scss" scoped>
@@ -515,6 +527,26 @@ const handleDocs = () => {
         color: #374151;
         font-size: 24rpx;
         font-weight: 500;
+      }
+    }
+  }
+  
+  .test-entry {
+    margin-top: 40rpx;
+    text-align: center;
+    
+    .test-btn {
+      padding: 20rpx 40rpx;
+      background: linear-gradient(135deg, #409eff 0%, #66b1ff 100%);
+      border: none;
+      border-radius: 40rpx;
+      color: white;
+      font-size: 28rpx;
+      font-weight: 500;
+      box-shadow: 0 4rpx 15px rgba(64, 158, 255, 0.3);
+      
+      &:active {
+        transform: scale(0.98);
       }
     }
   }

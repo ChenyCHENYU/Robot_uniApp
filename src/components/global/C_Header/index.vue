@@ -1,9 +1,3 @@
-<!--
- * @Author: ChenYu ycyplus@gmail.com
- * @Date: 2025-01-09
- * @Description: 全局头部组件 - 玻璃风设计
- * Copyright (c) 2025 by CHENY, All Rights Reserved 😎.
--->
 <template>
   <view class="c-header" :style="{ paddingTop: safeAreaTop + 'px' }">
     <!-- 动态背景层 -->
@@ -16,8 +10,16 @@
 
     <!-- 内容区域 -->
     <view class="header-content">
-      <!-- 用户区域 -->
-      <view class="user-section" @click="handleUserClick">
+      <!-- 返回按钮区域（显示返回时） -->
+      <view v-if="showBack" class="back-section" @click="handleBack">
+        <view class="back-btn">
+          <C_Icon name="mdi:keyboard-return" :size="20" color="#ffffff" />
+        </view>
+        <text v-if="title" class="back-title">{{ title }}</text>
+      </view>
+      
+      <!-- 用户区域（不显示返回时） -->
+      <view v-else class="user-section" @click="handleUserClick">
         <!-- 头像容器 -->
         <view class="avatar-container">
           <image
@@ -104,6 +106,7 @@ const {
   handleUserClick,
   handleNotification,
   handleSettings,
+  handleBack,
   handleAvatarError,
   setAiStatus,
 } = useHeaderData(props, emit);

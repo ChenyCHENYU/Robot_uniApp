@@ -12,7 +12,7 @@
     ></view>
 
     <!-- uView+ 图标 -->
-    <up-icon
+    <u-icon
       v-else-if="type === 'uview'"
       :name="name"
       :size="size"
@@ -20,7 +20,7 @@
       :bold="bold"
       :label="label"
       :custom-prefix="customPrefix"
-    ></up-icon>
+    ></u-icon>
 
     <!-- SVG 图标文件 -->
     <image

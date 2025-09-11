@@ -12,6 +12,10 @@ export const layoutConfig = {
     "/pages/settings/index",
     "/pages/order/detail",
     "/pages/user/edit",
+    "/pages/demo/index",
+    "/pages/demo/01-icon/index",
+    "/pages/test-back/index",
+    "/pages/test-nav/index",
     // 后续如果有只需要Header的页面，在这里添加
   ],
 

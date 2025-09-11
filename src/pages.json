@@ -42,6 +42,34 @@
         "navigationBarTitleText": "个人中心",
         "navigationStyle": "custom"
       }
+    },
+    {
+      "path": "pages/demo/index",
+      "style": {
+        "navigationBarTitleText": "组件管理",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/demo/01-icon/index",
+      "style": {
+        "navigationBarTitleText": "C_Icon 图标演示",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/test-back/index",
+      "style": {
+        "navigationBarTitleText": "测试返回页面",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/test-nav/index",
+      "style": {
+        "navigationBarTitleText": "导航测试页面",
+        "navigationStyle": "custom"
+      }
     }
   ],
   "globalStyle": {

@@ -11,11 +11,14 @@
       :notification-count="notificationCount"
       :theme="headerConfig.theme"
       :enable-animations="headerConfig.enableAnimations"
+      :show-back="headerConfig.showBack"
+      :title="headerConfig.title"
       @user-click="handleUserClick"
       @notification-click="handleNotificationClick"
       @settings-click="handleSettingsClick"
       @status-click="handleStatusClick"
       @theme-change="handleThemeChange"
+      @back-click="handleBackClick"
     />
 
     <!-- 页面内容区域 -->
@@ -81,6 +84,16 @@ const props = defineProps({
     type: Number,
     default: 0,
   },
+  // 是否显示返回按钮
+  showBack: {
+    type: Boolean,
+    default: false,
+  },
+  // 页面标题（显示返回按钮时使用）
+  title: {
+    type: String,
+    default: "",
+  },
 });
 
 // Emits
@@ -92,6 +105,7 @@ const emit = defineEmits([
   "themeChange",
   "tabChange",
   "layoutChange",
+  "backClick",
 ]);
 
 // Store
@@ -137,6 +151,8 @@ const headerConfig = computed(() => {
     defaultAvatar: "/static/robot-avatar.png",
     defaultNickname: "CHENY",
     enableAnimations: true,
+    showBack: props.showBack,
+    title: props.title,
     ...config,
   };
 });
@@ -201,6 +217,10 @@ const handleStatusClick = (data) => {
 
 const handleThemeChange = (data) => {
   emit("themeChange", data);
+};
+
+const handleBackClick = () => {
+  emit("backClick");
 };
 
 // 导航状态管理
