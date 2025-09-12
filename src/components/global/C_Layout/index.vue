@@ -120,7 +120,7 @@ const showDebugInfo = () => {
     const debugInfo = debugCurrentPage();
     uni.showModal({
       title: '页面调试信息',
-      content: `路径: ${debugInfo.currentPath}\n布局: ${debugInfo.layoutType}\n返回: ${debugInfo.showBack}\n标题: ${debugInfo.title}`,
+      content: `路径: ${debugInfo.当前路径}\n布局: ${debugInfo.Layout类型}\n返回: ${debugInfo.显示返回}`,
       showCancel: false
     });
   }
@@ -189,7 +189,7 @@ const handleThemeChange = (data) => {
   emit("themeChange", data);
 };
 
-// 🔥 智能返回处理
+// 🔥 智能返回处理（集成H5修复）
 const handleBackClick = () => {
   console.log('Layout: 点击返回按钮');
   emit("backClick");
@@ -203,36 +203,114 @@ const handleBackClick = () => {
     return;
   }
 
-  // 检查是否可以返回
-  if (!canGoBack()) {
-    console.warn("Layout: 无法返回，当前在首页或无上级页面");
-    emit("backFail", { 
-      reason: "at_home_page",
-      pageStack: getCurrentPages().length,
-      currentPath: currentPath.value
+  // 获取页面栈信息
+  const pages = getCurrentPages();
+  const canGoBack = pages.length > 1;
+
+  // 正常情况：有页面栈
+  if (canGoBack) {
+    uni.navigateBack({
+      delta: props.backDelta,
+      success: () => {
+        console.log(`Layout: 返回成功，返回${props.backDelta}层`);
+        emit("backSuccess", { 
+          delta: props.backDelta,
+          fromPath: currentPath.value
+        });
+      },
+      fail: (err) => {
+        console.error("Layout: 返回失败", err);
+        emit("backFail", { error: err, reason: "navigate_fail" });
+      }
     });
     return;
   }
 
-  // 执行返回操作
-  uni.navigateBack({
-    delta: props.backDelta,
-    success: () => {
-      console.log(`Layout: 返回成功，返回${props.backDelta}层`);
-      emit("backSuccess", { 
-        delta: props.backDelta,
-        fromPath: currentPath.value
-      });
-    },
-    fail: (err) => {
-      console.error("Layout: 返回失败", err);
-      emit("backFail", { 
-        error: err, 
-        reason: "navigate_fail",
-        delta: props.backDelta,
-        fromPath: currentPath.value
+  // 页面栈只有1层的情况 - H5修复逻辑
+  console.log('Layout: 检测到单页面栈，启用H5修复策略');
+
+  // #ifdef H5
+  // 策略1：检查URL参数
+  let urlParams = {};
+  try {
+    if (typeof window !== 'undefined' && window.location?.search) {
+      new URLSearchParams(window.location.search).forEach((value, key) => {
+        urlParams[key] = value;
       });
     }
+  } catch (e) {}
+
+  if (urlParams.from) {
+    console.log('Layout: 使用from参数返回:', urlParams.from);
+    uni.navigateTo({ 
+      url: urlParams.from,
+      success: () => {
+        console.log('Layout: from参数返回成功');
+        emit("backSuccess", { method: "url_param", target: urlParams.from });
+      },
+      fail: (err) => {
+        console.error('Layout: from参数返回失败', err);
+        emit("backFail", { error: err, method: "url_param" });
+      }
+    });
+    return;
+  }
+
+  // 策略2：检查导航历史
+  let navHistory = [];
+  try {
+    navHistory = JSON.parse(localStorage.getItem('nav_history') || '[]');
+  } catch (e) {}
+
+  if (navHistory.length > 1) {
+    const previousPage = navHistory[navHistory.length - 2];
+    console.log('Layout: 使用导航历史返回:', previousPage);
+    
+    // 更新历史记录
+    const newHistory = navHistory.slice(0, -1);
+    try {
+      localStorage.setItem('nav_history', JSON.stringify(newHistory));
+    } catch (e) {}
+    
+    uni.navigateTo({ 
+      url: previousPage,
+      success: () => {
+        console.log('Layout: 历史记录返回成功');
+        emit("backSuccess", { method: "history", target: previousPage });
+      },
+      fail: (err) => {
+        console.error('Layout: 历史记录返回失败', err);
+        emit("backFail", { error: err, method: "history" });
+      }
+    });
+    return;
+  }
+
+  // 策略3：返回首个Tab页面
+  const firstTab = tabbarConfig.list?.[0];
+  if (firstTab) {
+    console.log('Layout: 返回首个Tab页面:', firstTab.path);
+    uni.switchTab({ 
+      url: firstTab.path,
+      success: () => {
+        console.log('Layout: 返回Tab成功');
+        emit("backSuccess", { method: "first_tab", target: firstTab.path });
+      },
+      fail: (err) => {
+        console.error('Layout: 返回Tab失败', err);
+        emit("backFail", { error: err, method: "first_tab" });
+      }
+    });
+    return;
+  }
+  // #endif
+
+  // 兜底：无法返回
+  console.warn("Layout: 无法返回，所有策略均失败");
+  emit("backFail", { 
+    reason: "no_strategy_available",
+    pageStack: pages.length,
+    currentPath: currentPath.value
   });
 };
 
@@ -329,26 +407,7 @@ const setHeaderTheme = (theme) => {
 
 // 返回功能
 const goBack = (delta = 1) => {
-  if (!canGoBack()) {
-    console.warn('Layout: 无法执行手动返回，当前在首页');
-    emit("backFail", { reason: "at_home_page" });
-    return false;
-  }
-
-  console.log(`Layout: 手动返回 ${delta} 层`);
-  uni.navigateBack({
-    delta,
-    success: () => {
-      console.log(`Layout: 手动返回成功`);
-      emit("backSuccess", { delta, manual: true });
-    },
-    fail: (err) => {
-      console.error('Layout: 手动返回失败', err);
-      emit("backFail", { error: err, reason: "manual_back_fail" });
-    }
-  });
-  
-  return true;
+  handleBackClick();
 };
 
 // 页面刷新

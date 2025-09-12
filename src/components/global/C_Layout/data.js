@@ -1,223 +1,109 @@
-
 import { computed, ref } from "vue";
 
 // =================================
-// 组件Props定义
+// 配置定义
 // =================================
 export const layoutProps = {
-  // 基础配置
-  globalLoading: {
-    type: Boolean,
-    default: false,
-  },
-  notificationCount: {
-    type: Number,
-    default: 0,
-  },
-  
-  // 覆盖智能判断的配置（可选）
-  forceLayoutType: {
-    type: String,
+  globalLoading: { type: Boolean, default: false },
+  notificationCount: { type: Number, default: 0 },
+  forceLayoutType: { 
+    type: String, 
     default: "",
-    validator: (value) => ["", "none", "header-only", "full"].includes(value),
+    validator: (value) => ["", "none", "header-only", "full"].includes(value)
   },
-  showBack: {
-    type: Boolean,
-    default: undefined, // undefined表示使用智能判断
+  showBack: { type: Boolean, default: undefined },
+  title: { type: String, default: "" },
+  showStatus: { type: Boolean, default: undefined },
+  theme: { type: String, default: "default" },
+  backBehavior: { 
+    type: String, 
+    default: "auto",
+    validator: (value) => ["auto", "custom", "none"].includes(value)
   },
-  title: {
-    type: String,
-    default: "", // 空字符串表示使用智能生成
-  },
-  showStatus: {
-    type: Boolean,
-    default: undefined, // undefined表示使用智能判断
-  },
-  theme: {
-    type: String,
-    default: "default",
-  },
-  
-  // 返回行为配置
-  backBehavior: {
-    type: String,
-    default: "auto", // auto | custom | none
-    validator: (value) => ["auto", "custom", "none"].includes(value),
-  },
-  backDelta: {
-    type: Number,
-    default: 1,
-  },
-  
-  // 开发调试
-  debug: {
-    type: Boolean,
-    default: false,
-  },
+  backDelta: { type: Number, default: 1 },
+  debug: { type: Boolean, default: false },
 };
 
-// =================================
-// 组件Emits定义  
-// =================================
 export const layoutEmits = [
-  "userClick",
-  "notificationClick",
-  "settingsClick", 
-  "statusClick",
-  "themeChange",
-  "tabChange",
-  "layoutChange",
-  "backClick",
-  "backSuccess",
-  "backFail",
+  "userClick", "notificationClick", "settingsClick", "statusClick", 
+  "themeChange", "tabChange", "layoutChange", "backClick", "backSuccess", "backFail"
 ];
 
-// =================================
-// 核心配置：TabBar页面定义
-// =================================
 export const tabbarConfig = {
-  // Tab页面列表 - 根据你的实际页面修改这里
   list: [
-    {
-      id: "home",
-      text: "首页", 
-      icon: "home",
-      activeIcon: "home-fill",
-      path: "/pages/index/index",
-      badge: 0,
-    },
-    {
-      id: "chat",
-      text: "AI对话",
-      icon: "chat",
-      activeIcon: "chat-fill", 
-      path: "/pages/chat/index",
-      badge: 0,
-    },
-    {
-      id: "robot", 
-      text: "机器人",
-      icon: "android-circle",
-      activeIcon: "android-circle-fill",
-      path: "/pages/robot/index",
-      badge: 0,
-    },
-    {
-      id: "profile",
-      text: "我的",
-      icon: "account",
-      activeIcon: "account-fill",
-      path: "/pages/profile/index", 
-      badge: 0,
-    },
-    // 如需添加新Tab页面，在此处添加：
-    // {
-    //   id: "discover",
-    //   text: "发现",
-    //   icon: "compass",
-    //   activeIcon: "compass-fill",
-    //   path: "/pages/discover/index",
-    //   badge: 0,
-    // },
+    { id: "home", text: "首页", icon: "home", activeIcon: "home-fill", path: "/pages/index/index", badge: 0 },
+    { id: "chat", text: "AI对话", icon: "chat", activeIcon: "chat-fill", path: "/pages/chat/index", badge: 0 },
+    { id: "robot", text: "机器人", icon: "android-circle", activeIcon: "android-circle-fill", path: "/pages/robot/index", badge: 0 },
+    { id: "profile", text: "我的", icon: "account", activeIcon: "account-fill", path: "/pages/profile/index", badge: 0 },
   ],
-  
-  // UI配置
   fixed: true,
   backgroundColor: "#ffffff",
-  activeColor: "#007AFF", 
+  activeColor: "#007AFF",
   inactiveColor: "#8E8E93",
   borderTopColor: "rgba(0, 0, 0, 0.05)",
 };
 
-// =================================
-// 例外配置：少量特殊页面
-// =================================
-
-// 完全不需要导航的页面（登录、引导、启动页等）
+// 特殊页面配置
 export const noLayoutPages = [
-  "/pages/login/index",
-  "/pages/register/index", 
-  "/pages/guide/index",
-  "/pages/splash/index",
-  // 如需添加无Layout页面，在此处添加：
-  // "/pages/welcome/index",    // 欢迎页
-  // "/pages/maintenance/index", // 维护页
+  "/pages/login/index", "/pages/register/index", 
+  "/pages/guide/index", "/pages/splash/index"
 ];
 
-// 强制不显示返回按钮的页面（即使不是Tab页面）
-export const noBackPages = [
-  // 根据需要添加不显示返回按钮的页面：
-  // "/pages/welcome/index",    // 欢迎页
-  // "/pages/error/index",      // 错误页
-  // "/pages/maintenance/index", // 维护页
-];
+export const noBackPages = [];
+export const specialHeaderConfigs = {};
 
-// 特殊的Header配置（仅配置实际存在且需要特殊设置的页面）
-export const specialHeaderConfigs = {
-  // 根据你的实际页面需要，在此处添加特殊配置：
-  
-  // 示例：个人资料编辑页
-  // "/pages/profile/edit": {
-  //   title: "编辑个人资料",
-  //   showStatus: false,
-  //   theme: "default",
-  // },
-  
-  // 示例：聊天详情页
-  // "/pages/chat/conversation": {
-  //   title: "AI对话",
-  //   showStatus: true,
-  //   theme: "primary",
-  // },
-  
-  // 示例：设置页面
-  // "/pages/settings/index": {
-  //   title: "设置",
-  //   showStatus: false,
-  //   theme: "default",
-  // },
-  
-  // 示例：关于页面
-  // "/pages/settings/about": {
-  //   title: "关于我们",
-  //   showStatus: false,
-  //   theme: "default",
-  // },
-  
-  // 只有实际存在的页面才需要在这里配置！
-  // 大部分页面都会自动判断，无需配置
+// =================================
+// H5导航历史管理
+// =================================
+const NAV_KEY = 'nav_history';
+const MAX_HISTORY = 5;
+
+const saveNavHistory = (path) => {
+  // #ifdef H5
+  try {
+    let history = JSON.parse(localStorage.getItem(NAV_KEY) || '[]');
+    if (history[history.length - 1] !== path) {
+      history.push(path);
+      if (history.length > MAX_HISTORY) history.shift();
+      localStorage.setItem(NAV_KEY, JSON.stringify(history));
+    }
+  } catch (e) {}
+  // #endif
+};
+
+const getNavHistory = () => {
+  // #ifdef H5
+  try {
+    return JSON.parse(localStorage.getItem(NAV_KEY) || '[]');
+  } catch (e) {
+    return [];
+  }
+  // #endif
+  return [];
+};
+
+const getUrlParams = () => {
+  // #ifdef H5
+  if (typeof window !== 'undefined' && window.location?.search) {
+    const params = {};
+    new URLSearchParams(window.location.search).forEach((value, key) => {
+      params[key] = value;
+    });
+    return params;
+  }
+  // #endif
+  return {};
 };
 
 // =================================
-// 智能判断逻辑：约定大于配置
+// 核心判断逻辑
 // =================================
+const getTabBarPaths = () => tabbarConfig.list.map(item => item.path);
+const cleanPath = (path) => path.split('?')[0];
 
-/**
- * 获取TabBar页面路径集合
- */
-const getTabBarPaths = () => {
-  return tabbarConfig.list.map(item => item.path);
-};
+export const isTabBarPage = (path) => getTabBarPaths().includes(cleanPath(path));
+export const isNoLayoutPage = (path) => noLayoutPages.includes(cleanPath(path));
 
-/**
- * 检查是否为TabBar页面
- */
-export const isTabBarPage = (path) => {
-  const cleanPath = path.split('?')[0];
-  return getTabBarPaths().includes(cleanPath);
-};
-
-/**
- * 检查是否为无Layout页面
- */
-export const isNoLayoutPage = (path) => {
-  const cleanPath = path.split('?')[0];
-  return noLayoutPages.includes(cleanPath);
-};
-
-/**
- * 获取页面层级信息
- */
 export const getPageStackInfo = () => {
   const pages = getCurrentPages();
   return {
@@ -229,201 +115,105 @@ export const getPageStackInfo = () => {
   };
 };
 
-/**
- * 🔥 智能判断Layout类型
- * 
- * 约定规则：
- * 1. 在noLayoutPages中 → none（无导航）
- * 2. 在TabBar中 → full（Header + TabBar）  
- * 3. 不在TabBar中 → header-only（只有Header + 返回按钮）
- */
 export const getSmartLayoutType = (currentPath) => {
-  const cleanPath = currentPath.split('?')[0];
-  
-  // 规则1：无Layout页面
-  if (isNoLayoutPage(cleanPath)) {
-    return 'none';
-  }
-  
-  // 规则2：TabBar页面 = Header + TabBar
-  if (isTabBarPage(cleanPath)) {
-    return 'full';
-  }
-  
-  // 规则3：其他所有页面 = Header + 返回按钮
+  const path = cleanPath(currentPath);
+  if (isNoLayoutPage(path)) return 'none';
+  if (isTabBarPage(path)) return 'full';
   return 'header-only';
 };
 
-/**
- * 🔥 智能判断是否显示返回按钮
- * 
- * 约定规则：
- * 1. TabBar页面 → 不显示返回按钮
- * 2. noBackPages中的页面 → 不显示返回按钮
- * 3. 页面栈只有1层 → 不显示返回按钮（防止首页异常显示返回）
- * 4. 其他情况 → 显示返回按钮
- */
+// H5刷新修复的返回按钮判断
 export const shouldShowBackButton = (currentPath) => {
-  const cleanPath = currentPath.split('?')[0];
+  const path = cleanPath(currentPath);
   const { canGoBack, isFirstPage } = getPageStackInfo();
   
-  // 规则1：TabBar页面不显示返回按钮
-  if (isTabBarPage(cleanPath)) {
-    return false;
-  }
+  // TabBar页面和特殊页面不显示返回
+  if (isTabBarPage(path) || noBackPages.includes(path)) return false;
   
-  // 规则2：特殊页面不显示返回按钮
-  if (noBackPages.includes(cleanPath)) {
-    return false;
-  }
+  // 正常页面栈情况
+  if (canGoBack) return true;
   
-  // 规则3：首页不显示返回按钮（防止异常情况）
+  // H5刷新修复逻辑
   if (isFirstPage) {
+    // #ifdef H5
+    // 检查URL参数
+    if (getUrlParams().from) return true;
+    
+    // 检查导航历史
+    if (getNavHistory().length > 1) return true;
+    
+    // 检查页面特征（详情类页面）
+    const detailPatterns = ['/detail/', '/info/', '/edit/', '/settings/', '/profile/', '/order/', '/user/'];
+    if (detailPatterns.some(pattern => path.includes(pattern))) return true;
+    // #endif
     return false;
   }
   
-  // 规则4：其他情况根据页面栈判断
   return canGoBack;
 };
 
-/**
- * 🔥 智能生成页面标题
- * 
- * 约定规则：
- * 1. 优先使用传入的title参数
- * 2. 其次使用specialHeaderConfigs中的配置
- * 3. 最后根据路径自动生成标题
- */
+// 智能标题生成
 export const getSmartPageTitle = (currentPath, propsTitle = '') => {
-  const cleanPath = currentPath.split('?')[0];
+  if (propsTitle?.trim()) return propsTitle.trim();
   
-  // 规则1：优先使用props传入的title
-  if (propsTitle && propsTitle.trim()) {
-    return propsTitle.trim();
-  }
+  const path = cleanPath(currentPath);
+  const specialTitle = specialHeaderConfigs[path]?.title;
+  if (specialTitle) return specialTitle;
   
-  // 规则2：使用特殊配置的title
-  const specialConfig = specialHeaderConfigs[cleanPath];
-  if (specialConfig?.title) {
-    return specialConfig.title;
-  }
-  
-  // 规则3：根据路径自动生成标题
-  const pathSegments = cleanPath.split('/').filter(Boolean);
-  
-  if (pathSegments.length >= 2) {
-    const moduleName = pathSegments[1]; // pages/[module]/xxx
-    const pageName = pathSegments[2] || 'index'; // 页面名
+  // 根据路径生成标题
+  const segments = path.split('/').filter(Boolean);
+  if (segments.length >= 2) {
+    const [, module, page = 'index'] = segments;
     
-    // 模块标题映射（根据你的实际模块修改）
     const moduleMap = {
-      'settings': '设置',
-      'profile': '个人中心', 
-      'order': '订单',
-      'chat': '聊天',
-      'user': '用户',
-      'product': '商品',
-      'article': '文章',
-      'demo': '演示',
-      'test': '测试',
-      'about': '关于',
-      'help': '帮助',
-      'feedback': '意见反馈',
-      // 根据你的实际模块在此添加更多映射
+      'settings': '设置', 'profile': '个人中心', 'chat': '聊天', 
+      'robot': '机器人', 'order': '订单', 'user': '用户'
     };
     
-    // 页面标题映射
     const pageMap = {
-      'detail': '详情',
-      'edit': '编辑',
-      'create': '创建',
-      'add': '添加',
-      'list': '列表',
-      'index': '', // index页面不显示额外标题
-      'about': '关于',
-      'privacy': '隐私政策',
-      'help': '帮助',
-      'feedback': '反馈',
-      'profile': '个人资料',
-      'setting': '设置',
-      // 根据你的实际页面在此添加更多映射
+      'detail': '详情', 'edit': '编辑', 'add': '添加', 'list': '列表'
     };
     
-    const moduleTitle = moduleMap[moduleName] || moduleName;
-    const pageTitle = pageMap[pageName] || pageName;
+    const moduleTitle = moduleMap[module] || module;
+    const pageTitle = pageMap[page] || '';
     
-    // 组合标题
-    if (pageTitle && pageTitle !== moduleTitle) {
-      return `${moduleTitle}${pageTitle}`;
-    } else {
-      return moduleTitle;
-    }
+    return pageTitle ? `${moduleTitle}${pageTitle}` : moduleTitle;
   }
   
-  // 兜底标题
   return '页面';
 };
 
-/**
- * 🔥 智能获取Header配置
- */
+// Header配置生成
 export const getSmartHeaderConfig = (currentPath, props = {}) => {
-  const cleanPath = currentPath.split('?')[0];
-  const specialConfig = specialHeaderConfigs[cleanPath] || {};
-  
   return {
-    // 基础配置
     defaultAvatar: "/static/robot-avatar.png",
     defaultNickname: "CHENY",
-    enableAnimations: true,
-    
-    // 智能判断的配置
     showBack: props.showBack !== undefined ? props.showBack : shouldShowBackButton(currentPath),
     title: getSmartPageTitle(currentPath, props.title),
-    
-    // 默认配置
     showStatus: true,
     theme: 'default',
-    showThemeToggle: false,
     iconSize: 20,
-    
-    // 覆盖特殊配置
-    ...specialConfig,
-    
-    // props优先级最高（过滤掉undefined值）
+    enableAnimations: true,
+    ...specialHeaderConfigs[cleanPath(currentPath)],
     ...Object.fromEntries(
       Object.entries(props).filter(([_, value]) => value !== undefined)
     ),
   };
 };
 
-/**
- * 获取当前Tab索引
- */
+// 工具函数
 export const getCurrentTabIndex = (currentPath) => {
-  const cleanPath = currentPath.split('?')[0];
-  return tabbarConfig.list.findIndex(item => item.path === cleanPath);
+  return tabbarConfig.list.findIndex(item => item.path === cleanPath(currentPath));
 };
 
-/**
- * 更新指定Tab的Badge数量
- */
 export const updateTabBadge = (tabId, count) => {
-  const tab = tabbarConfig.list.find((item) => item.id === tabId);
-  if (tab) {
-    tab.badge = count;
-    console.log(`更新Tab[${tabId}]的Badge: ${count}`);
-  } else {
-    console.warn(`找不到Tab[${tabId}]`);
-  }
+  const tab = tabbarConfig.list.find(item => item.id === tabId);
+  if (tab) tab.badge = count;
 };
 
-/**
- * 获取当前页面完整信息
- */
 export const getCurrentPageInfo = () => {
   const pages = getCurrentPages();
-  if (pages.length === 0) return null;
+  if (!pages.length) return null;
   
   const currentPage = pages[pages.length - 1];
   const currentPath = `/${currentPage.route}`;
@@ -440,83 +230,98 @@ export const getCurrentPageInfo = () => {
 };
 
 // =================================
-// 智能Layout Hook
+// 增强的导航功能
+// =================================
+const enhancedGoBack = (delta = 1) => {
+  const { canGoBack } = getPageStackInfo();
+  
+  // 正常返回
+  if (canGoBack) {
+    return uni.navigateBack({ delta });
+  }
+  
+  // #ifdef H5
+  // H5修复策略
+  const urlParams = getUrlParams();
+  if (urlParams.from) {
+    return uni.navigateTo({ url: urlParams.from });
+  }
+  
+  const history = getNavHistory();
+  if (history.length > 1) {
+    const previousPage = history[history.length - 2];
+    const newHistory = history.slice(0, -1);
+    localStorage.setItem(NAV_KEY, JSON.stringify(newHistory));
+    return uni.navigateTo({ url: previousPage });
+  }
+  // #endif
+  
+  // 返回首页
+  const firstTab = tabbarConfig.list[0];
+  return firstTab ? uni.switchTab({ url: firstTab.path }) : uni.reLaunch({ url: '/pages/index/index' });
+};
+
+const enhancedNavigateTo = (url) => {
+  const pages = getCurrentPages();
+  if (pages.length > 0) {
+    const currentPath = `/${pages[pages.length - 1].route}`;
+    saveNavHistory(currentPath);
+  }
+  return uni.navigateTo({ url });
+};
+
+// =================================
+// 主Hook函数
 // =================================
 export function useSmartLayout(props) {
   const isNavigating = ref(false);
   const currentTabIndex = ref(0);
 
-  // 获取当前页面路径
   const getCurrentPath = () => {
     const pages = getCurrentPages();
-    if (pages.length > 0) {
-      const currentPage = pages[pages.length - 1];
-      return `/${currentPage.route}`;
-    }
-    return "/pages/index/index";
+    return pages.length > 0 ? `/${pages[pages.length - 1].route}` : "/pages/index/index";
   };
 
-  // 响应式计算属性
   const currentPath = computed(() => getCurrentPath());
-  
-  const layoutType = computed(() => {
-    if (props.forceLayoutType) {
-      return props.forceLayoutType;
-    }
-    return getSmartLayoutType(currentPath.value);
-  });
+  const layoutType = computed(() => props.forceLayoutType || getSmartLayoutType(currentPath.value));
+  const showHeader = computed(() => ['header-only', 'full'].includes(layoutType.value));
+  const showTabbar = computed(() => layoutType.value === 'full');
 
-  const showHeader = computed(() => {
-    return layoutType.value === "header-only" || layoutType.value === "full";
-  });
-
-  const showTabbar = computed(() => {
-    return layoutType.value === "full";
-  });
-
-  const headerConfig = computed(() => {
-    return getSmartHeaderConfig(currentPath.value, {
-      showBack: props.showBack,
-      title: props.title,
-      showStatus: props.showStatus,
-      theme: props.theme,
-    });
-  });
+  const headerConfig = computed(() => getSmartHeaderConfig(currentPath.value, {
+    showBack: props.showBack,
+    title: props.title,
+    showStatus: props.showStatus,
+    theme: props.theme,
+  }));
 
   const layoutClasses = computed(() => ({
-    "layout-none": layoutType.value === "none",
-    "layout-header-only": layoutType.value === "header-only",
-    "layout-full": layoutType.value === "full",
-    "has-header": showHeader.value,
-    "has-tabbar": showTabbar.value,
+    [`layout-${layoutType.value}`]: true,
+    'has-header': showHeader.value,
+    'has-tabbar': showTabbar.value,
   }));
 
   const contentStyles = computed(() => {
     const styles = {};
-    if (showTabbar.value) {
-      styles.paddingBottom = "120rpx"; // 为TabBar预留空间
-    }
+    if (showTabbar.value) styles.paddingBottom = "120rpx";
     return styles;
   });
 
-  // 工具方法
-  const canGoBack = () => {
-    return getPageStackInfo().canGoBack;
-  };
+  const canGoBack = () => getPageStackInfo().canGoBack;
 
-  const getPageInfo = () => {
-    return {
-      path: currentPath.value,
-      layoutType: layoutType.value,
-      showHeader: showHeader.value, 
-      showTabbar: showTabbar.value,
-      headerConfig: headerConfig.value,
-      stackInfo: getPageStackInfo(),
-    };
-  };
+  const getPageInfo = () => ({
+    path: currentPath.value,
+    layoutType: layoutType.value,
+    showHeader: showHeader.value,
+    showTabbar: showTabbar.value,
+    headerConfig: headerConfig.value,
+    stackInfo: getPageStackInfo(),
+  });
+
+  // 保存导航历史
+  saveNavHistory(currentPath.value);
 
   return {
-    // 响应式数据
+    // 状态
     isNavigating,
     currentTabIndex,
     
@@ -529,84 +334,35 @@ export function useSmartLayout(props) {
     layoutClasses,
     contentStyles,
     
-    // 工具方法
+    // 方法
     canGoBack,
     getCurrentPath,
     getPageInfo,
+    enhancedGoBack,
+    enhancedNavigateTo,
   };
 }
 
 // =================================
-// 调试工具：显示当前页面的智能判断结果
+// 调试工具
 // =================================
 export const debugCurrentPage = () => {
   const pages = getCurrentPages();
   const currentPath = pages.length > 0 ? `/${pages[pages.length - 1].route}` : '';
-  const pageInfo = getPageStackInfo();
   
-  const result = {
+  const info = {
     当前路径: currentPath,
-    页面层级: pageInfo.total,
-    页面栈: pageInfo.stack,
-    是否可返回: pageInfo.canGoBack,
-    是否TabBar页面: isTabBarPage(currentPath),
-    是否无Layout页面: isNoLayoutPage(currentPath),
+    页面层级: pages.length,
     Layout类型: getSmartLayoutType(currentPath),
-    是否显示返回按钮: shouldShowBackButton(currentPath),
-    智能标题: getSmartPageTitle(currentPath),
+    显示返回: shouldShowBackButton(currentPath),
     Header配置: getSmartHeaderConfig(currentPath),
-    当前Tab索引: getCurrentTabIndex(currentPath),
   };
   
-  console.log('🔍 页面智能判断结果:', result);
-  
-  return result;
+  console.log('页面调试信息:', info);
+  return info;
 };
 
-// 开发环境下自动注册调试方法
+// 开发环境注册调试
 if (process.env.NODE_ENV === 'development') {
-  // 可以在控制台调用 debugCurrentPage() 查看当前页面判断结果
   globalThis.debugCurrentPage = debugCurrentPage;
-  
-  // 添加全局快捷调试方法
-  globalThis.layoutDebug = {
-    currentPage: debugCurrentPage,
-    isTabBarPage,
-    isNoLayoutPage,
-    getPageStackInfo,
-    getSmartLayoutType,
-    shouldShowBackButton,
-    getSmartPageTitle,
-    getSmartHeaderConfig,
-  };
-  
-  console.log('🛠️ Layout调试工具已加载，可在控制台使用：');
-  console.log('  - debugCurrentPage() // 查看当前页面信息');
-  console.log('  - layoutDebug // 访问所有调试工具');
 }
-
-// =================================
-// 使用指南：如何添加新页面配置
-// =================================
-
-/**
- * 📖 使用指南：
- * 
- * 1. 添加新的Tab页面：
- *    在 tabbarConfig.list 中添加新的Tab配置
- * 
- * 2. 添加无Layout页面：
- *    在 noLayoutPages 数组中添加页面路径
- * 
- * 3. 添加不显示返回按钮的页面：
- *    在 noBackPages 数组中添加页面路径
- * 
- * 4. 添加特殊Header配置：
- *    在 specialHeaderConfigs 对象中添加页面配置
- * 
- * 5. 大部分普通页面：
- *    什么都不需要配置！系统会自动判断显示Header+返回按钮
- * 
- * 6. 自定义标题映射：
- *    在 getSmartPageTitle 函数中的 moduleMap 和 pageMap 中添加映射
- */
