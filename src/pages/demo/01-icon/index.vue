@@ -5,9 +5,9 @@
       <view class="text-center mb-8">
         <C_Title
           title="C_Icon 图标组件演示"
-          subtitle="五种图标类型，统一API，企业级解决方案"
+          subtitle="五种图标类型，统一API，通用解决方案"
           type="primary"
-          :level="1"
+          :level="3"
           size="large"
           align="center"
           left-icon="i-mdi-star"
@@ -24,7 +24,7 @@
           <C_Title
             title="UnoCSS 图标"
             subtitle="海量图标库支持"
-            :level="3"
+            :level="4"
             type="primary"
             align="center"
             left-icon="i-mdi-palette"
@@ -51,7 +51,7 @@
           <C_Title
             title="uView+ 图标"
             subtitle="uView组件库图标"
-            :level="3"
+            :level="4"
             type="success"
             align="center"
             left-icon="i-mdi-view-grid"
@@ -78,7 +78,7 @@
           <C_Title
             title="SVG 图标"
             subtitle="本地和Base64 SVG"
-            :level="3"
+            :level="4"
             type="warning"
             align="center"
             left-icon="i-mdi-svg"
@@ -107,7 +107,7 @@
           <C_Title
             title="图片图标"
             subtitle="本地、远程、Base64图片"
-            :level="3"
+            :level="4"
             type="danger"
             align="center"
             left-icon="i-mdi-image"
@@ -141,7 +141,7 @@
           <C_Title
             title="自定义内容"
             subtitle="插槽支持任意内容"
-            :level="3"
+            :level="4"
             type="info"
             align="center"
             left-icon="i-mdi-puzzle"
@@ -171,7 +171,7 @@
           <C_Title
             title="高级功能"
             subtitle="尺寸、颜色、事件处理"
-            :level="3"
+            :level="4"
             type="primary"
             align="center"
             left-icon="i-mdi-cog"
@@ -212,7 +212,7 @@
         <C_Title
           title="功能完整，使用简单"
           subtitle="企业级图标组件解决方案，支持多平台，零配置使用"
-          :level="4"
+          :level="5"
           type="info"
           align="center"
           :show-divider="true"
