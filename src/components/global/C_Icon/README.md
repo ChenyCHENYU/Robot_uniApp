@@ -8,16 +8,18 @@
 - **🎯 统一 API 接口**: 所有图标类型使用相同的组件接口
 - **🎨 灵活样式**: 支持颜色、大小自定义
 - **⚡ 零 CSS 代码**: 基于 UnoCSS utility classes，无额外样式文件
-- **🧩 智能解析**: 自动处理不同格式的图标名称
 - **📱 跨平台支持**: H5、小程序、App 全平台兼容
+- **🛡️ 错误处理**: 无效参数时显示错误提示
 
 ## 📦 安装
 
 ```bash
 # 组件已集成在项目中，确保安装相关依赖
 
-# UnoCSS 图标依赖（需安装对应的图标集文件）
+# UnoCSS 图标依赖（需安装对应的图标集）
 pnpm add @iconify-json/mdi
+pnpm add @iconify-json/carbon
+
 # uView+ UI库
 pnpm i uview-plus
 ```
@@ -28,11 +30,12 @@ pnpm i uview-plus
 
 ```vue
 <template>
-  <!-- 最简单的使用方式 (默认UnoCSS图标) -->
-  <C_Icon name="mdi-home" />
-
-  <!-- 指定大小和颜色 -->
-  <C_Icon name="carbon-user" :size="24" color="#409eff" />
+  <!-- UnoCSS 图标 (默认类型) -->
+  <C_Icon name="i-mdi-home" />
+  <C_Icon name="i-carbon-user" :size="24" color="#409eff" />
+  
+  <!-- uView+ 图标 -->
+  <C_Icon type="uview" name="home" :size="24" color="#67c23a" />
 </template>
 ```
 
@@ -40,24 +43,29 @@ pnpm i uview-plus
 
 ```vue
 <template>
-  <!-- 1. UnoCSS 图标 (默认推荐) -->
-  <C_Icon name="mdi-home" />
-  <C_Icon name="carbon-user" />
-  <C_Icon name="heroicons-heart" />
+  <!-- 1. UnoCSS 图标 (默认，推荐) -->
+  <C_Icon name="i-mdi-home" />
+  <C_Icon name="i-carbon-user" />
+  <C_Icon name="i-heroicons-heart" />
 
   <!-- 2. uView+ 图标 -->
   <C_Icon type="uview" name="home" />
-  <C_Icon type="uview" name="setting" />
+  <C_Icon type="uview" name="setting" :bold="true" />
 
   <!-- 3. SVG 文件 -->
-  <C_Icon type="svg" name="/static/icons/custom.svg" />
+  <C_Icon type="svg" name="/static/icons/custom.svg" :size="24" />
+  <!-- Base64 SVG -->
+  <C_Icon type="svg" name="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQi..." />
 
   <!-- 4. 图片文件 -->
-  <C_Icon type="image" name="/static/images/logo.png" />
+  <C_Icon type="image" name="/static/images/logo.png" :size="32" />
+  <!-- 远程图片 -->
+  <C_Icon type="image" name="https://example.com/icon.png" :size="32" />
 
   <!-- 5. 自定义内容 -->
-  <C_Icon type="custom">
-    <text>🚀</text>
+  <C_Icon type="custom" :size="24">🚀</C_Icon>
+  <C_Icon type="custom" :size="24">
+    <text class="custom-text">A</text>
   </C_Icon>
 </template>
 ```
@@ -68,7 +76,7 @@ pnpm i uview-plus
 
 | 参数             | 类型                                                  | 默认值     | 说明                                  |
 | ---------------- | ----------------------------------------------------- | ---------- | ------------------------------------- |
-| **name**         | `string`                                              | -          | 图标名称/路径                         |
+| **name**         | `string`                                              | `''`       | 图标名称/路径                         |
 | **type**         | `'unocss' \| 'uview' \| 'svg' \| 'image' \| 'custom'` | `'unocss'` | 图标类型                              |
 | **size**         | `number \| string`                                    | `24`       | 图标大小(px)                          |
 | **color**        | `string`                                              | `'#333'`   | 图标颜色(仅 unocss 和 uview 类型有效) |
@@ -97,14 +105,16 @@ pnpm i uview-plus
 <template>
   <view class="icon-demo">
     <!-- 不同尺寸 -->
-    <C_Icon name="mdi-heart" :size="16" color="red" />
-    <C_Icon name="mdi-heart" :size="24" color="red" />
-    <C_Icon name="mdi-heart" :size="32" color="red" />
+    <C_Icon name="i-mdi-heart" :size="16" color="#f56c6c" />
+    <C_Icon name="i-mdi-heart" :size="24" color="#f56c6c" />
+    <C_Icon name="i-mdi-heart" :size="32" color="#f56c6c" />
+    <C_Icon name="i-mdi-heart" :size="48" color="#f56c6c" />
 
     <!-- 不同颜色 -->
-    <C_Icon name="carbon-home" color="#409eff" />
-    <C_Icon name="carbon-home" color="#67c23a" />
-    <C_Icon name="carbon-home" color="#e6a23c" />
+    <C_Icon name="i-mdi-home" :size="24" color="#409eff" />
+    <C_Icon name="i-mdi-home" :size="24" color="#67c23a" />
+    <C_Icon name="i-mdi-home" :size="24" color="#e6a23c" />
+    <C_Icon name="i-mdi-home" :size="24" color="#f56c6c" />
   </view>
 </template>
 ```
@@ -115,13 +125,23 @@ pnpm i uview-plus
 <template>
   <view class="nav-menu flex gap-4">
     <C_Icon
-      name="mdi-home"
+      name="i-mdi-home"
       :size="20"
-      color="var(--primary-color)"
+      color="#409eff"
       @click="handleNavClick('home')"
     />
-    <C_Icon name="mdi-account" :size="20" @click="handleNavClick('profile')" />
-    <C_Icon name="mdi-cog" :size="20" @click="handleNavClick('settings')" />
+    <C_Icon 
+      name="i-mdi-account" 
+      :size="20" 
+      color="#67c23a"
+      @click="handleNavClick('profile')" 
+    />
+    <C_Icon 
+      name="i-mdi-cog" 
+      :size="20" 
+      color="#909399"
+      @click="handleNavClick('settings')" 
+    />
   </view>
 </template>
 
@@ -133,40 +153,44 @@ const handleNavClick = (route) => {
 </script>
 ```
 
-### 自定义样式
-
-```vue
-<template>
-  <view class="custom-icon-demo">
-    <C_Icon
-      name="mdi-star"
-      :size="28"
-      color="gold"
-      :custom-style="{
-        transform: 'rotate(15deg)',
-        transition: 'all 0.3s ease',
-      }"
-    />
-  </view>
-</template>
-```
-
-### uView+ 图标特性
+### uView+ 图标高级用法
 
 ```vue
 <template>
   <view class="uview-demo">
-    <!-- 基础uView+图标 -->
-    <C_Icon type="uview" name="home" :size="24" />
+    <!-- 基础用法 -->
+    <C_Icon type="uview" name="home" :size="24" color="#409eff" />
 
     <!-- 加粗效果 -->
-    <C_Icon type="uview" name="heart" :bold="true" />
+    <C_Icon type="uview" name="heart-fill" :size="24" :bold="true" color="#f56c6c" />
 
     <!-- 带标签 -->
-    <C_Icon type="uview" name="star" label="收藏" />
+    <C_Icon type="uview" name="star" :size="24" label="收藏" color="#e6a23c" />
 
     <!-- 自定义前缀 -->
-    <C_Icon type="uview" name="custom" custom-prefix="my-icon" />
+    <C_Icon type="uview" name="custom" custom-prefix="my-icon" :size="24" />
+  </view>
+</template>
+```
+
+### 自定义内容
+
+```vue
+<template>
+  <view class="custom-demo">
+    <!-- Emoji -->
+    <C_Icon type="custom" :size="32">🏠</C_Icon>
+    <C_Icon type="custom" :size="32">⭐</C_Icon>
+    
+    <!-- 文字内容 -->
+    <C_Icon type="custom" :size="32">
+      <text style="color: #409eff; font-weight: 600;">A</text>
+    </C_Icon>
+    
+    <!-- 自定义形状 -->
+    <C_Icon type="custom" :size="24">
+      <view style="width: 12px; height: 12px; background: linear-gradient(45deg, #409eff, #67c23a); border-radius: 50%;"></view>
+    </C_Icon>
   </view>
 </template>
 ```
@@ -180,14 +204,14 @@ const handleNavClick = (route) => {
 ```javascript
 import {
   defineConfig,
-  presetWind3,
+  presetWind,
   presetAttributify,
   presetIcons,
 } from "unocss";
 
 export default defineConfig({
   presets: [
-    presetWind3(),
+    presetWind(),
     presetAttributify(),
     presetIcons({
       collections: {
@@ -215,65 +239,76 @@ app.component("C_Icon", CIcon);
 
 ## 📋 图标名称格式
 
-### UnoCSS 图标 (推荐)
+### UnoCSS 图标
 
-组件会自动处理多种格式：
+UnoCSS 图标需要使用完整的类名格式：
 
 ```vue
-<!-- 推荐格式 -->
-<C_Icon name="mdi-home" />
-<!-- 自动转换为 i-mdi-home -->
-<C_Icon name="carbon-user" />
-<!-- 自动转换为 i-carbon-user -->
-
-<!-- 兼容格式 -->
-<C_Icon name="mdi:home" />
-<!-- 自动转换为 i-mdi-home -->
+<!-- ✅ 正确格式 -->
 <C_Icon name="i-mdi-home" />
-<!-- 直接使用 -->
+<C_Icon name="i-carbon-user" />
+<C_Icon name="i-heroicons-heart" />
+
+<!-- ❌ 错误格式 -->
+<C_Icon name="mdi-home" />        <!-- 缺少 i- 前缀 -->
+<C_Icon name="mdi:home" />        <!-- 错误的分隔符 -->
 ```
 
 ### 图标库推荐
 
-| 图标库        | 数量  | 特点                | 示例              |
-| ------------- | ----- | ------------------- | ----------------- |
-| **MDI**       | 7000+ | 最全面，设计统一    | `mdi-home`        |
-| **Carbon**    | 2000+ | IBM 设计，商务风格  | `carbon-user`     |
-| **Heroicons** | 300+  | Tailwind 官方，简洁 | `heroicons-heart` |
+| 图标库        | 安装命令                        | 数量  | 特点                | 示例                |
+| ------------- | ------------------------------- | ----- | ------------------- | ------------------- |
+| **MDI**       | `@iconify-json/mdi`             | 7000+ | 最全面，设计统一    | `i-mdi-home`        |
+| **Carbon**    | `@iconify-json/carbon`          | 2000+ | IBM 设计，商务风格  | `i-carbon-user`     |
+| **Heroicons** | `@iconify-json/heroicons`       | 300+  | Tailwind 官方，简洁 | `i-heroicons-heart` |
+| **Tabler**    | `@iconify-json/tabler`          | 3000+ | 线条风格，现代      | `i-tabler-home`     |
 
 ## ⚠️ 注意事项
 
-### 1. 颜色限制
+### 1. 颜色适用范围
 
 ```vue
 <!-- ✅ 可以修改颜色 -->
-<C_Icon name="mdi-home" color="red" />
-<!-- UnoCSS图标 -->
-<C_Icon type="uview" name="home" color="blue" />
-<!-- uView+图标 -->
+<C_Icon name="i-mdi-home" color="#409eff" />              <!-- UnoCSS图标 -->
+<C_Icon type="uview" name="home" color="#67c23a" />       <!-- uView+图标 -->
 
 <!-- ❌ 无法修改颜色 -->
-<C_Icon type="svg" name="/static/icon.svg" color="red" />
-<!-- SVG文件 -->
-<C_Icon type="image" name="/static/logo.png" color="red" />
-<!-- 图片文件 -->
+<C_Icon type="svg" name="/static/icon.svg" color="red" />    <!-- SVG文件 -->
+<C_Icon type="image" name="/static/logo.png" color="red" />  <!-- 图片文件 -->
 ```
 
-### 2. 性能建议
+### 2. 文件路径注意事项
 
 ```vue
-<!-- ✅ 推荐 - 合理的图标大小 -->
-<C_Icon name="mdi-home" :size="24" />
+<!-- ✅ 正确的文件路径 -->
+<C_Icon type="svg" name="/static/icons/icon.svg" />           <!-- 本地SVG -->
+<C_Icon type="image" name="/static/images/logo.png" />        <!-- 本地图片 -->
+<C_Icon type="image" name="https://example.com/icon.png" />  <!-- 远程图片 -->
 
-<!-- ❌ 不推荐 - 过大的图标影响性能 -->
-<C_Icon name="mdi-home" :size="200" />
+<!-- ✅ Base64 编码 -->
+<C_Icon type="svg" name="data:image/svg+xml;base64,PHN2ZyB3..." />
+<C_Icon type="image" name="data:image/png;base64,iVBORw0K..." />
 ```
 
-### 3. 跨平台兼容
+### 3. 跨平台兼容性
 
 - **H5**: 所有图标类型都支持
-- **小程序**: 推荐使用 UnoCSS 和 uView+ 图标
+- **小程序**: 推荐使用 UnoCSS 和 uView+ 图标，远程图片可能需要配置域名白名单
 - **App**: 所有图标类型都支持
+
+### 4. 错误处理
+
+组件会在以下情况显示错误提示符号 "?":
+- name 为空或无效
+- type 为无效值
+- 文件路径不存在
+
+```vue
+<!-- 这些情况会显示错误提示 -->
+<C_Icon name="" />                          <!-- 空名称 -->
+<C_Icon type="invalid" name="test" />       <!-- 无效类型 -->
+<C_Icon type="svg" name="/not-exist.svg" /> <!-- 文件不存在 -->
+```
 
 ## 🐛 故障排除
 
@@ -281,76 +316,79 @@ app.component("C_Icon", CIcon);
 
 #### Q1: UnoCSS 图标不显示
 
-**原因**: 图标集未安装或配置错误
+**可能原因**:
+- 图标集未安装: `npm i -D @iconify-json/mdi`
+- UnoCSS 配置错误: 检查 `uno.config.js`
+- 图标名称格式错误: 确保使用 `i-mdi-home` 格式
+
+#### Q2: uView+ 图标显示异常
 
 **解决方案**:
-
-1. 安装对应图标集: `npm i -D @iconify-json/mdi`
-2. 检查 `uno.config.js` 配置
-3. 确认图标名称格式正确
-
-#### Q2: uView+图标显示异常
-
-**原因**: uView+ 未正确导入
-
-**解决方案**:
-
 ```javascript
 // main.js 确保导入uView+
 import uviewPlus from "uview-plus";
 app.use(uviewPlus);
 ```
 
-#### Q3: 图片图标加载失败
+#### Q3: SVG/图片加载失败
 
-**原因**: 图片路径错误或文件不存在
-
-**解决方案**:
-
-1. 检查图片路径是否正确
-2. 确认图片文件存在于对应目录
-3. 检查图片格式是否支持
+**检查清单**:
+1. 文件路径是否正确
+2. 文件是否存在于对应目录
+3. 小程序端检查域名白名单配置
 
 ## 🎯 最佳实践
 
-### 1. 图标库选择
+### 1. 图标库选择建议
 
 ```vue
 <!-- ✅ 推荐 - 统一使用一个图标库 -->
-<C_Icon name="mdi-home" />
-<C_Icon name="mdi-user" />
-<C_Icon name="mdi-settings" />
+<C_Icon name="i-mdi-home" />
+<C_Icon name="i-mdi-user" />
+<C_Icon name="i-mdi-settings" />
 
 <!-- ❌ 避免 - 混用不同风格图标库 -->
-<C_Icon name="mdi-home" />
-<C_Icon name="carbon-user" />
-<C_Icon name="heroicons-cog" />
+<C_Icon name="i-mdi-home" />
+<C_Icon name="i-carbon-user" />
+<C_Icon name="i-heroicons-cog" />
 ```
 
-### 2. 语义化使用
+### 2. 性能优化
 
 ```vue
-<!-- ✅ 推荐 - 图标与功能匹配 -->
-<C_Icon name="mdi-home" @click="goHome" />
-<C_Icon name="mdi-account" @click="openProfile" />
+<!-- ✅ 推荐 - 合理的图标大小 -->
+<C_Icon name="i-mdi-home" :size="24" />
 
-<!-- ❌ 避免 - 图标语义不明确 -->
-<C_Icon name="mdi-star" @click="goHome" />
+<!-- ❌ 不推荐 - 过大的图标影响性能 -->
+<C_Icon name="i-mdi-home" :size="200" />
 ```
 
 ### 3. 响应式设计
 
 ```vue
 <template>
-  <C_Icon name="mdi-menu" :size="iconSize" />
+  <C_Icon name="i-mdi-menu" :size="iconSize" />
 </template>
 
 <script setup>
-import { computed } from "vue";
+import { ref, computed, onMounted, onUnmounted } from 'vue';
+
+const windowWidth = ref(window.innerWidth);
 
 const iconSize = computed(() => {
-  // 根据屏幕尺寸调整图标大小
-  return window.innerWidth > 768 ? 24 : 20;
+  return windowWidth.value > 768 ? 24 : 20;
+});
+
+const handleResize = () => {
+  windowWidth.value = window.innerWidth;
+};
+
+onMounted(() => {
+  window.addEventListener('resize', handleResize);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('resize', handleResize);
 });
 </script>
 ```
@@ -366,44 +404,42 @@ const iconSize = computed(() => {
 npm i -D @iconify-json/mdi  # 如果只用MDI图标
 ```
 
-### 2. 图标缓存
+### 2. 包体积优化
 
-UnoCSS 会自动缓存生成的图标 CSS，无需额外配置。
+UnoCSS 会按需生成 CSS，相比传统字体文件能显著减少包体积：
 
-### 3. 包体积优化
+- 传统字体文件: ~200KB+
+- UnoCSS 按需生成: 只生成使用的图标 CSS
 
-使用 UnoCSS 图标相比传统字体文件能显著减少包体积：
-
-- 传统字体文件: ~200KB
-- UnoCSS 按需生成: ~几 KB
-
-## 🔄 升级指南
-
-### 从其他图标组件迁移
+## 🔄 从其他组件迁移
 
 ```vue
 <!-- 旧的写法 -->
 <u-icon name="home" size="24" color="red" />
 <Icon icon="mdi:home" size="24" color="red" />
+<i class="iconfont icon-home"></i>
 
 <!-- 新的统一写法 -->
 <C_Icon type="uview" name="home" :size="24" color="red" />
-<C_Icon name="mdi-home" :size="24" color="red" />
+<C_Icon name="i-mdi-home" :size="24" color="red" />
+<C_Icon name="i-mdi-home" :size="24" color="red" />
 ```
 
 ## 📝 更新日志
 
-### v1.0.0 (2025-09-10)
+### v1.0.0 (2025-09-12)
 
-- ✨ 支持 5 种图标类型
-- ✨ 统一的 API 接口
-- ✨ 基于 UnoCSS 无样式文件
-- ✨ 智能图标名称解析
-- ✨ Vue 3.4+ defineOptions 支持
-- ✨ 完整的跨平台兼容性
+- ✨ 支持 5 种图标类型统一接口
+- ✨ 基于 UnoCSS 的零样式文件方案
+- ✨ 完整的错误处理机制
+- ✨ Vue 3 Composition API 支持
+- ✨ 跨平台兼容 (H5/小程序/App)
+- ✨ TypeScript 类型支持
 
 ---
 
-**💡 提示**: 这个组件是为企业级项目设计的统一图标解决方案。推荐优先使用 UnoCSS 图标以获得最佳的开发体验和性能表现。遇到问题可以查看故障排除部分或联系开发团队。
+**💡 提示**: 推荐优先使用 UnoCSS 图标以获得最佳的开发体验和性能表现。记住图标名称需要使用完整的 `i-图标库-图标名` 格式。
 
-**🎯 设计理念**: 一个组件，五种方式，统一体验。让图标使用变得简单而强大！
+**🎯 设计理念**: 一个组件，五种方式，统一体验！
+
+
