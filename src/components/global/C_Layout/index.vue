@@ -4,15 +4,8 @@
     <C_Header
       v-if="showHeader"
       ref="headerRef"
-      :default-avatar="headerConfig.defaultAvatar"
-      :default-nickname="headerConfig.defaultNickname"
-      :show-status="headerConfig.showStatus"
-      :show-theme-toggle="headerConfig.showThemeToggle"
+      v-bind="headerConfig"
       :notification-count="notificationCount"
-      :theme="headerConfig.theme"
-      :enable-animations="headerConfig.enableAnimations"
-      :show-back="headerConfig.showBack"
-      :title="headerConfig.title"
       @user-click="handleUserClick"
       @notification-click="handleNotificationClick"
       @settings-click="handleSettingsClick"
@@ -31,11 +24,7 @@
       v-if="showTabbar"
       ref="tabbarRef"
       v-model="currentTabIndex"
-      :tab-list="tabbarConfig.list"
-      :fixed="tabbarConfig.fixed"
-      :background-color="tabbarConfig.backgroundColor"
-      :active-color="tabbarConfig.activeColor"
-      :inactive-color="tabbarConfig.inactiveColor"
+      v-bind="tabbarConfig"
       @change="handleTabChange"
     />
 
@@ -43,20 +32,27 @@
     <view v-if="globalLoading" class="global-loading">
       <u-loading-page :loading="true" loading-text="加载中..." />
     </view>
+
+    <!-- 调试信息（开发环境） -->
+    <view 
+      v-if="debug && isDevelopment" 
+      class="debug-info"
+      @click="showDebugInfo"
+    >
+      <text class="debug-text">DEBUG</text>
+    </view>
   </view>
 </template>
 
 <script setup>
-import { computed, ref, onMounted, watch, getCurrentInstance } from "vue";
-import { useUserStore } from "@/stores/modules/user";
-import { useAppStore } from "@/stores/modules/app";
-import {
-  layoutConfig,
-  headerThemeConfig,
+import { ref, onMounted, watch, nextTick } from "vue";
+import { 
+  useSmartLayout,
+  layoutProps,
+  layoutEmits,
   tabbarConfig,
-  getLayoutType,
-  getHeaderConfig,
-  getActiveTabIndex,
+  getCurrentTabIndex,
+  debugCurrentPage
 } from "./data.js";
 
 // 导入子组件
@@ -66,277 +62,393 @@ import C_Tabbar from "../C_Tabbar/index.vue";
 // 导入样式
 import "./index.scss";
 
-// Props
-const props = defineProps({
-  // 是否显示全局loading
-  globalLoading: {
-    type: Boolean,
-    default: false,
-  },
-  // 强制Layout类型 (可选: 'none', 'header-only', 'full')
-  forceLayoutType: {
-    type: String,
-    default: "",
-    validator: (value) => ["", "none", "header-only", "full"].includes(value),
-  },
-  // 通知数量
-  notificationCount: {
-    type: Number,
-    default: 0,
-  },
-  // 是否显示返回按钮
-  showBack: {
-    type: Boolean,
-    default: false,
-  },
-  // 页面标题（显示返回按钮时使用）
-  title: {
-    type: String,
-    default: "",
-  },
-});
+// =================================
+// 组件配置
+// =================================
+const props = defineProps(layoutProps);
+const emit = defineEmits(layoutEmits);
 
-// Emits
-const emit = defineEmits([
-  "userClick",
-  "notificationClick",
-  "settingsClick",
-  "statusClick",
-  "themeChange",
-  "tabChange",
-  "layoutChange",
-  "backClick",
-]);
+// =================================
+// 开发环境检测
+// =================================
+const isDevelopment = process.env.NODE_ENV === 'development';
 
-// Store
-const userStore = useUserStore();
-const appStore = useAppStore();
-
-// 响应式数据
+// =================================
+// 组件引用
+// =================================
 const headerRef = ref();
 const tabbarRef = ref();
-const currentTabIndex = ref(0);
 
-// 获取当前页面路径
-const getCurrentPath = () => {
-  const pages = getCurrentPages();
-  if (pages.length > 0) {
-    const currentPage = pages[pages.length - 1];
-    return `/${currentPage.route}`;
+// =================================
+// 使用智能Layout逻辑
+// =================================
+const {
+  // 响应式数据
+  isNavigating,
+  currentTabIndex,
+  
+  // 计算属性
+  currentPath,
+  layoutType,
+  showHeader,
+  showTabbar,
+  headerConfig,
+  layoutClasses,
+  contentStyles,
+  
+  // 工具方法
+  canGoBack,
+  getCurrentPath,
+  getPageInfo,
+} = useSmartLayout(props);
+
+// =================================
+// 调试功能
+// =================================
+if (props.debug && isDevelopment) {
+  watch(
+    () => currentPath.value,
+    () => {
+      console.log('🔍 Layout Debug:', debugCurrentPage());
+    },
+    { immediate: true }
+  );
+}
+
+const showDebugInfo = () => {
+  if (isDevelopment) {
+    const debugInfo = debugCurrentPage();
+    uni.showModal({
+      title: '页面调试信息',
+      content: `路径: ${debugInfo.currentPath}\n布局: ${debugInfo.layoutType}\n返回: ${debugInfo.showBack}\n标题: ${debugInfo.title}`,
+      showCancel: false
+    });
   }
-  return "/pages/index/index"; // 默认路径
 };
 
-// 计算属性
-const currentPath = computed(() => getCurrentPath());
-
-const layoutType = computed(() => {
-  if (props.forceLayoutType) {
-    return props.forceLayoutType;
-  }
-  return getLayoutType(currentPath.value);
-});
-
-const showHeader = computed(() => {
-  return layoutType.value === "header-only" || layoutType.value === "full";
-});
-
-const showTabbar = computed(() => {
-  return layoutType.value === "full";
-});
-
-const headerConfig = computed(() => {
-  const config = getHeaderConfig(currentPath.value);
-  return {
-    defaultAvatar: "/static/robot-avatar.png",
-    defaultNickname: "CHENY",
-    enableAnimations: true,
-    showBack: props.showBack,
-    title: props.title,
-    ...config,
-  };
-});
-
-const layoutClasses = computed(() => ({
-  "layout-none": layoutType.value === "none",
-  "layout-header-only": layoutType.value === "header-only",
-  "layout-full": layoutType.value === "full",
-  "has-header": showHeader.value,
-  "has-tabbar": showTabbar.value,
-}));
-
-const contentStyles = computed(() => {
-  const styles = {};
-
-  // 根据是否有Tabbar调整底部间距
-  if (showTabbar.value) {
-    styles.paddingBottom = "120rpx"; // Tabbar高度
-  }
-
-  return styles;
-});
-
-// 监听当前Tab
+// =================================
+// 页面路径监听
+// =================================
 watch(
   () => currentPath.value,
   (newPath) => {
+    // 更新Tab索引
     if (showTabbar.value) {
-      const activeIndex = getActiveTabIndex(newPath);
+      const activeIndex = getCurrentTabIndex(newPath);
       if (activeIndex !== -1) {
         currentTabIndex.value = activeIndex;
       }
     }
 
     // 触发Layout变化事件
-    emit("layoutChange", {
-      path: newPath,
-      layoutType: layoutType.value,
-      showHeader: showHeader.value,
-      showTabbar: showTabbar.value,
-    });
+    emit("layoutChange", getPageInfo());
+    
+    // 开发环境日志
+    if (isDevelopment) {
+      console.log('📍 页面切换:', {
+        路径: newPath,
+        布局: layoutType.value,
+        显示Header: showHeader.value,
+        显示TabBar: showTabbar.value,
+        显示返回: headerConfig.value.showBack,
+        标题: headerConfig.value.title,
+        页面栈: getCurrentPages().length,
+      });
+    }
   },
   { immediate: true }
 );
 
-// 事件处理
+// =================================
+// 事件处理器
+// =================================
+
+// Header事件
 const handleUserClick = (data) => {
+  console.log('Layout: 用户点击Header', data);
   emit("userClick", data);
 };
 
 const handleNotificationClick = (data) => {
+  console.log('Layout: 点击通知', data);
   emit("notificationClick", data);
 };
 
 const handleSettingsClick = () => {
+  console.log('Layout: 点击设置');
   emit("settingsClick");
 };
 
 const handleStatusClick = (data) => {
+  console.log('Layout: 点击状态', data);
   emit("statusClick", data);
 };
 
 const handleThemeChange = (data) => {
+  console.log('Layout: 主题变化', data);
   emit("themeChange", data);
 };
 
+// 🔥 智能返回处理
 const handleBackClick = () => {
+  console.log('Layout: 点击返回按钮');
   emit("backClick");
+
+  // 根据配置决定行为
+  if (props.backBehavior === "custom") {
+    console.log('Layout: 使用自定义返回行为');
+    return;
+  } else if (props.backBehavior === "none") {
+    console.log('Layout: 返回功能已禁用');
+    return;
+  }
+
+  // 检查是否可以返回
+  if (!canGoBack()) {
+    console.warn("Layout: 无法返回，当前在首页或无上级页面");
+    emit("backFail", { 
+      reason: "at_home_page",
+      pageStack: getCurrentPages().length,
+      currentPath: currentPath.value
+    });
+    return;
+  }
+
+  // 执行返回操作
+  uni.navigateBack({
+    delta: props.backDelta,
+    success: () => {
+      console.log(`Layout: 返回成功，返回${props.backDelta}层`);
+      emit("backSuccess", { 
+        delta: props.backDelta,
+        fromPath: currentPath.value
+      });
+    },
+    fail: (err) => {
+      console.error("Layout: 返回失败", err);
+      emit("backFail", { 
+        error: err, 
+        reason: "navigate_fail",
+        delta: props.backDelta,
+        fromPath: currentPath.value
+      });
+    }
+  });
 };
 
-// 导航状态管理
-const isNavigating = ref(false);
-
+// 🔥 智能Tab切换
 const handleTabChange = (data) => {
   const { item, index } = data;
-
+  
+  console.log(`Layout: 切换Tab到 ${item.text}(${index})`);
+  
   // 更新当前Tab索引
   currentTabIndex.value = index;
 
-  // 跳转到对应页面
-  if (item.path !== currentPath.value) {
-    if (isNavigating.value) {
-      console.log("Layout: 正在导航中，忽略此次跳转");
-      return;
-    }
+  // 如果目标页面与当前页面相同，不进行跳转
+  if (item.path === currentPath.value) {
+    console.log('Layout: 目标页面与当前页面相同，不跳转');
+    emit("tabChange", data);
+    return;
+  }
 
-    isNavigating.value = true;
+  // 防重复点击
+  if (isNavigating.value) {
+    console.log("Layout: 导航中，忽略重复点击");
+    return;
+  }
 
-    // 对H5环境特殊处理
-    // #ifdef H5
-    setTimeout(() => {
-      uni.navigateTo({
+  isNavigating.value = true;
+
+  // 使用switchTab进行Tab页面跳转
+  uni.switchTab({
+    url: item.path,
+    success: () => {
+      console.log(`Layout: switchTab到${item.text}成功`);
+      emit("tabChange", {
+        ...data,
+        fromPath: currentPath.value,
+        toPath: item.path
+      });
+      
+      // 延迟重置导航状态
+      nextTick(() => {
+        setTimeout(() => {
+          isNavigating.value = false;
+        }, 300);
+      });
+    },
+    fail: (err) => {
+      console.error("Layout: switchTab失败", err);
+      
+      // 降级处理：使用reLaunch
+      uni.reLaunch({
         url: item.path,
         success: () => {
-          emit("tabChange", data);
+          console.log("Layout: reLaunch降级跳转成功");
+          emit("tabChange", {
+            ...data,
+            fallback: 'reLaunch',
+            fromPath: currentPath.value,
+            toPath: item.path
+          });
           setTimeout(() => {
             isNavigating.value = false;
           }, 300);
         },
-        fail: (err) => {
-          console.error("Layout H5跳转失败:", err);
+        fail: (err2) => {
+          console.error("Layout: 降级跳转也失败", err2);
           isNavigating.value = false;
+          
+          // 通知跳转失败
+          emit("tabChange", {
+            ...data,
+            error: err2,
+            success: false
+          });
         },
       });
-    }, 100);
-    // #endif
-
-    // 其他平台使用redirectTo
-    // #ifndef H5
-    uni.redirectTo({
-      url: item.path,
-      success: () => {
-        emit("tabChange", data);
-        setTimeout(() => {
-          isNavigating.value = false;
-        }, 500);
-      },
-      fail: (err) => {
-        console.error("Tab切换失败:", err);
-        // 降级处理
-        uni.navigateTo({
-          url: item.path,
-          success: () => {
-            emit("tabChange", data);
-            setTimeout(() => {
-              isNavigating.value = false;
-            }, 500);
-          },
-          fail: (err2) => {
-            console.error("Layout: 降级跳转也失败:", err2);
-            isNavigating.value = false;
-          },
-        });
-      },
-    });
-    // #endif
-  } else {
-    emit("tabChange", data);
-  }
+    },
+  });
 };
 
-// 公共方法
+// =================================
+// 公共API
+// =================================
+
+// Header状态控制
 const setHeaderStatus = (status) => {
+  console.log(`Layout: 设置Header状态为 ${status}`);
   headerRef.value?.setAiStatus?.(status);
 };
 
 const setHeaderTheme = (theme) => {
+  console.log(`Layout: 设置Header主题为 ${theme}`);
   headerRef.value?.setTheme?.(theme);
 };
 
-const updateTabBadge = (tabId, count) => {
-  const tab = tabbarConfig.list.find((item) => item.id === tabId);
+// 返回功能
+const goBack = (delta = 1) => {
+  if (!canGoBack()) {
+    console.warn('Layout: 无法执行手动返回，当前在首页');
+    emit("backFail", { reason: "at_home_page" });
+    return false;
+  }
+
+  console.log(`Layout: 手动返回 ${delta} 层`);
+  uni.navigateBack({
+    delta,
+    success: () => {
+      console.log(`Layout: 手动返回成功`);
+      emit("backSuccess", { delta, manual: true });
+    },
+    fail: (err) => {
+      console.error('Layout: 手动返回失败', err);
+      emit("backFail", { error: err, reason: "manual_back_fail" });
+    }
+  });
+  
+  return true;
+};
+
+// 页面刷新
+const refreshPage = () => {
+  const pageInfo = getPageInfo();
+  console.log('Layout: 刷新当前页面', pageInfo.path);
+  
+  uni.reLaunch({
+    url: pageInfo.path
+  });
+};
+
+// Tab Badge管理
+const setTabBadge = (tabId, count) => {
+  console.log(`Layout: 设置Tab[${tabId}]的Badge为 ${count}`);
+  
+  const tab = tabbarConfig.list.find(item => item.id === tabId);
   if (tab) {
     tab.badge = count;
+    tabbarRef.value?.updateBadge?.(tabId, count);
+  } else {
+    console.warn(`Layout: 找不到Tab[${tabId}]`);
   }
 };
 
-const getLayoutInfo = () => ({
-  currentPath: currentPath.value,
-  layoutType: layoutType.value,
-  showHeader: showHeader.value,
-  showTabbar: showTabbar.value,
-  headerConfig: headerConfig.value,
-  tabbarConfig: tabbarConfig,
-});
+// 清除所有Badge
+const clearAllBadges = () => {
+  console.log('Layout: 清除所有Tab Badge');
+  tabbarConfig.list.forEach(tab => {
+    tab.badge = 0;
+  });
+  tabbarRef.value?.clearAllBadges?.();
+};
 
-// 初始化
+// 获取当前页面完整信息
+const getLayoutFullInfo = () => {
+  const pageInfo = getPageInfo();
+  return {
+    ...pageInfo,
+    currentTabIndex: currentTabIndex.value,
+    tabbarConfig,
+    isNavigating: isNavigating.value,
+    headerRef: headerRef.value,
+    tabbarRef: tabbarRef.value,
+  };
+};
+
+// =================================
+// 组件生命周期
+// =================================
 onMounted(() => {
   // 设置初始Tab索引
   if (showTabbar.value) {
-    const activeIndex = getActiveTabIndex(currentPath.value);
+    const activeIndex = getCurrentTabIndex(currentPath.value);
     if (activeIndex !== -1) {
       currentTabIndex.value = activeIndex;
     }
   }
+  
+  const pageInfo = getPageInfo();
+  console.log("🚀 Layout组件已挂载", pageInfo);
+  
+  // 触发挂载完成事件
+  emit("layoutChange", {
+    ...pageInfo,
+    mounted: true
+  });
 });
 
-// 暴露方法给父组件
+// =================================
+// 对外暴露的API
+// =================================
 defineExpose({
+  // 核心功能
   setHeaderStatus,
   setHeaderTheme,
-  updateTabBadge,
-  getLayoutInfo,
+  goBack,
+  canGoBack,
+  refreshPage,
+  
+  // Tab管理
+  setTabBadge,
+  clearAllBadges,
+  
+  // 信息获取
+  getPageInfo,
+  getLayoutFullInfo,
+  getCurrentPath,
+  getLayoutType: () => layoutType.value,
+  
+  // 组件引用
   headerRef,
   tabbarRef,
+  
+  // 状态访问
+  isNavigating: () => isNavigating.value,
+  getCurrentTabIndex: () => currentTabIndex.value,
+  
+  // 调试方法
+  debug: debugCurrentPage,
+  debugInfo: getLayoutFullInfo,
 });
 </script>
