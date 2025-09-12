@@ -17,11 +17,7 @@ export default defineConfig({
         display: "inline-block",
         "vertical-align": "middle",
       },
-      // 显式声明要使用的图标集
-      collections: {
-        mdi: () =>
-          import("@iconify-json/mdi/icons.json").then((i) => i.default),
-      },
+
     }), // 图标预设
   ],
   transformers: [
