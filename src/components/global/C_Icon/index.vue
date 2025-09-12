@@ -1,6 +1,6 @@
 <template>
   <view
-    class="c-icon-wrapper"
+    class="inline-flex items-center justify-center relative"
     :style="iconStyle"
     @click="handleClick"
   >
@@ -37,8 +37,8 @@
     <slot v-else-if="type === 'custom'"></slot>
 
     <!-- 兜底：显示错误状态 -->
-    <view v-else class="icon-error">
-      <text class="error-text">?</text>
+    <view v-else class="inline-flex items-center justify-center w-4 h-4 border border-red-500 rounded-sm bg-red-50">
+      <text class="text-red-500 text-xs font-bold">?</text>
     </view>
   </view>
 </template>
@@ -168,29 +168,3 @@ const handleClick = (event) => {
   emit("click", event);
 };
 </script>
-
-<style scoped>
-.c-icon-wrapper {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-}
-
-.icon-error {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 1em;
-  height: 1em;
-  border: 1px solid #ff4757;
-  border-radius: 2px;
-  background-color: #fff5f5;
-}
-
-.error-text {
-  color: #ff4757;
-  font-size: 12px;
-  font-weight: bold;
-}
-</style>
