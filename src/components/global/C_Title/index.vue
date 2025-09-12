@@ -1,78 +1,100 @@
 <template>
   <view
-    class="c-title-wrapper"
+    class="relative flex flex-col"
     :class="[
       `c-title-${type}`,
-      `c-title-align-${align}`,
-      `c-title-size-${size}`,
-      { 'c-title-clickable': clickable },
+      `text-${align}`,
+      `items-${align === 'center' ? 'center' : align === 'right' ? 'end' : 'start'}`,
+      { 'cursor-pointer transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0': clickable },
     ]"
     :style="wrapperStyle"
     @click="handleClick"
   >
-    <!-- 顶部分割线 -->
-    <view
-      v-if="showDivider && dividerPosition === 'top'"
-      class="c-title-divider c-title-divider-top"
-      :class="`c-title-divider-${type}`"
-    ></view>
+    <!-- 玻璃质感背景容器 -->
+    <view 
+      class="relative backdrop-blur-md rounded-2xl border border-white/20 shadow-xl overflow-hidden"
+      :class="glassBackgroundClass"
+    >
+      <!-- 光影渐变层 -->
+      <view class="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent pointer-events-none"></view>
+      
+      <!-- 顶部分割线 -->
+      <view
+        v-if="showDivider && dividerPosition === 'top'"
+        class="h-0.5 mx-4 mb-3 rounded-full opacity-60"
+        :class="dividerGradientClass"
+      ></view>
 
-    <!-- 主体内容 -->
-    <view class="c-title-content">
-      <!-- 左侧图标 -->
-      <view v-if="leftIcon" class="c-title-icon c-title-icon-left">
-        <C_Icon
-          :name="leftIcon"
-          :type="iconType"
-          :size="iconSize"
-          :color="iconColor"
-        />
-      </view>
-
-      <!-- 文字内容区 -->
-      <view class="c-title-text-area">
-        <!-- 主标题 -->
-        <view
-          class="c-title-main"
-          :class="[`c-title-level-${level}`, { 'c-title-bold': bold }]"
-        >
-          {{ title }}
+      <!-- 主体内容 -->
+      <view class="flex items-start gap-3 p-4 relative z-10">
+        <!-- 左侧图标 -->
+        <view v-if="leftIcon" class="flex items-center justify-center flex-shrink-0 mt-1">
+          <view 
+            class="p-2 rounded-xl backdrop-blur-sm border border-white/20 shadow-lg"
+            :class="iconBackgroundClass"
+          >
+            <C_Icon
+              :name="leftIcon"
+              :type="iconType"
+              :size="iconSize"
+              :color="iconColor"
+            />
+          </view>
         </view>
 
-        <!-- 副标题 -->
-        <view
-          v-if="subtitle"
-          class="c-title-subtitle"
-          :class="`c-title-subtitle-${type}`"
-        >
-          {{ subtitle }}
+        <!-- 文字内容区 -->
+        <view class="flex-1 min-w-0">
+          <!-- 主标题 -->
+          <view
+            class="font-medium leading-tight m-0 break-words"
+            :class="[titleSizeClass, titleColorClass, { 'font-semibold': bold }]"
+          >
+            {{ title }}
+          </view>
+
+          <!-- 副标题 -->
+          <view
+            v-if="subtitle"
+            class="text-sm leading-relaxed mt-1 opacity-80"
+            :class="subtitleColorClass"
+          >
+            {{ subtitle }}
+          </view>
+        </view>
+
+        <!-- 右侧图标 -->
+        <view v-if="rightIcon" class="flex items-center justify-center flex-shrink-0 mt-1">
+          <view 
+            class="p-2 rounded-xl backdrop-blur-sm border border-white/20 shadow-lg"
+            :class="iconBackgroundClass"
+          >
+            <C_Icon
+              :name="rightIcon"
+              :type="iconType"
+              :size="iconSize"
+              :color="iconColor"
+            />
+          </view>
         </view>
       </view>
 
-      <!-- 右侧图标 -->
-      <view v-if="rightIcon" class="c-title-icon c-title-icon-right">
-        <C_Icon
-          :name="rightIcon"
-          :type="iconType"
-          :size="iconSize"
-          :color="iconColor"
-        />
-      </view>
+      <!-- 底部分割线 -->
+      <view
+        v-if="showDivider && dividerPosition === 'bottom'"
+        class="h-0.5 mx-4 mt-3 rounded-full opacity-60"
+        :class="dividerGradientClass"
+      ></view>
+
+      <!-- 装饰元素 -->
+      <view
+        v-if="showDecoration"
+        class="absolute -bottom-1 h-1 w-10 rounded-full"
+        :class="[decorationGradientClass, decorationPositionClass]"
+      ></view>
+      
+      <!-- 边框光效 -->
+      <view class="absolute inset-0 rounded-2xl border border-white/30 pointer-events-none"></view>
     </view>
-
-    <!-- 底部分割线 -->
-    <view
-      v-if="showDivider && dividerPosition === 'bottom'"
-      class="c-title-divider c-title-divider-bottom"
-      :class="`c-title-divider-${type}`"
-    ></view>
-
-    <!-- 装饰元素 -->
-    <view
-      v-if="showDecoration"
-      class="c-title-decoration"
-      :class="`c-title-decoration-${type}`"
-    ></view>
   </view>
 </template>
 
@@ -175,8 +197,8 @@ const emit = defineEmits(["click"]);
 const iconSize = computed(() => {
   const sizeMap = {
     small: 16,
-    medium: 20,
-    large: 24,
+    medium: 18,
+    large: 20,
   };
   return sizeMap[props.size];
 });
@@ -184,14 +206,115 @@ const iconSize = computed(() => {
 // 计算图标颜色
 const iconColor = computed(() => {
   const colorMap = {
-    default: "#606266",
-    primary: "#409eff",
-    success: "#67c23a",
-    warning: "#e6a23c",
-    danger: "#f56c6c",
-    info: "#909399",
+    default: "#64748b",
+    primary: "#3b82f6",
+    success: "#10b981",
+    warning: "#f59e0b",
+    danger: "#ef4444",
+    info: "#6b7280",
   };
   return colorMap[props.type];
+});
+
+// 玻璃质感背景类
+const glassBackgroundClass = computed(() => {
+  const bgMap = {
+    default: 'bg-slate-500/10',
+    primary: 'bg-blue-500/15',
+    success: 'bg-emerald-500/15', 
+    warning: 'bg-amber-500/15',
+    danger: 'bg-red-500/15',
+    info: 'bg-gray-500/10'
+  };
+  return bgMap[props.type];
+});
+
+// 图标背景类
+const iconBackgroundClass = computed(() => {
+  const bgMap = {
+    default: 'bg-slate-500/20',
+    primary: 'bg-blue-500/20',
+    success: 'bg-emerald-500/20',
+    warning: 'bg-amber-500/20', 
+    danger: 'bg-red-500/20',
+    info: 'bg-gray-500/20'
+  };
+  return bgMap[props.type];
+});
+
+// 标题尺寸类
+const titleSizeClass = computed(() => {
+  const levelSizeMap = {
+    1: { small: 'text-2xl', medium: 'text-3xl', large: 'text-4xl' },
+    2: { small: 'text-xl', medium: 'text-2xl', large: 'text-3xl' },
+    3: { small: 'text-lg', medium: 'text-xl', large: 'text-2xl' },
+    4: { small: 'text-base', medium: 'text-lg', large: 'text-xl' },
+    5: { small: 'text-sm', medium: 'text-base', large: 'text-lg' },
+    6: { small: 'text-xs', medium: 'text-sm', large: 'text-base' },
+  };
+  return levelSizeMap[props.level][props.size];
+});
+
+// 标题颜色类
+const titleColorClass = computed(() => {
+  const colorMap = {
+    default: 'text-slate-700',
+    primary: 'text-blue-600',
+    success: 'text-emerald-600',
+    warning: 'text-amber-600',
+    danger: 'text-red-600',
+    info: 'text-gray-600',
+  };
+  return colorMap[props.type];
+});
+
+// 副标题颜色类
+const subtitleColorClass = computed(() => {
+  const colorMap = {
+    default: 'text-slate-600',
+    primary: 'text-blue-500',
+    success: 'text-emerald-500',
+    warning: 'text-amber-500',
+    danger: 'text-red-500',
+    info: 'text-gray-500',
+  };
+  return colorMap[props.type];
+});
+
+// 分割线渐变类
+const dividerGradientClass = computed(() => {
+  const gradientMap = {
+    default: 'bg-gradient-to-r from-slate-400 to-transparent',
+    primary: 'bg-gradient-to-r from-blue-400 to-transparent',
+    success: 'bg-gradient-to-r from-emerald-400 to-transparent',
+    warning: 'bg-gradient-to-r from-amber-400 to-transparent',
+    danger: 'bg-gradient-to-r from-red-400 to-transparent',
+    info: 'bg-gradient-to-r from-gray-400 to-transparent',
+  };
+  return gradientMap[props.type];
+});
+
+// 装饰元素渐变类
+const decorationGradientClass = computed(() => {
+  const gradientMap = {
+    default: 'bg-gradient-to-r from-slate-400 to-slate-300',
+    primary: 'bg-gradient-to-r from-blue-500 to-blue-400',
+    success: 'bg-gradient-to-r from-emerald-500 to-emerald-400',
+    warning: 'bg-gradient-to-r from-amber-500 to-amber-400',
+    danger: 'bg-gradient-to-r from-red-500 to-red-400',
+    info: 'bg-gradient-to-r from-gray-500 to-gray-400',
+  };
+  return gradientMap[props.type];
+});
+
+// 装饰元素位置类
+const decorationPositionClass = computed(() => {
+  const positionMap = {
+    left: 'left-4',
+    center: 'left-1/2 -translate-x-1/2',
+    right: 'right-4',
+  };
+  return positionMap[props.align];
 });
 
 // 计算包装器样式
@@ -208,328 +331,3 @@ const handleClick = (event) => {
   }
 };
 </script>
-
-<style lang="scss" scoped>
-.c-title-wrapper {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-
-  &.c-title-clickable {
-    cursor: pointer;
-    transition: all 0.2s ease;
-
-    &:hover {
-      transform: translateY(-1px);
-    }
-
-    &:active {
-      transform: translateY(0);
-    }
-  }
-}
-
-// 对齐方式
-.c-title-align-left {
-  text-align: left;
-  align-items: flex-start;
-}
-
-.c-title-align-center {
-  text-align: center;
-  align-items: center;
-}
-
-.c-title-align-right {
-  text-align: right;
-  align-items: flex-end;
-}
-
-// 主体内容
-.c-title-content {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-}
-
-.c-title-text-area {
-  flex: 1;
-  min-width: 0;
-}
-
-// 图标样式
-.c-title-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.c-title-icon-left {
-  margin-top: 2px;
-}
-
-.c-title-icon-right {
-  margin-top: 2px;
-}
-
-// 主标题样式
-.c-title-main {
-  font-weight: 500;
-  line-height: 1.4;
-  margin: 0;
-  word-break: break-word;
-
-  &.c-title-bold {
-    font-weight: 600;
-  }
-}
-
-// 标题级别样式
-.c-title-level-1 {
-  font-size: 28px;
-}
-
-.c-title-level-2 {
-  font-size: 24px;
-}
-
-.c-title-level-3 {
-  font-size: 20px;
-}
-
-.c-title-level-4 {
-  font-size: 18px;
-}
-
-.c-title-level-5 {
-  font-size: 16px;
-}
-
-.c-title-level-6 {
-  font-size: 14px;
-}
-
-// 尺寸调整
-.c-title-size-small {
-  .c-title-level-1 {
-    font-size: 24px;
-  }
-  .c-title-level-2 {
-    font-size: 20px;
-  }
-  .c-title-level-3 {
-    font-size: 18px;
-  }
-  .c-title-level-4 {
-    font-size: 16px;
-  }
-  .c-title-level-5 {
-    font-size: 14px;
-  }
-  .c-title-level-6 {
-    font-size: 12px;
-  }
-}
-
-.c-title-size-large {
-  .c-title-level-1 {
-    font-size: 32px;
-  }
-  .c-title-level-2 {
-    font-size: 28px;
-  }
-  .c-title-level-3 {
-    font-size: 24px;
-  }
-  .c-title-level-4 {
-    font-size: 20px;
-  }
-  .c-title-level-5 {
-    font-size: 18px;
-  }
-  .c-title-level-6 {
-    font-size: 16px;
-  }
-}
-
-// 副标题样式
-.c-title-subtitle {
-  font-size: 14px;
-  line-height: 1.5;
-  margin-top: 4px;
-  opacity: 0.8;
-}
-
-// 主题颜色
-.c-title-default {
-  .c-title-main {
-    color: #2c3e50;
-  }
-
-  .c-title-subtitle-default {
-    color: #606266;
-  }
-}
-
-.c-title-primary {
-  .c-title-main {
-    color: #409eff;
-  }
-
-  .c-title-subtitle-primary {
-    color: #409eff;
-  }
-}
-
-.c-title-success {
-  .c-title-main {
-    color: #67c23a;
-  }
-
-  .c-title-subtitle-success {
-    color: #67c23a;
-  }
-}
-
-.c-title-warning {
-  .c-title-main {
-    color: #e6a23c;
-  }
-
-  .c-title-subtitle-warning {
-    color: #e6a23c;
-  }
-}
-
-.c-title-danger {
-  .c-title-main {
-    color: #f56c6c;
-  }
-
-  .c-title-subtitle-danger {
-    color: #f56c6c;
-  }
-}
-
-.c-title-info {
-  .c-title-main {
-    color: #909399;
-  }
-
-  .c-title-subtitle-info {
-    color: #909399;
-  }
-}
-
-// 分割线样式
-.c-title-divider {
-  height: 2px;
-  border-radius: 1px;
-  margin: 8px 0;
-
-  &.c-title-divider-top {
-    margin-bottom: 12px;
-  }
-
-  &.c-title-divider-bottom {
-    margin-top: 12px;
-  }
-}
-
-.c-title-divider-default {
-  background: linear-gradient(90deg, #ddd 0%, transparent 100%);
-}
-
-.c-title-divider-primary {
-  background: linear-gradient(90deg, #409eff 0%, transparent 100%);
-}
-
-.c-title-divider-success {
-  background: linear-gradient(90deg, #67c23a 0%, transparent 100%);
-}
-
-.c-title-divider-warning {
-  background: linear-gradient(90deg, #e6a23c 0%, transparent 100%);
-}
-
-.c-title-divider-danger {
-  background: linear-gradient(90deg, #f56c6c 0%, transparent 100%);
-}
-
-.c-title-divider-info {
-  background: linear-gradient(90deg, #909399 0%, transparent 100%);
-}
-
-// 装饰元素
-.c-title-decoration {
-  position: absolute;
-  left: 0;
-  bottom: -4px;
-  height: 3px;
-  width: 40px;
-  border-radius: 2px;
-
-  .c-title-align-center & {
-    left: 50%;
-    transform: translateX(-50%);
-  }
-
-  .c-title-align-right & {
-    right: 0;
-    left: auto;
-  }
-}
-
-.c-title-decoration-default {
-  background: #ddd;
-}
-
-.c-title-decoration-primary {
-  background: linear-gradient(90deg, #409eff, #66b1ff);
-}
-
-.c-title-decoration-success {
-  background: linear-gradient(90deg, #67c23a, #85ce61);
-}
-
-.c-title-decoration-warning {
-  background: linear-gradient(90deg, #e6a23c, #ebb563);
-}
-
-.c-title-decoration-danger {
-  background: linear-gradient(90deg, #f56c6c, #f78989);
-}
-
-.c-title-decoration-info {
-  background: linear-gradient(90deg, #909399, #a6a9ad);
-}
-
-// 响应式设计
-@media (max-width: 768px) {
-  .c-title-size-large {
-    .c-title-level-1 {
-      font-size: 28px;
-    }
-    .c-title-level-2 {
-      font-size: 24px;
-    }
-    .c-title-level-3 {
-      font-size: 20px;
-    }
-    .c-title-level-4 {
-      font-size: 18px;
-    }
-    .c-title-level-5 {
-      font-size: 16px;
-    }
-    .c-title-level-6 {
-      font-size: 14px;
-    }
-  }
-
-  .c-title-content {
-    gap: 6px;
-  }
-}
-</style>

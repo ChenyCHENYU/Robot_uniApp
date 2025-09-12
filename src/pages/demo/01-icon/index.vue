@@ -1,348 +1,232 @@
 <template>
   <C_Layout>
-    <view class="demo-container">
-      <view class="demo-title">C_Icon 组件示例</view>
-
-      <!-- 1. UnoCSS 图标 -->
-      <view class="demo-section">
-        <view class="section-header">
-          <view class="section-title">1. UnoCSS 图标</view>
-          <text class="section-desc">使用 UnoCSS 图标库，支持海量图标</text>
-        </view>
-        
-        <view class="demo-content">
-          <view class="effect-demo">
-            <view class="icon-row">
-              <C_Icon name="i-mdi-home" :size="24" color="#409eff" />
-              <C_Icon name="i-mdi-heart" :size="24" color="#f56c6c" />
-              <C_Icon name="i-mdi-star" :size="24" color="#e6a23c" />
-              <C_Icon name="i-mdi-account" :size="24" color="#67c23a" />
-            </view>
-          </view>
-          <view class="code-demo">
-            <text class="code-title">基础用法：</text>
-            <view class="code-block">
-              <text class="code-text">&lt;C_Icon name="i-mdi-home" :size="24" color="#409eff" /&gt;</text>
-              <text class="code-text">&lt;C_Icon name="i-mdi-heart" :size="24" color="#f56c6c" /&gt;</text>
-            </view>
-          </view>
-        </view>
+    <view class="max-w-4xl mx-auto p-5 bg-gray-50 min-h-screen">
+      <!-- 页面标题 -->
+      <view class="text-center mb-8">
+        <C_Title
+          title="C_Icon 图标组件演示"
+          subtitle="五种图标类型，统一API，企业级解决方案"
+          type="primary"
+          :level="1"
+          size="large"
+          align="center"
+          left-icon="i-mdi-star"
+          :show-decoration="true"
+          :show-divider="true"
+        />
       </view>
 
-      <!-- 2. uView+ 图标 -->
-      <view class="demo-section">
-        <view class="section-header">
-          <view class="section-title">2. uView+ 图标</view>
-          <text class="section-desc">使用 uView+ 图标组件，需指定 type="uview"</text>
-        </view>
+      <!-- 演示卡片网格 -->
+      <view class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         
-        <view class="demo-content">
-          <view class="effect-demo">
-            <view class="icon-row">
-              <C_Icon type="uview" name="home" :size="24" color="#409eff" />
-              <C_Icon type="uview" name="heart-fill" :size="24" color="#f56c6c" />
-              <C_Icon type="uview" name="star-fill" :size="24" color="#e6a23c" />
-              <C_Icon type="uview" name="account" :size="24" color="#67c23a" />
-            </view>
+        <!-- 1. UnoCSS 图标卡片 -->
+        <view class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+          <C_Title
+            title="UnoCSS 图标"
+            subtitle="海量图标库支持"
+            :level="3"
+            type="primary"
+            align="center"
+            left-icon="i-mdi-palette"
+            :show-decoration="true"
+          />
+          
+          <view class="flex justify-center items-center gap-4 my-6 p-4 bg-gray-50 rounded-lg">
+            <C_Icon name="i-mdi-home" :size="28" color="#409eff" />
+            <C_Icon name="i-mdi-heart" :size="28" color="#f56c6c" />
+            <C_Icon name="i-mdi-star" :size="28" color="#e6a23c" />
+            <C_Icon name="i-mdi-account" :size="28" color="#67c23a" />
           </view>
-          <view class="code-demo">
-            <text class="code-title">基础用法：</text>
-            <view class="code-block">
-              <text class="code-text">&lt;C_Icon type="uview" name="home" :size="24" /&gt;</text>
-              <text class="code-text">&lt;C_Icon type="uview" name="heart-fill" :size="24" :bold="true" /&gt;</text>
+          
+          <view class="text-center">
+            <text class="text-sm text-gray-600 block mb-2">基础用法：</text>
+            <view class="bg-gray-100 rounded p-3 text-xs font-mono text-gray-800">
+              &lt;C_Icon name="i-mdi-home" :size="28" /&gt;
             </view>
           </view>
         </view>
+
+        <!-- 2. uView+ 图标卡片 -->
+        <view class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+          <C_Title
+            title="uView+ 图标"
+            subtitle="uView组件库图标"
+            :level="3"
+            type="success"
+            align="center"
+            left-icon="i-mdi-view-grid"
+            :show-decoration="true"
+          />
+          
+          <view class="flex justify-center items-center gap-4 my-6 p-4 bg-gray-50 rounded-lg">
+            <C_Icon type="uview" name="home" :size="28" color="#67c23a" />
+            <C_Icon type="uview" name="heart-fill" :size="28" color="#f56c6c" />
+            <C_Icon type="uview" name="star-fill" :size="28" color="#e6a23c" />
+            <C_Icon type="uview" name="account" :size="28" color="#409eff" />
+          </view>
+          
+          <view class="text-center">
+            <text class="text-sm text-gray-600 block mb-2">基础用法：</text>
+            <view class="bg-gray-100 rounded p-3 text-xs font-mono text-gray-800">
+              &lt;C_Icon type="uview" name="home" /&gt;
+            </view>
+          </view>
+        </view>
+
+        <!-- 3. SVG 图标卡片 -->
+        <view class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+          <C_Title
+            title="SVG 图标"
+            subtitle="本地和Base64 SVG"
+            :level="3"
+            type="warning"
+            align="center"
+            left-icon="i-mdi-svg"
+            :show-decoration="true"
+          />
+          
+          <view class="flex justify-center items-center gap-4 my-6 p-4 bg-gray-50 rounded-lg">
+            <C_Icon type="svg" name="/static/icons/icon-test.svg" :size="32" />
+            <C_Icon 
+              type="svg" 
+              name="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDJMMTMuMDkgOC4yNkwyMCA5TDEzLjA5IDE1Ljc0TDEyIDIyTDEwLjkxIDE1Ljc0TDQgOUwxMC45MSA4LjI2TDEyIDJaIiBmaWxsPSIjRkY2QjM1Ii8+Cjwvc3ZnPgo=" 
+              :size="32" 
+            />
+          </view>
+          
+          <view class="text-center">
+            <text class="text-sm text-gray-600 block mb-2">基础用法：</text>
+            <view class="bg-gray-100 rounded p-3 text-xs font-mono text-gray-800">
+              &lt;C_Icon type="svg" name="/static/icon.svg" /&gt;
+            </view>
+          </view>
+        </view>
+
+        <!-- 4. 图片图标卡片 -->
+        <view class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+          <C_Title
+            title="图片图标"
+            subtitle="本地、远程、Base64图片"
+            :level="3"
+            type="danger"
+            align="center"
+            left-icon="i-mdi-image"
+            :show-decoration="true"
+          />
+          
+          <view class="flex justify-center items-center gap-4 my-6 p-4 bg-gray-50 rounded-lg">
+            <C_Icon type="image" name="/static/images/test-1.png" :size="32" />
+            <C_Icon 
+              type="image" 
+              name="https://cheny-chenyu.oss-cn-chengdu.aliyuncs.com/robot_admin/login.png" 
+              :size="32" 
+            />
+            <C_Icon 
+              type="image" 
+              name="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==" 
+              :size="32" 
+            />
+          </view>
+          
+          <view class="text-center">
+            <text class="text-sm text-gray-600 block mb-2">基础用法：</text>
+            <view class="bg-gray-100 rounded p-3 text-xs font-mono text-gray-800">
+              &lt;C_Icon type="image" name="/path/to/image.png" /&gt;
+            </view>
+          </view>
+        </view>
+
+        <!-- 5. 自定义内容卡片 -->
+        <view class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+          <C_Title
+            title="自定义内容"
+            subtitle="插槽支持任意内容"
+            :level="3"
+            type="info"
+            align="center"
+            left-icon="i-mdi-puzzle"
+            :show-decoration="true"
+          />
+          
+          <view class="flex justify-center items-center gap-4 my-6 p-4 bg-gray-50 rounded-lg">
+            <C_Icon type="custom" :size="32">🏠</C_Icon>
+            <C_Icon type="custom" :size="32">
+              <text class="text-lg font-bold text-blue-500">A</text>
+            </C_Icon>
+            <C_Icon type="custom" :size="32">
+              <view class="w-4 h-4 bg-gradient-to-r from-blue-500 to-green-500 rounded-full"></view>
+            </C_Icon>
+          </view>
+          
+          <view class="text-center">
+            <text class="text-sm text-gray-600 block mb-2">基础用法：</text>
+            <view class="bg-gray-100 rounded p-3 text-xs font-mono text-gray-800">
+              &lt;C_Icon type="custom"&gt;🏠&lt;/C_Icon&gt;
+            </view>
+          </view>
+        </view>
+
+        <!-- 6. 高级功能卡片 -->
+        <view class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+          <C_Title
+            title="高级功能"
+            subtitle="尺寸、颜色、事件处理"
+            :level="3"
+            type="primary"
+            align="center"
+            left-icon="i-mdi-cog"
+            :show-decoration="true"
+          />
+          
+          <view class="my-6 p-4 bg-gray-50 rounded-lg">
+            <!-- 尺寸演示 -->
+            <view class="flex justify-center items-end gap-3 mb-4">
+              <C_Icon name="i-mdi-star" :size="16" color="#409eff" @click="handleIconClick" />
+              <C_Icon name="i-mdi-star" :size="24" color="#409eff" @click="handleIconClick" />
+              <C_Icon name="i-mdi-star" :size="32" color="#409eff" @click="handleIconClick" />
+              <C_Icon name="i-mdi-star" :size="40" color="#409eff" @click="handleIconClick" />
+            </view>
+            
+            <!-- 颜色演示 -->
+            <view class="flex justify-center items-center gap-3">
+              <C_Icon name="i-mdi-heart" :size="24" color="#f56c6c" @click="handleIconClick" />
+              <C_Icon name="i-mdi-heart" :size="24" color="#67c23a" @click="handleIconClick" />
+              <C_Icon name="i-mdi-heart" :size="24" color="#409eff" @click="handleIconClick" />
+              <C_Icon name="i-mdi-heart" :size="24" color="#e6a23c" @click="handleIconClick" />
+              <C_Icon name="i-mdi-heart" :size="24" color="#909399" @click="handleIconClick" />
+            </view>
+          </view>
+          
+          <view class="text-center">
+            <text class="text-sm text-gray-600 block mb-2">点击图标试试：</text>
+            <view class="bg-gray-100 rounded p-3 text-xs font-mono text-gray-800">
+              &lt;C_Icon name="i-mdi-heart" @click="handleClick" /&gt;
+            </view>
+          </view>
+        </view>
+
       </view>
 
-      <!-- 3. SVG 图标 -->
-      <view class="demo-section">
-        <view class="section-header">
-          <view class="section-title">3. SVG 图标</view>
-          <text class="section-desc">支持本地SVG文件和Base64编码的内联SVG</text>
-        </view>
-        
-        <view class="demo-content">
-          <view class="effect-demo">
-            <view class="icon-row">
-              <C_Icon type="svg" name="/static/icons/icon-test.svg" :size="24" />
-              <C_Icon 
-                type="svg" 
-                name="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDJMMTMuMDkgOC4yNkwyMCA5TDEzLjA5IDE1Ljc0TDEyIDIyTDEwLjkxIDE1Ljc0TDQgOUwxMC45MSA4LjI2TDEyIDJaIiBmaWxsPSIjRkY2QjM1Ii8+Cjwvc3ZnPgo=" 
-                :size="24" 
-              />
-            </view>
-          </view>
-          <view class="code-demo">
-            <text class="code-title">基础用法：</text>
-            <view class="code-block">
-              <text class="code-text">&lt;!-- 本地SVG文件 --&gt;</text>
-              <text class="code-text">&lt;C_Icon type="svg" name="/static/icons/icon.svg" :size="24" /&gt;</text>
-              <text class="code-text">&lt;!-- Base64编码SVG --&gt;</text>
-              <text class="code-text">&lt;C_Icon type="svg" name="data:image/svg+xml;base64,..." /&gt;</text>
-            </view>
-          </view>
-        </view>
+      <!-- 底部说明 -->
+      <view class="mt-8 text-center">
+        <C_Title
+          title="功能完整，使用简单"
+          subtitle="企业级图标组件解决方案，支持多平台，零配置使用"
+          :level="4"
+          type="info"
+          align="center"
+          :show-divider="true"
+          divider-position="top"
+        />
       </view>
-
-      <!-- 4. 图片图标 -->
-      <view class="demo-section">
-        <view class="section-header">
-          <view class="section-title">4. 图片图标</view>
-          <text class="section-desc">支持本地图片、远程URL和Base64编码图片</text>
-        </view>
-        
-        <view class="demo-content">
-          <view class="effect-demo">
-            <view class="icon-row">
-              <C_Icon type="image" name="/static/images/test-1.png" :size="32" />
-              <C_Icon 
-                type="image" 
-                name="https://cheny-chenyu.oss-cn-chengdu.aliyuncs.com/robot_admin/login.png" 
-                :size="32" 
-              />
-              <C_Icon 
-                type="image" 
-                name="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==" 
-                :size="32" 
-              />
-            </view>
-          </view>
-          <view class="code-demo">
-            <text class="code-title">基础用法：</text>
-            <view class="code-block">
-              <text class="code-text">&lt;!-- 本地图片 --&gt;</text>
-              <text class="code-text">&lt;C_Icon type="image" name="/static/images/logo.png" /&gt;</text>
-              <text class="code-text">&lt;!-- 远程图片 --&gt;</text>
-              <text class="code-text">&lt;C_Icon type="image" name="https://example.com/icon.png" /&gt;</text>
-            </view>
-          </view>
-        </view>
-      </view>
-
-      <!-- 5. 自定义内容 -->
-      <view class="demo-section">
-        <view class="section-header">
-          <view class="section-title">5. 自定义内容</view>
-          <text class="section-desc">通过插槽支持任意自定义内容</text>
-        </view>
-        
-        <view class="demo-content">
-          <view class="effect-demo">
-            <view class="icon-row">
-              <C_Icon type="custom" :size="24">🏠</C_Icon>
-              <C_Icon type="custom" :size="24">
-                <text class="custom-text">A</text>
-              </C_Icon>
-              <C_Icon type="custom" :size="24">
-                <view class="custom-shape"></view>
-              </C_Icon>
-            </view>
-          </view>
-          <view class="code-demo">
-            <text class="code-title">基础用法：</text>
-            <view class="code-block">
-              <text class="code-text">&lt;!-- Emoji --&gt;</text>
-              <text class="code-text">&lt;C_Icon type="custom" :size="24"&gt;🏠&lt;/C_Icon&gt;</text>
-              <text class="code-text">&lt;!-- 自定义内容 --&gt;</text>
-              <text class="code-text">&lt;C_Icon type="custom"&gt;&lt;text&gt;A&lt;/text&gt;&lt;/C_Icon&gt;</text>
-            </view>
-          </view>
-        </view>
-      </view>
-
-      <!-- 6. 高级用法 -->
-      <view class="demo-section">
-        <view class="section-header">
-          <view class="section-title">6. 高级用法</view>
-          <text class="section-desc">尺寸、颜色、事件处理等进阶用法</text>
-        </view>
-        
-        <view class="demo-content">
-          <view class="effect-demo">
-            <view class="advanced-demo">
-              <view class="size-row">
-                <text class="demo-label">不同尺寸：</text>
-                <C_Icon name="i-mdi-star" :size="16" color="#409eff" />
-                <C_Icon name="i-mdi-star" :size="24" color="#409eff" />
-                <C_Icon name="i-mdi-star" :size="32" color="#409eff" />
-                <C_Icon name="i-mdi-star" :size="48" color="#409eff" />
-              </view>
-              <view class="color-row">
-                <text class="demo-label">不同颜色：</text>
-                <C_Icon name="i-mdi-heart" :size="24" color="#f56c6c" />
-                <C_Icon name="i-mdi-heart" :size="24" color="#67c23a" />
-                <C_Icon name="i-mdi-heart" :size="24" color="#409eff" />
-                <C_Icon name="i-mdi-heart" :size="24" color="#e6a23c" />
-              </view>
-            </view>
-          </view>
-          <view class="code-demo">
-            <text class="code-title">高级用法：</text>
-            <view class="code-block">
-              <text class="code-text">&lt;!-- 自定义尺寸和颜色 --&gt;</text>
-              <text class="code-text">&lt;C_Icon name="i-mdi-home" :size="32" color="#409eff" /&gt;</text>
-              <text class="code-text">&lt;!-- 事件处理 --&gt;</text>
-              <text class="code-text">&lt;C_Icon name="i-mdi-heart" @click="handleClick" /&gt;</text>
-              <text class="code-text">&lt;!-- 自定义样式 --&gt;</text>
-              <text class="code-text">&lt;C_Icon name="i-mdi-star" :custom-style="{ margin: '10px' }" /&gt;</text>
-            </view>
-          </view>
-        </view>
-      </view>
-
     </view>
   </C_Layout>
 </template>
 
 <script setup>
-// C_Icon 组件演示页面
-const handleClick = () => {
-  console.log('图标被点击了')
+// 图标点击事件处理
+const handleIconClick = () => {
+  console.log('图标被点击了！')
+  // 这里可以添加更多交互逻辑
 }
 </script>
-
-<style lang="scss" scoped>
-.demo-container {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 20px;
-  background-color: #f8f9fa;
-  min-height: 100vh;
-}
-
-.demo-title {
-  font-size: 28px;
-  font-weight: 600;
-  text-align: center;
-  color: #2c3e50;
-  margin-bottom: 30px;
-}
-
-.demo-section {
-  background: white;
-  border-radius: 8px;
-  padding: 24px;
-  margin-bottom: 20px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.section-header {
-  margin-bottom: 20px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid #ebeef5;
-}
-
-.section-title {
-  font-size: 18px;
-  font-weight: 600;
-  color: #2c3e50;
-  margin-bottom: 4px;
-}
-
-.section-desc {
-  font-size: 14px;
-  color: #606266;
-}
-
-.demo-content {
-  display: flex;
-  gap: 24px;
-  align-items: flex-start;
-}
-
-.effect-demo {
-  flex: 1;
-  min-width: 200px;
-}
-
-.code-demo {
-  flex: 1.2;
-  min-width: 300px;
-}
-
-.icon-row {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 16px;
-  background: #f8f9fa;
-  border-radius: 6px;
-}
-
-.advanced-demo {
-  padding: 16px;
-  background: #f8f9fa;
-  border-radius: 6px;
-}
-
-.size-row, .color-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 12px;
-  
-  &:last-child {
-    margin-bottom: 0;
-  }
-}
-
-.demo-label {
-  font-size: 14px;
-  color: #606266;
-  min-width: 80px;
-}
-
-.code-title {
-  font-size: 14px;
-  font-weight: 600;
-  color: #409eff;
-  display: block;
-  margin-bottom: 8px;
-}
-
-.code-block {
-  background: #f8f9fa;
-  border: 1px solid #ebeef5;
-  border-radius: 4px;
-  padding: 12px;
-  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-}
-
-.code-text {
-  display: block;
-  font-size: 12px;
-  line-height: 1.6;
-  color: #2c3e50;
-  margin-bottom: 4px;
-  
-  &:last-child {
-    margin-bottom: 0;
-  }
-}
-
-.custom-text {
-  font-size: 16px;
-  font-weight: 600;
-  color: #409eff;
-}
-
-.custom-shape {
-  width: 12px;
-  height: 12px;
-  background: linear-gradient(45deg, #409eff, #67c23a);
-  border-radius: 50%;
-}
-
-/* 响应式设计 */
-@media (max-width: 768px) {
-  .demo-content {
-    flex-direction: column;
-    gap: 16px;
-  }
-  
-  .effect-demo, .code-demo {
-    min-width: auto;
-  }
-}
-</style>

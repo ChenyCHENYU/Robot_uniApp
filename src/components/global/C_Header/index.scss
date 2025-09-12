@@ -1,18 +1,24 @@
-
 // =================================
-// 变量定义
+// 优化后的变量定义 - 统一且精简
 // =================================
-$header-min-height: 200rpx;
-$header-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-$header-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.1);
-$header-border-radius: 40rpx;
+$header-min-height: 180rpx; // 从200rpx减少到180rpx，更紧凑
+$header-transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); // 更自然的缓动
+$header-border-radius: 32rpx;
 
-// 颜色变量
-$white: #ffffff;
-$white-alpha-20: rgba(255, 255, 255, 0.2);
-$white-alpha-30: rgba(255, 255, 255, 0.3);
-$white-alpha-85: rgba(255, 255, 255, 0.85);
-$black-alpha-20: rgba(0, 0, 0, 0.2);
+// 统一的玻璃质感调色板
+$glass-base: rgba(255, 255, 255, 0.12);
+$glass-light: rgba(255, 255, 255, 0.18);
+$glass-medium: rgba(255, 255, 255, 0.22);
+$glass-strong: rgba(255, 255, 255, 0.28);
+$glass-border: rgba(255, 255, 255, 0.25);
+$glass-text: rgba(255, 255, 255, 0.85);
+
+// 优化的阴影系统
+$shadow-soft: 0 6rpx 24rpx -6rpx rgba(0, 0, 0, 0.25);
+$shadow-medium: 0 12rpx 32rpx -8rpx rgba(0, 0, 0, 0.3);
+$shadow-lifted: 0 20rpx 40rpx -12rpx rgba(0, 0, 0, 0.35);
+$shadow-inset-light: inset 0 1rpx 0 rgba(255, 255, 255, 0.15);
+$shadow-inset-dark: inset 0 -1rpx 0 rgba(0, 0, 0, 0.08);
 
 // 状态颜色
 $status-online: #00e676;
@@ -21,34 +27,78 @@ $status-busy: #ff9800;
 $status-away: #ffc107;
 
 // =================================
-// 主体结构
+// 统一的玻璃按钮效果 Mixin
+// =================================
+@mixin glass-button-base($size: 72rpx) {
+  width: $size;
+  height: $size;
+  background: linear-gradient(145deg, $glass-light, $glass-base);
+  border: 1rpx solid $glass-border;
+  border-radius: 50%;
+  backdrop-filter: blur(16rpx);
+  box-shadow: $shadow-soft, $shadow-inset-light, $shadow-inset-dark;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: $header-transition;
+  position: relative;
+  overflow: hidden;
+
+  // 统一光感效果
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent);
+    transition: left 0.5s ease;
+  }
+
+  &:hover {
+    background: linear-gradient(145deg, $glass-medium, $glass-light);
+    transform: translateY(-2rpx) scale(1.02);
+    box-shadow: $shadow-medium, $shadow-inset-light;
+    
+    &::before {
+      left: 100%;
+    }
+  }
+
+  &:active {
+    transform: translateY(0) scale(0.96);
+    background: linear-gradient(145deg, $glass-base, rgba(255, 255, 255, 0.08));
+    box-shadow: inset 0 2rpx 6rpx rgba(0, 0, 0, 0.1);
+  }
+}
+
+// =================================
+// 主体结构 - 优化
 // =================================
 .c-header {
   position: relative;
   z-index: 100;
   overflow: hidden;
   min-height: $header-min-height;
+  backdrop-filter: blur(24rpx);
   
-    // 底部过渡效果
-    &::after {
-      content: '';
-      position: absolute;
-      bottom: -60rpx;
-      left: 0;
-      right: 0;
-      height: 60rpx;
-      background: linear-gradient(180deg,
-          rgba(0, 212, 255, 0.15) 0%,
-          rgba(0, 153, 204, 0.08) 30%,
-          rgba(248, 250, 255, 0.4) 70%,
-          transparent 100%);
-      z-index: 10;
+  // 简化底部渐变
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -20rpx;
+    left: 0;
+    right: 0;
+    height: 20rpx;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, transparent 100%);
+    z-index: 10;
     border-radius: 0 0 $header-border-radius $header-border-radius;
-    }
+  }
 }
 
 // =================================
-// 背景层
+// 优化背景层 - 保持原结构但简化
 // =================================
 .background-layers {
   position: absolute;
@@ -66,24 +116,28 @@ $status-away: #ffc107;
   right: 0;
   bottom: 0;
   background: linear-gradient(135deg,
-        #00d4ff 0%,
-        #0099cc 40%,
-        #006699 80%,
-        rgba(0, 102, 153, 0.95) 100%);
-  background-size: 300% 300%;
-  animation: gradientShift 8s ease-in-out infinite;
-  // 底部边缘渐变
-    &::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 40rpx;
-      background: linear-gradient(180deg,
-          transparent 0%,
-          rgba(248, 250, 255, 0.1) 100%);
-    }
+        rgba(59, 130, 246, 0.88) 0%,
+        rgba(99, 102, 241, 0.82) 30%,
+        rgba(139, 69, 19, 0.78) 70%,
+        rgba(17, 24, 39, 0.88) 100%);
+  background-size: 220% 220%; // 减少动画幅度
+  animation: gradientFloat 18s ease-in-out infinite; // 放慢动画
+  border-radius: 0 0 $header-border-radius $header-border-radius;
+  
+  // 优化底部阴影
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 24rpx; // 减少高度
+    background: linear-gradient(180deg,
+        transparent 0%,
+        rgba(0, 0, 0, 0.08) 60%,
+        rgba(0, 0, 0, 0.12) 100%);
+    border-radius: 0 0 $header-border-radius $header-border-radius;
+  }
 }
 
 .pattern-overlay {
@@ -93,33 +147,39 @@ $status-away: #ffc107;
   right: 0;
   bottom: 0;
   background-image:
-      radial-gradient(
-      circle at 20% 50%,
-      $white-alpha-20 0%,
-      transparent 50%
-    ),
-    radial-gradient(
-      circle at 80% 20%,
-      rgba(255, 255, 255, 0.08) 0%,
-      transparent 50%
-    );
-  opacity: 0.6;
+      radial-gradient(circle at 25% 25%, $glass-light 0%, transparent 55%),
+      radial-gradient(circle at 75% 75%, rgba(255, 255, 255, 0.06) 0%, transparent 55%),
+      linear-gradient(45deg, transparent 0%, rgba(255, 255, 255, 0.02) 50%, transparent 100%);
+  opacity: 0.7; // 减少不透明度，更自然
+}
+
+.glass-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg,
+      $glass-base 0%,
+      rgba(255, 255, 255, 0.04) 50%,
+      rgba(255, 255, 255, 0.02) 100%);
+  backdrop-filter: blur(2rpx);
 }
 
 // =================================
-// 内容区域
+// 内容区域 - 优化间距
 // =================================
 .header-content {
   position: relative;
   z-index: 2;
-  padding: 32rpx 40rpx 40rpx;
+  padding: 24rpx 36rpx 32rpx; // 减少顶部padding
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
 // =================================
-// 返回按钮区域
+// 返回按钮区域 - 应用mixin
 // =================================
 .back-section {
   display: flex;
@@ -128,355 +188,401 @@ $status-away: #ffc107;
   transition: $header-transition;
 
   .back-btn {
-    width: 64rpx;
-    height: 64rpx;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: $white-alpha-20;
-      border: 1rpx solid $white-alpha-30;
-    border-radius: 50%;
-    margin-right: 24rpx;
+    margin-right: 20rpx; // 减少间距
     transition: $header-transition;
-    backdrop-filter: blur(10rpx);
-    box-shadow: $header-shadow;
-
-    &:hover {
-      background: $white-alpha-30;
-      transform: scale(1.05);
-    }
 
     &:active {
-      transform: scale(0.95);
-      background: rgba(255, 255, 255, 0.15);
+      transform: scale(0.96);
     }
+  }
+
+  .btn-glass-bg {
+    @include glass-button-base(64rpx); // 使用统一mixin，稍微缩小
   }
 
   .back-title {
-    font-size: 36rpx;
-    font-weight: 600;
-    color: $white;
-      text-shadow: 0 2rpx 8rpx $black-alpha-20;
-      flex: 1;
-    
-      // 文字溢出处理
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-    }
-    }
-    
-    // =================================
-    // 用户区域
-    // =================================
-    .user-section {
-      display: flex;
-      align-items: center;
-      flex: 1;
-      transition: $header-transition;
-      cursor: pointer;
-    
-      &:active {
-        opacity: 0.8;
-        transform: scale(0.98);
+    font-size: 32rpx; // 稍微减小字号
+    font-weight: 600; // 减轻字重
+    color: white;
+    text-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.3);
+    flex: 1;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    letter-spacing: 0.3rpx; // 减少字间距
   }
 }
+
+// =================================
+// 用户区域 - 优化布局
+// =================================
+.user-section {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  transition: $header-transition;
+  cursor: pointer;
+
+  &:active {
+    opacity: 0.9;
+    transform: scale(0.98);
+  }
+}
+
 .avatar-container {
   position: relative;
-  margin-right: 32rpx;
+  margin-right: 24rpx; // 减少间距
+}
+
+.avatar-glass-ring {
+  position: relative;
+  padding: 4rpx; // 减少padding
+  background: linear-gradient(145deg, $glass-light, $glass-base);
+  border-radius: 50%;
+  backdrop-filter: blur(12rpx);
+  box-shadow: $shadow-soft, $shadow-inset-light, $shadow-inset-dark;
+  transition: $header-transition;
+
+  &:hover {
+    transform: scale(1.03); // 减少缩放
+    box-shadow: $shadow-medium;
+  }
 }
 
 .user-avatar {
-  width: 88rpx;
-  height: 88rpx;
+  width: 80rpx; // 稍微缩小
+  height: 80rpx;
   border-radius: 50%;
-  border: 3rpx solid $white-alpha-30;
-  background: rgba(255, 255, 255, 0.1);
-  transition: $header-transition;
-  
-    &:hover {
-      transform: scale(1.05);
-      border-color: $white-alpha-30;
-    }
+  display: block;
+  position: relative;
+  z-index: 1;
 }
 
 .online-indicator {
   position: absolute;
-  bottom: 4rpx;
+  bottom: 4rpx; // 调整位置
   right: 4rpx;
-  width: 24rpx;
+  width: 24rpx; // 稍微缩小
   height: 24rpx;
-  background: $status-online;
-    border: 3rpx solid $white;
+  background: linear-gradient(145deg, $glass-strong, $glass-medium);
   border-radius: 50%;
-  box-shadow: 0 2rpx 8rpx rgba(0, 230, 118, 0.3);
+  backdrop-filter: blur(8rpx);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: $shadow-soft;
 }
 
-.pulse-dot {
+.pulse-ring {
   position: absolute;
-  top: -6rpx;
+  top: -6rpx; // 调整位置
   left: -6rpx;
   right: -6rpx;
   bottom: -6rpx;
-  background: rgba(0, 230, 118, 0.4);
+  border: 1.5rpx solid rgba(0, 230, 118, 0.3); // 稍微细一点
   border-radius: 50%;
-  animation: pulse 2s ease-in-out infinite;
+  animation: pulseRing 3s ease-in-out infinite; // 放慢动画
+}
+
+.status-dot {
+  width: 12rpx; // 稍微缩小
+  height: 12rpx;
+  background: $status-online;
+  border-radius: 50%;
+  box-shadow: 0 0 8rpx rgba(0, 230, 118, 0.6), inset 0 1rpx 1rpx rgba(255, 255, 255, 0.3);
+  animation: statusPulse 2.5s ease-in-out infinite; // 放慢动画
 }
 
 // =================================
-// 用户信息
+// 用户信息 - 优化文字
 // =================================
 .user-info {
   flex: 1;
+  
   .greeting {
     display: block;
-    font-size: 28rpx;
-    color: $white-alpha-85;
-    margin-bottom: 8rpx;
+    font-size: 26rpx; // 稍微缩小
+    color: $glass-text;
+    margin-bottom: 6rpx; // 减少间距
     font-weight: 400;
     line-height: 1.2;
+    text-shadow: 0 1rpx 6rpx rgba(0, 0, 0, 0.2);
   }
 
   .username {
     display: block;
-    font-size: 40rpx;
-    font-weight: 700;
-    color: $white;
-      text-shadow: 0 2rpx 8rpx $black-alpha-20;
-      line-height: 1.2;
-    
-      // 文字溢出处理
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
+    font-size: 36rpx; // 稍微缩小
+    font-weight: 700; // 稍微减轻
+    color: white;
+    text-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.4), 0 0 20rpx rgba(255, 255, 255, 0.1);
+    line-height: 1.2;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    letter-spacing: 0.3rpx; // 减少字间距
   }
 }
 
 // =================================
-// 操作区域
+// 操作区域 - 优化间距
 // =================================
 .action-section {
   display: flex;
   align-items: center;
-  gap: 24rpx;
+  gap: 20rpx; // 减少间距
   flex-shrink: 0;
 }
 
-// 状态指示器
 .status-pill {
+  transition: $header-transition;
+  cursor: pointer;
+  
+  &:active {
+    transform: scale(0.96);
+  }
+}
+
+.status-pill-bg {
   display: flex;
   align-items: center;
-  gap: 16rpx;
-  background: rgba(255, 255, 255, 0.15);
-  border: 1rpx solid $white-alpha-20;
-  border-radius: 50rpx;
-  padding: 20rpx 32rpx;
+  gap: 12rpx; // 减少间距
+  background: linear-gradient(135deg, $glass-light, $glass-base);
+  border: 1rpx solid $glass-border;
+  border-radius: 48rpx; // 稍微减小圆角
+  padding: 16rpx 24rpx; // 减少padding
   backdrop-filter: blur(20rpx);
-  box-shadow: $header-shadow;
-    transition: $header-transition;
-    cursor: pointer;
-  
-    &:hover {
-      background: $white-alpha-20;
-      transform: translateY(-2rpx);
-    }
-  
-    &:active {
-      transform: translateY(0);
-      background: rgba(255, 255, 255, 0.1);
-    }
-}
+  box-shadow: $shadow-soft, $shadow-inset-light;
+  transition: $header-transition;
+  position: relative;
+  overflow: hidden;
 
-.status-dot {
-  width: 16rpx;
-  height: 16rpx;
-  border-radius: 50%;
-  flex-shrink: 0;
-
-  &.status-online {
-    background: $status-online;
-    animation: pulse 2s ease-in-out infinite;
-    box-shadow: 0 0 10rpx rgba(0, 230, 118, 0.5);
+  // 统一光感效果
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.1) 50%, transparent 100%);
+    transition: left 0.5s ease;
   }
 
-  &.status-offline {
-    background: $status-offline;
-  }
-
-  &.status-busy {
-    background: $status-busy;
-    animation: pulse 2s ease-in-out infinite;
-    box-shadow: 0 0 10rpx rgba(255, 152, 0, 0.5);
-    }
+  &:hover {
+    background: linear-gradient(135deg, $glass-medium, $glass-light);
+    transform: translateY(-2rpx);
+    box-shadow: $shadow-medium;
     
-    &.status-away {
-      background: $status-away;
-      animation: pulse 2s ease-in-out infinite;
-      box-shadow: 0 0 10rpx rgba(255, 193, 7, 0.5);
+    &::before {
+      left: 100%;
+    }
+
+    .status-dot {
+      &.status-online {
+        box-shadow: 0 0 16rpx rgba(0, 230, 118, 0.8);
+      }
+    }
   }
 }
 
 .status-text {
-  font-size: 24rpx;
-  color: $white;
+  font-size: 22rpx; // 稍微缩小
+  color: white;
   font-weight: 600;
   white-space: nowrap;
+  text-shadow: 0 1rpx 3rpx rgba(0, 0, 0, 0.2);
 }
 
 // =================================
-// 操作按钮
+// 操作按钮 - 统一样式
 // =================================
 .action-button {
   position: relative;
   transition: $header-transition;
   
-    &:active {
-      transform: scale(0.95);
-    }
+  &:active {
+    transform: scale(0.94);
+  }
 }
 
-.button-bg {
-  width: 80rpx;
-  height: 80rpx;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.15);
-  border: 1rpx solid rgba(255, 255, 255, 0.25);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  backdrop-filter: blur(20rpx);
-  box-shadow: $header-shadow;
-    transition: $header-transition;
-    cursor: pointer;
+.button-glass-bg {
+  @include glass-button-base(72rpx); // 使用统一mixin，稍微缩小
   
-    &:hover {
-      background: $white-alpha-20;
-      transform: translateY(-2rpx);
-      box-shadow: 0 6rpx 25rpx rgba(0, 0, 0, 0.15);
-    }
-        &:active {
-          transform: translateY(0) scale(0.98);
-          background: rgba(255, 255, 255, 0.1);
-        }
-        }
-    
-        // =================================
-// 动画定义
-// =================================
-@keyframes gradientShift {
-  0%,
-    100% {
-    background-position: 0% 50%;
+  // 增强高光效果
+  &::after {
+    content: '';
+    position: absolute;
+    top: 15%;
+    left: 15%;
+    width: 25%;
+    height: 25%;
+    background: radial-gradient(ellipse at center,
+        rgba(255, 255, 255, 0.25) 0%,
+        rgba(255, 255, 255, 0.08) 50%,
+        transparent 80%);
+    border-radius: 50%;
+    pointer-events: none;
   }
-  50% {
-    background-position: 100% 50%;
+
+  &:hover {
+    transform: translateY(-3rpx) scale(1.03); // 稍微减少动画
+    box-shadow: $shadow-lifted, $shadow-inset-light;
   }
 }
 
-@keyframes pulse {
-  0%,
-    100% {
+// =================================
+// 优化动画定义 - 更自然流畅
+// =================================
+@keyframes gradientFloat {
+  0%, 100% {
+    background-position: 0% 50%;
     transform: scale(1);
-    opacity: 1;
   }
-  50% {
-    transform: scale(1.3);
-    opacity: 0.7;
+  33% {
+    background-position: 50% 20%;
+    transform: scale(1.005); // 减少缩放幅度
+  }
+  66% {
+    background-position: 100% 80%;
+    transform: scale(1.005);
   }
 }
+
+@keyframes pulseRing {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.8; // 减少初始透明度
+  }
+  50% {
+    transform: scale(1.3); // 减少缩放幅度
+    opacity: 0.2;
+  }
+}
+
+@keyframes statusPulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.08); // 减少缩放幅度
+  }
+}
+
 // =================================
-// 主题变体
+// 主题变体 - 保持原有但优化透明度
 // =================================
 .c-header {
-
-  // 主题紫色
   &[data-theme="primary"] {
     .gradient-bg {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, 
+          rgba(102, 126, 234, 0.88) 0%, 
+          rgba(118, 75, 162, 0.82) 100%);
     }
   }
 
-  // 日落橙色
   &[data-theme="sunset"] {
     .gradient-bg {
-      background: linear-gradient(135deg, #ff9a56 0%, #ff6b6b 50%, #ee5a24 100%);
+      background: linear-gradient(135deg, 
+          rgba(255, 154, 86, 0.88) 0%, 
+          rgba(255, 107, 107, 0.82) 50%, 
+          rgba(238, 90, 36, 0.88) 100%);
     }
   }
 
-  // 森林绿色
   &[data-theme="forest"] {
     .gradient-bg {
-      background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+      background: linear-gradient(135deg, 
+          rgba(17, 153, 142, 0.88) 0%, 
+          rgba(56, 239, 125, 0.82) 100%);
     }
   }
 }
 
 // =================================
-// 响应式设计
+// 响应式设计 - 优化断点
 // =================================
 @media screen and (max-width: 750rpx) {
+  .c-header {
+    min-height: 160rpx; // 进一步缩小移动端高度
+  }
+
   .header-content {
-    padding: 24rpx 30rpx 32rpx;
+    padding: 20rpx 24rpx 28rpx; // 减少移动端padding
   }
 
   .user-avatar {
-    width: 72rpx;
-    height: 72rpx;
-  }
-
-  .back-btn {
-    width: 56rpx;
-    height: 56rpx;
-  }
-
-  .button-bg {
-    width: 64rpx;
+    width: 64rpx; // 移动端进一步缩小
     height: 64rpx;
+  }
+
+  .btn-glass-bg {
+    @include glass-button-base(56rpx); // 移动端缩小按钮
+  }
+
+  .button-glass-bg {
+    @include glass-button-base(60rpx); // 移动端缩小按钮
+  }
+
+  .avatar-glass-ring {
+    padding: 3rpx; // 移动端减少padding
   }
 
   .user-info {
     .greeting {
-      font-size: 24rpx;
+      font-size: 22rpx;
     }
 
     .username {
-      font-size: 32rpx;
+      font-size: 28rpx;
     }
   }
 
   .back-title {
-    font-size: 32rpx;
+    font-size: 28rpx;
+  }
+
+  .status-pill-bg {
+    padding: 12rpx 20rpx; // 移动端减少padding
+  }
+
+  .status-text {
+    font-size: 20rpx;
   }
 }
 
 // =================================
-// 无障碍支持
+// 性能优化
 // =================================
 @media (prefers-reduced-motion: reduce) {
   * {
-    animation-duration: 0.01ms !important;
+    animation-duration: 0.1s !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    transition-duration: 0.2s !important;
   }
 }
 
 // =================================
-// 深色模式支持
+// 暗色模式适配
 // =================================
 @media (prefers-color-scheme: dark) {
   .c-header {
     .gradient-bg {
-      opacity: 0.9;
+      opacity: 0.92; // 稍微调整透明度
     }
 
     .pattern-overlay {
-      opacity: 0.4;
+      opacity: 0.5; // 暗色模式下减少纹理
     }
 
-    .status-text,
-    .username,
-    .back-title {
-      text-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.4);
+    .glass-overlay {
+      background: linear-gradient(135deg,
+          rgba(255, 255, 255, 0.06) 0%,
+          rgba(255, 255, 255, 0.03) 50%,
+          rgba(255, 255, 255, 0.01) 100%);
     }
   }
 }
+
+
