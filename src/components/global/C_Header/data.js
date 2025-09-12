@@ -5,6 +5,7 @@ import { useAppStore } from "@/stores/modules/app";
 // =================================
 // 组件Props定义
 // =================================
+
 export const headerProps = {
   // 基础配置
   defaultAvatar: {
@@ -26,6 +27,12 @@ export const headerProps = {
     default: false,
   },
   showThemeToggle: {
+    type: Boolean,
+    default: false,
+  },
+
+  // 🔥 新增：紧凑模式配置
+  isCompactMode: {
     type: Boolean,
     default: false,
   },

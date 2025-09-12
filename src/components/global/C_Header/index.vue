@@ -1,5 +1,9 @@
 <template>
-  <view class="c-header" :style="{ paddingTop: safeAreaTop + 'px' }">
+  <view 
+    class="c-header" 
+    :class="{ 'compact-mode': isCompactMode }"
+    :style="{ paddingTop: safeAreaTop + 'px' }"
+  >
     <!-- 动态背景层 -->
     <view class="background-layers">
       <view class="gradient-bg"></view>
@@ -87,6 +91,7 @@
 </template>
 
 <script setup>
+import { computed } from 'vue'; // 🔥 添加computed导入
 import { useHeaderData, headerProps, headerEmits } from "./data.js";
 import "./index.scss";
 
@@ -123,6 +128,9 @@ const {
   setAiStatus,
   resetAvatarError,
 } = useHeaderData(props, emit);
+
+// 🔥 新增：紧凑模式计算属性
+const isCompactMode = computed(() => props.isCompactMode);
 
 // =================================
 // 暴露给父组件的方法

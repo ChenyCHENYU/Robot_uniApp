@@ -185,15 +185,33 @@ export const getSmartPageTitle = (currentPath, propsTitle = '') => {
 
 // Header配置生成
 export const getSmartHeaderConfig = (currentPath, props = {}) => {
+  // 🔥 添加紧凑模式计算
+  const layoutType = getSmartLayoutType(currentPath);
+  const isCompactMode = layoutType === "header-only"; // 无TabBar的页面使用紧凑模式
+
+  // 调试日志
+  console.log("🔍 Header配置调试:", {
+    路径: currentPath,
+    布局类型: layoutType,
+    是否紧凑模式: isCompactMode,
+  });
+
   return {
     defaultAvatar: "/static/robot-avatar.png",
     defaultNickname: "CHENY",
-    showBack: props.showBack !== undefined ? props.showBack : shouldShowBackButton(currentPath),
+    showBack:
+      props.showBack !== undefined
+        ? props.showBack
+        : shouldShowBackButton(currentPath),
     title: getSmartPageTitle(currentPath, props.title),
     showStatus: true,
-    theme: 'default',
+    theme: "default",
     iconSize: 20,
     enableAnimations: true,
+
+    // 添加紧凑模式配置
+    isCompactMode: isCompactMode,
+
     ...specialHeaderConfigs[cleanPath(currentPath)],
     ...Object.fromEntries(
       Object.entries(props).filter(([_, value]) => value !== undefined)
