@@ -131,13 +131,12 @@ const handleSettingsClick = () => {
     position: absolute;
     inset: 0;
     background: linear-gradient(135deg,
-      rgba(102, 126, 234, 0.15) 0%,
-      rgba(118, 75, 162, 0.1) 50%,
-      rgba(255, 255, 255, 0.9) 100%);
+      var(--r-bg-hover) 0%,
+      var(--r-glass-bg) 100%);
     backdrop-filter: blur(20rpx);
-    border: 1rpx solid rgba(255, 255, 255, 0.5);
+    border: 1rpx solid var(--r-glass-border);
     border-radius: 24rpx;
-    box-shadow: 0 8rpx 32rpx rgba(102, 126, 234, 0.12);
+    box-shadow: var(--r-shadow-md);
   }
 
   .banner-content {
@@ -151,7 +150,7 @@ const handleSettingsClick = () => {
   .banner-icon {
     width: 80rpx;
     height: 80rpx;
-    background: linear-gradient(135deg, #667eea, #764ba2);
+    background: linear-gradient(135deg, var(--r-color-primary), var(--r-color-primary-light));
     border-radius: 20rpx;
     display: flex;
     align-items: center;
@@ -160,7 +159,7 @@ const handleSettingsClick = () => {
     .icon-text {
       font-size: 36rpx;
       font-weight: 800;
-      color: #fff;
+      color: var(--r-text-inverse);
       font-family: 'Courier New', monospace;
     }
   }
@@ -192,9 +191,9 @@ const handleSettingsClick = () => {
     transition: all 0.3s ease;
 
     &.active {
-      background: linear-gradient(135deg, #667eea, #764ba2);
+      background: linear-gradient(135deg, var(--r-color-primary), var(--r-color-primary-light));
       border-color: transparent;
-      .cat-text, .cat-count { color: #fff; }
+      .cat-text, .cat-count { color: var(--r-text-inverse); }
     }
 
     .cat-text { font-size: 24rpx; color: var(--r-text-regular); font-weight: 500; }
@@ -218,7 +217,7 @@ const handleSettingsClick = () => {
 
     &:active {
       transform: scale(0.98);
-      background: rgba(102, 126, 234, 0.02);
+      background: var(--r-bg-hover);
     }
 
     .comp-icon-wrap {

@@ -276,8 +276,7 @@ const goToTheme = () => {
     position: absolute;
     inset: 0;
     background: linear-gradient(135deg,
-      rgba(102, 126, 234, 0.1) 0%,
-      rgba(118, 75, 162, 0.06) 50%,
+      var(--r-bg-hover) 0%,
       var(--r-glass-bg) 100%);
     backdrop-filter: blur(20rpx);
   }
@@ -295,7 +294,7 @@ const goToTheme = () => {
 
     .avatar-ring {
       padding: 6rpx;
-      background: linear-gradient(135deg, #667eea, #764ba2);
+      background: linear-gradient(135deg, var(--r-color-primary), var(--r-color-primary-light));
       border-radius: 50%;
 
       .avatar-img {
@@ -312,7 +311,7 @@ const goToTheme = () => {
       right: 4rpx;
       width: 44rpx;
       height: 44rpx;
-      background: linear-gradient(135deg, #667eea, #764ba2);
+      background: linear-gradient(135deg, var(--r-color-primary), var(--r-color-primary-light));
       border: 3rpx solid var(--r-bg-card);
       border-radius: 50%;
       display: flex;
@@ -370,7 +369,7 @@ const goToTheme = () => {
   }
 
   &:active {
-    background: rgba(0, 0, 0, 0.02);
+    background: var(--r-bg-hover);
   }
 
   .item-left {

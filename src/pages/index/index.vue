@@ -304,15 +304,9 @@ const handleDocs = () => {
 
 <style lang="scss" scoped>
 .homepage {
-  // 移除原有的最小高度和背景，因为C_Layout会处理这些
-  background: linear-gradient(
-    180deg,
-    rgba(248, 250, 255, 0.8) 0%,
-    rgba(241, 245, 249, 0.9) 30%,
-    #f1f5f9 100%
-  );
+  background: var(--r-bg-page);
   
-  // 添加顶部过渡区域
+  // 添加顶部过渡区域（装饰性渐变）
   &::before {
     content: '';
     position: absolute;
@@ -322,8 +316,7 @@ const handleDocs = () => {
     height: 80rpx;
     background: linear-gradient(
       180deg,
-      rgba(0, 212, 255, 0.08) 0%,
-      rgba(0, 153, 204, 0.04) 50%,
+      var(--r-bg-hover) 0%,
       transparent 100%
     );
     z-index: 1;
@@ -352,12 +345,12 @@ const handleDocs = () => {
     background: 
       radial-gradient(
         ellipse at 20% 30%,
-        rgba(0, 212, 255, 0.03) 0%,
+        var(--r-bg-hover) 0%,
         transparent 50%
       ),
       radial-gradient(
         ellipse at 80% 70%,
-        rgba(102, 126, 234, 0.02) 0%,
+        var(--r-bg-hover) 0%,
         transparent 50%
       );
     z-index: -1;
@@ -375,14 +368,14 @@ const handleDocs = () => {
     .project-badge {
       display: inline-block;
       padding: 16rpx 32rpx;
-      background: linear-gradient(135deg, rgba(0, 212, 255, 0.1) 0%, rgba(102, 126, 234, 0.1) 100%);
-      border: 1rpx solid rgba(0, 212, 255, 0.2);
+      background: var(--r-bg-hover);
+      border: 1rpx solid var(--r-border-light);
       border-radius: 50rpx;
       margin-bottom: 32rpx;
       backdrop-filter: blur(10rpx);
       
       .badge-text {
-        color: #0099cc;
+        color: var(--r-color-primary);
         font-size: 24rpx;
         font-weight: 600;
       }
@@ -397,7 +390,7 @@ const handleDocs = () => {
         font-size: 56rpx;
         font-weight: bold;
         margin-bottom: 16rpx;
-        background: linear-gradient(135deg, #0099cc 0%, #667eea 100%);
+        background: linear-gradient(135deg, var(--r-color-primary) 0%, var(--r-color-primary-light) 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
@@ -429,15 +422,15 @@ const handleDocs = () => {
       align-items: center;
       padding: 24rpx;
       background: var(--r-glass-bg);
-      border: 1rpx solid rgba(0, 212, 255, 0.1);
+      border: 1rpx solid var(--r-glass-border);
       border-radius: 20rpx;
       backdrop-filter: blur(10rpx);
-      box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
+      box-shadow: var(--r-shadow-sm);
       transition: all 0.3s ease;
       
       &:hover {
         transform: translateY(-4rpx);
-        box-shadow: 0 8rpx 30rpx rgba(0, 212, 255, 0.15);
+        box-shadow: var(--r-shadow-md);
       }
       
       .platform-icon {
@@ -489,8 +482,8 @@ const handleDocs = () => {
     height: 80rpx;
     background: linear-gradient(
       180deg,
-      rgba(248, 250, 255, 0.5) 0%,
-      #ffffff 100%
+      transparent 0%,
+      var(--r-bg-page) 100%
     );
     z-index: 1;
   }
@@ -508,12 +501,12 @@ const handleDocs = () => {
       padding: 40rpx;
       background: var(--r-bg-card);
       border-radius: 24rpx;
-      box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.08);
+      box-shadow: var(--r-shadow-md);
       transition: all 0.3s ease;
       
       &:hover {
         transform: translateY(-4rpx);
-        box-shadow: 0 12rpx 40rpx rgba(0, 0, 0, 0.12);
+        box-shadow: var(--r-shadow-lg);
       }
       
       .feature-icon-wrap {
@@ -563,7 +556,7 @@ const handleDocs = () => {
     
     .tech-category {
       padding: 32rpx;
-      background: linear-gradient(135deg, #f8faff 0%, #f1f5f9 100%);
+      background: var(--r-bg-elevated);
       border-radius: 20rpx;
       border: 1px solid var(--r-border-color);
       
@@ -592,7 +585,7 @@ const handleDocs = () => {
         .tech-item {
           padding: 8rpx 16rpx;
           background: var(--r-bg-card);
-          color: #4f46e5;
+          color: var(--r-color-primary);
           font-size: 22rpx;
           border-radius: 12rpx;
           border: 1px solid var(--r-border-color);
@@ -614,13 +607,13 @@ const handleDocs = () => {
       background: var(--r-bg-card);
       border-radius: 20rpx;
       margin-bottom: 24rpx;
-      box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+      box-shadow: var(--r-shadow-sm);
       
       .advantage-number {
         width: 56rpx;
         height: 56rpx;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: #fff;
+        background: linear-gradient(135deg, var(--r-color-primary) 0%, var(--r-color-primary-light) 100%);
+        color: var(--r-text-inverse);
         border-radius: 50%;
         display: flex;
         align-items: center;
@@ -665,7 +658,7 @@ const handleDocs = () => {
     .scenario-card {
       padding: 32rpx;
       text-align: center;
-      background: linear-gradient(135deg, #f8faff 0%, #f1f5f9 100%);
+      background: var(--r-bg-elevated);
       border-radius: 20rpx;
       border: 1px solid var(--r-border-color);
       
@@ -695,7 +688,7 @@ const handleDocs = () => {
 /* 快速开始 */
 .quickstart-section {
   padding: 80rpx 40rpx;
-  background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+  background: linear-gradient(135deg, #1c1c1e 0%, #0a0a0a 100%);
   
   .quickstart-content {
     text-align: center;
@@ -704,14 +697,14 @@ const handleDocs = () => {
       display: block;
       font-size: 48rpx;
       font-weight: bold;
-      color: #fff;
+      color: rgba(255, 255, 255, 0.92);
       margin-bottom: 16rpx;
     }
     
     .quickstart-subtitle {
       display: block;
       font-size: 28rpx;
-      color: rgba(255, 255, 255, 0.7);
+      color: rgba(255, 255, 255, 0.6);
       margin-bottom: 60rpx;
     }
     
@@ -727,8 +720,8 @@ const handleDocs = () => {
         .command-step {
           width: 48rpx;
           height: 48rpx;
-          background: #4f46e5;
-          color: #fff;
+          background: var(--r-color-primary);
+          color: rgba(255, 255, 255, 0.92);
           border-radius: 50%;
           display: flex;
           align-items: center;
@@ -743,19 +736,19 @@ const handleDocs = () => {
           
           .command-desc {
             display: block;
-            color: rgba(255, 255, 255, 0.9);
+            color: rgba(255, 255, 255, 0.85);
             font-size: 26rpx;
             margin-bottom: 12rpx;
           }
           
           .command-code {
             padding: 16rpx 20rpx;
-            background: #000;
+            background: rgba(0, 0, 0, 0.6);
             border-radius: 8rpx;
             font-family: 'Courier New', monospace;
             
             text {
-              color: #10b981;
+              color: var(--r-color-success);
               font-size: 22rpx;
             }
           }
@@ -775,14 +768,14 @@ const handleDocs = () => {
         font-weight: bold;
         
         &.primary {
-          background: #4f46e5;
-          color: #fff;
+          background: var(--r-color-primary);
+          color: rgba(255, 255, 255, 0.92);
         }
         
         &.secondary {
           background: transparent;
-          color: #fff;
-          border: 2rpx solid #4f46e5;
+          color: rgba(255, 255, 255, 0.85);
+          border: 2rpx solid var(--r-color-primary);
         }
       }
     }

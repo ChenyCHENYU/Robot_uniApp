@@ -223,7 +223,7 @@ $breakpoint-md: 1024rpx;
   gap: 16rpx;
 
   .loading-text {
-      color: #666;
+      color: var(--r-text-regular);
       font-size: 28rpx;
   }
 }

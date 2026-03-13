@@ -136,15 +136,15 @@ const handleSettingsClick = () => {
     position: relative;
     padding: 16rpx 28rpx;
     border-radius: 40rpx;
-    background: rgba(102, 126, 234, 0.06);
+    background: var(--r-bg-hover);
     border: 1rpx solid transparent;
     transition: all 0.3s ease;
 
     &.active {
-      background: linear-gradient(135deg, rgba(102, 126, 234, 0.15), rgba(118, 75, 162, 0.1));
-      border-color: rgba(102, 126, 234, 0.3);
+      background: var(--r-bg-hover);
+      border-color: var(--r-border-color);
 
-      .tab-text { color: #667eea; font-weight: 600; }
+      .tab-text { color: var(--r-color-primary); font-weight: 600; }
     }
 
     .tab-text { font-size: 26rpx; color: var(--r-text-regular); }
@@ -156,13 +156,13 @@ const handleSettingsClick = () => {
       min-width: 32rpx;
       height: 32rpx;
       padding: 0 8rpx;
-      background: linear-gradient(135deg, #f5576c, #ff6b6b);
+      background: var(--r-color-error);
       border-radius: 16rpx;
       display: flex;
       align-items: center;
       justify-content: center;
 
-      .badge-text { font-size: 20rpx; color: #fff; font-weight: 600; }
+      .badge-text { font-size: 20rpx; color: var(--r-text-inverse); font-weight: 600; }
     }
   }
 }
@@ -181,9 +181,9 @@ const handleSettingsClick = () => {
     gap: 8rpx;
     padding: 8rpx 16rpx;
     border-radius: 20rpx;
-    background: rgba(102, 126, 234, 0.06);
+    background: var(--r-bg-hover);
 
-    .action-text { font-size: 24rpx; color: #667eea; font-weight: 500; }
+    .action-text { font-size: 24rpx; color: var(--r-color-primary); font-weight: 500; }
   }
 }
 
@@ -202,8 +202,8 @@ const handleSettingsClick = () => {
     transition: all 0.3s ease;
 
     &.unread {
-      background: linear-gradient(135deg, rgba(255, 255, 255, 1), rgba(102, 126, 234, 0.03));
-      border-color: rgba(102, 126, 234, 0.1);
+      background: var(--r-bg-card);
+      border-color: var(--r-border-color);
     }
 
     .msg-icon-wrap {
@@ -243,7 +243,7 @@ const handleSettingsClick = () => {
     .unread-dot {
       width: 16rpx;
       height: 16rpx;
-      background: #f5576c;
+      background: var(--r-color-error);
       border-radius: 50%;
       flex-shrink: 0;
       margin-left: 16rpx;

@@ -138,7 +138,13 @@ const goToSettings = () => {
 
 const handleMenuClick = (item) => {
   if (item.path) {
-    uni.navigateTo({ url: item.path })
+    // tab页面用switchTab，普通页面用navigateTo
+    const tabPaths = ['/pages/index/index', '/pages/message/index', '/pages/robot/index', '/pages/profile/index']
+    if (tabPaths.includes(item.path)) {
+      uni.switchTab({ url: item.path })
+    } else {
+      uni.navigateTo({ url: item.path })
+    }
     return
   }
 
@@ -194,14 +200,13 @@ const handleLogout = () => {
     position: absolute;
     inset: 0;
     background: linear-gradient(135deg,
-      rgba(102, 126, 234, 0.12) 0%,
-      rgba(118, 75, 162, 0.08) 50%,
+      var(--r-bg-hover) 0%,
       var(--r-glass-bg) 100%);
     backdrop-filter: blur(24rpx);
     border: 1rpx solid var(--r-glass-border);
     border-radius: 28rpx;
     box-shadow:
-      0 8rpx 32rpx rgba(102, 126, 234, 0.12),
+      var(--r-shadow-md),
       var(--r-glass-inner-shadow);
   }
 
@@ -218,7 +223,7 @@ const handleLogout = () => {
 
     .avatar-ring {
       padding: 4rpx;
-      background: linear-gradient(135deg, #667eea, #764ba2);
+      background: linear-gradient(135deg, var(--r-color-primary), var(--r-color-primary-light));
       border-radius: 50%;
 
       .avatar-img {
@@ -234,11 +239,11 @@ const handleLogout = () => {
       bottom: -4rpx;
       right: -4rpx;
       padding: 4rpx 12rpx;
-      background: linear-gradient(135deg, #667eea, #764ba2);
+      background: linear-gradient(135deg, var(--r-color-primary), var(--r-color-primary-light));
       border-radius: 16rpx;
       border: 2rpx solid var(--r-bg-card);
 
-      .level-text { font-size: 18rpx; color: #fff; font-weight: 700; }
+      .level-text { font-size: 18rpx; color: var(--r-text-inverse); font-weight: 700; }
     }
   }
 
@@ -256,7 +261,7 @@ const handleLogout = () => {
     .user-role {
       display: block;
       font-size: 24rpx;
-      color: #667eea;
+      color: var(--r-color-primary);
       font-weight: 500;
       margin-bottom: 8rpx;
     }
@@ -273,8 +278,8 @@ const handleLogout = () => {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(102, 126, 234, 0.08);
-    border: 1rpx solid rgba(102, 126, 234, 0.15);
+    background: var(--r-bg-hover);
+    border: 1rpx solid var(--r-border-light);
     border-radius: 50%;
     backdrop-filter: blur(10rpx);
     transition: all 0.3s ease;
@@ -311,7 +316,7 @@ const handleLogout = () => {
       display: block;
       font-size: 36rpx;
       font-weight: 700;
-      color: #667eea;
+      color: var(--r-color-primary);
     }
 
     .stat-label {
@@ -360,7 +365,7 @@ const handleLogout = () => {
       background: var(--r-divider);
     }
 
-    &:active { background: rgba(102, 126, 234, 0.04); }
+    &:active { background: var(--r-bg-hover); }
 
     .menu-left {
       display: flex;
@@ -390,13 +395,13 @@ const handleLogout = () => {
         min-width: 32rpx;
         height: 32rpx;
         padding: 0 10rpx;
-        background: linear-gradient(135deg, #f5576c, #ff6b6b);
+        background: var(--r-color-error);
         border-radius: 16rpx;
         display: flex;
         align-items: center;
         justify-content: center;
 
-        .badge-num { font-size: 20rpx; color: #fff; font-weight: 600; }
+        .badge-num { font-size: 20rpx; color: var(--r-text-inverse); font-weight: 600; }
       }
     }
   }
@@ -422,7 +427,7 @@ const handleLogout = () => {
       transform: scale(0.98);
     }
 
-    .logout-text { font-size: 28rpx; color: #f5576c; font-weight: 500; }
+    .logout-text { font-size: 28rpx; color: var(--r-color-error); font-weight: 500; }
   }
 }
 

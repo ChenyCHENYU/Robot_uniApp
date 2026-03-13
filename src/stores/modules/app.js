@@ -63,6 +63,14 @@ export const useAppStore = defineStore("app", {
      */
     setThemeMode(mode) {
       this.themeMode = mode;
+      this._applyThemeToDOM(mode);
+    },
+
+    /**
+     * 将主题类名同步到 DOM 元素（html + page）
+     * @private
+     */
+    _applyThemeToDOM(mode) {
       // #ifdef H5
       const html = document.documentElement;
       html.classList.remove("dark", "light");
@@ -71,11 +79,12 @@ export const useAppStore = defineStore("app", {
       } else if (mode === "light") {
         html.classList.add("light");
       }
-      // auto 模式不添加任何类，交由 @media (prefers-color-scheme) 处理
-      // #endif
-
-      // #ifdef MP-WEIXIN || APP-PLUS
-      // 小程序和 App 端通过 page 类名控制（需在页面 onShow 中同步）
+      // 同步到所有 uni-page-body 元素（uni-app H5 的 page 对应元素）
+      document.querySelectorAll("uni-page-body").forEach((el) => {
+        el.classList.remove("dark", "light");
+        if (mode === "dark") el.classList.add("dark");
+        else if (mode === "light") el.classList.add("light");
+      });
       // #endif
     },
   },

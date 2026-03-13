@@ -85,10 +85,10 @@ const navigateToHome = () => {
   }
 };
 
-// 通知按钮处理 - 默认跳转消息中心
+// 通知按钮处理 - 默认跳转消息中心（tab页需用switchTab）
 const handleNotificationClick = (data) => {
   emit('notificationClick', data)
-  uni.navigateTo({ url: '/pages/message/index' })
+  uni.switchTab({ url: '/pages/message/index' })
 }
 
 // 设置按钮处理 - 默认跳转个人设置

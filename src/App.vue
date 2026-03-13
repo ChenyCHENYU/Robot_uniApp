@@ -27,6 +27,8 @@ onLaunch(() => {
 })
 
 onShow(() => {
+  // 每次 App 可见时重新同步主题到 DOM（处理新页面创建后类名丢失）
+  appStore._applyThemeToDOM(appStore.themeMode)
 })
 
 // 初始化应用

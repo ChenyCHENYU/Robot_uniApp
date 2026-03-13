@@ -198,9 +198,9 @@ $shadow-inset: inset 0 1rpx 0 rgba(255, 255, 255, 0.15);
       .status-dot {
       width: 12rpx;
         height: 12rpx;
-      background: #00e676;
+      background: var(--r-color-success);
         border-radius: 50%;
-      box-shadow: 0 0 8rpx rgba(0, 230, 118, 0.6);
+      box-shadow: 0 0 8rpx rgba(52, 199, 89, 0.6);
         animation: pulse 2.5s ease-in-out infinite;
       
         .c-header.compact-mode & {
