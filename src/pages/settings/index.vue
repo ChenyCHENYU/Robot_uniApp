@@ -205,6 +205,13 @@ const handleChangeAvatar = () => {
     sizeType: ['compressed'],
     sourceType: ['album', 'camera'],
     success: (res) => {
+      const tempPath = res.tempFilePaths[0]
+      // 更新store中的头像（实际项目需上传至服务器）
+      if (userStore.userInfo) {
+        userStore.userInfo.avatar = tempPath
+      } else {
+        userStore.userInfo = { avatar: tempPath }
+      }
       uni.showToast({ title: '头像已更新', icon: 'success' })
     },
     fail: () => {}
@@ -256,8 +263,7 @@ const goToTheme = () => {
 
 <style lang="scss" scoped>
 .settings-page {
-  min-height: 100vh;
-  background: linear-gradient(180deg, #f0f2f8 0%, #e8ecf4 100%);
+  background: var(--r-bg-page, #f0f2f8);
   padding-bottom: env(safe-area-inset-bottom);
 }
 
@@ -272,7 +278,7 @@ const goToTheme = () => {
     background: linear-gradient(135deg,
       rgba(102, 126, 234, 0.1) 0%,
       rgba(118, 75, 162, 0.06) 50%,
-      rgba(255, 255, 255, 0.85) 100%);
+      var(--r-glass-bg) 100%);
     backdrop-filter: blur(20rpx);
   }
 
@@ -296,7 +302,7 @@ const goToTheme = () => {
         width: 140rpx;
         height: 140rpx;
         border-radius: 50%;
-        border: 4rpx solid #fff;
+        border: 4rpx solid var(--r-bg-card);
       }
     }
 
@@ -307,7 +313,7 @@ const goToTheme = () => {
       width: 44rpx;
       height: 44rpx;
       background: linear-gradient(135deg, #667eea, #764ba2);
-      border: 3rpx solid #fff;
+      border: 3rpx solid var(--r-bg-card);
       border-radius: 50%;
       display: flex;
       align-items: center;
@@ -318,7 +324,7 @@ const goToTheme = () => {
   .avatar-tip {
     margin-top: 16rpx;
     font-size: 24rpx;
-    color: #999;
+    color: var(--r-text-secondary);
   }
 }
 
@@ -329,7 +335,7 @@ const goToTheme = () => {
     display: block;
     font-size: 26rpx;
     font-weight: 600;
-    color: #8e8e93;
+    color: var(--r-text-secondary);
     margin-bottom: 16rpx;
     padding-left: 8rpx;
     text-transform: uppercase;
@@ -337,13 +343,12 @@ const goToTheme = () => {
   }
 
   .group-card {
-    background: rgba(255, 255, 255, 0.85);
+    background: var(--r-glass-bg);
     backdrop-filter: blur(20rpx);
-    border: 1rpx solid rgba(255, 255, 255, 0.6);
+    border: 1rpx solid var(--r-glass-border);
     border-radius: 24rpx;
     overflow: hidden;
-    box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.04),
-      inset 0 1rpx 0 rgba(255, 255, 255, 0.8);
+    box-shadow: var(--r-glass-shadow), var(--r-glass-inner-shadow);
   }
 }
 
@@ -361,7 +366,7 @@ const goToTheme = () => {
     left: 92rpx;
     right: 28rpx;
     height: 1rpx;
-    background: rgba(0, 0, 0, 0.04);
+    background: var(--r-divider);
   }
 
   &:active {
@@ -387,7 +392,7 @@ const goToTheme = () => {
 
     .item-label {
       font-size: 30rpx;
-      color: #1f2937;
+      color: var(--r-text-primary);
       font-weight: 500;
     }
   }
@@ -400,7 +405,7 @@ const goToTheme = () => {
 
     .item-value {
       font-size: 28rpx;
-      color: #999;
+      color: var(--r-text-secondary);
       max-width: 240rpx;
 
       &.ellipsis {

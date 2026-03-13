@@ -189,13 +189,6 @@ export const getSmartHeaderConfig = (currentPath, props = {}) => {
   const layoutType = getSmartLayoutType(currentPath);
   const isCompactMode = layoutType === "header-only"; // 无TabBar的页面使用紧凑模式
 
-  // 调试日志
-  console.log("🔍 Header配置调试:", {
-    路径: currentPath,
-    布局类型: layoutType,
-    是否紧凑模式: isCompactMode,
-  });
-
   return {
     defaultAvatar: "/static/robot-avatar.png",
     defaultNickname: "CHENY",
@@ -366,8 +359,9 @@ export function useSmartLayout(props) {
 // =================================
 export const debugCurrentPage = () => {
   const pages = getCurrentPages();
-  const currentPath = pages.length > 0 ? `/${pages[pages.length - 1].route}` : '';
-  
+  const currentPath =
+    pages.length > 0 ? `/${pages[pages.length - 1].route}` : "";
+
   const info = {
     当前路径: currentPath,
     页面层级: pages.length,
@@ -375,8 +369,7 @@ export const debugCurrentPage = () => {
     显示返回: shouldShowBackButton(currentPath),
     Header配置: getSmartHeaderConfig(currentPath),
   };
-  
-  console.log('页面调试信息:', info);
+
   return info;
 };
 

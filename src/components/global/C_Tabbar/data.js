@@ -23,71 +23,14 @@ export function useTabbarData(props, emit) {
 
   const safeAreaBottom = computed(() => appStore.safeArea.bottom || 0);
 
-  // 方法
+  // 方法 - 仅发射事件，导航由C_Layout统一处理
   const handleTabClick = (item, index) => {
     if (currentIndex.value === index) return;
-    if (isNavigating.value) {
-      console.log("正在导航中，忽略此次点击");
-      return;
-    }
+    if (isNavigating.value) return;
 
     currentIndex.value = index;
     emit("change", { item, index });
     emit("tabClick", { item, index });
-
-    // 如果有路径，则进行页面跳转
-    if (item.path) {
-      isNavigating.value = true;
-
-      // 对H5环境特殊处理
-      // #ifdef H5
-      setTimeout(() => {
-        uni.navigateTo({
-          url: item.path,
-          success: () => {
-            console.log("页面跳转成功:", item.path);
-            setTimeout(() => {
-              isNavigating.value = false;
-            }, 300);
-          },
-          fail: (err) => {
-            console.error("H5跳转失败:", err);
-            isNavigating.value = false;
-          },
-        });
-      }, 100);
-      // #endif
-
-      // 其他平台使用redirectTo
-      // #ifndef H5
-      uni.redirectTo({
-        url: item.path,
-        success: () => {
-          console.log("页面跳转成功:", item.path);
-          setTimeout(() => {
-            isNavigating.value = false;
-          }, 500);
-        },
-        fail: (err) => {
-          console.error("Tab跳转失败:", err);
-          // 降级处理：如果redirectTo失败，使用navigateTo
-          uni.navigateTo({
-            url: item.path,
-            success: () => {
-              console.log("降级跳转成功:", item.path);
-              setTimeout(() => {
-                isNavigating.value = false;
-              }, 500);
-            },
-            fail: (err2) => {
-              console.error("降级跳转也失败:", err2);
-              isNavigating.value = false;
-            },
-          });
-        },
-      });
-      // #endif
-    }
   };
 
   const setBadge = (tabId, count) => {

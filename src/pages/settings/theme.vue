@@ -131,7 +131,7 @@ const previewLabel = computed(() => {
 
 const selectTheme = (themeId) => {
   activeTheme.value = themeId
-  appStore.themeMode = themeId
+  appStore.setThemeMode(themeId)
   uni.showToast({ title: '主题已切换', icon: 'success' })
 }
 
@@ -144,8 +144,7 @@ const selectColor = (color) => {
 
 <style lang="scss" scoped>
 .theme-page {
-  min-height: 100vh;
-  background: linear-gradient(180deg, #f0f2f8 0%, #e8ecf4 100%);
+  background: var(--r-bg-page, #f0f2f8);
   padding-bottom: env(safe-area-inset-bottom);
 }
 
@@ -159,7 +158,7 @@ const selectColor = (color) => {
   .preview-label {
     margin-top: 20rpx;
     font-size: 26rpx;
-    color: #8e8e93;
+    color: var(--r-text-secondary);
     font-weight: 500;
   }
 }
@@ -262,7 +261,7 @@ const selectColor = (color) => {
   display: block;
   font-size: 26rpx;
   font-weight: 600;
-  color: #8e8e93;
+  color: var(--r-text-secondary);
   margin-bottom: 16rpx;
   padding-left: 8rpx;
   text-transform: uppercase;
@@ -284,11 +283,11 @@ const selectColor = (color) => {
   .option-glass {
     position: absolute;
     inset: 0;
-    background: rgba(255, 255, 255, 0.85);
+    background: var(--r-glass-bg);
     backdrop-filter: blur(20rpx);
-    border: 1rpx solid rgba(255, 255, 255, 0.6);
+    border: 1rpx solid var(--r-glass-border);
     border-radius: 24rpx;
-    box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.04);
+    box-shadow: var(--r-glass-shadow);
   }
 
   &.active .option-glass {
@@ -341,8 +340,8 @@ const selectColor = (color) => {
 
   .option-info {
     flex: 1;
-    .option-name { display: block; font-size: 30rpx; font-weight: 600; color: #1f2937; margin-bottom: 6rpx; }
-    .option-desc { display: block; font-size: 24rpx; color: #999; }
+    .option-name { display: block; font-size: 30rpx; font-weight: 600; color: var(--r-text-primary); margin-bottom: 6rpx; }
+    .option-desc { display: block; font-size: 24rpx; color: var(--r-text-secondary); }
   }
 
   .option-check {
@@ -366,11 +365,11 @@ const selectColor = (color) => {
   .color-glass {
     position: absolute;
     inset: 0;
-    background: rgba(255, 255, 255, 0.85);
+    background: var(--r-glass-bg);
     backdrop-filter: blur(20rpx);
-    border: 1rpx solid rgba(255, 255, 255, 0.6);
+    border: 1rpx solid var(--r-glass-border);
     border-radius: 24rpx;
-    box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.04);
+    box-shadow: var(--r-glass-shadow);
   }
 
   .color-content {
@@ -409,7 +408,7 @@ const selectColor = (color) => {
   .color-name {
     margin-top: 12rpx;
     font-size: 22rpx;
-    color: #666;
+    color: var(--r-text-regular);
     font-weight: 500;
   }
 }

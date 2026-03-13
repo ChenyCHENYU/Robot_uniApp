@@ -4,7 +4,6 @@
 <template>
   <C_Layout
     @settings-click="handleSettingsClick"
-    @tab-change="handleTabChange"
   >
     <view class="components-page">
       <!-- 顶部横幅 -->
@@ -73,8 +72,8 @@ const categories = [
 ]
 
 const allComponents = ref([
-  { id: 'c-icon', name: 'C_Icon', desc: '图标组件', category: 'basic', icon: 'browse', gradient: 'linear-gradient(135deg, #ff6b6b, #ee5a24)', path: '/pages/demo/01-icon/index' },
-  { id: 'c-tag', name: 'C_Tag', desc: '标签组件', category: 'basic', icon: 'tag', gradient: 'linear-gradient(135deg, #a29bfe, #6c5ce7)', path: '/pages/demo/02-tag/index' },
+  { id: 'c-icon', name: 'C_Icon', desc: '图标组件', category: 'basic', icon: 'view-module', gradient: 'linear-gradient(135deg, #ff6b6b, #ee5a24)', path: '/pages/demo/01-icon/index' },
+  { id: 'c-tag', name: 'C_Tag', desc: '标签组件', category: 'basic', icon: 'discount', gradient: 'linear-gradient(135deg, #a29bfe, #6c5ce7)', path: '/pages/demo/02-tag/index' },
   { id: 'c-badge', name: 'C_Badge', desc: '徽标组件', category: 'basic', icon: 'notification-filled', gradient: 'linear-gradient(135deg, #fd79a8, #e84393)', path: '/pages/demo/03-badge/index' },
   { id: 'c-float-button', name: 'C_FloatButton', desc: '悬浮按钮', category: 'basic', icon: 'add-circle', gradient: 'linear-gradient(135deg, #00b894, #00cec9)', path: '/pages/demo/04-float-button/index' },
   { id: 'c-header', name: 'C_Header', desc: '头部导航', category: 'layout', icon: 'backtop', gradient: 'linear-gradient(135deg, #4ecdc4, #2bcbba)', path: '/pages/demo/05-header/index' },
@@ -85,12 +84,12 @@ const allComponents = ref([
   { id: 'c-form', name: 'C_Form', desc: '表单组件', category: 'form', icon: 'edit-outline', gradient: 'linear-gradient(135deg, #e17055, #d63031)', path: '/pages/demo/10-form/index' },
   { id: 'c-search', name: 'C_Search', desc: '搜索组件', category: 'form', icon: 'search', gradient: 'linear-gradient(135deg, #74b9ff, #0984e3)', path: '/pages/demo/11-search/index' },
   { id: 'c-upload', name: 'C_Upload', desc: '文件上传', category: 'form', icon: 'camera', gradient: 'linear-gradient(135deg, #55efc4, #00b894)', path: '/pages/demo/12-upload/index' },
-  { id: 'c-number-keyboard', name: 'C_NumberKeyboard', desc: '数字键盘', category: 'form', icon: 'keyboard', gradient: 'linear-gradient(135deg, #636e72, #2d3436)', path: '/pages/demo/13-number-keyboard/index' },
+  { id: 'c-number-keyboard', name: 'C_NumberKeyboard', desc: '数字键盘', category: 'form', icon: 'keyboard-collapse', gradient: 'linear-gradient(135deg, #636e72, #2d3436)', path: '/pages/demo/13-number-keyboard/index' },
   { id: 'c-empty', name: 'C_Empty', desc: '空状态', category: 'display', icon: 'picture', gradient: 'linear-gradient(135deg, #b2bec3, #636e72)', path: '/pages/demo/14-empty/index' },
   { id: 'c-skeleton', name: 'C_Skeleton', desc: '骨架屏', category: 'display', icon: 'video', gradient: 'linear-gradient(135deg, #ffeaa7, #fdcb6e)', path: '/pages/demo/15-skeleton/index' },
   { id: 'c-list', name: 'C_List', desc: '列表组件', category: 'display', icon: 'bulletpoint', gradient: 'linear-gradient(135deg, #81ecec, #00cec9)', path: '/pages/demo/16-list/index' },
   { id: 'c-watermark', name: 'C_Watermark', desc: '水印组件', category: 'display', icon: 'bianjiliebiao', gradient: 'linear-gradient(135deg, #dfe6e9, #636e72)', path: '/pages/demo/17-watermark/index' },
-  { id: 'c-modal', name: 'C_Modal', desc: '弹窗组件', category: 'feedback', icon: 'pop', gradient: 'linear-gradient(135deg, #f39c12, #e74c3c)', path: '/pages/demo/18-modal/index' },
+  { id: 'c-modal', name: 'C_Modal', desc: '弹窗组件', category: 'feedback', icon: 'fullsreen', gradient: 'linear-gradient(135deg, #f39c12, #e74c3c)', path: '/pages/demo/18-modal/index' },
   { id: 'c-action-sheet', name: 'C_ActionSheet', desc: '动作面板', category: 'feedback', icon: 'arrow-up', gradient: 'linear-gradient(135deg, #e056fd, #be2edd)', path: '/pages/demo/19-action-sheet/index' },
   { id: 'c-title', name: 'C_Title', desc: '标题组件', category: 'business', icon: 'star', gradient: 'linear-gradient(135deg, #667eea, #764ba2)', path: '/pages/demo/20-title/index' },
 ])
@@ -113,15 +112,12 @@ const handleSettingsClick = () => {
   uni.navigateTo({ url: '/pages/settings/index' })
 }
 
-const handleTabChange = ({ item, index }) => {
-  console.log('切换到:', item.text, '索引:', index)
-}
 </script>
 
 <style lang="scss" scoped>
 .components-page {
-  min-height: 100vh;
-  background: #f5f7fa;
+  background: var(--r-bg-page, #f5f7fa);
+  padding-bottom: 32rpx;
 }
 
 .hero-banner {
@@ -171,8 +167,8 @@ const handleTabChange = ({ item, index }) => {
 
   .banner-info {
     flex: 1;
-    .banner-title { display: block; font-size: 36rpx; font-weight: 700; color: #1f2937; }
-    .banner-desc { display: block; font-size: 24rpx; color: #666; margin-top: 4rpx; }
+    .banner-title { display: block; font-size: 36rpx; font-weight: 700; color: var(--r-text-primary); }
+    .banner-desc { display: block; font-size: 24rpx; color: var(--r-text-regular); margin-top: 4rpx; }
   }
 }
 
@@ -189,8 +185,8 @@ const handleTabChange = ({ item, index }) => {
     gap: 8rpx;
     padding: 12rpx 24rpx;
     border-radius: 32rpx;
-    background: #fff;
-    border: 1rpx solid rgba(0, 0, 0, 0.06);
+    background: var(--r-bg-card);
+    border: 1rpx solid var(--r-divider-strong);
     white-space: nowrap;
     flex-shrink: 0;
     transition: all 0.3s ease;
@@ -201,8 +197,8 @@ const handleTabChange = ({ item, index }) => {
       .cat-text, .cat-count { color: #fff; }
     }
 
-    .cat-text { font-size: 24rpx; color: #666; font-weight: 500; }
-    .cat-count { font-size: 20rpx; color: #999; }
+    .cat-text { font-size: 24rpx; color: var(--r-text-regular); font-weight: 500; }
+    .cat-count { font-size: 20rpx; color: var(--r-text-secondary); }
   }
 }
 
@@ -214,10 +210,10 @@ const handleTabChange = ({ item, index }) => {
     align-items: center;
     padding: 28rpx;
     margin-bottom: 16rpx;
-    background: #fff;
+    background: var(--r-bg-card);
     border-radius: 20rpx;
-    border: 1rpx solid rgba(0, 0, 0, 0.04);
-    box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+    border: 1rpx solid var(--r-divider);
+    box-shadow: var(--r-shadow-sm);
     transition: all 0.3s ease;
 
     &:active {
@@ -239,8 +235,8 @@ const handleTabChange = ({ item, index }) => {
       flex: 1;
       margin: 0 24rpx;
       overflow: hidden;
-      .comp-name { display: block; font-size: 28rpx; font-weight: 600; color: #1f2937; }
-      .comp-desc { display: block; font-size: 22rpx; color: #999; margin-top: 4rpx; }
+      .comp-name { display: block; font-size: 28rpx; font-weight: 600; color: var(--r-text-primary); }
+      .comp-desc { display: block; font-size: 22rpx; color: var(--r-text-secondary); margin-top: 4rpx; }
     }
   }
 }

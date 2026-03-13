@@ -119,7 +119,7 @@ const angles = [-45, -22, 0, 22]
 
 <style lang="scss" scoped>
 .demo-page {
-  min-height: 100vh;
+  min-height: 100%;
   background: #f5f7fa;
   padding: 24rpx 32rpx;
 }

@@ -2,6 +2,12 @@
  * 全局样式重置
  */
 
+// 隐藏 uni-app 原生 tabbar（使用自定义 C_Tabbar）
+uni-tabbar,
+.uni-tabbar,
+.uni-tabbar-bottom {
+  display: none !important;
+}
 page {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
     'Helvetica Neue', Arial, sans-serif;

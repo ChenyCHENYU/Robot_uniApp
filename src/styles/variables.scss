@@ -3,6 +3,7 @@
  *
  * 基于 CSS Custom Properties，支持运行时主题切换
  * 命名约定：--r-{类别}-{语义}-{变体}
+ * * 深色模式策略： * - 手动深色：html.dark / page.dark 类选择器 * - 自动跟随系统：@media (prefers-color-scheme: dark)
  */
 
 :root {
@@ -30,6 +31,15 @@
   --r-bg-mask: rgba(0, 0, 0, 0.4);
   --r-bg-grey: #f8f8f8;
 
+  // ============ 玻璃拟态 ============
+    --r-glass-bg: rgba(255, 255, 255, 0.85);
+    --r-glass-border: rgba(255, 255, 255, 0.6);
+    --r-glass-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.04);
+    --r-glass-inner-shadow: inset 0 1rpx 0 rgba(255, 255, 255, 0.8);
+  
+    // ============ 分隔线 ============
+    --r-divider: rgba(0, 0, 0, 0.04);
+    --r-divider-strong: rgba(0, 0, 0, 0.08);
   // ============ 边框 ============
   --r-border-color: #ebeef5;
   --r-border-light: #f2f6fc;
@@ -77,24 +87,48 @@
   --r-z-toast: 400;
 }
 
-// 深色模式变量覆盖
-@media (prefers-color-scheme: dark) {
-  :root {
-    --r-text-primary: #e5eaf3;
-    --r-text-regular: #cfd3dc;
-    --r-text-secondary: #a3a6ad;
-    --r-text-placeholder: #8d9095;
+// ============ 深色模式变量覆盖（共用 mixin） ============
+@mixin dark-theme {
+  --r-text-primary: #e5eaf3;
+  --r-text-regular: #cfd3dc;
+  --r-text-secondary: #a3a6ad;
+  --r-text-placeholder: #8d9095;
+  --r-text-inverse: #1a1a1a;
 
-    --r-bg-page: #0a0a0a;
+  --r-bg-page: #0a0a0a;
     --r-bg-card: #1d1e1f;
     --r-bg-hover: #2c2c2c;
     --r-bg-grey: #141414;
 
-    --r-border-color: #414243;
+  --r-glass-bg: rgba(30, 30, 30, 0.88);
+    --r-glass-border: rgba(255, 255, 255, 0.08);
+    --r-glass-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.3);
+    --r-glass-inner-shadow: inset 0 1rpx 0 rgba(255, 255, 255, 0.05);
+  
+    --r-divider: rgba(255, 255, 255, 0.06);
+    --r-divider-strong: rgba(255, 255, 255, 0.1);
+  --r-border-color: #414243;
     --r-border-light: #363637;
 
-    --r-shadow-sm: 0 2rpx 8rpx rgba(0, 0, 0, 0.3);
+  --r-shadow-sm: 0 2rpx 8rpx rgba(0, 0, 0, 0.3);
     --r-shadow-md: 0 4rpx 16rpx rgba(0, 0, 0, 0.4);
     --r-shadow-lg: 0 8rpx 32rpx rgba(0, 0, 0, 0.5);
+}
+
+// 手动深色模式（通过 JS 添加 .dark 类）
+html.dark,
+page.dark,
+.dark {
+  @include dark-theme;
+}
+
+// 自动跟随系统（themeMode === 'auto' 时不添加 .dark 也不添加 .light）
+@media (prefers-color-scheme: dark) {
+  :root:not(.light):not(.dark) {
+    @include dark-theme;
+  }
+
+  page:not(.light):not(.dark) {
+    @include dark-theme;
   }
 }

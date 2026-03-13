@@ -4,7 +4,6 @@
     @user-click="handleUserClick"
     @notification-click="handleNotificationClick"
     @settings-click="handleSettingsClick"
-    @tab-change="handleTabChange"
   >
     <view class="homepage">
       <!-- 顶部横幅 -->
@@ -287,10 +286,6 @@ const handleUserClick = (user) => {
 const handleNotificationClick = () => {}
 const handleSettingsClick = () => {}
 
-const handleTabChange = ({ item, index }) => {
-  console.log('切换到:', item.text, '索引:', index);
-};
-
 // 原有事件处理
 const handleStart = () => {
   uni.showToast({
@@ -398,7 +393,7 @@ const handleDocs = () => {
       
       .title-main {
         display: block;
-        color: #1f2937;
+        color: var(--r-text-primary);
         font-size: 56rpx;
         font-weight: bold;
         margin-bottom: 16rpx;
@@ -410,14 +405,14 @@ const handleDocs = () => {
       
       .title-desc {
         display: block;
-        color: #6b7280;
+        color: var(--r-text-regular);
         font-size: 32rpx;
         font-weight: 500;
       }
     }
     
     .project-intro {
-      color: #4b5563;
+      color: var(--r-text-regular);
       font-size: 28rpx;
       line-height: 1.6;
       padding: 0 20rpx;
@@ -433,7 +428,7 @@ const handleDocs = () => {
       flex-direction: column;
       align-items: center;
       padding: 24rpx;
-      background: rgba(255, 255, 255, 0.7);
+      background: var(--r-glass-bg);
       border: 1rpx solid rgba(0, 212, 255, 0.1);
       border-radius: 20rpx;
       backdrop-filter: blur(10rpx);
@@ -451,7 +446,7 @@ const handleDocs = () => {
       }
       
       .platform-name {
-        color: #374151;
+        color: var(--r-text-primary);
         font-size: 24rpx;
         font-weight: 500;
       }
@@ -468,14 +463,14 @@ const handleDocs = () => {
     display: block;
     font-size: 48rpx;
     font-weight: bold;
-    color: #1f2937;
+    color: var(--r-text-primary);
     margin-bottom: 16rpx;
   }
   
   .section-subtitle {
     display: block;
     font-size: 28rpx;
-    color: #6b7280;
+    color: var(--r-text-regular);
   }
 }
 
@@ -511,7 +506,7 @@ const handleDocs = () => {
       display: flex;
       align-items: center;
       padding: 40rpx;
-      background: #fff;
+      background: var(--r-bg-card);
       border-radius: 24rpx;
       box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.08);
       transition: all 0.3s ease;
@@ -542,14 +537,14 @@ const handleDocs = () => {
           display: block;
           font-size: 32rpx;
           font-weight: bold;
-          color: #1f2937;
+          color: var(--r-text-primary);
           margin-bottom: 8rpx;
         }
         
         .feature-desc {
           display: block;
           font-size: 26rpx;
-          color: #6b7280;
+          color: var(--r-text-regular);
         }
       }
     }
@@ -559,7 +554,7 @@ const handleDocs = () => {
 /* 技术栈 */
 .tech-section {
   padding: 80rpx 40rpx;
-  background: #fff;
+  background: var(--r-bg-card);
   
   .tech-stack {
     display: grid;
@@ -570,7 +565,7 @@ const handleDocs = () => {
       padding: 32rpx;
       background: linear-gradient(135deg, #f8faff 0%, #f1f5f9 100%);
       border-radius: 20rpx;
-      border: 1px solid #e5e7eb;
+      border: 1px solid var(--r-border-color);
       
       .tech-header {
         display: flex;
@@ -585,7 +580,7 @@ const handleDocs = () => {
         .tech-name {
           font-size: 28rpx;
           font-weight: bold;
-          color: #1f2937;
+          color: var(--r-text-primary);
         }
       }
       
@@ -596,11 +591,11 @@ const handleDocs = () => {
         
         .tech-item {
           padding: 8rpx 16rpx;
-          background: #fff;
+          background: var(--r-bg-card);
           color: #4f46e5;
           font-size: 22rpx;
           border-radius: 12rpx;
-          border: 1px solid #e0e7ff;
+          border: 1px solid var(--r-border-color);
         }
       }
     }
@@ -616,7 +611,7 @@ const handleDocs = () => {
       display: flex;
       align-items: flex-start;
       padding: 32rpx;
-      background: #fff;
+      background: var(--r-bg-card);
       border-radius: 20rpx;
       margin-bottom: 24rpx;
       box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
@@ -642,14 +637,14 @@ const handleDocs = () => {
           display: block;
           font-size: 30rpx;
           font-weight: bold;
-          color: #1f2937;
+          color: var(--r-text-primary);
           margin-bottom: 8rpx;
         }
         
         .advantage-desc {
           display: block;
           font-size: 26rpx;
-          color: #6b7280;
+          color: var(--r-text-regular);
           line-height: 1.5;
         }
       }
@@ -660,7 +655,7 @@ const handleDocs = () => {
 /* 应用场景 */
 .scenarios-section {
   padding: 80rpx 40rpx;
-  background: #fff;
+  background: var(--r-bg-card);
   
   .scenarios-grid {
     display: grid;
@@ -672,7 +667,7 @@ const handleDocs = () => {
       text-align: center;
       background: linear-gradient(135deg, #f8faff 0%, #f1f5f9 100%);
       border-radius: 20rpx;
-      border: 1px solid #e5e7eb;
+      border: 1px solid var(--r-border-color);
       
       .scenario-icon {
         font-size: 48rpx;
@@ -684,14 +679,14 @@ const handleDocs = () => {
         display: block;
         font-size: 28rpx;
         font-weight: bold;
-        color: #1f2937;
+        color: var(--r-text-primary);
         margin-bottom: 8rpx;
       }
       
       .scenario-desc {
         display: block;
         font-size: 22rpx;
-        color: #6b7280;
+        color: var(--r-text-regular);
       }
     }
   }
@@ -797,7 +792,7 @@ const handleDocs = () => {
 /* 项目信息 */
 .project-info {
   padding: 60rpx 40rpx;
-  background: #f8faff;
+  background: var(--r-bg-grey);
   
   .info-content {
     text-align: center;
@@ -806,7 +801,7 @@ const handleDocs = () => {
       display: block;
       font-size: 32rpx;
       font-weight: bold;
-      color: #1f2937;
+      color: var(--r-text-primary);
       margin-bottom: 8rpx;
     }
     
@@ -814,14 +809,14 @@ const handleDocs = () => {
     .project-license {
       display: block;
       font-size: 24rpx;
-      color: #6b7280;
+      color: var(--r-text-regular);
       margin-bottom: 8rpx;
     }
     
     .project-author {
       display: block;
       font-size: 24rpx;
-      color: #9ca3af;
+      color: var(--r-text-secondary);
     }
   }
 }

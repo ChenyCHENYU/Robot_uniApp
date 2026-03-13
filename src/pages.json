@@ -51,83 +51,143 @@
     },
     {
       "path": "pages/demo/01-icon/index",
-      "style": { "navigationBarTitleText": "C_Icon 演示", "navigationStyle": "custom" }
+      "style": {
+        "navigationBarTitleText": "C_Icon 演示",
+        "navigationStyle": "custom"
+      }
     },
     {
       "path": "pages/demo/02-tag/index",
-      "style": { "navigationBarTitleText": "C_Tag 演示", "navigationStyle": "custom" }
+      "style": {
+        "navigationBarTitleText": "C_Tag 演示",
+        "navigationStyle": "custom"
+      }
     },
     {
       "path": "pages/demo/03-badge/index",
-      "style": { "navigationBarTitleText": "C_Badge 演示", "navigationStyle": "custom" }
+      "style": {
+        "navigationBarTitleText": "C_Badge 演示",
+        "navigationStyle": "custom"
+      }
     },
     {
       "path": "pages/demo/04-float-button/index",
-      "style": { "navigationBarTitleText": "C_FloatButton 演示", "navigationStyle": "custom" }
+      "style": {
+        "navigationBarTitleText": "C_FloatButton 演示",
+        "navigationStyle": "custom"
+      }
     },
     {
       "path": "pages/demo/05-header/index",
-      "style": { "navigationBarTitleText": "C_Header 演示", "navigationStyle": "custom" }
+      "style": {
+        "navigationBarTitleText": "C_Header 演示",
+        "navigationStyle": "custom"
+      }
     },
     {
       "path": "pages/demo/06-layout/index",
-      "style": { "navigationBarTitleText": "C_Layout 演示", "navigationStyle": "custom" }
+      "style": {
+        "navigationBarTitleText": "C_Layout 演示",
+        "navigationStyle": "custom"
+      }
     },
     {
       "path": "pages/demo/07-tabbar/index",
-      "style": { "navigationBarTitleText": "C_Tabbar 演示", "navigationStyle": "custom" }
+      "style": {
+        "navigationBarTitleText": "C_Tabbar 演示",
+        "navigationStyle": "custom"
+      }
     },
     {
       "path": "pages/demo/08-card/index",
-      "style": { "navigationBarTitleText": "C_Card 演示", "navigationStyle": "custom" }
+      "style": {
+        "navigationBarTitleText": "C_Card 演示",
+        "navigationStyle": "custom"
+      }
     },
     {
       "path": "pages/demo/09-steps/index",
-      "style": { "navigationBarTitleText": "C_Steps 演示", "navigationStyle": "custom" }
+      "style": {
+        "navigationBarTitleText": "C_Steps 演示",
+        "navigationStyle": "custom"
+      }
     },
     {
       "path": "pages/demo/10-form/index",
-      "style": { "navigationBarTitleText": "C_Form 演示", "navigationStyle": "custom" }
+      "style": {
+        "navigationBarTitleText": "C_Form 演示",
+        "navigationStyle": "custom"
+      }
     },
     {
       "path": "pages/demo/11-search/index",
-      "style": { "navigationBarTitleText": "C_Search 演示", "navigationStyle": "custom" }
+      "style": {
+        "navigationBarTitleText": "C_Search 演示",
+        "navigationStyle": "custom"
+      }
     },
     {
       "path": "pages/demo/12-upload/index",
-      "style": { "navigationBarTitleText": "C_Upload 演示", "navigationStyle": "custom" }
+      "style": {
+        "navigationBarTitleText": "C_Upload 演示",
+        "navigationStyle": "custom"
+      }
     },
     {
       "path": "pages/demo/13-number-keyboard/index",
-      "style": { "navigationBarTitleText": "C_NumberKeyboard 演示", "navigationStyle": "custom" }
+      "style": {
+        "navigationBarTitleText": "C_NumberKeyboard 演示",
+        "navigationStyle": "custom"
+      }
     },
     {
       "path": "pages/demo/14-empty/index",
-      "style": { "navigationBarTitleText": "C_Empty 演示", "navigationStyle": "custom" }
+      "style": {
+        "navigationBarTitleText": "C_Empty 演示",
+        "navigationStyle": "custom"
+      }
     },
     {
       "path": "pages/demo/15-skeleton/index",
-      "style": { "navigationBarTitleText": "C_Skeleton 演示", "navigationStyle": "custom" }
+      "style": {
+        "navigationBarTitleText": "C_Skeleton 演示",
+        "navigationStyle": "custom"
+      }
     },
     {
       "path": "pages/demo/16-list/index",
-      "style": { "navigationBarTitleText": "C_List 演示", "navigationStyle": "custom" }
+      "style": {
+        "navigationBarTitleText": "C_List 演示",
+        "navigationStyle": "custom"
+      }
     },
     {
       "path": "pages/demo/17-watermark/index",
-      "style": { "navigationBarTitleText": "C_Watermark 演示", "navigationStyle": "custom" }
+      "style": {
+        "navigationBarTitleText": "C_Watermark 演示",
+        "navigationStyle": "custom"
+      }
     },
     {
       "path": "pages/demo/18-modal/index",
-      "style": { "navigationBarTitleText": "C_Modal 演示", "navigationStyle": "custom" }
+      "style": {
+        "navigationBarTitleText": "C_Modal 演示",
+        "navigationStyle": "custom"
+      }
     },
     {
       "path": "pages/demo/19-action-sheet/index",
-      "style": { "navigationBarTitleText": "C_ActionSheet 演示", "navigationStyle": "custom" }
+      "style": {
+        "navigationBarTitleText": "C_ActionSheet 演示",
+        "navigationStyle": "custom"
+      }
     },
     {
       "path": "pages/demo/20-title/index",
-      "style": { "navigationBarTitleText": "C_Title 演示", "navigationStyle": "custom" }
+      "style": {
+        "navigationBarTitleText": "C_Title 演示",
+        "navigationStyle": "custom"
+      }
     },
     {
       "path": "pages/test-back/index",
@@ -158,6 +218,18 @@
       }
     }
   ],
+  "tabBar": {
+    "custom": true,
+    "color": "#8E8E93",
+    "selectedColor": "#007AFF",
+    "backgroundColor": "#ffffff",
+    "list": [
+      { "pagePath": "pages/index/index", "text": "首页" },
+      { "pagePath": "pages/message/index", "text": "消息" },
+      { "pagePath": "pages/robot/index", "text": "组件库" },
+      { "pagePath": "pages/profile/index", "text": "我的" }
+    ]
+  },
   "globalStyle": {
     "navigationBarTextStyle": "black",
     "navigationBarTitleText": "Robot App",

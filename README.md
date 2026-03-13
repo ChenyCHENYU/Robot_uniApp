@@ -214,7 +214,7 @@ pnpm run build:app-plus  # App-Plus构建
 ### 🛠️ 企业级能力
 
 - **权限体系** - 路由守卫 + v-permission 指令 + Store RBAC
-- **主题系统** - CSS Variables + 深色模式 + useTheme composable
+- **主题系统** - CSS Variables + 深色/浅色/跟随系统三档切换 + 全页面主题适配
 - **国际化** - vue-i18n 11.x 已集成
 - **表单校验** - v_verify 工具 + C_Form 声明式校验
 
@@ -271,9 +271,11 @@ Robot_UniApp/
 │   ├── pages/                    # 页面目录
 │   │   ├── index/                # 首页
 │   │   ├── login/                # 登录页
-│   │   ├── chat/                 # AI 对话页
-│   │   ├── robot/                # 机器人管理
-│   │   └── profile/              # 个人中心
+│   │   ├── message/              # 消息中心
+│   │   ├── robot/                # 组件库展示
+│   │   ├── profile/              # 个人中心
+│   │   ├── settings/             # 个人设置 + 主题切换
+│   │   └── demo/                 # 组件演示 (19 个 Demo)
 │   ├── stores/                   # Pinia 状态管理
 │   ├── styles/                   # 全局样式体系
 │   │   ├── variables.scss        # CSS 变量 (色板/字号/间距/阴影)
@@ -376,10 +378,15 @@ mkdir src/components/global/C_YourComponent
 // src/styles/variables.scss - 全局 CSS 变量
 :root {
   --r-color-primary: #007aff;
-  --r-color-success: #4cd964;
-  --r-radius-lg: 24rpx;
-  --r-shadow-md: 0 4rpx 16rpx rgba(0, 0, 0, 0.1);
+  --r-bg-page: #f5f6fa;
+  --r-bg-card: #ffffff;
+  --r-glass-bg: rgba(255, 255, 255, 0.85);
+  --r-text-primary: #333333;
+  // ... 60+ 语义化变量
 }
+
+// 深色模式通过 .dark 类 / @media prefers-color-scheme 自动覆盖
+html.dark { --r-bg-page: #0a0a0a; --r-bg-card: #1d1e1f; ... }
 ```
 
 ---
@@ -395,10 +402,11 @@ mkdir src/components/global/C_YourComponent
 
 ### 🎨 主题系统
 
-- 多主题支持（Ocean、Sunset、Forest）
-- 深色/浅色模式
-- 动态主题切换
-- 自定义主题色
+- **三档切换** - 浅色模式 / 深色模式 / 跟随系统
+- **CSS Variables** - 60+ 语义化变量（色板/文字/背景/玻璃拟态/阴影/间距/圆角等）
+- **全页面适配** - 所有页面、组件硬编码颜色已替换为 CSS 变量
+- **持久化** - 主题偏好通过 Pinia + persistedstate 自动保存
+- **主题色** - 6 种可选主题色（极光蓝/翡翠绿/珊瑚橙/薰衣紫/樱花粉/水墨灰）
 
 ### 📱 响应式设计
 

@@ -379,7 +379,7 @@ const getStatusText = (status) => {
 
 <style lang="scss" scoped>
 .demo-page {
-  min-height: 100vh;
+  min-height: 100%;
   background: #f8fafc;
 }
 

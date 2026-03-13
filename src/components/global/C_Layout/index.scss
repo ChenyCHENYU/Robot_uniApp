@@ -9,7 +9,7 @@
 // 变量定义
 // =================================
 $layout-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-$content-bg: #ffffff; // 纯白背景
+$content-bg: var(--r-bg-card, #ffffff); // 跟随主题变量
 $loading-bg: rgba(0, 0, 0, 0.3);
 $loading-backdrop-blur: 10rpx;
 $tabbar-height: 120rpx;
@@ -24,7 +24,8 @@ $breakpoint-md: 1024rpx;
 // 主布局容器
 // =================================
 .c-layout {
-  min-height: 100vh;
+  height: 100vh;
+    height: 100dvh;
   display: flex;
   flex-direction: column;
   background-color: $content-bg; // 确保是纯白背景
@@ -169,13 +170,11 @@ $breakpoint-md: 1024rpx;
 // Header区域增强
 // =================================
 .c-layout .c-header {
-  position: relative;
+  position: sticky;
+    top: 0;
   z-index: 100;
   flex-shrink: 0;
   width: 100%;
-  
-  // 确保Header在布局中的正确层级
-  order: -1; // Header始终在最前面
 }
 
 // =================================
@@ -193,8 +192,8 @@ $breakpoint-md: 1024rpx;
   // 毛玻璃效果
   backdrop-filter: blur(20rpx);
   -webkit-backdrop-filter: blur(20rpx);
-  border-top: 1rpx solid rgba(0, 0, 0, 0.05);
-  background: rgba(255, 255, 255, 0.95); // 半透明白色
+  border-top: 1rpx solid var(--r-divider, rgba(0, 0, 0, 0.04));
+    background: var(--r-glass-bg, rgba(255, 255, 255, 0.85));
   
   // 安全区域适配
   padding-bottom: constant(safe-area-inset-bottom);
@@ -350,7 +349,7 @@ $breakpoint-md: 1024rpx;
   // 横屏时TabBar的特殊样式
   .c-tabbar {
     height: calc(#{$tabbar-height} - 20rpx); // 横屏时稍微降低高度
-    background: rgba(255, 255, 255, 0.95); // 保持半透明白色
+        background: var(--r-glass-bg, rgba(255, 255, 255, 0.85));
   }
 }
 

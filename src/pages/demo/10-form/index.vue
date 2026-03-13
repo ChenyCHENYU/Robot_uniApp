@@ -121,7 +121,7 @@ const onReset = () => {
 
 <style lang="scss" scoped>
 .demo-page {
-  min-height: 100vh;
+  min-height: 100%;
   background: #f5f7fa;
   padding: 24rpx 32rpx;
 }

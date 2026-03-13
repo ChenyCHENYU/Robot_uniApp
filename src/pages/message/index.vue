@@ -4,7 +4,6 @@
 <template>
   <C_Layout
     @settings-click="handleSettingsClick"
-    @tab-change="handleTabChange"
   >
     <view class="message-page">
       <!-- 消息分类 -->
@@ -118,23 +117,20 @@ const handleSettingsClick = () => {
   uni.navigateTo({ url: '/pages/settings/index' })
 }
 
-const handleTabChange = ({ item, index }) => {
-  console.log('切换到:', item.text, '索引:', index)
-}
 </script>
 
 <style lang="scss" scoped>
 .message-page {
-  min-height: 100vh;
-  background: #f5f7fa;
+  background: var(--r-bg-page, #f5f7fa);
+  padding-bottom: 32rpx;
 }
 
 .message-tabs {
   display: flex;
   padding: 24rpx 32rpx;
   gap: 16rpx;
-  background: #fff;
-  border-bottom: 1rpx solid rgba(0, 0, 0, 0.05);
+  background: var(--r-bg-card);
+  border-bottom: 1rpx solid var(--r-divider);
 
   .tab-item {
     position: relative;
@@ -151,7 +147,7 @@ const handleTabChange = ({ item, index }) => {
       .tab-text { color: #667eea; font-weight: 600; }
     }
 
-    .tab-text { font-size: 26rpx; color: #666; }
+    .tab-text { font-size: 26rpx; color: var(--r-text-regular); }
 
     .tab-badge {
       position: absolute;
@@ -177,7 +173,7 @@ const handleTabChange = ({ item, index }) => {
   align-items: center;
   padding: 20rpx 32rpx;
 
-  .msg-count { font-size: 24rpx; color: #999; }
+  .msg-count { font-size: 24rpx; color: var(--r-text-secondary); }
 
   .action-right {
     display: flex;
@@ -199,10 +195,10 @@ const handleTabChange = ({ item, index }) => {
     align-items: center;
     padding: 28rpx;
     margin-bottom: 16rpx;
-    background: #fff;
+    background: var(--r-bg-card);
     border-radius: 20rpx;
-    border: 1rpx solid rgba(0, 0, 0, 0.04);
-    box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+    border: 1rpx solid var(--r-divider);
+    box-shadow: var(--r-shadow-sm);
     transition: all 0.3s ease;
 
     &.unread {
@@ -231,13 +227,13 @@ const handleTabChange = ({ item, index }) => {
         align-items: center;
         margin-bottom: 8rpx;
 
-        .msg-title { font-size: 28rpx; font-weight: 600; color: #1f2937; }
-        .msg-time { font-size: 22rpx; color: #999; flex-shrink: 0; }
+        .msg-title { font-size: 28rpx; font-weight: 600; color: var(--r-text-primary); }
+        .msg-time { font-size: 22rpx; color: var(--r-text-secondary); flex-shrink: 0; }
       }
 
       .msg-content {
         font-size: 24rpx;
-        color: #666;
+        color: var(--r-text-regular);
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
@@ -262,7 +258,7 @@ const handleTabChange = ({ item, index }) => {
   justify-content: center;
   padding: 120rpx 0;
 
-  .empty-text { font-size: 30rpx; color: #999; margin-top: 24rpx; }
-  .empty-desc { font-size: 24rpx; color: #ccc; margin-top: 8rpx; }
+  .empty-text { font-size: 30rpx; color: var(--r-text-secondary); margin-top: 24rpx; }
+  .empty-desc { font-size: 24rpx; color: var(--r-text-placeholder); margin-top: 8rpx; }
 }
 </style>

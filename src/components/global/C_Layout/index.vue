@@ -75,36 +75,14 @@ watch(() => currentPath.value, (newPath) => {
   emit("layoutChange", getPageInfo());
 }, { immediate: true });
 
-// H5返回修复逻辑
-const executeH5BackStrategy = () => {
-  // #ifdef H5
-  // 策略1：URL参数返回
-  const urlParams = new URLSearchParams(window.location?.search || '');
-  const fromParam = urlParams.get('from');
-  if (fromParam) {
-    return uni.navigateTo({ url: fromParam });
-  }
-
-  // 策略2：导航历史返回
-  try {
-    const navHistory = JSON.parse(localStorage.getItem('nav_history') || '[]');
-    if (navHistory.length > 1) {
-      const previousPage = navHistory[navHistory.length - 2];
-      const newHistory = navHistory.slice(0, -1);
-      localStorage.setItem('nav_history', JSON.stringify(newHistory));
-      return uni.navigateTo({ url: previousPage });
-    }
-  } catch (e) {}
-
-  // 策略3：返回首个Tab页面
+// 返回首页兜底策略
+const navigateToHome = () => {
   const firstTab = tabbarConfig.tabList?.[0];
   if (firstTab) {
-    return uni.switchTab({ url: firstTab.path });
+    uni.switchTab({ url: firstTab.path });
+  } else {
+    uni.reLaunch({ url: '/pages/index/index' });
   }
-  // #endif
-  
-  // 兜底：无法返回
-  emit("backFail", { reason: "no_strategy_available" });
 };
 
 // 通知按钮处理 - 默认跳转消息中心
@@ -134,11 +112,11 @@ const handleBackClick = () => {
     uni.navigateBack({
       delta: props.backDelta,
       success: () => emit("backSuccess", { delta: props.backDelta, fromPath: currentPath.value }),
-      fail: (err) => emit("backFail", { error: err, reason: "navigate_fail" })
+      fail: () => navigateToHome()
     });
   } else {
-    // H5修复策略
-    executeH5BackStrategy();
+    // 页面栈只有1层时，兜底跳转首页
+    navigateToHome();
   }
 };
 
@@ -161,21 +139,13 @@ const handleTabChange = (data) => {
     url: item.path,
     success: () => {
       emit("tabChange", { ...data, fromPath: currentPath.value, toPath: item.path });
-      nextTick(() => setTimeout(() => { isNavigating.value = false; }, 300));
     },
-    fail: (err) => {
-      // 降级处理
-      uni.reLaunch({
-        url: item.path,
-        success: () => {
-          emit("tabChange", { ...data, fallback: 'reLaunch', fromPath: currentPath.value, toPath: item.path });
-          setTimeout(() => { isNavigating.value = false; }, 300);
-        },
-        fail: (err2) => {
-          isNavigating.value = false;
-          emit("tabChange", { ...data, error: err2, success: false });
-        },
-      });
+    fail: () => {
+      // switchTab失败时降级使用reLaunch
+      uni.reLaunch({ url: item.path });
+    },
+    complete: () => {
+      nextTick(() => setTimeout(() => { isNavigating.value = false; }, 300));
     },
   });
 };

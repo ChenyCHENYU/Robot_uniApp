@@ -31,9 +31,9 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(255, 255, 255, 0.85);
+  background: var(--r-glass-bg, rgba(255, 255, 255, 0.85));
   backdrop-filter: blur(40rpx);
-  border-top: 1rpx solid rgba(255, 255, 255, 0.3);
+  border-top: 1rpx solid var(--r-glass-border, rgba(255, 255, 255, 0.3));
 }
 
 .border-line {
@@ -112,8 +112,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0, 0, 0, 0.05);
-  border: 1rpx solid rgba(0, 0, 0, 0.1);
+  background: var(--r-divider, rgba(0, 0, 0, 0.05));
+    border: 1rpx solid var(--r-divider-strong, rgba(0, 0, 0, 0.1));
   transition: all 0.4s ease;
 
   &.is-active {
@@ -128,7 +128,7 @@
 .custom-text-icon {
   font-size: 28rpx;
   font-weight: bold;
-  color: #8e8e93;
+  color: var(--r-text-secondary, #8e8e93);
   transition: all 0.3s ease;
 
   &.is-active {
@@ -138,7 +138,7 @@
 }
 .tab-label {
   font-size: 18rpx;
-  color: #8e8e93;
+  color: var(--r-text-secondary, #8e8e93);
   font-weight: 500;
   transition: all 0.3s ease;
   text-align: center;

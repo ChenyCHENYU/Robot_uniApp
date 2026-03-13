@@ -56,6 +56,28 @@ export const useAppStore = defineStore("app", {
         uni.hideLoading();
       }
     },
+
+    /**
+     * 设置主题模式并应用到 DOM
+     * @param {'light'|'dark'|'auto'} mode
+     */
+    setThemeMode(mode) {
+      this.themeMode = mode;
+      // #ifdef H5
+      const html = document.documentElement;
+      html.classList.remove("dark", "light");
+      if (mode === "dark") {
+        html.classList.add("dark");
+      } else if (mode === "light") {
+        html.classList.add("light");
+      }
+      // auto 模式不添加任何类，交由 @media (prefers-color-scheme) 处理
+      // #endif
+
+      // #ifdef MP-WEIXIN || APP-PLUS
+      // 小程序和 App 端通过 page 类名控制（需在页面 onShow 中同步）
+      // #endif
+    },
   },
 
   persist: {

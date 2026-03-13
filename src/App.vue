@@ -34,6 +34,9 @@ const initApp = async () => {
   // 初始化系统信息
   await appStore.initSystemInfo()
   
+  // 应用已持久化的主题模式
+  appStore.setThemeMode(appStore.themeMode)
+  
   // 如果已登录，尝试获取最新用户信息
   if (userStore.isLoggedIn && userStore.token) {
     try {

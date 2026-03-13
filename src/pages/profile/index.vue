@@ -3,7 +3,6 @@
 -->
 <template>
   <C_Layout
-    @tab-change="handleTabChange"
   >
     <view class="profile-page">
       <!-- 用户信息卡片 -->
@@ -70,7 +69,7 @@
       <!-- 退出登录 -->
       <view class="logout-section">
         <view class="logout-btn" @click="handleLogout">
-          <wd-icon name="power" size="18px" color="#f5576c" />
+          <wd-icon name="poweroff" size="18px" color="#f5576c" />
           <text class="logout-text">退出登录</text>
         </view>
       </view>
@@ -128,7 +127,7 @@ const menuGroups = ref([
     items: [
       { id: 'feedback', label: '意见反馈', icon: 'edit-outline', iconBg: 'linear-gradient(135deg, #ffecd2, #fcb69f)' },
       { id: 'about', label: '关于应用', icon: 'info-circle', iconBg: 'linear-gradient(135deg, #c3cfe2, #f5f7fa)' },
-      { id: 'cache', label: '清除缓存', icon: 'delete-outline', iconBg: 'linear-gradient(135deg, #e0c3fc, #8ec5fc)', extra: '12.5MB' },
+      { id: 'cache', label: '清除缓存', icon: 'delete', iconBg: 'linear-gradient(135deg, #e0c3fc, #8ec5fc)', extra: '12.5MB' },
     ]
   },
 ])
@@ -176,15 +175,11 @@ const handleLogout = () => {
   })
 }
 
-const handleTabChange = ({ item, index }) => {
-  console.log('切换到:', item.text, '索引:', index)
-}
 </script>
 
 <style lang="scss" scoped>
 .profile-page {
-  min-height: 100vh;
-  background: linear-gradient(180deg, #f0f2f8 0%, #e8ecf4 100%);
+  background: var(--r-bg-page, #f0f2f8);
   padding-bottom: 40rpx;
 }
 
@@ -201,13 +196,13 @@ const handleTabChange = ({ item, index }) => {
     background: linear-gradient(135deg,
       rgba(102, 126, 234, 0.12) 0%,
       rgba(118, 75, 162, 0.08) 50%,
-      rgba(255, 255, 255, 0.9) 100%);
+      var(--r-glass-bg) 100%);
     backdrop-filter: blur(24rpx);
-    border: 1rpx solid rgba(255, 255, 255, 0.6);
+    border: 1rpx solid var(--r-glass-border);
     border-radius: 28rpx;
     box-shadow:
       0 8rpx 32rpx rgba(102, 126, 234, 0.12),
-      inset 0 1rpx 0 rgba(255, 255, 255, 0.8);
+      var(--r-glass-inner-shadow);
   }
 
   .card-content {
@@ -230,7 +225,7 @@ const handleTabChange = ({ item, index }) => {
         width: 100rpx;
         height: 100rpx;
         border-radius: 50%;
-        border: 4rpx solid #fff;
+        border: 4rpx solid var(--r-bg-card);
       }
     }
 
@@ -241,7 +236,7 @@ const handleTabChange = ({ item, index }) => {
       padding: 4rpx 12rpx;
       background: linear-gradient(135deg, #667eea, #764ba2);
       border-radius: 16rpx;
-      border: 2rpx solid #fff;
+      border: 2rpx solid var(--r-bg-card);
 
       .level-text { font-size: 18rpx; color: #fff; font-weight: 700; }
     }
@@ -254,7 +249,7 @@ const handleTabChange = ({ item, index }) => {
       display: block;
       font-size: 36rpx;
       font-weight: 700;
-      color: #1f2937;
+      color: var(--r-text-primary);
       margin-bottom: 6rpx;
     }
 
@@ -267,8 +262,8 @@ const handleTabChange = ({ item, index }) => {
     }
 
     .user-id {
-      .id-label { font-size: 22rpx; color: #999; }
-      .id-value { font-size: 22rpx; color: #666; font-family: 'Courier New', monospace; }
+      .id-label { font-size: 22rpx; color: var(--r-text-secondary); }
+      .id-value { font-size: 22rpx; color: var(--r-text-regular); font-family: 'Courier New', monospace; }
     }
   }
 
@@ -292,10 +287,10 @@ const handleTabChange = ({ item, index }) => {
   display: flex;
   margin: 0 32rpx 24rpx;
   padding: 28rpx 0;
-  background: #fff;
+  background: var(--r-bg-card);
   border-radius: 20rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
-  border: 1rpx solid rgba(0, 0, 0, 0.04);
+  box-shadow: var(--r-glass-shadow);
+  border: 1rpx solid var(--r-divider);
 
   .stat-item {
     flex: 1;
@@ -309,7 +304,7 @@ const handleTabChange = ({ item, index }) => {
       top: 20%;
       height: 60%;
       width: 1rpx;
-      background: rgba(0, 0, 0, 0.08);
+      background: var(--r-divider-strong);
     }
 
     .stat-value {
@@ -322,7 +317,7 @@ const handleTabChange = ({ item, index }) => {
     .stat-label {
       display: block;
       font-size: 22rpx;
-      color: #999;
+      color: var(--r-text-secondary);
       margin-top: 4rpx;
     }
   }
@@ -334,17 +329,17 @@ const handleTabChange = ({ item, index }) => {
   .menu-group-title {
     display: block;
     font-size: 24rpx;
-    color: #999;
+    color: var(--r-text-secondary);
     font-weight: 500;
     padding: 0 8rpx 16rpx;
   }
 
   .menu-list {
-    background: #fff;
+    background: var(--r-bg-card);
     border-radius: 20rpx;
     overflow: hidden;
-    box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
-    border: 1rpx solid rgba(0, 0, 0, 0.04);
+    box-shadow: var(--r-glass-shadow);
+    border: 1rpx solid var(--r-divider);
   }
 
   .menu-item {
@@ -362,7 +357,7 @@ const handleTabChange = ({ item, index }) => {
       left: 100rpx;
       right: 28rpx;
       height: 1rpx;
-      background: rgba(0, 0, 0, 0.05);
+      background: var(--r-divider);
     }
 
     &:active { background: rgba(102, 126, 234, 0.04); }
@@ -381,7 +376,7 @@ const handleTabChange = ({ item, index }) => {
         justify-content: center;
       }
 
-      .menu-label { font-size: 28rpx; color: #1f2937; font-weight: 500; }
+      .menu-label { font-size: 28rpx; color: var(--r-text-primary); font-weight: 500; }
     }
 
     .menu-right {
@@ -389,7 +384,7 @@ const handleTabChange = ({ item, index }) => {
       align-items: center;
       gap: 12rpx;
 
-      .menu-extra { font-size: 24rpx; color: #999; }
+      .menu-extra { font-size: 24rpx; color: var(--r-text-secondary); }
 
       .menu-badge {
         min-width: 32rpx;
@@ -416,10 +411,10 @@ const handleTabChange = ({ item, index }) => {
     justify-content: center;
     gap: 12rpx;
     padding: 28rpx;
-    background: #fff;
+    background: var(--r-bg-card);
     border-radius: 20rpx;
     border: 1rpx solid rgba(245, 87, 108, 0.15);
-    box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+    box-shadow: var(--r-glass-shadow);
     transition: all 0.3s ease;
 
     &:active {
@@ -435,7 +430,7 @@ const handleTabChange = ({ item, index }) => {
   text-align: center;
   padding: 48rpx 0 100rpx;
 
-  .version-text { display: block; font-size: 22rpx; color: #bbb; margin-bottom: 8rpx; }
-  .copyright-text { display: block; font-size: 20rpx; color: #ddd; }
+  .version-text { display: block; font-size: 22rpx; color: var(--r-text-secondary); margin-bottom: 8rpx; }
+  .copyright-text { display: block; font-size: 20rpx; color: var(--r-text-placeholder); }
 }
 </style>
