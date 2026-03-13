@@ -7,8 +7,8 @@
       v-bind="headerConfig"
       :notification-count="notificationCount"
       @user-click="emit('userClick', $event)"
-      @notification-click="emit('notificationClick', $event)"
-      @settings-click="emit('settingsClick')"
+      @notification-click="handleNotificationClick"
+      @settings-click="handleSettingsClick"
       @status-click="emit('statusClick', $event)"
       @back-click="handleBackClick"
     />
@@ -97,7 +97,7 @@ const executeH5BackStrategy = () => {
   } catch (e) {}
 
   // 策略3：返回首个Tab页面
-  const firstTab = tabbarConfig.list?.[0];
+  const firstTab = tabbarConfig.tabList?.[0];
   if (firstTab) {
     return uni.switchTab({ url: firstTab.path });
   }
@@ -106,6 +106,18 @@ const executeH5BackStrategy = () => {
   // 兜底：无法返回
   emit("backFail", { reason: "no_strategy_available" });
 };
+
+// 通知按钮处理 - 默认跳转消息中心
+const handleNotificationClick = (data) => {
+  emit('notificationClick', data)
+  uni.navigateTo({ url: '/pages/message/index' })
+}
+
+// 设置按钮处理 - 默认跳转个人设置
+const handleSettingsClick = () => {
+  emit('settingsClick')
+  uni.navigateTo({ url: '/pages/settings/index' })
+}
 
 // 智能返回处理
 const handleBackClick = () => {
@@ -175,7 +187,7 @@ const goBack = () => handleBackClick();
 const refreshPage = () => uni.reLaunch({ url: getPageInfo().path });
 
 const setTabBadge = (tabId, count) => {
-  const tab = tabbarConfig.list.find(item => item.id === tabId);
+  const tab = tabbarConfig.tabList.find(item => item.id === tabId);
   if (tab) {
     tab.badge = count;
     tabbarRef.value?.updateBadge?.(tabId, count);
@@ -183,7 +195,7 @@ const setTabBadge = (tabId, count) => {
 };
 
 const clearAllBadges = () => {
-  tabbarConfig.list.forEach(tab => { tab.badge = 0; });
+  tabbarConfig.tabList.forEach(tab => { tab.badge = 0; });
   tabbarRef.value?.clearAllBadges?.();
 };
 

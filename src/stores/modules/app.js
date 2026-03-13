@@ -7,6 +7,7 @@ export const useAppStore = defineStore("app", {
     networkType: "unknown",
     statusBarHeight: 0,
     globalLoading: false,
+    themeMode: "light", // light | dark | auto
     theme: {
       primary: "#007AFF",
       success: "#4CD964",
@@ -59,6 +60,6 @@ export const useAppStore = defineStore("app", {
 
   persist: {
     key: "app-store",
-    paths: ["theme"],
+    paths: ["theme", "themeMode"],
   },
 });

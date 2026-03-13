@@ -65,7 +65,7 @@
         <!-- 通知按钮 -->
         <view class="action-button" @click="handleNotification">
           <view class="button-glass-bg">
-            <wd-icon name="bell" :size="iconSize + 'px'" color="#ffffff" />
+            <wd-icon name="notification" :size="iconSize + 'px'" color="#ffffff" />
           </view>
           <wd-badge
             v-if="notificationCount > 0"

@@ -30,11 +30,11 @@ export const layoutEmits = [
 ];
 
 export const tabbarConfig = {
-  list: [
-    { id: "home", text: "首页", icon: "home", activeIcon: "home-fill", path: "/pages/index/index", badge: 0 },
-    { id: "chat", text: "AI对话", icon: "chat", activeIcon: "chat-fill", path: "/pages/chat/index", badge: 0 },
-    { id: "robot", text: "机器人", icon: "android-circle", activeIcon: "android-circle-fill", path: "/pages/robot/index", badge: 0 },
-    { id: "profile", text: "我的", icon: "account", activeIcon: "account-fill", path: "/pages/profile/index", badge: 0 },
+  tabList: [
+    { id: "home", text: "首页", icon: "home", activeIcon: "home1", path: "/pages/index/index", badge: 0 },
+    { id: "message", text: "消息", icon: "chat", activeIcon: "chat1", path: "/pages/message/index", badge: 0 },
+    { id: "components", text: "组件库", icon: "app", activeIcon: "app", path: "/pages/robot/index", badge: 0, showText: "C" },
+    { id: "profile", text: "我的", icon: "user", activeIcon: "user-circle", path: "/pages/profile/index", badge: 0 },
   ],
   fixed: true,
   backgroundColor: "#ffffff",
@@ -98,7 +98,7 @@ const getUrlParams = () => {
 // =================================
 // 核心判断逻辑
 // =================================
-const getTabBarPaths = () => tabbarConfig.list.map(item => item.path);
+const getTabBarPaths = () => tabbarConfig.tabList.map(item => item.path);
 const cleanPath = (path) => path.split('?')[0];
 
 export const isTabBarPage = (path) => getTabBarPaths().includes(cleanPath(path));
@@ -166,8 +166,8 @@ export const getSmartPageTitle = (currentPath, propsTitle = '') => {
     const [, module, page = 'index'] = segments;
     
     const moduleMap = {
-      'settings': '设置', 'profile': '个人中心', 'chat': '聊天', 
-      'robot': '机器人', 'order': '订单', 'user': '用户'
+      'settings': '设置', 'profile': '个人中心', 'message': '消息中心', 
+      'robot': '组件库', 'order': '订单', 'user': '用户'
     };
     
     const pageMap = {
@@ -221,11 +221,11 @@ export const getSmartHeaderConfig = (currentPath, props = {}) => {
 
 // 工具函数
 export const getCurrentTabIndex = (currentPath) => {
-  return tabbarConfig.list.findIndex(item => item.path === cleanPath(currentPath));
+  return tabbarConfig.tabList.findIndex(item => item.path === cleanPath(currentPath));
 };
 
 export const updateTabBadge = (tabId, count) => {
-  const tab = tabbarConfig.list.find(item => item.id === tabId);
+  const tab = tabbarConfig.tabList.find(item => item.id === tabId);
   if (tab) tab.badge = count;
 };
 
@@ -275,7 +275,7 @@ const enhancedGoBack = (delta = 1) => {
   // #endif
   
   // 返回首页
-  const firstTab = tabbarConfig.list[0];
+  const firstTab = tabbarConfig.tabList?.[0];
   return firstTab ? uni.switchTab({ url: firstTab.path }) : uni.reLaunch({ url: '/pages/index/index' });
 };
 

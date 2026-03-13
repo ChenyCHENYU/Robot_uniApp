@@ -33,11 +33,6 @@
             <text class="platform-name">{{ platform.name }}</text>
           </view>
         </view>
-        
-        <!-- 测试入口 -->
-        <view class="test-entry">
-          <button class="test-btn" @click="goToTestNav">测试返回功能</button>
-        </view>
       </view>
     </view>
 
@@ -159,16 +154,12 @@
 
 <script setup>
 import { ref } from 'vue'
-import { useUserStore } from '@/stores/modules/user'
 
 // 版本信息
 const version = ref('1.0.0')
 
 // 通知数量
 const notificationCount = ref(0)
-
-// 用户Store
-const userStore = useUserStore()
 
 // 支持平台
 const supportedPlatforms = ref([
@@ -288,70 +279,13 @@ const quickCommands = ref([
   }
 ])
 
-// 工具函数 - 提前定义
-const showTodo = (message) => {
-  uni.showToast({ title: message, icon: 'none' });
-};
-
-const showAbout = () => {
-  uni.showModal({
-    title: 'Robot UniApp',
-    content: `版本: v${version.value}\n企业级跨平台应用开发框架\n基于 Vue3 + UniApp`,
-    showCancel: false,
-    confirmText: '确定'
-  });
-};
-
-// 退出登录 - 优雅简洁
-const handleLogout = () => {
-  uni.showModal({
-    title: '提示',
-    content: '确定要退出登录吗？',
-    success: ({ confirm }) => {
-      if (!confirm) return;
-      
-      uni.showLoading({ title: '退出中...' });
-      
-      userStore.logout()
-        .then(() => {
-          uni.showToast({ title: '退出成功', icon: 'success' });
-        })
-        .catch((error) => {
-          console.error('退出登录错误:', error);
-          uni.showToast({ title: '退出失败，请重试', icon: 'error' });
-        })
-        .finally(() => {
-          uni.hideLoading();
-        });
-    }
-  });
-};
-
-// 设置菜单配置
-const SETTINGS_MENU = [
-  { id: 'profile', label: '个人设置', handler: () => showTodo('个人设置功能开发中') },
-  { id: 'theme', label: '主题切换', handler: () => showTodo('主题切换功能开发中') },
-  { id: 'about', label: '关于应用', handler: showAbout },
-  { id: 'logout', label: '退出登录', handler: handleLogout }
-];
-
 // 事件处理函数
 const handleUserClick = (user) => {
   uni.showToast({ title: '查看用户资料', icon: 'none' });
 };
 
-const handleNotificationClick = (count) => {
-  uni.showToast({ title: `有${count}条新通知`, icon: 'none' });
-};
-
-const handleSettingsClick = () => {
-  uni.showActionSheet({
-    itemList: SETTINGS_MENU.map(item => item.label),
-    success: ({ tapIndex }) => {
-      SETTINGS_MENU[tapIndex]?.handler();
-    }
-  });
-};
+const handleNotificationClick = () => {}
+const handleSettingsClick = () => {}
 
 const handleTabChange = ({ item, index }) => {
   console.log('切换到:', item.text, '索引:', index);
@@ -370,13 +304,6 @@ const handleDocs = () => {
     title: '查看开发文档',
     icon: 'none'
   })
-}
-
-// 测试跳转功能
-const goToTestNav = () => {
-  uni.navigateTo({
-    url: "/pages/test-nav/index"
-  });
 }
 </script>
 
@@ -527,26 +454,6 @@ const goToTestNav = () => {
         color: #374151;
         font-size: 24rpx;
         font-weight: 500;
-      }
-    }
-  }
-  
-  .test-entry {
-    margin-top: 40rpx;
-    text-align: center;
-    
-    .test-btn {
-      padding: 20rpx 40rpx;
-      background: linear-gradient(135deg, #409eff 0%, #66b1ff 100%);
-      border: none;
-      border-radius: 40rpx;
-      color: white;
-      font-size: 28rpx;
-      font-weight: 500;
-      box-shadow: 0 4rpx 15px rgba(64, 158, 255, 0.3);
-      
-      &:active {
-        transform: scale(0.98);
       }
     }
   }
