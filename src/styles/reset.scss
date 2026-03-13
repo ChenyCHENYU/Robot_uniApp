@@ -1,0 +1,50 @@
+/**
+ * 全局样式重置
+ */
+
+page {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif;
+  font-size: var(--r-font-size-base);
+  color: var(--r-text-primary);
+  background-color: var(--r-bg-page);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+view,
+scroll-view,
+swiper,
+swiper-item,
+cover-view,
+text,
+image {
+  box-sizing: border-box;
+}
+
+image {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+// 隐藏 scroll-view 滚动条
+::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+// 清除按钮默认样式
+button {
+  margin: 0;
+  padding: 0;
+  background: none;
+  border: none;
+  line-height: inherit;
+  font-size: inherit;
+  &::after {
+    border: none;
+  }
+}

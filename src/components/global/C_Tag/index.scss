@@ -1,0 +1,28 @@
+.c-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 4rpx 16rpx;
+  font-size: var(--r-font-size-xs);
+  border: 1rpx solid transparent;
+  border-radius: var(--r-radius-sm);
+  white-space: nowrap;
+
+  &--round {
+    border-radius: var(--r-radius-round);
+  }
+
+  &--small {
+    padding: 2rpx 10rpx;
+    font-size: 20rpx;
+  }
+
+  &--large {
+    padding: 8rpx 24rpx;
+    font-size: var(--r-font-size-sm);
+  }
+
+  &__close {
+    margin-left: 8rpx;
+    flex-shrink: 0;
+  }
+}

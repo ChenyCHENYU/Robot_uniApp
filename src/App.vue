@@ -62,10 +62,7 @@ export default {
 </script>
 
 <style lang="scss">
-/* 全局样式 */
-page {
-  background-color: #ffffff;
-}
+@import '@/styles/index.scss';
 
 .app {
   height: 100vh;

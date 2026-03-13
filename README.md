@@ -8,10 +8,11 @@
   <p><em>一次开发，十端运行 | 现代化架构 | 开箱即用</em></p>
   
   <p>
-    <img src="https://img.shields.io/badge/vue-3.4.21-4FC08D?style=for-the-badge&logo=vue.js&logoColor=white" alt="Vue Version">
+    <img src="https://img.shields.io/badge/vue-3.5.30-4FC08D?style=for-the-badge&logo=vue.js&logoColor=white" alt="Vue Version">
     <img src="https://img.shields.io/badge/UniApp-3.0.0-07C160?style=for-the-badge&logo=wechat&logoColor=white" alt="UniApp Version">
-    <img src="https://img.shields.io/badge/Pinia-2.1.7-FFD43B?style=for-the-badge&logo=pinia&logoColor=black" alt="Pinia Version">
-    <img src="https://img.shields.io/badge/UnoCSS-0.66.5-FF6B35?style=for-the-badge&logo=css3&logoColor=white" alt="UnoCSS Version">
+    <img src="https://img.shields.io/badge/Pinia-2.3.1-FFD43B?style=for-the-badge&logo=pinia&logoColor=black" alt="Pinia Version">
+    <img src="https://img.shields.io/badge/UnoCSS-66.5.1-FF6B35?style=for-the-badge&logo=css3&logoColor=white" alt="UnoCSS Version">
+    <img src="https://img.shields.io/badge/wot--design--uni-1.14.0-0078D7?style=for-the-badge" alt="wot-design-uni">
     <img src="https://img.shields.io/badge/Vite-5.2.8-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite Version">
   </p>
 
@@ -55,7 +56,7 @@
 </td>
 <td width="25%" align="center">
   <h4>✨ 现代化</h4>
-  <p>Vue3 + Vite + UnoCSS + TypeScript 等最新技术栈</p>
+  <p>Vue3 + Vite + UnoCSS + wot-design-uni 等最新技术栈</p>
 </td>
 <td width="25%" align="center">
   <h4>🛠️ 开箱即用</h4>
@@ -160,11 +161,12 @@ pnpm run build:app-plus  # App-Plus构建
 
 ### 🏗️ 技术栈
 
-- **Vue 3.4.21** - 最新稳定版，Composition API
+- **Vue 3.5.30** - 最新稳定版，Composition API
 - **UniApp 3.0.0** - 跨平台应用开发框架
-- **Pinia 2.1.7** - 新一代状态管理
-- **UnoCSS 66.5.1** - 原子化 CSS 引擎
-- **uView-Plus 3.5.39** - 专业跨平台 UI 组件库
+- **Pinia 2.3.1** - 新一代状态管理（+ persistedstate 持久化插件）
+- **UnoCSS 66.5.1** - 原子化 CSS 引擎（Wind3 + Attributify + Icons）
+- **wot-design-uni 1.14.0** - 京东风格 Vue 3 跨平台 UI 组件库
+- **vue-i18n 11.3.0** - 国际化支持
 - **Vite 5.2.8** - 下一代构建工具
 
 ### 📱 平台支持
@@ -179,14 +181,42 @@ pnpm run build:app-plus  # App-Plus构建
 |                |   🔴 百度小程序   |              |
 |                | 🟠 字节跳动小程序 |              |
 
-### 🧩 核心组件
+### 🧩 自研组件库（20 个全局组件）
 
-- **C_Layout** - 统一页面布局容器
-- **C_Header** - 响应式头部组件，支持多主题
-- **C_Tabbar** - 底部导航栏，支持自定义图标
-- **权限管理** - 完整的 RBAC 权限控制体系
-- **主题系统** - 多主题支持，深色/浅色模式
-- **国际化** - vue-i18n 多语言支持
+**基础布局类：**
+- **C_Layout** - 统一页面布局容器（Header + Content + Tabbar）
+- **C_Header** - 响应式头部组件（头像/问候语/通知/返回）
+- **C_Tabbar** - 底部导航栏（徽标/路由/安全区域）
+- **C_Title** - 玻璃风标题（6 主题 / 3 尺寸 / 图标 / 分割线）
+- **C_Icon** - 五类图标封装（UnoCSS / wot / SVG / Image / Custom）
+
+**数据展示类：**
+- **C_Card** - 内容卡片（4 级阴影 / header-body-footer 三段式）
+- **C_List** - 高性能列表容器（下拉刷新 / 上拉加载 / 空态 / 错误态）
+- **C_Empty** - 空状态（8 种预设类型 / 自定义图标文案）
+- **C_Skeleton** - 骨架屏（头像 + 标题 + 段落 / 脉冲动画）
+- **C_Tag** - 状态标签（5 色 / 朴素实心 / 可关闭）
+- **C_Badge** - 增强徽标（数值 / 圆点 / max 溢出）
+- **C_Steps** - 步骤条（水平 / 垂直 / 审批流）
+- **C_Watermark** - 安全水印（Canvas 生成 / 全页覆盖）
+
+**表单交互类：**
+- **C_Form** - 表单容器（声明式校验 / required+pattern+validator）
+- **C_Search** - 搜索栏（防抖输入 / 搜索历史 / 清空）
+- **C_Upload** - 文件上传（压缩 / 进度 / 预览 / 多文件）
+- **C_NumberKeyboard** - 数字键盘（金额 / 验证码 / 安全随机排列）
+
+**反馈交互类：**
+- **C_Modal** - 弹窗（v-model 控制 / 自定义内容 / 纯文本）
+- **C_ActionSheet** - 底部操作面板（图标 / 描述 / 危险操作）
+- **C_FloatButton** - 悬浮按钮（固定定位 / 可拖拽 / 安全区适配）
+
+### 🛠️ 企业级能力
+
+- **权限体系** - 路由守卫 + v-permission 指令 + Store RBAC
+- **主题系统** - CSS Variables + 深色模式 + useTheme composable
+- **国际化** - vue-i18n 11.x 已集成
+- **表单校验** - v_verify 工具 + C_Form 声明式校验
 
 ---
 
@@ -196,26 +226,67 @@ pnpm run build:app-plus  # App-Plus构建
 
 ```
 Robot_UniApp/
+├── docs/                         # 架构文档
+│   └── PLAN.md                   # 项目规划路线图
+├── env/                          # 多环境配置
 ├── src/
-│   ├── api/                  # API接口管理
-│   ├── components/           # 组件库
-│   │   └── global/           # 全局组件
-│   │       ├── C_Header/     # 头部组件
-│   │       ├── C_Layout/     # 布局组件
-│   │       └── C_Tabbar/     # 底部导航
-│   ├── pages/                # 页面目录
-│   │   ├── index/            # 首页
-│   │   ├── login/            # 登录页
-│   │   ├── chat/             # AI对话页
-│   │   ├── robot/            # 机器人管理
-│   │   └── profile/          # 个人中心
-│   ├── stores/               # Pinia状态管理
-│   ├── utils/                # 工具函数
-│   ├── static/               # 静态资源
-│   └── main.js               # 入口文件
-├── package.json              # 项目配置
-├── vite.config.js            # Vite配置
-└── uno.config.js             # UnoCSS配置
+│   ├── api/                      # API 接口管理
+│   │   └── modules/              # 按业务域拆分
+│   ├── components/global/        # 全局组件库 (20 个)
+│   │   ├── C_Header/             # 响应式头部
+│   │   ├── C_Layout/             # 统一布局容器
+│   │   ├── C_Tabbar/             # 底部导航栏
+│   │   ├── C_Title/              # 玻璃风标题
+│   │   ├── C_Icon/               # 五类图标
+│   │   ├── C_Card/               # 内容卡片
+│   │   ├── C_List/               # 高性能列表
+│   │   ├── C_Empty/              # 空状态
+│   │   ├── C_Skeleton/           # 骨架屏
+│   │   ├── C_Tag/                # 状态标签
+│   │   ├── C_Badge/              # 增强徽标
+│   │   ├── C_Steps/              # 步骤条
+│   │   ├── C_Watermark/          # 安全水印
+│   │   ├── C_Form/               # 表单容器
+│   │   ├── C_Search/             # 搜索栏
+│   │   ├── C_Upload/             # 文件上传
+│   │   ├── C_NumberKeyboard/     # 数字键盘
+│   │   ├── C_Modal/              # 弹窗
+│   │   ├── C_ActionSheet/        # 底部操作面板
+│   │   └── C_FloatButton/        # 悬浮按钮
+│   ├── composables/              # 组合函数库 (8 个)
+│   │   ├── useLoading.js         # 加载态管理
+│   │   ├── usePagination.js      # 分页逻辑
+│   │   ├── useNetwork.js         # 网络状态监听
+│   │   ├── useModal.js           # Promise 化弹窗
+│   │   ├── useCountdown.js       # 倒计时
+│   │   ├── useUpload.js          # 文件上传
+│   │   ├── useShare.js           # 分享能力
+│   │   └── useTheme.js           # 深色模式/主题
+│   ├── constants/                # 常量管理
+│   │   ├── storage.js            # 存储 Key 枚举
+│   │   ├── regex.js              # 正则集合
+│   │   └── business.js           # 业务状态码/字典
+│   ├── config/                   # 运行时配置
+│   ├── directives/               # 自定义指令
+│   ├── pages/                    # 页面目录
+│   │   ├── index/                # 首页
+│   │   ├── login/                # 登录页
+│   │   ├── chat/                 # AI 对话页
+│   │   ├── robot/                # 机器人管理
+│   │   └── profile/              # 个人中心
+│   ├── stores/                   # Pinia 状态管理
+│   ├── styles/                   # 全局样式体系
+│   │   ├── variables.scss        # CSS 变量 (色板/字号/间距/阴影)
+│   │   ├── mixins.scss           # SCSS Mixins
+│   │   ├── reset.scss            # 样式重置
+│   │   ├── transition.scss       # 统一过渡动画
+│   │   └── index.scss            # 入口
+│   ├── utils/                    # 工具函数
+│   ├── static/                   # 静态资源
+│   └── main.js                   # 入口文件
+├── package.json                  # 项目配置
+├── vite.config.js                # Vite 配置
+└── uno.config.js                 # UnoCSS 配置
 ```
 
 ### 🔄 架构设计
@@ -301,10 +372,14 @@ mkdir src/components/global/C_YourComponent
 
 #### 主题定制
 
-```
-// src/uni.scss - 全局样式变量
-$uni-color-primary: #00d4ff;
-$uni-color-success: #4cd964;
+```scss
+// src/styles/variables.scss - 全局 CSS 变量
+:root {
+  --r-color-primary: #007aff;
+  --r-color-success: #4cd964;
+  --r-radius-lg: 24rpx;
+  --r-shadow-md: 0 4rpx 16rpx rgba(0, 0, 0, 0.1);
+}
 ```
 
 ---
@@ -400,7 +475,7 @@ git commit -m "feat: 添加新功能"
 
 - [Vue.js](https://vuejs.org/) - 渐进式 JavaScript 框架
 - [UniApp](https://uniapp.dcloud.io/) - 跨平台应用开发框架
-- [uView-Plus](https://uview-plus.jiangruyi.com/) - 全面兼容的 uni-app 生态组件库
+- [wot-design-uni](https://wot-design-uni.pages.dev/) - 京东风格 Vue 3 跨平台 UI 组件库
 - [Pinia](https://pinia.vuejs.org/) - Vue 的状态管理库
 - [UnoCSS](https://unocss.dev/) - 原子化 CSS 引擎
 - [Vite](https://vitejs.dev/) - 下一代前端构建工具

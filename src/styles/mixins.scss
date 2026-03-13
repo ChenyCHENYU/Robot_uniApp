@@ -1,0 +1,141 @@
+/**
+ * 全局 SCSS Mixins
+ */
+
+// 文本截断 - 单行
+@mixin text-ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+// 文本截断 - 多行
+@mixin text-ellipsis-lines($lines: 2) {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: $lines;
+  text-overflow: ellipsis;
+}
+
+// Flex 居中
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+// Flex 两端对齐
+@mixin flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+// Flex 纵向居中
+@mixin flex-column-center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+// 安全区域 - 底部
+@mixin safe-area-bottom($extra: 0rpx) {
+  padding-bottom: calc(env(safe-area-inset-bottom) + #{$extra});
+}
+
+// 安全区域 - 顶部
+@mixin safe-area-top($extra: 0rpx) {
+  padding-top: calc(env(safe-area-inset-top) + #{$extra});
+}
+
+// 1px 边框（高清屏适配）
+@mixin hairline-border($direction: bottom, $color: var(--r-border-color)) {
+  position: relative;
+  &::after {
+    content: '';
+    position: absolute;
+    pointer-events: none;
+    box-sizing: border-box;
+    @if $direction == bottom {
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 1px;
+      background-color: $color;
+      transform: scaleY(0.5);
+    } @else if $direction == top {
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 1px;
+      background-color: $color;
+      transform: scaleY(0.5);
+    } @else if $direction == left {
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: 1px;
+      background-color: $color;
+      transform: scaleX(0.5);
+    } @else if $direction == right {
+      top: 0;
+      bottom: 0;
+      right: 0;
+      width: 1px;
+      background-color: $color;
+      transform: scaleX(0.5);
+    }
+  }
+}
+
+// 四边 1px 边框
+@mixin hairline-border-all($color: var(--r-border-color), $radius: 0) {
+  position: relative;
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 200%;
+    height: 200%;
+    border: 1px solid $color;
+    border-radius: $radius * 2;
+    transform: scale(0.5);
+    transform-origin: 0 0;
+    pointer-events: none;
+    box-sizing: border-box;
+  }
+}
+
+// 毛玻璃效果
+@mixin glass($bg: rgba(255, 255, 255, 0.7), $blur: 20px) {
+  background: $bg;
+  backdrop-filter: blur($blur);
+  -webkit-backdrop-filter: blur($blur);
+}
+
+// 卡片基础样式
+@mixin card-base {
+  background: var(--r-bg-card);
+  border-radius: var(--r-radius-lg);
+  box-shadow: var(--r-shadow-sm);
+}
+
+// 滚动条隐藏
+@mixin hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+// 点击态
+@mixin clickable {
+  cursor: pointer;
+  &:active {
+    opacity: 0.7;
+  }
+}

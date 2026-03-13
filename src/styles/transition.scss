@@ -1,0 +1,76 @@
+/**
+ * 统一过渡动画
+ *
+ * 使用：在 transition 的 name 属性中引用
+ * <transition name="r-fade"> ... </transition>
+ */
+
+// ---- 淡入淡出 ----
+.r-fade-enter-active,
+.r-fade-leave-active {
+  transition: opacity var(--r-duration-base) var(--r-ease-base);
+}
+.r-fade-enter-from,
+.r-fade-leave-to {
+  opacity: 0;
+}
+
+// ---- 缩放 ----
+.r-zoom-enter-active,
+.r-zoom-leave-active {
+  transition: transform var(--r-duration-base) var(--r-ease-spring),
+              opacity var(--r-duration-base) var(--r-ease-base);
+}
+.r-zoom-enter-from,
+.r-zoom-leave-to {
+  transform: scale(0.85);
+  opacity: 0;
+}
+
+// ---- 从底部滑入 ----
+.r-slide-up-enter-active,
+.r-slide-up-leave-active {
+  transition: transform var(--r-duration-base) var(--r-ease-base),
+              opacity var(--r-duration-base) var(--r-ease-base);
+}
+.r-slide-up-enter-from,
+.r-slide-up-leave-to {
+  transform: translateY(100%);
+  opacity: 0;
+}
+
+// ---- 从右侧滑入 ----
+.r-slide-right-enter-active,
+.r-slide-right-leave-active {
+  transition: transform var(--r-duration-base) var(--r-ease-base),
+              opacity var(--r-duration-base) var(--r-ease-base);
+}
+.r-slide-right-enter-from,
+.r-slide-right-leave-to {
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+// ---- 从左侧滑入 ----
+.r-slide-left-enter-active,
+.r-slide-left-leave-active {
+  transition: transform var(--r-duration-base) var(--r-ease-base),
+              opacity var(--r-duration-base) var(--r-ease-base);
+}
+.r-slide-left-enter-from,
+.r-slide-left-leave-to {
+  transform: translateX(-100%);
+  opacity: 0;
+}
+
+// ---- 从顶部滑入 ----
+.r-slide-down-enter-active,
+.r-slide-down-leave-active {
+  transition: transform var(--r-duration-base) var(--r-ease-base),
+              opacity var(--r-duration-base) var(--r-ease-base);
+}
+.r-slide-down-enter-from,
+.r-slide-down-leave-to {
+  transform: translateY(-100%);
+  opacity: 0;
+}

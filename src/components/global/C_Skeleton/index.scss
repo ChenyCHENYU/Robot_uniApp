@@ -1,0 +1,48 @@
+.c-skeleton {
+  padding: 24rpx;
+
+  &__avatar {
+    width: 80rpx;
+    height: 80rpx;
+    border-radius: 50%;
+    background: var(--r-bg-grey);
+    margin-right: 24rpx;
+    flex-shrink: 0;
+  }
+
+  &__content {
+    flex: 1;
+  }
+
+  &__title {
+    width: 40%;
+    height: 32rpx;
+    border-radius: 8rpx;
+    background: var(--r-bg-grey);
+    margin-bottom: 24rpx;
+  }
+
+  &__row {
+    height: 24rpx;
+    border-radius: 8rpx;
+    background: var(--r-bg-grey);
+    margin-bottom: 16rpx;
+
+    &:last-child {
+      width: 60%;
+      margin-bottom: 0;
+    }
+  }
+
+  &--animate &__avatar,
+  &--animate &__title,
+  &--animate &__row {
+    animation: skeleton-pulse 1.5s ease-in-out infinite;
+  }
+}
+
+@keyframes skeleton-pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.4; }
+  100% { opacity: 1; }
+}

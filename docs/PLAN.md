@@ -189,8 +189,8 @@ components/global/C_ComponentName/
 | ------- | ------------------------------------------- | ---- |
 | Phase 1 | UI 库迁移 (uview-plus → wot-design-uni)     | ✅   |
 | Phase 2 | 依赖升级至最新版本                          | ✅   |
-| Phase 3 | 基础设施补全 (styles/constants/composables) | 🔲   |
-| Phase 4 | P0 通用组件封装 (15个)                      | 🔲   |
+| Phase 3 | 基础设施补全 (styles/constants/composables) | ✅   |
+| Phase 4 | P0 通用组件封装 (15个)                      | ✅   |
 | Phase 5 | P1 高级组件封装 (5个)                       | 🔲   |
 | Phase 6 | 高级能力集成 (深色模式/热更新/埋点等)       | 🔲   |
 | Phase 7 | 文档完善 + 示例页面                         | 🔲   |

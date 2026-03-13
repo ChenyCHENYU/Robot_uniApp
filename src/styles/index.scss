@@ -1,0 +1,9 @@
+/**
+ * 全局样式入口
+ *
+ * 在 App.vue 中引入: @import '@/styles/index.scss';
+ */
+
+@import './variables.scss';
+@import './reset.scss';
+@import './transition.scss';
