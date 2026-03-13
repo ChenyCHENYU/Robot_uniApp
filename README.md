@@ -214,7 +214,7 @@ pnpm run build:app-plus  # App-Plus构建
 ### 🛠️ 企业级能力
 
 - **权限体系** - 路由守卫 + v-permission 指令 + Store RBAC
-- **主题系统** - CSS Variables + 深色/浅色/跟随系统三档切换 + 全页面主题适配
+- **主题系统** - CSS Variables 60+ 语义化变量 + 统一浅色主题 + 全页面主题适配
 - **国际化** - vue-i18n 11.x 已集成
 - **表单校验** - v_verify 工具 + C_Form 声明式校验
 
@@ -253,15 +253,14 @@ Robot_UniApp/
 │   │   ├── C_Modal/              # 弹窗
 │   │   ├── C_ActionSheet/        # 底部操作面板
 │   │   └── C_FloatButton/        # 悬浮按钮
-│   ├── composables/              # 组合函数库 (8 个)
+│   ├── composables/              # 组合函数库 (7 个)
 │   │   ├── useLoading.js         # 加载态管理
 │   │   ├── usePagination.js      # 分页逻辑
 │   │   ├── useNetwork.js         # 网络状态监听
 │   │   ├── useModal.js           # Promise 化弹窗
 │   │   ├── useCountdown.js       # 倒计时
 │   │   ├── useUpload.js          # 文件上传
-│   │   ├── useShare.js           # 分享能力
-│   │   └── useTheme.js           # 深色模式/主题
+│   │   └── useShare.js           # 分享能力
 │   ├── constants/                # 常量管理
 │   │   ├── storage.js            # 存储 Key 枚举
 │   │   ├── regex.js              # 正则集合
@@ -274,7 +273,7 @@ Robot_UniApp/
 │   │   ├── message/              # 消息中心
 │   │   ├── robot/                # 组件库展示
 │   │   ├── profile/              # 个人中心
-│   │   ├── settings/             # 个人设置 + 主题切换
+│   │   ├── settings/             # 个人设置
 │   │   └── demo/                 # 组件演示 (19 个 Demo)
 │   ├── stores/                   # Pinia 状态管理
 │   ├── styles/                   # 全局样式体系
@@ -384,9 +383,6 @@ mkdir src/components/global/C_YourComponent
   --r-text-primary: #333333;
   // ... 60+ 语义化变量
 }
-
-// 深色模式通过 .dark 类 / @media prefers-color-scheme 自动覆盖
-html.dark { --r-bg-page: #0a0a0a; --r-bg-card: #1d1e1f; ... }
 ```
 
 ---
@@ -402,11 +398,9 @@ html.dark { --r-bg-page: #0a0a0a; --r-bg-card: #1d1e1f; ... }
 
 ### 🎨 主题系统
 
-- **三档切换** - 浅色模式 / 深色模式 / 跟随系统
+- **统一浅色主题** - 纯浅色模式，不跟随系统深色切换
 - **CSS Variables** - 60+ 语义化变量（色板/文字/背景/玻璃拟态/阴影/间距/圆角等）
 - **全页面适配** - 所有页面、组件硬编码颜色已替换为 CSS 变量
-- **持久化** - 主题偏好通过 Pinia + persistedstate 自动保存
-- **主题色** - 6 种可选主题色（极光蓝/翡翠绿/珊瑚橙/薰衣紫/樱花粉/水墨灰）
 
 ### 📱 响应式设计
 

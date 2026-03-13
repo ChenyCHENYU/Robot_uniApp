@@ -1,11 +1,15 @@
+$skeleton-bg: #e5e7eb;
+
 .c-skeleton {
+  display: flex;
+  align-items: flex-start;
   padding: 24rpx;
 
   &__avatar {
     width: 80rpx;
     height: 80rpx;
     border-radius: 50%;
-    background: var(--r-bg-grey);
+    background: $skeleton-bg;
     margin-right: 24rpx;
     flex-shrink: 0;
   }
@@ -18,14 +22,14 @@
     width: 40%;
     height: 32rpx;
     border-radius: 8rpx;
-    background: var(--r-bg-grey);
+    background: $skeleton-bg;
     margin-bottom: 24rpx;
   }
 
   &__row {
     height: 24rpx;
     border-radius: 8rpx;
-    background: var(--r-bg-grey);
+    background: $skeleton-bg;
     margin-bottom: 16rpx;
 
     &:last-child {
@@ -43,6 +47,6 @@
 
 @keyframes skeleton-pulse {
   0% { opacity: 1; }
-  50% { opacity: 0.4; }
+  50% { opacity: 0.5; }
   100% { opacity: 1; }
 }

@@ -1,10 +1,8 @@
 /**
- * 全局主题变量
+ * 全局主题变量（纯浅色主题）
  *
  * 基于 CSS Custom Properties
  * 命名约定：--r-{类别}-{语义}-{变体}
- *
- * 深色模式：跟随系统 @media (prefers-color-scheme: dark)
  */
 
 :root {
@@ -90,57 +88,3 @@
   --r-z-toast: 400;
 }
 
-// ============ 深色模式（Apple HIG 推荐色调） ============
-@mixin dark-theme {
-  // 文字 — 柔和的白色层级
-  --r-text-primary: rgba(255, 255, 255, 0.92);
-  --r-text-regular: rgba(255, 255, 255, 0.72);
-  --r-text-secondary: rgba(255, 255, 255, 0.48);
-  --r-text-placeholder: rgba(255, 255, 255, 0.28);
-  --r-text-disabled: rgba(255, 255, 255, 0.18);
-  --r-text-inverse: #1c1c1e;
-
-  // 背景 — 分层提升（base→card→elevated）
-  --r-bg-page: #000000;
-  --r-bg-card: #1c1c1e;
-  --r-bg-elevated: #2c2c2e;
-  --r-bg-hover: rgba(120, 120, 128, 0.18);
-  --r-bg-mask: rgba(0, 0, 0, 0.6);
-  --r-bg-grey: #1c1c1e;
-
-  // 玻璃拟态 — 深色底 + 亮边框
-  --r-glass-bg: rgba(30, 30, 30, 0.72);
-  --r-glass-border: rgba(255, 255, 255, 0.08);
-  --r-glass-shadow: 0 2rpx 16rpx rgba(0, 0, 0, 0.32);
-  --r-glass-inner-shadow: inset 0 0.5rpx 0 rgba(255, 255, 255, 0.06);
-
-  // 分隔线
-  --r-divider: rgba(84, 84, 88, 0.36);
-  --r-divider-strong: rgba(84, 84, 88, 0.56);
-
-  // 边框
-  --r-border-color: rgba(84, 84, 88, 0.36);
-  --r-border-light: rgba(84, 84, 88, 0.24);
-
-  // 阴影 — 深色下加重
-  --r-shadow-sm: 0 1rpx 6rpx rgba(0, 0, 0, 0.3);
-  --r-shadow-md: 0 4rpx 16rpx rgba(0, 0, 0, 0.4);
-  --r-shadow-lg: 0 8rpx 32rpx rgba(0, 0, 0, 0.5);
-
-  // 强调色微调（深色下提高亮度）
-  --r-color-primary: #0a84ff;
-  --r-color-success: #30d158;
-  --r-color-warning: #ffd60a;
-  --r-color-error: #ff453a;
-}
-
-// 跟随系统深色模式
-@media (prefers-color-scheme: dark) {
-  :root {
-    @include dark-theme;
-  }
-  // uni-app H5 的 page 元素
-    uni-page-body {
-    @include dark-theme;
-  }
-}
