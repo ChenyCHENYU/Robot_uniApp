@@ -46,11 +46,11 @@
           </view>
         </view>
 
-        <!-- 2. uView+ 图标卡片 -->
+        <!-- 2. wot-design-uni 图标卡片 -->
         <view class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
           <C_Title
-            title="uView+ 图标"
-            subtitle="uView组件库图标"
+            title="wot-design-uni 图标"
+            subtitle="wot-design-uni 组件库图标"
             :level="4"
             type="success"
             align="center"
@@ -59,16 +59,16 @@
           />
           
           <view class="flex justify-center items-center gap-4 my-6 p-4 bg-gray-50 rounded-lg">
-            <C_Icon type="uview" name="home" :size="28" color="#67c23a" />
-            <C_Icon type="uview" name="heart-fill" :size="28" color="#f56c6c" />
-            <C_Icon type="uview" name="star-fill" :size="28" color="#e6a23c" />
-            <C_Icon type="uview" name="account" :size="28" color="#409eff" />
+            <C_Icon type="wot" name="home" :size="28" color="#67c23a" />
+            <C_Icon type="wot" name="heart" :size="28" color="#f56c6c" />
+            <C_Icon type="wot" name="star" :size="28" color="#e6a23c" />
+            <C_Icon type="wot" name="user" :size="28" color="#409eff" />
           </view>
           
           <view class="text-center">
             <text class="text-sm text-gray-600 block mb-2">基础用法：</text>
             <view class="bg-gray-100 rounded p-3 text-xs font-mono text-gray-800">
-              &lt;C_Icon type="uview" name="home" /&gt;
+              &lt;C_Icon type="wot" name="home" /&gt;
             </view>
           </view>
         </view>

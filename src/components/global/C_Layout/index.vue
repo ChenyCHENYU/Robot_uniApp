@@ -29,7 +29,8 @@
 
     <!-- 全局Loading -->
     <view v-if="globalLoading" class="global-loading">
-      <u-loading-page :loading="true" loading-text="加载中..." />
+      <wd-loading :size="60" color="#007AFF" />
+      <text class="loading-text">加载中...</text>
     </view>
   </view>
 </template>

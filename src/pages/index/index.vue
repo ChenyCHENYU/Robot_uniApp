@@ -194,7 +194,7 @@ const coreFeatures = ref([
   },
   {
     name: '组件丰富',
-    desc: 'uView+ UI组件库',
+    desc: 'wot-design-uni 组件库',
     icon: '🧩',
     gradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)'
   },
@@ -228,7 +228,7 @@ const techStack = ref([
   {
     name: 'UI组件',
     icon: '🎨',
-    items: ['uView+', 'UnoCSS']
+    items: ['wot-design-uni', 'UnoCSS']
   },
   {
     name: '状态管理',

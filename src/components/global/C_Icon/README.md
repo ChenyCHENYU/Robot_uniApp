@@ -4,7 +4,7 @@
 
 ## 🚀 特性
 
-- **🔥 五种图标类型**: UnoCSS、uView+、SVG 文件、图片、自定义内容
+- **🔥 五种图标类型**: UnoCSS、wot-design-uni、SVG 文件、图片、自定义内容
 - **🎯 统一 API 接口**: 所有图标类型使用相同的组件接口
 - **🎨 灵活样式**: 支持颜色、大小自定义
 - **⚡ 零 CSS 代码**: 基于 UnoCSS utility classes，无额外样式文件
@@ -20,8 +20,8 @@
 pnpm add @iconify-json/mdi
 pnpm add @iconify-json/carbon
 
-# uView+ UI库
-pnpm i uview-plus
+# wot-design-uni UI库
+pnpm add wot-design-uni
 ```
 
 ## 🎯 快速开始
@@ -34,8 +34,8 @@ pnpm i uview-plus
   <C_Icon name="i-mdi-home" />
   <C_Icon name="i-carbon-user" :size="24" color="#409eff" />
   
-  <!-- uView+ 图标 -->
-  <C_Icon type="uview" name="home" :size="24" color="#67c23a" />
+  <!-- wot-design-uni 图标 -->
+  <C_Icon type="wot" name="home" :size="24" color="#67c23a" />
 </template>
 ```
 
@@ -48,9 +48,9 @@ pnpm i uview-plus
   <C_Icon name="i-carbon-user" />
   <C_Icon name="i-heroicons-heart" />
 
-  <!-- 2. uView+ 图标 -->
-  <C_Icon type="uview" name="home" />
-  <C_Icon type="uview" name="setting" :bold="true" />
+  <!-- 2. wot-design-uni 图标 -->
+  <C_Icon type="wot" name="home" />
+  <C_Icon type="wot" name="setting" />
 
   <!-- 3. SVG 文件 -->
   <C_Icon type="svg" name="/static/icons/custom.svg" :size="24" />
@@ -77,12 +77,12 @@ pnpm i uview-plus
 | 参数             | 类型                                                  | 默认值     | 说明                                  |
 | ---------------- | ----------------------------------------------------- | ---------- | ------------------------------------- |
 | **name**         | `string`                                              | `''`       | 图标名称/路径                         |
-| **type**         | `'unocss' \| 'uview' \| 'svg' \| 'image' \| 'custom'` | `'unocss'` | 图标类型                              |
+| **type**         | `'unocss' \| 'wot' \| 'svg' \| 'image' \| 'custom'` | `'unocss'` | 图标类型                              |
 | **size**         | `number \| string`                                    | `24`       | 图标大小(px)                          |
-| **color**        | `string`                                              | `'#333'`   | 图标颜色(仅 unocss 和 uview 类型有效) |
-| **bold**         | `boolean`                                             | `false`    | 是否加粗(仅 uview 类型)               |
-| **label**        | `string`                                              | `''`       | 图标标签(仅 uview 类型)               |
-| **customPrefix** | `string`                                              | `''`       | 自定义前缀(仅 uview 类型)             |
+| **color**        | `string`                                              | `'#333'`   | 图标颜色(仅 unocss 和 wot 类型有效) |
+| **bold**         | `boolean`                                             | `false`    | 是否加粗(仅 wot 类型)               |
+| **label**        | `string`                                              | `''`       | 图标标签(仅 wot 类型)               |
+| **customPrefix** | `string`                                              | `''`       | 自定义前缀(仅 wot 类型)             |
 | **customStyle**  | `object`                                              | `{}`       | 自定义样式对象                        |
 
 ### Events
@@ -153,22 +153,22 @@ const handleNavClick = (route) => {
 </script>
 ```
 
-### uView+ 图标高级用法
+### wot-design-uni 图标高级用法
 
 ```vue
 <template>
-  <view class="uview-demo">
+  <view class="wot-demo">
     <!-- 基础用法 -->
-    <C_Icon type="uview" name="home" :size="24" color="#409eff" />
+    <C_Icon type="wot" name="home" :size="24" color="#409eff" />
 
-    <!-- 加粗效果 -->
-    <C_Icon type="uview" name="heart-fill" :size="24" :bold="true" color="#f56c6c" />
+    <!-- 心形图标 -->
+    <C_Icon type="wot" name="heart" :size="24" color="#f56c6c" />
 
-    <!-- 带标签 -->
-    <C_Icon type="uview" name="star" :size="24" label="收藏" color="#e6a23c" />
+    <!-- 星形图标 -->
+    <C_Icon type="wot" name="star" :size="24" color="#e6a23c" />
 
     <!-- 自定义前缀 -->
-    <C_Icon type="uview" name="custom" custom-prefix="my-icon" :size="24" />
+    <C_Icon type="wot" name="custom" custom-prefix="my-icon" :size="24" />
   </view>
 </template>
 ```
@@ -270,7 +270,7 @@ UnoCSS 图标需要使用完整的类名格式：
 ```vue
 <!-- ✅ 可以修改颜色 -->
 <C_Icon name="i-mdi-home" color="#409eff" />              <!-- UnoCSS图标 -->
-<C_Icon type="uview" name="home" color="#67c23a" />       <!-- uView+图标 -->
+<C_Icon type="wot" name="home" color="#67c23a" />       <!-- wot-design-uni图标 -->
 
 <!-- ❌ 无法修改颜色 -->
 <C_Icon type="svg" name="/static/icon.svg" color="red" />    <!-- SVG文件 -->
@@ -293,7 +293,7 @@ UnoCSS 图标需要使用完整的类名格式：
 ### 3. 跨平台兼容性
 
 - **H5**: 所有图标类型都支持
-- **小程序**: 推荐使用 UnoCSS 和 uView+ 图标，远程图片可能需要配置域名白名单
+- **小程序**: 推荐使用 UnoCSS 和 wot-design-uni 图标，远程图片可能需要配置域名白名单
 - **App**: 所有图标类型都支持
 
 ### 4. 错误处理
@@ -321,13 +321,18 @@ UnoCSS 图标需要使用完整的类名格式：
 - UnoCSS 配置错误: 检查 `uno.config.js`
 - 图标名称格式错误: 确保使用 `i-mdi-home` 格式
 
-#### Q2: uView+ 图标显示异常
+#### Q2: wot-design-uni 图标显示异常
 
 **解决方案**:
-```javascript
-// main.js 确保导入uView+
-import uviewPlus from "uview-plus";
-app.use(uviewPlus);
+```json
+// pages.json 确保 easycom 配置正确
+{
+  "easycom": {
+    "custom": {
+      "^wd-(.*)": "wot-design-uni/components/wd-$1/wd-$1.vue"
+    }
+  }
+}
 ```
 
 #### Q3: SVG/图片加载失败
@@ -415,12 +420,12 @@ UnoCSS 会按需生成 CSS，相比传统字体文件能显著减少包体积：
 
 ```vue
 <!-- 旧的写法 -->
-<u-icon name="home" size="24" color="red" />
+<wd-icon name="home" size="24px" color="red" />
 <Icon icon="mdi:home" size="24" color="red" />
 <i class="iconfont icon-home"></i>
 
 <!-- 新的统一写法 -->
-<C_Icon type="uview" name="home" :size="24" color="red" />
+<C_Icon type="wot" name="home" :size="24" color="red" />
 <C_Icon name="i-mdi-home" :size="24" color="red" />
 <C_Icon name="i-mdi-home" :size="24" color="red" />
 ```

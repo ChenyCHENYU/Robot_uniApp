@@ -218,11 +218,14 @@ $breakpoint-md: 1024rpx;
   backdrop-filter: blur($loading-backdrop-blur);
   -webkit-backdrop-filter: blur($loading-backdrop-blur);
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  
-  .u-loading-page {
-    background: transparent;
+  gap: 16rpx;
+
+  .loading-text {
+      color: #666;
+      font-size: 28rpx;
   }
 }
 

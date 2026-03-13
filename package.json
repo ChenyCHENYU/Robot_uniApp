@@ -33,11 +33,11 @@
     "@dcloudio/uni-h5": "3.0.0-4070620250821001",
     "@dcloudio/uni-mp-weixin": "3.0.0-4070620250821001",
     "@iconify-json/mdi": "^1.2.3",
-    "pinia": "^2.1.7",
-    "pinia-plugin-persistedstate": "^3.2.1",
-    "uview-plus": "^3.5.39",
-    "vue": "^3.4.21",
-    "vue-i18n": "^9.1.9"
+    "pinia": "^2.3.1",
+    "pinia-plugin-persistedstate": "^3.2.3",
+    "vue": "^3.5.30",
+    "vue-i18n": "^11.3.0",
+    "wot-design-uni": "^1.14.0"
   },
   "devDependencies": {
     "@dcloudio/types": "^3.4.8",
@@ -51,9 +51,9 @@
     "@unocss/preset-uno": "^66.5.1",
     "@unocss/preset-wind3": "^66.5.1",
     "@unocss/transformer-directives": "^66.5.1",
-    "@vue/runtime-core": "^3.4.21",
-    "sass": "^1.92.1",
+    "@vue/runtime-core": "^3.5.30",
+    "sass": "^1.98.0",
     "unocss": "^66.5.1",
-    "vite": "5.2.8"
+    "vite": "^5"
   }
 }

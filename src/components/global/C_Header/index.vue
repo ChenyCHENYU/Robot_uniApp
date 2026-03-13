@@ -17,7 +17,7 @@
       <view v-if="showBack" class="back-section" @click="handleBack">
         <view class="back-btn">
           <view class="btn-glass-bg">
-            <u-icon name="arrow-left" :size="iconSize" color="#ffffff" />
+            <wd-icon name="arrow-left" :size="iconSize + 'px'" color="#ffffff" />
           </view>
         </view>
         <text v-if="title" class="back-title">{{ title }}</text>
@@ -65,24 +65,20 @@
         <!-- 通知按钮 -->
         <view class="action-button" @click="handleNotification">
           <view class="button-glass-bg">
-            <u-icon name="bell" :size="iconSize" color="#ffffff" />
+            <wd-icon name="bell" :size="iconSize + 'px'" color="#ffffff" />
           </view>
-          <u-badge
+          <wd-badge
             v-if="notificationCount > 0"
-            :value="notificationCount"
+            :modelValue="notificationCount"
             :max="99"
-            absolute
-            :offset="[8, -8]"
-            bgColor="#FF3B30"
-            color="#ffffff"
-            size="mini"
+            custom-style="position: absolute; top: -4px; right: -4px;"
           />
         </view>
 
         <!-- 设置按钮 -->
         <view class="action-button" @click="handleSettings">
           <view class="button-glass-bg">
-            <u-icon name="setting" :size="iconSize" color="#ffffff" />
+            <wd-icon name="setting" :size="iconSize + 'px'" color="#ffffff" />
           </view>
         </view>
       </view>

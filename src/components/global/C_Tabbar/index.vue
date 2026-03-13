@@ -43,24 +43,20 @@
             >
               {{ item.showText }}
             </text>
-            <u-icon
+            <wd-icon
               v-else
               :name="currentIndex === index ? item.activeIcon : item.icon"
-              :size="currentIndex === index ? 20 : 18"
+              :size="currentIndex === index ? '20px' : '18px'"
               :color="currentIndex === index ? '#ffffff' : inactiveColor"
             />
           </view>
 
           <!-- 角标 -->
-          <u-badge
+          <wd-badge
             v-if="item.badge > 0"
-            :value="item.badge"
+            :modelValue="item.badge"
             :max="99"
-            absolute
-            :offset="[8, -8]"
-            bgColor="#FF3B30"
-            color="#ffffff"
-            size="mini"
+            custom-style="position: absolute; top: -4px; right: -4px;"
           />
         </view>
 

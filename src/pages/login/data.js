@@ -57,23 +57,13 @@ export function useLoginData() {
     password: [required("密码"), length("密码", 6, 20)],
   };
 
-  // 样式配置
-  const glassInputStyle = {
-    backgroundColor: "transparent",
-    color: "#ffffff",
-    fontSize: "32rpx",
-  };
-
-  const glassButtonStyle = {
-    background:
-      "linear-gradient(135deg, rgba(0, 212, 255, 0.8), rgba(11, 11, 254, 0.8))",
-    border: "1rpx solid rgba(255, 255, 255, 0.2)",
-    backdropFilter: "blur(20rpx)",
-    height: "96rpx",
-    fontSize: "32rpx",
-    fontWeight: "bold",
-    color: "#ffffff",
-    boxShadow: "0 8rpx 32rpx rgba(0, 212, 255, 0.3)",
+  // 切换记住登录
+  const toggleRemember = () => {
+    if (rememberLogin.value.includes("remember")) {
+      rememberLogin.value = [];
+    } else {
+      rememberLogin.value = ["remember"];
+    }
   };
 
   // 字段失焦验证
@@ -177,8 +167,6 @@ export function useLoginData() {
     loading,
     rememberLogin,
     form,
-    glassInputStyle,
-    glassButtonStyle,
 
     // 方法
     handleLogin,
@@ -186,5 +174,6 @@ export function useLoginData() {
     handleWechatLogin,
     handleQuickLogin,
     handleFieldBlur,
+    toggleRemember,
   };
 }

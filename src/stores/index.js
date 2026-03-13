@@ -3,16 +3,20 @@ import { createPersistedState } from "pinia-plugin-persistedstate";
 
 const pinia = createPinia();
 
+// uni-app 存储适配器
+const uniStorage = {
+  getItem(key) {
+    const value = uni.getStorageSync(key);
+    return value === "" ? null : value;
+  },
+  setItem(key, value) {
+    uni.setStorageSync(key, value);
+  },
+};
+
 pinia.use(
   createPersistedState({
-    storage: {
-      getItem(key) {
-        return uni.getStorageSync(key);
-      },
-      setItem(key, value) {
-        uni.setStorageSync(key, value);
-      },
-    },
+    storage: uniStorage,
   })
 );
 

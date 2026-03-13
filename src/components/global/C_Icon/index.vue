@@ -11,11 +11,11 @@
       :style="unocssStyle"
     ></view>
 
-    <!-- uView-Plus 图标 -->
-    <up-icon
-      v-else-if="type === 'uview' && hasValidName"
-      v-bind="uviewProps"
-    ></up-icon>
+    <!-- wot-design-uni 图标 -->
+    <wd-icon
+      v-else-if="type === 'wot' && hasValidName"
+      v-bind="wotProps"
+    ></wd-icon>
 
     <!-- SVG 图标文件 -->
     <image
@@ -71,17 +71,17 @@ const props = defineProps({
     type: String,
     default: "#333",
   },
-  // 是否加粗 (uview专用)
+  // 是否加粗 (wot专用)
   bold: {
     type: Boolean,
     default: false,
   },
-  // 图标标签 (uview专用)
+  // 图标标签 (wot专用)
   label: {
     type: String,
     default: "",
   },
-  // 自定义前缀 (uview专用)
+  // 自定义前缀 (wot专用)
   customPrefix: {
     type: String,
     default: "",
@@ -102,28 +102,22 @@ const hasValidName = computed(() => {
 
 // 检查类型是否有效
 const isValidType = computed(() => {
-  return ['unocss', 'uview', 'svg', 'image', 'custom'].includes(props.type);
+  return ['unocss', 'wot', 'svg', 'image', 'custom'].includes(props.type);
 });
 
-// 构建 uView 图标的完整属性对象
-const uviewProps = computed(() => {
+// 构建 wot-design-uni 图标的完整属性对象
+const wotProps = computed(() => {
   if (!hasValidName.value) return {};
   
   const propsObj = {
     name: props.name.trim(),
-    size: props.size,
+    size: typeof props.size === 'number' ? props.size + 'px' : props.size,
     color: props.color,
   };
 
   // 只在有值时传递这些可选属性
-  if (props.bold) {
-    propsObj.bold = props.bold;
-  }
-  if (props.label && props.label.trim()) {
-    propsObj.label = props.label.trim();
-  }
   if (props.customPrefix && props.customPrefix.trim()) {
-    propsObj.customPrefix = props.customPrefix.trim();
+    propsObj.classPrefix = props.customPrefix.trim();
   }
 
   return propsObj;

@@ -87,30 +87,28 @@ const customValidate = () => {
   <view>
     <!-- 用户名输入 -->
     <view class="input-wrapper">
-      <u-icon name="account" size="20" color="rgba(255,255,255,0.7)"></u-icon>
-      <u-input 
+      <wd-icon name="user" size="20px" color="rgba(255,255,255,0.7)"></wd-icon>
+      <input 
         v-model="form.username" 
         placeholder="用户名或邮箱"
-        :border="false"
-        :customStyle="inputStyle"
+        class="glass-input"
         @blur="handleFieldBlur('username')"
       />
     </view>
     
     <!-- 密码输入 -->
     <view class="input-wrapper">
-      <u-icon name="lock" size="20" color="rgba(255,255,255,0.7)"></u-icon>
-      <u-input 
+      <wd-icon name="lock" size="20px" color="rgba(255,255,255,0.7)"></wd-icon>
+      <input 
         v-model="form.password" 
         type="password"
         placeholder="密码"
-        :border="false"
-        :customStyle="inputStyle"
+        class="glass-input"
         @blur="handleFieldBlur('password')"
       />
     </view>
     
-    <u-button @click="handleLogin">登录</u-button>
+    <wd-button @click="handleLogin">登录</wd-button>
   </view>
 </template>
 

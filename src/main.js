@@ -3,7 +3,6 @@ import pinia from './stores'
 import { initRouter, setUserStore } from "./utils/router";
 import { installDirectives } from "./directives";
 import App from "./App.vue";
-import uviewPlus from "uview-plus";
 import "virtual:uno.css";
 
 export function createApp() {
@@ -11,7 +10,6 @@ export function createApp() {
 
   // 初始化 Pinia
   app.use(pinia);
-  app.use(uviewPlus);
 
   // 注册指令
   installDirectives(app);

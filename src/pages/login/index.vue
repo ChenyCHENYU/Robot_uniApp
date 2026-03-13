@@ -28,7 +28,6 @@
       <view class="logo-section">
         <view class="logo-wrapper">
           <view class="logo-bg">
-            <!-- <u-icon name="R" size="80" color="#ffffff"></u-icon> -->
             <video
               src="/static/videos/logo.webm"
               style="width: 140rpx; height: 140rpx"
@@ -60,17 +59,16 @@
           <!-- 用户名输入框 -->
           <view class="input-group">
             <view class="input-wrapper">
-              <u-icon
-                name="account"
-                size="20"
+              <wd-icon
+                name="user"
+                size="20px"
                 color="rgba(255,255,255,0.7)"
-              ></u-icon>
-              <u-input
+              ></wd-icon>
+              <input
                 v-model="form.username"
                 placeholder="用户名或邮箱"
-                border="none"
-                :customStyle="glassInputStyle"
-                placeholderStyle="color: rgba(255,255,255,0.6)"
+                class="glass-input"
+                placeholder-style="color: rgba(255,255,255,0.6)"
                 @blur="handleFieldBlur('username')"
               />
             </view>
@@ -79,18 +77,17 @@
           <!-- 密码输入框 -->
           <view class="input-group">
             <view class="input-wrapper">
-              <u-icon
+              <wd-icon
                 name="lock"
-                size="20"
+                size="20px"
                 color="rgba(255,255,255,0.7)"
-              ></u-icon>
-              <u-input
+              ></wd-icon>
+              <input
                 v-model="form.password"
                 type="password"
                 placeholder="密码"
-                border="none"
-                :customStyle="glassInputStyle"
-                placeholderStyle="color: rgba(255,255,255,0.6)"
+                class="glass-input"
+                placeholder-style="color: rgba(255,255,255,0.6)"
                 @blur="handleFieldBlur('password')"
               />
             </view>
@@ -99,11 +96,10 @@
 
         <!-- 记住登录和忘记密码 -->
         <view class="form-options">
-          <u-checkbox-group v-model="rememberLogin">
-            <u-checkbox name="remember" activeColor="#00D4FF" size="16">
-              <text class="option-text">记住登录</text>
-            </u-checkbox>
-          </u-checkbox-group>
+          <view class="flex items-center" @click="toggleRemember">
+            <wd-icon :name="rememberLogin.includes('remember') ? 'check-circle' : 'circle'" size="16px" :color="rememberLogin.includes('remember') ? '#00D4FF' : 'rgba(255,255,255,0.5)'" />
+            <text class="option-text ml-1">记住登录</text>
+          </view>
           <text class="forgot-link" @click="handleForgotPassword"
             >忘记密码？</text
           >
@@ -111,16 +107,16 @@
 
         <!-- 登录按钮 -->
         <view class="login-btn-wrapper">
-          <u-button
+          <view
+            class="login-btn"
+            :class="{ 'is-loading': loading }"
             @click="handleLogin"
-            :loading="loading"
-            :customStyle="glassButtonStyle"
-            shape="circle"
           >
+            <wd-loading v-if="loading" :size="20" color="#ffffff" />
             <text class="btn-text">{{
               loading ? "登录中..." : "立即登录"
             }}</text>
-          </u-button>
+          </view>
         </view>
 
         <!-- 分割线 -->
@@ -133,11 +129,11 @@
         <!-- 第三方登录 -->
         <view class="social-login">
           <view class="social-btn" @click="handleQuickLogin">
-            <u-icon name="zap" size="24" color="#00D4FF"></u-icon>
+            <wd-icon name="fill-camera" size="24px" color="#00D4FF"></wd-icon>
             <text>快速体验</text>
           </view>
           <view class="social-btn" @click="handleWechatLogin">
-            <u-icon name="weixin-fill" size="24" color="#09bb07"></u-icon>
+            <view class="i-mdi-wechat" style="font-size: 24px; color: #09bb07;"></view>
             <text>微信登录</text>
           </view>
         </view>
@@ -161,8 +157,6 @@ const {
   loading,
   rememberLogin,
   form,
-  glassInputStyle,
-  glassButtonStyle,
 
   // 方法
   handleLogin,
@@ -170,6 +164,7 @@ const {
   handleWechatLogin,
   handleQuickLogin,
   handleFieldBlur,
+  toggleRemember,
 } = useLoginData();
 </script>
 
