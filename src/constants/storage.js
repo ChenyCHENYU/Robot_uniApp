@@ -13,7 +13,6 @@ export const STORAGE_KEYS = {
   LOGIN_ACCOUNT: "robot_login_account",
 
   // 应用相关
-  THEME: "robot_theme",
   LANGUAGE: "robot_language",
   FIRST_LAUNCH: "robot_first_launch",
   APP_VERSION: "robot_app_version",

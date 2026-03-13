@@ -1,13 +1,10 @@
 /**
  * 全局主题变量
  *
- * 基于 CSS Custom Properties，支持运行时主题切换
+ * 基于 CSS Custom Properties
  * 命名约定：--r-{类别}-{语义}-{变体}
  *
- * 深色模式策略（参考 Apple HIG / Material Design 3）：
- * - 手动切换：html.dark / .dark 类选择器（JS 控制）
- * - 跟随系统：@media (prefers-color-scheme: dark)（auto 模式）
- * - 浅色锁定：html.light 类阻止系统深色覆盖
+ * 深色模式：跟随系统 @media (prefers-color-scheme: dark)
  */
 
 :root {
@@ -137,20 +134,13 @@
   --r-color-error: #ff453a;
 }
 
-// 手动深色：JS 添加 .dark 类到 html 和 page 元素
-html.dark,
-.dark {
-  @include dark-theme;
-}
-
-// 自动跟随系统：只在没有手动指定 (.light / .dark) 时生效
+// 跟随系统深色模式
 @media (prefers-color-scheme: dark) {
-  html:not(.light):not(.dark),
-  :root:not(.light):not(.dark) {
+  :root {
     @include dark-theme;
   }
   // uni-app H5 的 page 元素
-  uni-page-body:not(.light):not(.dark) {
+    uni-page-body {
     @include dark-theme;
   }
 }

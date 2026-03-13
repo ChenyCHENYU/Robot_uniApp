@@ -209,13 +209,6 @@
         "navigationBarTitleText": "个人设置",
         "navigationStyle": "custom"
       }
-    },
-    {
-      "path": "pages/settings/theme",
-      "style": {
-        "navigationBarTitleText": "主题切换",
-        "navigationStyle": "custom"
-      }
     }
   ],
   "tabBar": {

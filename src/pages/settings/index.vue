@@ -136,18 +136,6 @@
       <view class="settings-group">
         <text class="group-title">外观与显示</text>
         <view class="group-card">
-          <view class="setting-item" @click="goToTheme">
-            <view class="item-left">
-              <view class="item-icon" style="background: linear-gradient(135deg, #667eea, #764ba2)">
-                <wd-icon name="browse" size="16px" color="#fff" />
-              </view>
-              <text class="item-label">主题切换</text>
-            </view>
-            <view class="item-right">
-              <text class="item-value">{{ currentThemeLabel }}</text>
-              <wd-icon name="arrow-right" size="14px" color="#ccc" />
-            </view>
-          </view>
           <view class="setting-item">
             <view class="item-left">
               <view class="item-icon" style="background: linear-gradient(135deg, #e0c3fc, #8ec5fc)">
@@ -160,6 +148,18 @@
               <wd-icon name="arrow-right" size="14px" color="#ccc" />
             </view>
           </view>
+          <view class="setting-item">
+            <view class="item-left">
+              <view class="item-icon" style="background: linear-gradient(135deg, var(--r-color-primary), var(--r-color-primary-light))">
+                <wd-icon name="translate" size="16px" color="#fff" />
+              </view>
+              <text class="item-label">语言设置</text>
+            </view>
+            <view class="item-right">
+              <text class="item-value">{{ languageLabel }}</text>
+              <wd-icon name="arrow-right" size="14px" color="#ccc" />
+            </view>
+          </view>
         </view>
       </view>
     </view>
@@ -169,10 +169,8 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useUserStore } from '@/stores/modules/user'
-import { useAppStore } from '@/stores/modules/app'
 
 const userStore = useUserStore()
-const appStore = useAppStore()
 
 // 用户信息
 const userAvatar = computed(() => userStore.avatar || '/static/robot-avatar.png')
@@ -192,11 +190,8 @@ const systemNotifyEnabled = ref(true)
 const soundEnabled = ref(true)
 
 // 外观
-const currentThemeLabel = computed(() => {
-  const map = { light: '浅色', dark: '深色', auto: '跟随系统' }
-  return map[appStore.themeMode] || '浅色'
-})
 const fontSizeLabel = ref('标准')
+const languageLabel = ref('简体中文')
 
 // 事件处理
 const handleChangeAvatar = () => {
@@ -254,10 +249,6 @@ const handleEditPhone = () => {
 
 const handleChangePassword = () => {
   uni.showToast({ title: '密码修改功能开发中', icon: 'none' })
-}
-
-const goToTheme = () => {
-  uni.navigateTo({ url: '/pages/settings/theme' })
 }
 </script>
 

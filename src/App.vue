@@ -27,17 +27,12 @@ onLaunch(() => {
 })
 
 onShow(() => {
-  // 每次 App 可见时重新同步主题到 DOM（处理新页面创建后类名丢失）
-  appStore._applyThemeToDOM(appStore.themeMode)
 })
 
 // 初始化应用
 const initApp = async () => {
   // 初始化系统信息
   await appStore.initSystemInfo()
-  
-  // 应用已持久化的主题模式
-  appStore.setThemeMode(appStore.themeMode)
   
   // 如果已登录，尝试获取最新用户信息
   if (userStore.isLoggedIn && userStore.token) {

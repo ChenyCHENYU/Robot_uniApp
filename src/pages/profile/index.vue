@@ -110,7 +110,6 @@ const menuGroups = ref([
     title: '个人服务',
     items: [
       { id: 'settings', label: '个人设置', icon: 'setting', iconBg: 'linear-gradient(135deg, #667eea, #764ba2)', path: '/pages/settings/index' },
-      { id: 'theme', label: '主题切换', icon: 'browse', iconBg: 'linear-gradient(135deg, #43e97b, #38f9d7)', extra: '浅色', path: '/pages/settings/theme' },
       { id: 'notification', label: '消息通知', icon: 'notification', iconBg: 'linear-gradient(135deg, #fa709a, #fee140)', badge: 5, path: '/pages/message/index' },
     ]
   },
