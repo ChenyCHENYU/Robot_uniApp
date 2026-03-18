@@ -354,6 +354,7 @@
     background: var(--r-bg-card);
     border-bottom: 1rpx solid var(--r-divider);
     overflow-x: auto;
+    overscroll-behavior-x: contain;
 
     .tab-item {
       position: relative;

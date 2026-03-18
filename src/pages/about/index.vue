@@ -100,34 +100,36 @@
   const features = ref([
     {
       icon: '🚀',
-      title: '跨平台',
-      desc: 'H5、小程序、App 多端运行',
+      title: 'UniApp 3.0',
+      desc: '基于 Vue 3 的跨端开发框架',
       iconBg: 'linear-gradient(135deg, #667eea, #764ba2)',
     },
     {
+      icon: '⚡',
+      title: 'Vue 3.5 + TypeScript 5.7',
+      desc: 'Composition API + 完整类型推导',
+      iconBg: 'linear-gradient(135deg, #43e97b, #38f9d7)',
+    },
+    {
       icon: '🧩',
-      title: '组件丰富',
-      desc: '33+ 高质量 UI 组件',
+      title: '33+ 自研组件',
+      desc: 'C_Layout / C_Form / C_Modal 等',
       iconBg: 'linear-gradient(135deg, #f093fb, #f5576c)',
     },
     {
-      icon: '⚡',
-      title: '高性能',
-      desc: '虚拟滚动、懒加载、骨架屏',
+      icon: '📦',
+      title: 'Vite 5 + UnoCSS',
+      desc: '极速构建 + 原子化 CSS',
       iconBg: 'linear-gradient(135deg, #4facfe, #00f2fe)',
-    },
-    {
-      icon: '🛡️',
-      title: '企业级',
-      desc: '完善的权限、状态、请求管理',
-      iconBg: 'linear-gradient(135deg, #43e97b, #38f9d7)',
     },
   ])
 
   const infoList = ref([
-    { label: '框架版本', value: 'UniApp 3.0' },
-    { label: 'Vue 版本', value: 'Vue 3.5' },
+    { label: '框架版本', value: '@dcloudio/uni-app 3.0.0' },
+    { label: 'Vue', value: '3.5.30' },
+    { label: 'TypeScript', value: '5.7.3' },
     { label: '构建工具', value: 'Vite 5.x' },
+    { label: 'UI 组件库', value: 'wot-design-uni 1.14.0' },
     {
       label: '检查更新',
       value: '已是最新版',
@@ -152,15 +154,16 @@
   ])
 
   const techStack = [
-    'Vue 3',
-    'TypeScript',
-    'UniApp',
-    'Vite',
-    'UnoCSS',
-    'Pinia',
+    'Vue 3.5.30',
+    'TypeScript 5.7',
+    'UniApp 3.0',
+    'Vite 5',
+    'UnoCSS 66.5',
+    'Pinia 2.3',
     'wot-design-uni',
-    'Sass',
-    'vue-i18n',
+    'Sass 1.98',
+    'vue-i18n 11.3',
+    'Iconify/MDI',
   ]
 
   const handleFeedback = () => {

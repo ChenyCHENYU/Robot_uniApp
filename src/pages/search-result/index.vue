@@ -52,10 +52,7 @@
             v-for="item in searchHistory"
             :key="item"
             class="history-tag"
-            @click="
-              keyword = item
-              handleSearch()
-            "
+            @click="quickSearch(item)"
           >
             <text class="tag-text">{{ item }}</text>
           </view>
@@ -75,10 +72,7 @@
             v-for="(item, index) in hotSearches"
             :key="item"
             class="hot-item"
-            @click="
-              keyword = item
-              handleSearch()
-            "
+            @click="quickSearch(item)"
           >
             <text
               class="hot-rank"
@@ -272,6 +266,11 @@
 
   const clearHistory = () => {
     searchHistory.value = []
+  }
+
+  const quickSearch = (text: string) => {
+    keyword.value = text
+    handleSearch()
   }
 
   const handleResultClick = (item: SearchResult) => {

@@ -478,6 +478,7 @@
     padding: 0 32rpx 20rpx;
     gap: 12rpx;
     overflow-x: auto;
+    overscroll-behavior-x: contain;
     &::-webkit-scrollbar {
       display: none;
     }

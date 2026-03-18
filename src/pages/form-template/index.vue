@@ -90,7 +90,7 @@
             <text class="form-label">入职日期</text>
             <view
               class="select-input"
-              @click="showDatePicker = true"
+              @click="pickDate"
             >
               <text :class="['select-text', { placeholder: !form.joinDate }]">
                 {{ form.joinDate || '请选择日期' }}
@@ -174,7 +174,13 @@
 
   const submitting = ref(false)
   const showDeptPicker = ref(false)
-  const showDatePicker = ref(false)
+
+  const pickDate = () => {
+    const today = new Date()
+    const dateStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
+    form.joinDate = dateStr
+    uni.showToast({ title: `已选择 ${dateStr}`, icon: 'none' })
+  }
 
   const form = reactive({
     name: '',

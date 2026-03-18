@@ -318,7 +318,15 @@
   }
 
   const handleQuickAction = (action: { label: string; url: string }) => {
-    uni.navigateTo({ url: action.url })
+    uni.navigateTo({
+      url: action.url,
+      fail: () => {
+        uni.switchTab({
+          url: action.url,
+          fail: () => uni.reLaunch({ url: action.url }),
+        })
+      },
+    })
   }
 
   const handleViewAllTodo = () => {

@@ -57,8 +57,8 @@
   display: flex;
   align-items: center;
   justify-content: space-around;
-  padding: 8rpx 20rpx 12rpx;
-  min-height: 80rpx;
+  padding: 12rpx 24rpx 16rpx;
+    min-height: 100rpx;
 }
 
 .tab-item {
@@ -106,9 +106,9 @@
 }
 
 .icon-bg {
-  width: 56rpx;
-  height: 56rpx;
-  border-radius: 16rpx;
+  width: 64rpx;
+    height: 64rpx;
+    border-radius: 18rpx;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -120,29 +120,30 @@
     background: linear-gradient(135deg, var(--r-color-primary) 0%, var(--r-color-primary-dark) 100%);
     border-color: var(--r-border-light);
     box-shadow: var(--r-shadow-md);
-    transform: scale(1.05);
+    transform: scale(1.08);
   }
 }
 
 // 自定义文字图标样式
 .custom-text-icon {
-  font-size: 28rpx;
+  font-size: 30rpx;
   font-weight: bold;
   color: var(--r-text-secondary, #8e8e93);
   transition: all 0.3s ease;
 
   &.is-active {
     color: var(--r-text-inverse);
-    font-size: 30rpx;
+    font-size: 32rpx;
   }
 }
 .tab-label {
-  font-size: 18rpx;
+  font-size: 22rpx;
   color: var(--r-text-secondary, #8e8e93);
   font-weight: 500;
   transition: all 0.3s ease;
   text-align: center;
   z-index: 2;
+  margin-top: 4rpx;
 
   &.is-active {
     color: var(--r-color-primary);

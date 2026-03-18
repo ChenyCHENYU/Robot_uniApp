@@ -188,9 +188,9 @@
           path: '/pages/webview/index?url=https%3A%2F%2Funiapp.dcloud.net.cn&title=开发文档',
         },
         {
-          id: 'components',
-          label: '组件预览',
-          icon: 'view',
+          id: 'templates',
+          label: '业务模板',
+          icon: 'list',
           iconBg: 'linear-gradient(135deg, #4facfe, #00f2fe)',
           path: '/pages/demo/index',
         },

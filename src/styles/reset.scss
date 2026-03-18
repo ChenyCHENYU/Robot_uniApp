@@ -41,7 +41,7 @@ uni-page-body {
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.08);
     overflow-x: hidden;
   }
-  
+
   // 约束所有 fixed 定位的内容面板在页面最大宽度内
   // overlay/mask 类遮罩保持全屏，仅限制面板宽度
   .c-tabbar,
@@ -49,13 +49,15 @@ uni-page-body {
   .c-number-keyboard__panel,
   .c-notify,
   .c-float-button,
-  .global-loading {
+    .global-loading,
+    .bottom-bar,
+    .action-bar {
     max-width: var(--r-h5-max-width) !important;
     left: 50% !important;
     right: auto !important;
     transform: translateX(-50%);
   }
-  
+
   // 弹窗 overlay 遮罩约束宽度以避免扩散到外部背景
   .c-modal__overlay,
   .c-action-sheet__overlay,

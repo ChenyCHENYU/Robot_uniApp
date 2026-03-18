@@ -84,7 +84,8 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, onLoad } from '@dcloudio/uni-app'
+  import { ref } from 'vue'
+  import { onLoad } from '@dcloudio/uni-app'
 
   const url = ref('')
   const pageTitle = ref('')

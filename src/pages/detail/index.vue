@@ -2,10 +2,24 @@
  * @Description: 详情页模板 - 通用实体详情展示
 -->
 <template>
-  <C_Layout>
+  <C_Layout force-layout-type="none">
     <view class="detail-page">
-      <!-- 顶部封面 -->
+      <!-- 顶部封面 + 导航栏合一 -->
       <view class="detail-cover">
+        <view class="cover-nav">
+          <view
+            class="nav-back"
+            @click="handleBack"
+          >
+            <wd-icon
+              name="arrow-left"
+              size="20px"
+              color="#fff"
+            />
+          </view>
+          <text class="nav-title">详情</text>
+          <view class="nav-placeholder"></view>
+        </view>
         <view class="cover-gradient"></view>
         <view class="cover-content">
           <view
@@ -186,6 +200,15 @@
     { action: '创建了项目', user: 'ChenY', time: '2025-01-10 16:45' },
   ])
 
+  const handleBack = () => {
+    const pages = getCurrentPages()
+    if (pages.length > 1) {
+      uni.navigateBack()
+    } else {
+      uni.reLaunch({ url: '/pages/index/index' })
+    }
+  }
+
   const handleShare = () => uni.showToast({ title: '分享功能', icon: 'none' })
   const handleEdit = () => uni.showToast({ title: '编辑详情', icon: 'none' })
 </script>
@@ -199,8 +222,36 @@
 
   .detail-cover {
     position: relative;
-    padding: 60rpx 32rpx 40rpx;
+    padding: 0 32rpx 40rpx;
+    padding-top: calc(var(--status-bar-height, 44px) + 8rpx);
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+    .cover-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 88rpx;
+
+      .nav-back {
+        width: 64rpx;
+        height: 64rpx;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.15);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .nav-title {
+        font-size: 30rpx;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.9);
+      }
+
+      .nav-placeholder {
+        width: 64rpx;
+      }
+    }
 
     .cover-gradient {
       position: absolute;
