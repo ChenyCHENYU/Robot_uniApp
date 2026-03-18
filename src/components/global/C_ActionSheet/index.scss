@@ -53,6 +53,9 @@
     }
   }
 
+    &__unoicon {
+      font-size: 40rpx;
+    }
   &__desc {
     font-size: var(--r-font-size-xs);
     color: var(--r-text-secondary);

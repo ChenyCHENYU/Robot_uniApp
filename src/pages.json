@@ -48,6 +48,13 @@
         "navigationBarTitleText": "个人设置",
         "navigationStyle": "custom"
       }
+    },
+    {
+      "path": "pages/settings/change-password/index",
+      "style": {
+        "navigationBarTitleText": "修改密码",
+        "navigationStyle": "custom"
+      }
     }
   ],
   "subPackages": [

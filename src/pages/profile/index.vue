@@ -144,7 +144,7 @@
   const userId = computed(() => userStore.userInfo?.id || '100001')
 
   const userStats = ref([
-    { value: '20', label: '组件' },
+    { value: '33', label: '组件' },
     { value: '8', label: 'Composables' },
     { value: '12', label: '常量' },
     { value: '5', label: '样式' },
@@ -174,14 +174,6 @@
     {
       title: '开发工具',
       items: [
-        {
-          id: 'components',
-          label: '组件库',
-          icon: 'app',
-          iconBg: 'linear-gradient(135deg, #4facfe, #00f2fe)',
-          extra: '20个',
-          path: '/pages/demo/index',
-        },
         {
           id: 'docs',
           label: '开发文档',

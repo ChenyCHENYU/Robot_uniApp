@@ -1,19 +1,37 @@
 <template>
   <view class="c-empty">
-    <!-- 图标区域 -->
-    <view class="c-empty__icon">
+    <!-- 插画区域 -->
+    <view class="c-empty__illustration">
       <slot name="icon">
-        <wd-icon
-          :name="displayIcon"
-          :size="iconSize + 'px'"
-          color="#c0c4cc"
-        />
+        <view
+          class="c-empty__icon-wrap"
+          :class="'c-empty__icon-wrap--' + type"
+        >
+          <view class="c-empty__icon-circle"></view>
+          <view class="c-empty__icon-dots">
+            <view class="dot dot--1"></view>
+            <view class="dot dot--2"></view>
+            <view class="dot dot--3"></view>
+          </view>
+          <wd-icon
+            :name="displayIcon"
+            :size="iconSize + 'px'"
+            :color="iconColor"
+          />
+        </view>
       </slot>
     </view>
 
     <!-- 文案区域 -->
-    <view class="c-empty__text">
-      <slot>{{ displayText }}</slot>
+    <view class="c-empty__content">
+      <text class="c-empty__title">
+        <slot>{{ displayText }}</slot>
+      </text>
+      <text
+        v-if="displaySubText"
+        class="c-empty__desc"
+        >{{ displaySubText }}</text
+      >
     </view>
 
     <!-- 操作按钮 -->
@@ -53,6 +71,8 @@
   )
   const displayIcon = computed(() => props.icon || typeConfig.value.icon)
   const displayText = computed(() => props.text || typeConfig.value.text)
+  const displaySubText = computed(() => typeConfig.value.subText || '')
+  const iconColor = computed(() => typeConfig.value.color || '#a0aec0')
 </script>
 
 <style lang="scss" scoped>

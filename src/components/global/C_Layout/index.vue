@@ -49,6 +49,7 @@
 
 <script setup lang="ts">
   import { ref, onMounted, watch, nextTick } from 'vue'
+  import { onShow } from '@dcloudio/uni-app'
   import {
     useSmartLayout,
     layoutProps,
@@ -96,6 +97,17 @@
     },
     { immediate: true }
   )
+
+  // 页面再次显示时重新同步 tab 索引（修复缓存页面 tab 高亮不一致）
+  onShow(() => {
+    if (showTabbar.value) {
+      const path = getCurrentPath()
+      const activeIndex = getCurrentTabIndex(path)
+      if (activeIndex !== -1 && currentTabIndex.value !== activeIndex) {
+        currentTabIndex.value = activeIndex
+      }
+    }
+  })
 
   // 返回首页兜底策略
   const navigateToHome = () => {

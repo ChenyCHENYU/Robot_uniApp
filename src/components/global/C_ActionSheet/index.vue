@@ -24,12 +24,17 @@
         ]"
         @click="onSelect(item, index)"
       >
+        <text
+          v-if="item.icon && item.icon.startsWith('i-')"
+          :class="item.icon"
+          class="c-action-sheet__unoicon"
+        />
         <wd-icon
-          v-if="item.icon"
+          v-else-if="item.icon"
           :name="item.icon"
           size="20px"
         />
-        <text>{{ item.name }}</text>
+        <text>{{ item.name || item.text }}</text>
         <text
           v-if="item.description"
           class="c-action-sheet__desc"

@@ -8,5 +8,5 @@ export const defaultProps = {
   color: 'rgba(0, 0, 0, 0.05)',
   rotate: -22,
   gap: [100, 100],
-  fullPage: true,
+  fullPage: false,
 }

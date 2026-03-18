@@ -6,7 +6,7 @@ import { STORAGE_KEYS } from '@/constants'
 export const defaultProps = {
   placeholder: '搜索',
   maxHistory: 10,
-  showHistory: true,
+  showHistory: false,
   debounceTime: 300,
 }
 

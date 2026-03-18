@@ -1,7 +1,7 @@
 <template>
   <view class="c-index-list">
     <!-- 列表区域 -->
-    <ScrollView
+    <scroll-view
       class="c-index-list__scroll"
       scroll-y
       :scroll-into-view="scrollTarget"
@@ -28,7 +28,7 @@
           />
         </view>
       </view>
-    </ScrollView>
+    </scroll-view>
 
     <!-- 右侧索引栏 -->
     <view
@@ -69,9 +69,17 @@
   import { ref, getCurrentInstance as vueGetCurrentInstance } from 'vue'
   import { defaultProps } from './data'
 
+  interface IndexGroup {
+    [key: string]: any
+    items?: any[]
+  }
+
   const props = defineProps({
     /** 分组数据 */
-    data: { type: Array, default: () => defaultProps.data },
+    data: {
+      type: Array as () => IndexGroup[],
+      default: () => defaultProps.data,
+    },
     /** 索引字段名 */
     indexKey: { type: String, default: defaultProps.indexKey },
     /** 是否吸顶 */
@@ -86,25 +94,25 @@
   const activeIndex = ref('')
   const touching = ref(false)
 
-  let sidebarRect = null
+  let sidebarRect: { top: number; height: number } | null = null
   let itemHeight = 0
 
   /** 获取侧边栏位置信息 */
-  function _getSidebarRect() {
+  function _getSidebarRect(): Promise<{ top: number; height: number } | null> {
     return new Promise(resolve => {
       uni
         .createSelectorQuery()
-        .in(getCurrentInstance())
+        .in(getComponentProxy())
         .select('.c-index-list__sidebar')
         .boundingClientRect(rect => {
-          resolve(rect)
+          resolve(rect as { top: number; height: number } | null)
         })
         .exec()
     })
   }
 
   /** 侧边栏触摸 */
-  async function onSidebarTouch(e) {
+  async function onSidebarTouch(e: TouchEvent) {
     touching.value = true
 
     if (!sidebarRect) {
@@ -134,12 +142,8 @@
     sidebarRect = null
   }
 
-  /**
-   * 获取组件实例（用于 createSelectorQuery）
-   * @returns {object}
-   */
-  function getCurrentInstance() {
-    // uni-app 下使用 getCurrentInstance 获取组件上下文
+  /** 获取组件实例代理（用于 createSelectorQuery） */
+  function getComponentProxy() {
     const { proxy } = vueGetCurrentInstance()!
     return proxy
   }

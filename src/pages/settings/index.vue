@@ -385,7 +385,7 @@
   }
 
   const handleChangePassword = () => {
-    uni.showToast({ title: '密码修改功能开发中', icon: 'none' })
+    uni.navigateTo({ url: '/pages/settings/change-password/index' })
   }
 </script>
 
