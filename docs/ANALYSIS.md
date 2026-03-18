@@ -218,41 +218,54 @@ WebSocket 在企业移动端的核心场景：
 - [x] @robot-admin/git-standards 安装
 - [x] App.vue / Store / permission.js / v_verify.js 代码质量修复
 
-### Phase 2：核心基础设施
+### Phase 2：✅ 已完成 — 核心基础设施
+
+- [x] 初始化 @robot-admin/git-standards（构建了 ESLint + Prettier + Husky + Commitlint + lint-staged）
+- [x] HTTP 封装重构（请求取消 / 去重 / 重试 / baseURL 统一 / 401 回跳 / upload 统一）
+- [x] WebSocket 封装（自动重连 + 心跳保活 + 消息队列 + 状态追踪）
+- [x] composables/index.js 导出更新
+
+### Phase 3：✅ 已完成 — 高级组件全量建设（12 个新组件）
+
+- [x] C_SwipeAction — 左右滑动操作
+- [x] C_ImagePreview — 全屏图片预览 + 缩放
+- [x] C_Signature — 手写签名板
+- [x] C_IndexList — 索引列表（通讯录式）
+- [x] C_Calendar — 日历（单选 / 多选 / 范围）
+- [x] C_Cascader — 级联选择器 + 搜索
+- [x] C_TabNav — 标签页导航（滚动 / 吸顶 / 徽标）
+- [x] C_Progress — 进度条 + 圆形进度
+- [x] C_Timeline — 时间轴
+- [x] C_Notify — 消息通知条
+- [x] C_Rate — 评分
+- [x] C_Divider — 分割线
+- [x] C_CountDown — 倒计时
+
+### Phase 4：🔜 下一轮 — 企业基础 & 业务页面
 
 ```
-□ 初始化 @robot-admin/git-standards（运行 init 选择预设）
-□ HTTP 封装重构（取消/去重/重试/baseURL 统一）
 □ Mock 拦截层搭建 + 用户模块 Mock 数据
-□ 全局错误处理
-□ 登录回跳机制
-□ 分包加载配置
-```
-
-### Phase 3：企业功能
-
-```
-□ 数据字典管理（Store + composable + C_DictTag）
-□ 版本更新检测（多端适配）
-□ 安全加固
-□ 高级组件：C_Cascader / C_SwipeAction / C_ImagePreview / C_Signature / C_TabNav
-```
-
-### Phase 4：业务页面
-
-```
-□ 注册 + 忘记密码 + 引导页
+□ 全局错误处理（app.config.errorHandler + uni.onError + unhandledrejection）
+□ 分包加载配置（主包 < 2MB）
+□ 数据字典管理（useDict + C_DictTag）
+□ 版本更新检测（useUpdate，多端适配）
+□ 安全加固（XSS 防护 / redirectUrl 白名单 / Token 安全）
+□ 注册页 + 忘记密码页 + 引导页
 □ CRUD 列表 + 详情 + 表单（模板页）
 □ 审批流 + 数据看板（模板页）
-□ 关于页 + WebView + 搜索结果页
+□ 关于页 + WebView + 搜索结果页 + 扫码页
 ```
 
-### Phase 5：WebSocket + 更多组件（按需）
+### Phase 5：🔜 增值能力
 
 ```
-□ WebSocket 封装（如有即时通知需求）
-□ C_Calendar / C_IndexList / C_TreeSelect / C_Timeline
-□ 埋点采集
+□ C_TreeSelect（部门/分类/权限树）
+□ C_Popover（气泡提示）
+□ 小程序打包优化（微信 / 支付宝 / 抖音）
+□ App wgt 热更新
+□ H5 PWA 配置
+□ 埋点数据采集
+□ 性能监控
 □ CLI 代码生成器
 ```
 

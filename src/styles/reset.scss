@@ -19,6 +19,13 @@ page {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* #ifdef H5 */
+uni-page-body {
+  max-width: 750rpx;
+  margin: 0 auto;
+}
+
+/* #endif */
 view,
 scroll-view,
 swiper,

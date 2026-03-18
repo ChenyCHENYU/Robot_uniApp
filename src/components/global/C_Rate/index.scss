@@ -1,0 +1,40 @@
+/**
+ * @description C_Rate 评分样式
+ */
+
+.c-rate {
+  display: flex;
+  align-items: center;
+
+  &--disabled {
+    opacity: 0.5;
+  }
+
+  &--readonly {
+    pointer-events: none;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+  }
+
+  &__half-wrap {
+    position: relative;
+    overflow: hidden;
+  }
+
+  &__half-left {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 50%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 1;
+  }
+
+  &__half-right {
+    position: relative;
+  }
+}

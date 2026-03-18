@@ -1,0 +1,151 @@
+/**
+ * @description C_Cascader 级联选择器样式
+ */
+
+.c-cascader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 999;
+  display: flex;
+  align-items: flex-end;
+
+  &__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.45);
+  }
+
+  &__panel {
+    position: relative;
+    width: 100%;
+    max-height: 80vh;
+    background: var(--r-bg-color, #fff);
+    border-radius: 32rpx 32rpx 0 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 28rpx 32rpx;
+  }
+
+  &__title {
+    font-size: 32rpx;
+    font-weight: 600;
+    color: var(--r-text-color-primary, #1a1a1a);
+  }
+
+  &__close {
+    position: absolute;
+    right: 32rpx;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 8rpx;
+  }
+
+  &__search {
+    display: flex;
+    align-items: center;
+    gap: 12rpx;
+    margin: 0 32rpx 20rpx;
+    padding: 16rpx 24rpx;
+    background: var(--r-bg-color-secondary, #f5f5f5);
+    border-radius: 16rpx;
+  }
+
+  &__search-input {
+    flex: 1;
+    font-size: 28rpx;
+    color: var(--r-text-color-primary, #1a1a1a);
+  }
+
+  &__search-result {
+    flex: 1;
+    min-height: 400rpx;
+    max-height: 600rpx;
+  }
+
+  &__search-item {
+    padding: 24rpx 32rpx;
+    border-bottom: 1rpx solid var(--r-border-color, #f0f0f0);
+  }
+
+  &__search-text {
+    font-size: 28rpx;
+    color: var(--r-text-color-primary, #1a1a1a);
+  }
+
+  &__search-empty {
+    padding: 80rpx 0;
+    text-align: center;
+    font-size: 28rpx;
+    color: var(--r-text-color-secondary, #999);
+  }
+
+  &__tabs {
+    display: flex;
+    padding: 0 32rpx;
+    gap: 32rpx;
+    border-bottom: 1rpx solid var(--r-border-color, #f0f0f0);
+  }
+
+  &__tab {
+    padding: 20rpx 0;
+    position: relative;
+
+    &--active {
+      .c-cascader__tab-text {
+        color: var(--r-color-primary, #2b6bff);
+      }
+
+      &::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 4rpx;
+        background: var(--r-color-primary, #2b6bff);
+        border-radius: 4rpx;
+      }
+    }
+  }
+
+  &__tab-text {
+    font-size: 28rpx;
+    color: var(--r-text-color-primary, #1a1a1a);
+  }
+
+  &__options {
+    flex: 1;
+    min-height: 400rpx;
+    max-height: 600rpx;
+  }
+
+  &__option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24rpx 32rpx;
+
+    &--selected .c-cascader__option-text {
+      color: var(--r-color-primary, #2b6bff);
+      font-weight: 500;
+    }
+  }
+
+  &__option-text {
+    font-size: 28rpx;
+    color: var(--r-text-color-primary, #1a1a1a);
+  }
+}

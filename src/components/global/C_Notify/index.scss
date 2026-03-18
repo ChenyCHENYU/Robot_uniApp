@@ -1,0 +1,31 @@
+/**
+ * @description C_Notify 消息通知样式
+ */
+
+.c-notify {
+  position: fixed;
+  left: 0;
+  width: 100%;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20rpx 32rpx;
+  min-height: 80rpx;
+
+  &--top {
+    top: 0;
+    padding-top: calc(20rpx + env(safe-area-inset-top));
+  }
+
+  &--bottom {
+    bottom: 0;
+    padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
+  }
+
+  &__text {
+    font-size: 28rpx;
+    line-height: 40rpx;
+    text-align: center;
+  }
+}

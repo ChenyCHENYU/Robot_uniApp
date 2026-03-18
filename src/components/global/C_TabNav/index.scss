@@ -1,0 +1,82 @@
+/**
+ * @description C_TabNav 标签页导航样式
+ */
+
+.c-tab-nav {
+  position: relative;
+  background: var(--r-bg-color, #fff);
+
+  &--sticky {
+    position: sticky;
+    z-index: 99;
+  }
+
+  &__scroll {
+    white-space: nowrap;
+  }
+
+  &__list {
+    display: flex;
+    position: relative;
+    padding: 0 16rpx;
+
+    &--equal {
+      .c-tab-nav__item {
+        flex: 1;
+        justify-content: center;
+      }
+    }
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    position: relative;
+    padding: 24rpx 24rpx;
+    flex-shrink: 0;
+
+    &--active .c-tab-nav__label {
+      color: var(--r-color-primary, #2b6bff);
+      font-weight: 600;
+    }
+
+    &--disabled {
+      opacity: 0.4;
+      pointer-events: none;
+    }
+  }
+
+  &__label {
+    font-size: 28rpx;
+    color: var(--r-text-color-primary, #1a1a1a);
+    line-height: 1;
+  }
+
+  &__badge {
+    min-width: 32rpx;
+    height: 32rpx;
+    padding: 0 8rpx;
+    background: var(--r-color-danger, #ff4d4f);
+    border-radius: 32rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 8rpx;
+  }
+
+  &__badge-text {
+    font-size: 20rpx;
+    color: #fff;
+    line-height: 1;
+  }
+
+  &__line {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 6rpx;
+    border-radius: 6rpx;
+    background: var(--r-color-primary, #2b6bff);
+    transition: transform 0.3s ease;
+  }
+}

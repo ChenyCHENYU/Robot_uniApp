@@ -1,0 +1,45 @@
+/**
+ * @description C_Divider 分割线样式
+ */
+
+.c-divider {
+  display: flex;
+  align-items: center;
+
+  &__line {
+    flex: 1;
+    border-top: 1rpx solid;
+
+    &--dashed {
+      border-top-style: dashed;
+    }
+  }
+
+  &__text {
+    padding: 0 24rpx;
+    flex-shrink: 0;
+    line-height: 1;
+
+    &--left {
+      padding-left: 0;
+
+      & + .c-divider__line {
+        flex: 5;
+      }
+    }
+
+    &--right {
+      padding-right: 0;
+    }
+  }
+
+  // 左侧文字时，左线短右线长
+  &__text--left ~ .c-divider__line {
+    flex: 5;
+  }
+
+  // 右侧文字时，右线短
+  &__text--right ~ .c-divider__line {
+    flex: 1;
+  }
+}

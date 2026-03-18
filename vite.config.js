@@ -5,7 +5,7 @@
  * @LastEditTime: 2025-09-12 11:18:51
  * @FilePath: \Robot_uniApp\vite.config.js
  * @Description: C_Icon 组件演示页面
- * Copyright (c) 2025 by CHENY, All Rights Reserved 😎. 
+ * Copyright (c) 2025 by CHENY, All Rights Reserved 😎.
  */
   import { defineConfig, loadEnv } from "vite";
   import uni from "@dcloudio/vite-plugin-uni";
@@ -23,26 +23,26 @@
         UnoCSS(), // 添加 UnoCSS 插件
         AutoImport({
           imports: [
-            "vue",
-            "pinia",
+            'vue',
+            'pinia',
             {
-              "@dcloudio/uni-app": [
-                "onLaunch",
-                "onShow",
-                "onHide",
-                "onLoad",
-                "onReady",
-                "onUnload",
-                "onPullDownRefresh",
-                "onReachBottom",
-                "onShareAppMessage",
-                "onShareTimeline",
-                "onPageScroll",
-                "onTabItemTap",
+              '@dcloudio/uni-app': [
+                'onLaunch',
+                'onShow',
+                'onHide',
+                'onLoad',
+                'onReady',
+                'onUnload',
+                'onPullDownRefresh',
+                'onReachBottom',
+                'onShareAppMessage',
+                'onShareTimeline',
+                'onPageScroll',
+                'onTabItemTap',
               ],
             },
           ],
-          dirs: ["src/composables", "src/stores/modules"],
+          dirs: ['src/composables', 'src/stores/modules'],
           dts: false, // uni-app 项目不需要 .d.ts
           vueTemplate: true, // 支持 template 中自动导入
         }),
@@ -52,7 +52,7 @@
         preprocessorOptions: {
           scss: {
             // 抑制 Sass 的废弃警告，避免控制台大量警告信息
-            silenceDeprecations: ["legacy-js-api", "import", "global-builtin"],
+            silenceDeprecations: ['legacy-js-api', 'import', 'global-builtin'],
             // 额外配置：抑制其他可能的警告
             quietDeps: true,
           },
@@ -62,22 +62,27 @@
       define: {
         // 将环境变量注入到应用中
         __ENV__: JSON.stringify(env.VITE_ENV || mode),
-        __VERSION__: JSON.stringify(env.VITE_APP_VERSION || "1.0.0"),
+        __VERSION__: JSON.stringify(env.VITE_APP_VERSION || '1.0.0'),
       },
       // 开发服务器配置
       server: {
         port: 1999,
+        open: true,
+        // 限制最大宽度以模拟移动端展示
+        headers: {
+          'X-Frame-Options': 'SAMEORIGIN',
+        },
         proxy:
-          env.VITE_ENV === "development"
+          env.VITE_ENV === 'development'
             ? {
                 // 开发环境代理配置
-                "/api": {
+                '/api': {
                   target: env.VITE_API_BASE_URL,
                   changeOrigin: true,
-                  rewrite: (path) => path.replace(/^\/api/, ""),
+                  rewrite: path => path.replace(/^\/api/, ''),
                 },
               }
             : {},
       },
-    };
+    }
   });

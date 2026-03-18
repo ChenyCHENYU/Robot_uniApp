@@ -1,0 +1,76 @@
+/**
+ * @description C_Timeline 时间轴样式
+ */
+
+.c-timeline {
+  &--vertical {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__item {
+    display: flex;
+    padding-bottom: 32rpx;
+
+    &:last-child {
+      padding-bottom: 0;
+    }
+  }
+
+  &__node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+    margin-right: 24rpx;
+  }
+
+  &__dot {
+    width: 32rpx;
+    height: 32rpx;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  &__line {
+    width: 4rpx;
+    flex: 1;
+    min-height: 40rpx;
+    margin-top: 8rpx;
+  }
+
+  &__content {
+    flex: 1;
+    padding-top: 2rpx;
+    padding-bottom: 16rpx;
+  }
+
+  &__title {
+    font-size: 28rpx;
+    font-weight: 500;
+    color: var(--r-text-color-primary, #1a1a1a);
+    line-height: 32rpx;
+  }
+
+  &__item--pending &__title {
+    color: var(--r-text-color-secondary, #999);
+  }
+
+  &__desc {
+    display: block;
+    font-size: 24rpx;
+    color: var(--r-text-color-secondary, #666);
+    margin-top: 8rpx;
+    line-height: 36rpx;
+  }
+
+  &__time {
+    display: block;
+    font-size: 22rpx;
+    color: var(--r-text-color-placeholder, #999);
+    margin-top: 8rpx;
+  }
+}

@@ -1,0 +1,63 @@
+.c-swipe-action {
+  position: relative;
+  overflow: hidden;
+
+  &__content {
+    position: relative;
+    z-index: 1;
+    background: var(--r-bg-card);
+  }
+
+  &__left,
+  &__right {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    align-items: stretch;
+    z-index: 0;
+  }
+
+  &__left {
+    left: 0;
+    transform: translateX(-100%);
+  }
+
+  &__right {
+    right: 0;
+    transform: translateX(100%);
+  }
+
+  &__btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 160rpx;
+    padding: 0 20rpx;
+    background: var(--r-color-info);
+    color: #fff;
+
+    &--primary {
+      background: var(--r-color-primary);
+    }
+
+    &--success {
+      background: var(--r-color-success);
+    }
+
+    &--warning {
+      background: var(--r-color-warning);
+    }
+
+    &--danger {
+      background: var(--r-color-error);
+    }
+  }
+
+  &__btn-text {
+    font-size: var(--r-font-size-sm);
+    color: #fff;
+    margin-top: 4rpx;
+  }
+}

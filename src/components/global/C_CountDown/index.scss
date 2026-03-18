@@ -1,0 +1,14 @@
+/**
+ * @description C_CountDown 倒计时样式
+ */
+
+.c-count-down {
+  display: inline-flex;
+  align-items: center;
+
+  &__text {
+    font-size: 28rpx;
+    color: var(--r-text-color-primary, #1a1a1a);
+    font-variant-numeric: tabular-nums;
+  }
+}

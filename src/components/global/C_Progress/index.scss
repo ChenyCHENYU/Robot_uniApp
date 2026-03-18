@@ -1,0 +1,53 @@
+/**
+ * @description C_Progress 进度条样式
+ */
+
+.c-progress {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+
+  &--circle {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__bar {
+    flex: 1;
+    overflow: hidden;
+  }
+
+  &__inner {
+    height: 100%;
+  }
+
+  &__text {
+    font-size: 24rpx;
+    color: var(--r-text-color-secondary, #666);
+    flex-shrink: 0;
+    min-width: 72rpx;
+    text-align: right;
+  }
+
+  &__canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  &__circle-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__circle-text {
+    font-size: 28rpx;
+    font-weight: 600;
+    color: var(--r-text-color-primary, #1a1a1a);
+  }
+}
