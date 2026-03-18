@@ -1,0 +1,2 @@
+pnpm dlx oxlint --max-warnings 0
+pnpm dlx lint-staged

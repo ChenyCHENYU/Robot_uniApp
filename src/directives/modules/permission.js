@@ -9,16 +9,25 @@
  */
 export const permissionDirectives = {
   auth: {
-    mounted(el, binding) {
+    /**
+     *
+     */
+    mounted(_el, _binding) {
       // 权限检查逻辑
     },
-    updated(el, binding) {
+    /**
+     *
+     */
+    updated(_el, _binding) {
       // 权限更新逻辑
     },
   },
   role: {
-    mounted(el, binding) {
+    /**
+     *
+     */
+    mounted(_el, _binding) {
       // 角色检查逻辑
     },
   },
-};
+}

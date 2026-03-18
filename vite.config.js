@@ -11,8 +11,9 @@
   import uni from "@dcloudio/vite-plugin-uni";
 
   export default defineConfig(async ({ mode }) => {
-    // 动态导入 UnoCSS，避免 ESM 模块问题
+    // 动态导入 ESM 插件，避免 ESM 模块问题
     const { default: UnoCSS } = await import("unocss/vite");
+    const { default: AutoImport } = await import("unplugin-auto-import/vite");
 
     // 加载环境变量
     const env = loadEnv(mode, process.cwd(), "");
@@ -20,13 +21,38 @@
     return {
       plugins: [
         UnoCSS(), // 添加 UnoCSS 插件
+        AutoImport({
+          imports: [
+            "vue",
+            "pinia",
+            {
+              "@dcloudio/uni-app": [
+                "onLaunch",
+                "onShow",
+                "onHide",
+                "onLoad",
+                "onReady",
+                "onUnload",
+                "onPullDownRefresh",
+                "onReachBottom",
+                "onShareAppMessage",
+                "onShareTimeline",
+                "onPageScroll",
+                "onTabItemTap",
+              ],
+            },
+          ],
+          dirs: ["src/composables", "src/stores/modules"],
+          dts: false, // uni-app 项目不需要 .d.ts
+          vueTemplate: true, // 支持 template 中自动导入
+        }),
         uni(),
       ],
       css: {
         preprocessorOptions: {
           scss: {
             // 抑制 Sass 的废弃警告，避免控制台大量警告信息
-            silenceDeprecations: ["legacy-js-api", "import"],
+            silenceDeprecations: ["legacy-js-api", "import", "global-builtin"],
             // 额外配置：抑制其他可能的警告
             quietDeps: true,
           },

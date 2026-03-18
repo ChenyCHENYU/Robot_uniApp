@@ -8,20 +8,22 @@
  * Copyright (c) 2025 by CHENY, All Rights Reserved 😎.
  */
 
-// 常用正则表达式
+import { REGEX } from '@/constants/regex'
+
+// 常用正则表达式（基于 constants/regex 扩展，避免重复定义）
 const REGEX_PATTERNS = {
-  MOBILE: /^(?:(?:\+|00)86)?1[3-9]\d{9}$/,
-  ID_CARD: /^\d{15}$|^\d{18}$|^\d{17}[\dXx]$/,
-  EMAIL: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+  MOBILE: REGEX.PHONE,
+  ID_CARD: REGEX.ID_CARD,
+  EMAIL: REGEX.EMAIL,
   USERNAME: /^[a-zA-Z0-9_]{3,20}$/,
-  PASSWORD: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d@$!%*?&]{6,20}$/,
+  PASSWORD: REGEX.PASSWORD,
   SIMPLE_PASSWORD: /^.{6,20}$/, // 简单密码规则，只验证长度
-  URL: /^https?:\/\/.+/,
+  URL: REGEX.URL,
   IP: /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/,
   CHINESE: /^[\u4e00-\u9fa5]+$/,
   NUMBER: /^\d+$/,
   DECIMAL: /^\d+(\.\d+)?$/,
-};
+}
 
 /**
  * @description: 核心生成器，生成uni-app校验规则
@@ -30,19 +32,19 @@ const REGEX_PATTERNS = {
  * @param trigger 触发方式
  * @return {Object} uni-app规则对象
  */
-function createRule(validateFn, message, trigger = "blur") {
+function createRule(validateFn, message, trigger = 'blur') {
   return {
     required: false,
     message,
     trigger,
     validator: (rule, value, callback) => {
       if (validateFn(value)) {
-        callback();
+        callback()
       } else {
-        callback(new Error(message));
+        callback(new Error(message))
       }
     },
-  };
+  }
 }
 
 /**
@@ -50,12 +52,12 @@ function createRule(validateFn, message, trigger = "blur") {
  * @param field 字段名
  * @param trigger 触发方式
  */
-export function required(field, trigger = "blur") {
+export function required(field, trigger = 'blur') {
   return {
     required: true,
     message: `${field}不能为空`,
     trigger,
-  };
+  }
 }
 
 /**
@@ -66,16 +68,16 @@ export function required(field, trigger = "blur") {
  */
 export function length(field, min, max) {
   return createRule(
-    (value) => {
-      if (!value) return true; // 空值不验证长度
-      const len = String(value).length;
+    value => {
+      if (!value) return true // 空值不验证长度
+      const len = String(value).length
       if (max !== undefined) {
-        return len >= min && len <= max;
+        return len >= min && len <= max
       }
-      return len >= min;
+      return len >= min
     },
     max ? `${field}长度需在${min}-${max}位之间` : `${field}长度至少${min}位`
-  );
+  )
 }
 
 /**
@@ -85,100 +87,100 @@ export function length(field, min, max) {
  * @param max 最大值
  */
 export function range(field, min, max) {
-  return createRule((value) => {
-    if (!value && value !== 0) return true;
-    const num = Number(value);
-    if (isNaN(num)) return false;
-    return num >= min && num <= max;
-  }, `${field}必须在${min}-${max}之间`);
+  return createRule(value => {
+    if (!value && value !== 0) return true
+    const num = Number(value)
+    if (isNaN(num)) return false
+    return num >= min && num <= max
+  }, `${field}必须在${min}-${max}之间`)
 }
 
 /**
  * @description: 手机号验证
  * @param field 字段名，默认为"手机号"
  */
-export function mobile(field = "手机号") {
+export function mobile(field = '手机号') {
   return createRule(
-    (value) => !value || REGEX_PATTERNS.MOBILE.test(value),
+    value => !value || REGEX_PATTERNS.MOBILE.test(value),
     `${field}格式错误`
-  );
+  )
 }
 
 /**
  * @description: 身份证验证
  * @param field 字段名，默认为"身份证号"
  */
-export function idCard(field = "身份证号") {
+export function idCard(field = '身份证号') {
   return createRule(
-    (value) => !value || REGEX_PATTERNS.ID_CARD.test(value),
+    value => !value || REGEX_PATTERNS.ID_CARD.test(value),
     `${field}格式错误`
-  );
+  )
 }
 
 /**
  * @description: 邮箱验证
  * @param field 字段名，默认为"邮箱"
  */
-export function email(field = "邮箱") {
+export function email(field = '邮箱') {
   return createRule(
-    (value) => !value || REGEX_PATTERNS.EMAIL.test(value),
+    value => !value || REGEX_PATTERNS.EMAIL.test(value),
     `${field}格式错误`
-  );
+  )
 }
 
 /**
  * @description: 用户名验证（字母数字下划线，3-20位）
  * @param field 字段名，默认为"用户名"
  */
-export function username(field = "用户名") {
+export function username(field = '用户名') {
   return createRule(
-    (value) => !value || REGEX_PATTERNS.USERNAME.test(value),
+    value => !value || REGEX_PATTERNS.USERNAME.test(value),
     `${field}只能包含字母、数字、下划线，长度3-20位`
-  );
+  )
 }
 
 /**
  * @description: 简单密码验证（6-20位）
  * @param field 字段名，默认为"密码"
  */
-export function password(field = "密码") {
+export function password(field = '密码') {
   return createRule(
-    (value) => !value || REGEX_PATTERNS.SIMPLE_PASSWORD.test(value),
+    value => !value || REGEX_PATTERNS.SIMPLE_PASSWORD.test(value),
     `${field}长度为6-20位`
-  );
+  )
 }
 
 /**
  * @description: 强密码验证（包含大小写字母和数字，6-20位）
  * @param field 字段名，默认为"密码"
  */
-export function strongPassword(field = "密码") {
+export function strongPassword(field = '密码') {
   return createRule(
-    (value) => !value || REGEX_PATTERNS.PASSWORD.test(value),
+    value => !value || REGEX_PATTERNS.PASSWORD.test(value),
     `${field}必须包含大小写字母和数字，长度6-20位`
-  );
+  )
 }
 
 /**
  * @description: URL验证
  * @param field 字段名，默认为"链接"
  */
-export function url(field = "链接") {
+export function url(field = '链接') {
   return createRule(
-    (value) => !value || REGEX_PATTERNS.URL.test(value),
+    value => !value || REGEX_PATTERNS.URL.test(value),
     `${field}格式错误`
-  );
+  )
 }
 
 /**
  * @description: IP地址验证
  * @param field 字段名，默认为"IP地址"
  */
-export function ip(field = "IP地址") {
+export function ip(field = 'IP地址') {
   return createRule(
-    (value) => !value || REGEX_PATTERNS.IP.test(value),
+    value => !value || REGEX_PATTERNS.IP.test(value),
     `${field}格式错误`
-  );
+  )
 }
 
 /**
@@ -187,9 +189,9 @@ export function ip(field = "IP地址") {
  */
 export function chinese(field) {
   return createRule(
-    (value) => !value || REGEX_PATTERNS.CHINESE.test(value),
+    value => !value || REGEX_PATTERNS.CHINESE.test(value),
     `${field}只能输入中文`
-  );
+  )
 }
 
 /**
@@ -198,9 +200,9 @@ export function chinese(field) {
  */
 export function number(field) {
   return createRule(
-    (value) => !value || REGEX_PATTERNS.NUMBER.test(value),
+    value => !value || REGEX_PATTERNS.NUMBER.test(value),
     `${field}只能输入数字`
-  );
+  )
 }
 
 /**
@@ -209,9 +211,9 @@ export function number(field) {
  */
 export function decimal(field) {
   return createRule(
-    (value) => !value || REGEX_PATTERNS.DECIMAL.test(value),
+    value => !value || REGEX_PATTERNS.DECIMAL.test(value),
     `${field}只能输入数字或小数`
-  );
+  )
 }
 
 /**
@@ -221,9 +223,9 @@ export function decimal(field) {
  */
 export function confirmPassword(field, getOriginalValue) {
   return createRule(
-    (value) => !value || value === getOriginalValue(),
+    value => !value || value === getOriginalValue(),
     `${field}不一致`
-  );
+  )
 }
 
 /**
@@ -234,9 +236,9 @@ export function confirmPassword(field, getOriginalValue) {
  */
 export function pattern(field, pattern, message) {
   return createRule(
-    (value) => !value || pattern.test(value),
+    value => !value || pattern.test(value),
     message || `${field}格式错误`
-  );
+  )
 }
 
 /**
@@ -245,8 +247,8 @@ export function pattern(field, pattern, message) {
  * @param message 错误消息
  * @param trigger 触发方式
  */
-export function custom(validateFn, message, trigger = "blur") {
-  return createRule(validateFn, message, trigger);
+export function custom(validateFn, message, trigger = 'blur') {
+  return createRule(validateFn, message, trigger)
 }
 
 /**
@@ -256,27 +258,27 @@ export const RULE_COMBOS = {
   /**
    * 用户名规则组合
    */
-  username: (field = "用户名") => [required(field), username(field)],
+  username: (field = '用户名') => [required(field), username(field)],
 
   /**
    * 密码规则组合
    */
-  password: (field = "密码") => [required(field), password(field)],
+  password: (field = '密码') => [required(field), password(field)],
 
   /**
    * 强密码规则组合
    */
-  strongPassword: (field = "密码") => [required(field), strongPassword(field)],
+  strongPassword: (field = '密码') => [required(field), strongPassword(field)],
 
   /**
    * 邮箱规则组合
    */
-  email: (field = "邮箱") => [required(field), email(field)],
+  email: (field = '邮箱') => [required(field), email(field)],
 
   /**
    * 手机号规则组合
    */
-  mobile: (field = "手机号") => [required(field), mobile(field)],
+  mobile: (field = '手机号') => [required(field), mobile(field)],
 
   /**
    * 确认密码规则组合
@@ -285,10 +287,10 @@ export const RULE_COMBOS = {
     required(field),
     confirmPassword(field, getOriginalValue),
   ],
-};
+}
 
 // 导出正则表达式常量，供外部使用
-export { REGEX_PATTERNS };
+export { REGEX_PATTERNS }
 
 /**
  * @description: 快速验证方法 - 直接返回验证结果
@@ -299,54 +301,57 @@ export { REGEX_PATTERNS };
  */
 export function quickValidate(value, rules, field = '字段') {
   if (!rules || rules.length === 0) {
-    return { valid: true, message: '' };
+    return { valid: true, message: '' }
   }
 
   for (const rule of rules) {
     // 必填验证
     if (rule.required && (!value || String(value).trim() === '')) {
-      return { valid: false, message: rule.message || `${field}不能为空` };
+      return { valid: false, message: rule.message || `${field}不能为空` }
     }
 
     // 如果值为空且不是必填，跳过后续验证
     if (!value && !rule.required) {
-      continue;
+      continue
     }
 
     // 自定义验证器
     if (rule.validator && typeof rule.validator === 'function') {
-      let errorMsg = '';
+      let errorMsg = ''
       try {
-        rule.validator(rule, value, (error) => {
+        rule.validator(rule, value, error => {
           if (error) {
-            errorMsg = error.message || error;
+            errorMsg = error.message || error
           }
-        });
+        })
         if (errorMsg) {
-          return { valid: false, message: errorMsg };
+          return { valid: false, message: errorMsg }
         }
       } catch (err) {
-        return { valid: false, message: err.message || '验证失败' };
+        return { valid: false, message: err.message || '验证失败' }
       }
     }
 
     // 长度验证
     if (value && rule.min !== undefined) {
-      const len = String(value).length;
+      const len = String(value).length
       if (len < rule.min || (rule.max !== undefined && len > rule.max)) {
-        const message = rule.message || 
-          (rule.max ? `${field}长度需在${rule.min}-${rule.max}位之间` : `${field}长度至少${rule.min}位`);
-        return { valid: false, message };
+        const message =
+          rule.message ||
+          (rule.max
+            ? `${field}长度需在${rule.min}-${rule.max}位之间`
+            : `${field}长度至少${rule.min}位`)
+        return { valid: false, message }
       }
     }
 
     // 正则验证
     if (value && rule.pattern && !rule.pattern.test(value)) {
-      return { valid: false, message: rule.message || `${field}格式错误` };
+      return { valid: false, message: rule.message || `${field}格式错误` }
     }
   }
 
-  return { valid: true, message: '' };
+  return { valid: true, message: '' }
 }
 
 /**
@@ -358,20 +363,20 @@ export function quickValidate(value, rules, field = '字段') {
 export function validateForm(formData, rulesConfig) {
   // 按字段顺序验证，返回第一个错误
   for (const field in rulesConfig) {
-    const value = formData[field];
-    const rules = rulesConfig[field];
-    const result = quickValidate(value, rules, field);
-    
+    const value = formData[field]
+    const rules = rulesConfig[field]
+    const result = quickValidate(value, rules, field)
+
     if (!result.valid) {
       return {
         valid: false,
         message: result.message,
-        field: field
-      };
+        field: field,
+      }
     }
   }
-  
-  return { valid: true, message: '', field: '' };
+
+  return { valid: true, message: '', field: '' }
 }
 
 /**
@@ -381,16 +386,16 @@ export function validateForm(formData, rulesConfig) {
  * @param options 选项配置
  */
 export function validateWithToast(formData, rulesConfig, options = {}) {
-  const result = validateForm(formData, rulesConfig);
-  
+  const result = validateForm(formData, rulesConfig)
+
   if (!result.valid) {
     uni.showToast({
       title: result.message,
       icon: 'none',
-      duration: options.duration || 2000
-    });
-    return false;
+      duration: options.duration || 2000,
+    })
+    return false
   }
-  
-  return true;
+
+  return true
 }

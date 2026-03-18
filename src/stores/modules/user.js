@@ -1,93 +1,96 @@
-import { defineStore } from "pinia";
-import { login, getUserInfo, logout } from "@/api";
+import { defineStore } from 'pinia'
+import { login, getUserInfo, logout } from '@/api'
 
-export const useUserStore = defineStore("user", {
+export const useUserStore = defineStore('user', {
   state: () => ({
-    token: "",
+    token: '',
     userInfo: null,
     permissions: [],
     roles: [],
-    isLoggedIn: false,
     loginTime: null,
   }),
 
   getters: {
     // 简化头像逻辑
-    avatar: (state) => {
-      const userAvatar = state.userInfo?.avatar;
-      return userAvatar && userAvatar !== "/static/default-avatar.png"
+    avatar: state => {
+      const userAvatar = state.userInfo?.avatar
+      return userAvatar && userAvatar !== '/static/default-avatar.png'
         ? userAvatar
-        : "/static/robot-avatar.png";
+        : '/static/robot-avatar.png'
     },
-    nickname: (state) => state.userInfo?.nickname || "未设置昵称",
-    hasPermission: (state) => (permission) =>
+    nickname: state => state.userInfo?.nickname || '未设置昵称',
+    hasPermission: state => permission =>
       state.permissions.includes(permission),
-    hasRole: (state) => (role) => state.roles.includes(role),
-    isAdmin: (state) => state.roles.includes("admin"),
+    isLoggedIn: state => !!state.token,
+    hasRole: state => role => state.roles.includes(role),
+    isAdmin: state => state.roles.includes('admin'),
   },
 
   actions: {
+    /**
+     *
+     */
     async login(credentials) {
       try {
-        const result = await login(credentials);
-        this.token = result.token;
-        this.userInfo = result.userInfo;
-        this.permissions = result.permissions || [];
-        this.roles = result.roles || [];
-        this.isLoggedIn = true;
-        this.loginTime = new Date().toISOString();
-        return result;
+        const result = await login(credentials)
+        this.token = result.token
+        this.userInfo = result.userInfo
+        this.permissions = result.permissions || []
+        this.roles = result.roles || []
+        this.loginTime = new Date().toISOString()
+        return result
       } catch (error) {
-        this.clearUserInfo();
-        throw error;
+        this.clearUserInfo()
+        throw error
       }
     },
 
+    /**
+     *
+     */
     async fetchUserInfo() {
       try {
-        const userInfo = await getUserInfo();
-        this.userInfo = userInfo;
-        this.permissions = userInfo.permissions || [];
-        this.roles = userInfo.roles || [];
-        return userInfo;
+        const userInfo = await getUserInfo()
+        this.userInfo = userInfo
+        this.permissions = userInfo.permissions || []
+        this.roles = userInfo.roles || []
+        return userInfo
       } catch (error) {
         if (error.code === 401) {
-          this.logout();
+          this.logout()
         }
-        throw error;
+        throw error
       }
     },
 
+    /**
+     *
+     */
     async logout() {
       try {
-        await logout();
+        await logout()
       } catch (error) {
-        console.warn("登出接口调用失败:", error);
+        console.warn('登出接口调用失败:', error)
       } finally {
-        this.clearUserInfo();
-        uni.reLaunch({ url: "/pages/login/index" });
+        this.clearUserInfo()
+        uni.reLaunch({ url: '/pages/login/index' })
       }
     },
 
+    /**
+     *
+     */
     clearUserInfo() {
-      this.token = "";
-      this.userInfo = null;
-      this.permissions = [];
-      this.roles = [];
-      this.isLoggedIn = false;
-      this.loginTime = null;
+      this.token = ''
+      this.userInfo = null
+      this.permissions = []
+      this.roles = []
+      this.loginTime = null
     },
   },
 
   persist: {
-    key: "user-store",
-    paths: [
-      "token",
-      "userInfo",
-      "permissions",
-      "roles",
-      "isLoggedIn",
-      "loginTime",
-    ],
+    key: 'user-store',
+    paths: ['token', 'userInfo', 'permissions', 'roles', 'loginTime'],
   },
-});
+})
