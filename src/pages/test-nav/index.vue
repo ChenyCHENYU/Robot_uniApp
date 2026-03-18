@@ -1,10 +1,18 @@
 <template>
-  <view class="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 relative overflow-hidden">
+  <view
+    class="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 relative overflow-hidden"
+  >
     <!-- 背景装饰 -->
     <view class="absolute inset-0 opacity-30">
-      <view class="absolute top-20 left-10 w-72 h-72 bg-blue-400 rounded-full mix-blend-multiply filter blur-xl animate-pulse"></view>
-      <view class="absolute top-40 right-10 w-72 h-72 bg-purple-400 rounded-full mix-blend-multiply filter blur-xl animate-pulse delay-1000"></view>
-      <view class="absolute -bottom-8 left-20 w-72 h-72 bg-pink-400 rounded-full mix-blend-multiply filter blur-xl animate-pulse delay-2000"></view>
+      <view
+        class="absolute top-20 left-10 w-72 h-72 bg-blue-400 rounded-full mix-blend-multiply filter blur-xl animate-pulse"
+      ></view>
+      <view
+        class="absolute top-40 right-10 w-72 h-72 bg-purple-400 rounded-full mix-blend-multiply filter blur-xl animate-pulse delay-1000"
+      ></view>
+      <view
+        class="absolute -bottom-8 left-20 w-72 h-72 bg-pink-400 rounded-full mix-blend-multiply filter blur-xl animate-pulse delay-2000"
+      ></view>
     </view>
 
     <view class="relative z-10 max-w-6xl mx-auto px-6 py-12">
@@ -29,7 +37,7 @@
           <h2 class="text-2xl font-bold text-white mb-2">主题色彩</h2>
           <p class="text-white/70">六种主题色彩，每种都有独特的玻璃质感</p>
         </view>
-        
+
         <view class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <C_Title
             title="默认主题"
@@ -94,7 +102,7 @@
           <h2 class="text-2xl font-bold text-white mb-2">尺寸规格</h2>
           <p class="text-white/70">三种尺寸规格，适应不同使用场景</p>
         </view>
-        
+
         <view class="space-y-6">
           <C_Title
             title="小尺寸标题 - Small"
@@ -135,7 +143,7 @@
           <h2 class="text-2xl font-bold text-white mb-2">对齐方式</h2>
           <p class="text-white/70">支持左对齐、居中、右对齐三种方式</p>
         </view>
-        
+
         <view class="space-y-6">
           <C_Title
             title="左对齐标题"
@@ -173,7 +181,7 @@
           <h2 class="text-2xl font-bold text-white mb-2">交互功能</h2>
           <p class="text-white/70">支持点击交互，可用于导航、切换等场景</p>
         </view>
-        
+
         <view class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <C_Title
             title="可点击标题"
@@ -205,7 +213,7 @@
           <h2 class="text-2xl font-bold text-white mb-2">高级配置</h2>
           <p class="text-white/70">分割线、装饰元素等高级功能</p>
         </view>
-        
+
         <view class="space-y-8">
           <C_Title
             title="顶部分割线"
@@ -265,12 +273,12 @@
   </view>
 </template>
 
-<script setup>
-const handleTitleClick = () => {
-  console.log('可点击标题被点击了！')
-}
+<script setup lang="ts">
+  const handleTitleClick = () => {
+    console.log('可点击标题被点击了！')
+  }
 
-const handleFullConfigClick = () => {
-  console.log('完整配置标题被点击了！')
-}
+  const handleFullConfigClick = () => {
+    console.log('完整配置标题被点击了！')
+  }
 </script>

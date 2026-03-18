@@ -21,8 +21,8 @@
   </view>
 </template>
 
-<script setup>
-  import { defaultProps } from './data.js'
+<script setup lang="ts">
+  import { defaultProps } from './data'
 
   defineProps({
     /** 文本内容 */

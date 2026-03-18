@@ -107,7 +107,7 @@
   </view>
 </template>
 
-<script setup>
+<script setup lang="ts">
   import { ref, computed, watch } from 'vue'
   import {
     defaultProps,
@@ -115,7 +115,7 @@
     WEEK_DAYS_SUN,
     formatDate,
     getDaysInMonth,
-  } from './data.js'
+  } from './data'
 
   const props = defineProps({
     /** 是否显示 */

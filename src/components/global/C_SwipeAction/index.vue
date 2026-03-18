@@ -78,9 +78,9 @@
   </view>
 </template>
 
-<script setup>
+<script setup lang="ts">
   import { ref, computed } from 'vue'
-  import { defaultProps } from './data.js'
+  import { defaultProps } from './data'
 
   const props = defineProps({
     /** 是否禁用 */

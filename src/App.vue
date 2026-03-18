@@ -13,7 +13,7 @@
   </view>
 </template>
 
-<script setup>
+<script setup lang="ts">
   import { onLaunch, onShow } from '@dcloudio/uni-app'
   import { useAppStore } from '@/stores/modules/app'
   import { useUserStore } from '@/stores/modules/user'

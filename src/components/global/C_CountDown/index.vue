@@ -9,9 +9,9 @@
   </view>
 </template>
 
-<script setup>
+<script setup lang="ts">
   import { ref, computed, watch, onBeforeUnmount } from 'vue'
-  import { defaultProps, parseTime, formatTime } from './data.js'
+  import { defaultProps, parseTime, formatTime } from './data'
 
   const props = defineProps({
     /** 倒计时时长 ms */

@@ -107,9 +107,9 @@
   </view>
 </template>
 
-<script setup>
+<script setup lang="ts">
   import { ref, computed, watch } from 'vue'
-  import { defaultProps, flattenOptions } from './data.js'
+  import { defaultProps, flattenOptions } from './data'
 
   const props = defineProps({
     /** 是否显示 */

@@ -11,9 +11,9 @@
   </view>
 </template>
 
-<script setup>
+<script setup lang="ts">
   import { ref, computed, watch, onBeforeUnmount } from 'vue'
-  import { defaultProps, TYPE_COLORS } from './data.js'
+  import { defaultProps, TYPE_COLORS } from './data'
 
   const props = defineProps({
     /** 是否显示 */

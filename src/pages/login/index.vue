@@ -96,11 +96,26 @@
 
         <!-- 记住登录和忘记密码 -->
         <view class="form-options">
-          <view class="flex items-center" @click="toggleRemember">
-            <wd-icon :name="rememberLogin.includes('remember') ? 'check-circle' : 'circle'" size="16px" :color="rememberLogin.includes('remember') ? '#00D4FF' : 'rgba(255,255,255,0.5)'" />
+          <view
+            class="flex items-center"
+            @click="toggleRemember"
+          >
+            <wd-icon
+              :name="
+                rememberLogin.includes('remember') ? 'check-circle' : 'circle'
+              "
+              size="16px"
+              :color="
+                rememberLogin.includes('remember')
+                  ? '#00D4FF'
+                  : 'rgba(255,255,255,0.5)'
+              "
+            />
             <text class="option-text ml-1">记住登录</text>
           </view>
-          <text class="forgot-link" @click="handleForgotPassword"
+          <text
+            class="forgot-link"
+            @click="handleForgotPassword"
             >忘记密码？</text
           >
         </view>
@@ -112,9 +127,13 @@
             :class="{ 'is-loading': loading }"
             @click="handleLogin"
           >
-            <wd-loading v-if="loading" :size="20" color="#ffffff" />
+            <wd-loading
+              v-if="loading"
+              :size="20"
+              color="#ffffff"
+            />
             <text class="btn-text">{{
-              loading ? "登录中..." : "立即登录"
+              loading ? '登录中...' : '立即登录'
             }}</text>
           </view>
         </view>
@@ -128,12 +147,25 @@
 
         <!-- 第三方登录 -->
         <view class="social-login">
-          <view class="social-btn" @click="handleQuickLogin">
-            <wd-icon name="fill-camera" size="24px" color="#00D4FF"></wd-icon>
+          <view
+            class="social-btn"
+            @click="handleQuickLogin"
+          >
+            <wd-icon
+              name="fill-camera"
+              size="24px"
+              color="#00D4FF"
+            ></wd-icon>
             <text>快速体验</text>
           </view>
-          <view class="social-btn" @click="handleWechatLogin">
-            <view class="i-mdi-wechat" style="font-size: 24px; color: #09bb07;"></view>
+          <view
+            class="social-btn"
+            @click="handleWechatLogin"
+          >
+            <view
+              class="i-mdi-wechat"
+              style="font-size: 24px; color: #09bb07"
+            ></view>
             <text>微信登录</text>
           </view>
         </view>
@@ -148,26 +180,26 @@
   </view>
 </template>
 
-<script setup>
-import { useLoginData } from "./data.js";
+<script setup lang="ts">
+  import { useLoginData } from './data'
 
-// 使用数据和逻辑
-const {
-  // 响应式数据
-  loading,
-  rememberLogin,
-  form,
+  // 使用数据和逻辑
+  const {
+    // 响应式数据
+    loading,
+    rememberLogin,
+    form,
 
-  // 方法
-  handleLogin,
-  handleForgotPassword,
-  handleWechatLogin,
-  handleQuickLogin,
-  handleFieldBlur,
-  toggleRemember,
-} = useLoginData();
+    // 方法
+    handleLogin,
+    handleForgotPassword,
+    handleWechatLogin,
+    handleQuickLogin,
+    handleFieldBlur,
+    toggleRemember,
+  } = useLoginData()
 </script>
 
 <style lang="scss" scoped>
-@import "./index.scss";
+  @import './index.scss';
 </style>

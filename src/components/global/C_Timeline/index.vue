@@ -55,9 +55,9 @@
   </view>
 </template>
 
-<script setup>
+<script setup lang="ts">
   import { computed } from 'vue'
-  import { defaultProps, NODE_STATUS } from './data.js'
+  import { defaultProps, NODE_STATUS } from './data'
 
   const props = defineProps({
     /** 时间轴数据 */

@@ -52,8 +52,8 @@
   </view>
 </template>
 
-<script setup>
-  import { defaultProps } from './data.js'
+<script setup lang="ts">
+  import { defaultProps } from './data'
 
   const props = defineProps({
     /** 当前值 */

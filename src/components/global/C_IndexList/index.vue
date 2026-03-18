@@ -65,9 +65,9 @@
   </view>
 </template>
 
-<script setup>
-  import { ref } from 'vue'
-  import { defaultProps } from './data.js'
+<script setup lang="ts">
+  import { ref, getCurrentInstance as vueGetCurrentInstance } from 'vue'
+  import { defaultProps } from './data'
 
   const props = defineProps({
     /** 分组数据 */
@@ -140,7 +140,7 @@
    */
   function getCurrentInstance() {
     // uni-app 下使用 getCurrentInstance 获取组件上下文
-    const { proxy } = require('vue').getCurrentInstance()
+    const { proxy } = vueGetCurrentInstance()!
     return proxy
   }
 </script>

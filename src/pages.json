@@ -43,172 +43,280 @@
       }
     },
     {
-      "path": "pages/demo/index",
-      "style": {
-        "navigationBarTitleText": "组件管理",
-        "navigationStyle": "custom"
-      }
-    },
-    {
-      "path": "pages/demo/01-icon/index",
-      "style": {
-        "navigationBarTitleText": "C_Icon 演示",
-        "navigationStyle": "custom"
-      }
-    },
-    {
-      "path": "pages/demo/02-tag/index",
-      "style": {
-        "navigationBarTitleText": "C_Tag 演示",
-        "navigationStyle": "custom"
-      }
-    },
-    {
-      "path": "pages/demo/03-badge/index",
-      "style": {
-        "navigationBarTitleText": "C_Badge 演示",
-        "navigationStyle": "custom"
-      }
-    },
-    {
-      "path": "pages/demo/04-float-button/index",
-      "style": {
-        "navigationBarTitleText": "C_FloatButton 演示",
-        "navigationStyle": "custom"
-      }
-    },
-    {
-      "path": "pages/demo/05-header/index",
-      "style": {
-        "navigationBarTitleText": "C_Header 演示",
-        "navigationStyle": "custom"
-      }
-    },
-    {
-      "path": "pages/demo/06-layout/index",
-      "style": {
-        "navigationBarTitleText": "C_Layout 演示",
-        "navigationStyle": "custom"
-      }
-    },
-    {
-      "path": "pages/demo/07-tabbar/index",
-      "style": {
-        "navigationBarTitleText": "C_Tabbar 演示",
-        "navigationStyle": "custom"
-      }
-    },
-    {
-      "path": "pages/demo/08-card/index",
-      "style": {
-        "navigationBarTitleText": "C_Card 演示",
-        "navigationStyle": "custom"
-      }
-    },
-    {
-      "path": "pages/demo/09-steps/index",
-      "style": {
-        "navigationBarTitleText": "C_Steps 演示",
-        "navigationStyle": "custom"
-      }
-    },
-    {
-      "path": "pages/demo/10-form/index",
-      "style": {
-        "navigationBarTitleText": "C_Form 演示",
-        "navigationStyle": "custom"
-      }
-    },
-    {
-      "path": "pages/demo/11-search/index",
-      "style": {
-        "navigationBarTitleText": "C_Search 演示",
-        "navigationStyle": "custom"
-      }
-    },
-    {
-      "path": "pages/demo/12-upload/index",
-      "style": {
-        "navigationBarTitleText": "C_Upload 演示",
-        "navigationStyle": "custom"
-      }
-    },
-    {
-      "path": "pages/demo/13-number-keyboard/index",
-      "style": {
-        "navigationBarTitleText": "C_NumberKeyboard 演示",
-        "navigationStyle": "custom"
-      }
-    },
-    {
-      "path": "pages/demo/14-empty/index",
-      "style": {
-        "navigationBarTitleText": "C_Empty 演示",
-        "navigationStyle": "custom"
-      }
-    },
-    {
-      "path": "pages/demo/15-skeleton/index",
-      "style": {
-        "navigationBarTitleText": "C_Skeleton 演示",
-        "navigationStyle": "custom"
-      }
-    },
-    {
-      "path": "pages/demo/16-list/index",
-      "style": {
-        "navigationBarTitleText": "C_List 演示",
-        "navigationStyle": "custom"
-      }
-    },
-    {
-      "path": "pages/demo/17-watermark/index",
-      "style": {
-        "navigationBarTitleText": "C_Watermark 演示",
-        "navigationStyle": "custom"
-      }
-    },
-    {
-      "path": "pages/demo/18-modal/index",
-      "style": {
-        "navigationBarTitleText": "C_Modal 演示",
-        "navigationStyle": "custom"
-      }
-    },
-    {
-      "path": "pages/demo/19-action-sheet/index",
-      "style": {
-        "navigationBarTitleText": "C_ActionSheet 演示",
-        "navigationStyle": "custom"
-      }
-    },
-    {
-      "path": "pages/demo/20-title/index",
-      "style": {
-        "navigationBarTitleText": "C_Title 演示",
-        "navigationStyle": "custom"
-      }
-    },
-    {
-      "path": "pages/test-back/index",
-      "style": {
-        "navigationBarTitleText": "测试返回页面",
-        "navigationStyle": "custom"
-      }
-    },
-    {
-      "path": "pages/test-nav/index",
-      "style": {
-        "navigationBarTitleText": "导航测试页面",
-        "navigationStyle": "custom"
-      }
-    },
-    {
       "path": "pages/settings/index",
       "style": {
         "navigationBarTitleText": "个人设置",
         "navigationStyle": "custom"
       }
+    }
+  ],
+  "subPackages": [
+    {
+      "root": "pages/demo",
+      "pages": [
+        {
+          "path": "index",
+          "style": {
+            "navigationBarTitleText": "组件管理",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "01-icon/index",
+          "style": {
+            "navigationBarTitleText": "C_Icon 演示",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "02-tag/index",
+          "style": {
+            "navigationBarTitleText": "C_Tag 演示",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "03-badge/index",
+          "style": {
+            "navigationBarTitleText": "C_Badge 演示",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "04-float-button/index",
+          "style": {
+            "navigationBarTitleText": "C_FloatButton 演示",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "05-header/index",
+          "style": {
+            "navigationBarTitleText": "C_Header 演示",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "06-layout/index",
+          "style": {
+            "navigationBarTitleText": "C_Layout 演示",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "07-tabbar/index",
+          "style": {
+            "navigationBarTitleText": "C_Tabbar 演示",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "08-card/index",
+          "style": {
+            "navigationBarTitleText": "C_Card 演示",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "09-steps/index",
+          "style": {
+            "navigationBarTitleText": "C_Steps 演示",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "10-form/index",
+          "style": {
+            "navigationBarTitleText": "C_Form 演示",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "11-search/index",
+          "style": {
+            "navigationBarTitleText": "C_Search 演示",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "12-upload/index",
+          "style": {
+            "navigationBarTitleText": "C_Upload 演示",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "13-number-keyboard/index",
+          "style": {
+            "navigationBarTitleText": "C_NumberKeyboard 演示",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "14-empty/index",
+          "style": {
+            "navigationBarTitleText": "C_Empty 演示",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "15-skeleton/index",
+          "style": {
+            "navigationBarTitleText": "C_Skeleton 演示",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "16-list/index",
+          "style": {
+            "navigationBarTitleText": "C_List 演示",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "17-watermark/index",
+          "style": {
+            "navigationBarTitleText": "C_Watermark 演示",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "18-modal/index",
+          "style": {
+            "navigationBarTitleText": "C_Modal 演示",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "19-action-sheet/index",
+          "style": {
+            "navigationBarTitleText": "C_ActionSheet 演示",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "20-title/index",
+          "style": {
+            "navigationBarTitleText": "C_Title 演示",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "21-swipe-action/index",
+          "style": {
+            "navigationBarTitleText": "C_SwipeAction 演示",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "22-image-preview/index",
+          "style": {
+            "navigationBarTitleText": "C_ImagePreview 演示",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "23-signature/index",
+          "style": {
+            "navigationBarTitleText": "C_Signature 演示",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "24-index-list/index",
+          "style": {
+            "navigationBarTitleText": "C_IndexList 演示",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "25-calendar/index",
+          "style": {
+            "navigationBarTitleText": "C_Calendar 演示",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "26-cascader/index",
+          "style": {
+            "navigationBarTitleText": "C_Cascader 演示",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "27-tab-nav/index",
+          "style": {
+            "navigationBarTitleText": "C_TabNav 演示",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "28-progress/index",
+          "style": {
+            "navigationBarTitleText": "C_Progress 演示",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "29-timeline/index",
+          "style": {
+            "navigationBarTitleText": "C_Timeline 演示",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "30-notify/index",
+          "style": {
+            "navigationBarTitleText": "C_Notify 演示",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "31-rate/index",
+          "style": {
+            "navigationBarTitleText": "C_Rate 演示",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "32-divider/index",
+          "style": {
+            "navigationBarTitleText": "C_Divider 演示",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "33-count-down/index",
+          "style": {
+            "navigationBarTitleText": "C_CountDown 演示",
+            "navigationStyle": "custom"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/test-back",
+      "pages": [
+        {
+          "path": "index",
+          "style": {
+            "navigationBarTitleText": "测试返回页面",
+            "navigationStyle": "custom"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/test-nav",
+      "pages": [
+        {
+          "path": "index",
+          "style": {
+            "navigationBarTitleText": "导航测试页面",
+            "navigationStyle": "custom"
+          }
+        }
+      ]
     }
   ],
   "tabBar": {

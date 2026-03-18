@@ -64,9 +64,9 @@
   </view>
 </template>
 
-<script setup>
+<script setup lang="ts">
   import { ref, watch } from 'vue'
-  import { defaultProps } from './data.js'
+  import { defaultProps } from './data'
 
   const props = defineProps({
     /** 是否显示 */

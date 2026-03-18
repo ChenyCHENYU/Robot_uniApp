@@ -7,22 +7,19 @@
 import pluginVue from 'eslint-plugin-vue'
 import oxlint from 'eslint-plugin-oxlint'
 import skipFormatting from '@vue/eslint-config-prettier/skip-formatting'
+import vueTsConfig from '@vue/eslint-config-typescript'
 import jsdocPlugin from 'eslint-plugin-jsdoc'
 
 export default [
   //MARK: 基础配置组
   {
     name: 'app/files-to-lint',
-    files: ['**/*.{js,jsx,vue}'],
+    files: ['**/*.{js,jsx,ts,tsx,vue}'],
   },
 
   {
     name: 'app/files-to-ignore',
-    ignores: [
-      '**/dist/**',
-      '**/dist-ssr/**',
-      '**/coverage/**',
-    ],
+    ignores: ['**/dist/**', '**/dist-ssr/**', '**/coverage/**'],
   },
 
   //MARK: 核心规则组（按优先级排序）
@@ -38,6 +35,7 @@ export default [
 
   ...pluginVue.configs['flat/essential'], // Vue 专用规则
 
+  ...vueTsConfig(), // Vue + TypeScript 规则
 
   //MARK: 自定义规则组（优先级最高）
   {
@@ -91,6 +89,8 @@ export default [
             '/^icon-/i',
             '/^C_/',
             '/^c_/',
+            '/^wd-/',
+            '/^scroll-/',
             'v-md-editor',
           ],
         },
@@ -120,11 +120,18 @@ export default [
       'no-eval': 'error',
       'prefer-const': 'warn',
       'no-var': 'warn',
-      'prefer-destructuring': [
-        1,
-        { object: true, array: false },
-      ],
+      'prefer-destructuring': [1, { object: true, array: false }],
       'no-duplicate-imports': 'error',
+
+      //! TypeScript 渐进迁移：允许 any 类型
+      '@typescript-eslint/no-explicit-any': 'off',
+
+      //! 允许 _ 前缀的未使用变量（约定式忽略）
+      '@typescript-eslint/no-unused-vars': ['error', {
+        argsIgnorePattern: '^_',
+        varsIgnorePattern: '^_',
+        destructuredArrayIgnorePattern: '^_',
+      }],
     },
   },
 
@@ -146,6 +153,10 @@ export default [
       'src/router/**/*.ts',
       'src/stores/**/*.ts',
       'src/views/**/components/*.vue',
+      'src/composables/**/*.ts',
+      'src/utils/**/*.ts',
+      'src/mock/**/*.ts',
+      'src/pages/**/data.ts',
     ],
     rules: {
       'jsdoc/require-jsdoc': 'off',
@@ -153,5 +164,5 @@ export default [
     },
   },
 
-  skipFormatting
+  skipFormatting,
 ]

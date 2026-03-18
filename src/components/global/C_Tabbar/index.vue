@@ -5,7 +5,10 @@
  * Copyright (c) 2025 by CHENY, All Rights Reserved 😎.
 -->
 <template>
-  <view class="c-tabbar" :class="{ 'is-fixed': fixed }">
+  <view
+    class="c-tabbar"
+    :class="{ 'is-fixed': fixed }"
+  >
     <!-- 玻璃风背景 -->
     <view class="tabbar-backdrop">
       <view class="glass-bg"></view>
@@ -25,7 +28,10 @@
         @click="handleTabClick(item, index)"
       >
         <!-- 激活状态背景 -->
-        <view class="active-indicator" v-show="currentIndex === index">
+        <view
+          class="active-indicator"
+          v-show="currentIndex === index"
+        >
           <view class="glow-bg"></view>
         </view>
 
@@ -36,7 +42,7 @@
             :class="{ 'is-active': currentIndex === index }"
           >
             <!-- 如果有自定义文字，显示文字，否则显示图标 -->
-            <text 
+            <text
               v-if="item.showText"
               class="custom-text-icon"
               :class="{ 'is-active': currentIndex === index }"
@@ -72,38 +78,38 @@
   </view>
 </template>
 
-<script setup>
-import { useTabbarData, tabbarProps, tabbarEmits } from "./data.js";
-import "./index.scss";
+<script setup lang="ts">
+  import { useTabbarData, tabbarProps, tabbarEmits } from './data'
+  import './index.scss'
 
-// Props
-const props = defineProps(tabbarProps);
+  // Props
+  const props = defineProps(tabbarProps)
 
-// Emits
-const emit = defineEmits(tabbarEmits);
+  // Emits
+  const emit = defineEmits(tabbarEmits)
 
-// 使用数据和逻辑
-const {
-  // 响应式数据
-  isNavigating,
+  // 使用数据和逻辑
+  const {
+    // 响应式数据
+    isNavigating: _isNavigating,
 
-  // 计算属性
-  currentIndex,
-  safeAreaBottom,
+    // 计算属性
+    currentIndex,
+    safeAreaBottom,
 
-  // 方法
-  handleTabClick,
-  setBadge,
-  setCurrentIndex,
-} = useTabbarData(props, emit);
+    // 方法
+    handleTabClick,
+    setBadge,
+    setCurrentIndex,
+  } = useTabbarData(props, emit)
 
-// 暴露方法给父组件
-defineExpose({
-  setBadge,
-  setCurrentIndex,
-});
+  // 暴露方法给父组件
+  defineExpose({
+    setBadge,
+    setCurrentIndex,
+  })
 </script>
 
 <style lang="scss" scoped>
-@import "./index.scss";
+  @import './index.scss';
 </style>

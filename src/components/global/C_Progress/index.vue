@@ -52,9 +52,9 @@
   </view>
 </template>
 
-<script setup>
+<script setup lang="ts">
   import { computed, watch, onMounted, getCurrentInstance } from 'vue'
-  import { defaultProps, STATUS_COLORS } from './data.js'
+  import { defaultProps, STATUS_COLORS } from './data'
 
   const props = defineProps({
     /** 进度百分比 */
