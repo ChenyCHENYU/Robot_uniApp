@@ -33,6 +33,7 @@
               class="c-image-preview__image"
               :src="img"
               mode="aspectFit"
+              lazy-load
               @error="onImageError(idx)"
             />
           </MovableView>

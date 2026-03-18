@@ -3,13 +3,36 @@
     class="c-list"
     scroll-y
     :style="{ height: '100%' }"
+    :scroll-top="scrollTop"
     @scrolltolower="onScrollToLower"
     @refresherrefresh="onRefresh"
+    @scroll="onScroll"
     :refresher-enabled="refresherEnabled"
     :refresher-triggered="refreshing"
   >
-    <!-- 列表内容 -->
-    <slot />
+    <!-- 虚拟滚动模式 -->
+    <template v-if="virtual && items.length">
+      <view :style="{ height: totalHeight + 'px' }">
+        <view :style="{ transform: `translateY(${offsetY}px)` }">
+          <view
+            v-for="item in visibleItems"
+            :key="item._vid"
+            :style="{ height: itemHeight + 'px' }"
+          >
+            <slot
+              name="item"
+              :item="item"
+              :index="item._vid"
+            />
+          </view>
+        </view>
+      </view>
+    </template>
+
+    <!-- 普通模式 -->
+    <template v-else>
+      <slot />
+    </template>
 
     <!-- 空状态 -->
     <C_Empty
@@ -50,7 +73,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ref } from 'vue'
+  import { ref, computed } from 'vue'
   import { defaultProps } from './data'
 
   const props = defineProps({
@@ -74,11 +97,49 @@
     emptyText: { type: String, default: defaultProps.emptyText },
     /** 是否启用下拉刷新 */
     refresherEnabled: { type: Boolean, default: true },
+    /** 是否启用虚拟滚动 */
+    virtual: { type: Boolean, default: false },
+    /** 虚拟滚动数据源 */
+    items: { type: Array, default: () => [] },
+    /** 虚拟滚动每项高度(px) */
+    itemHeight: { type: Number, default: 80 },
+    /** 虚拟滚动缓冲区数量 */
+    buffer: { type: Number, default: 10 },
   })
 
   const emit = defineEmits(['load', 'refresh'])
 
   const refreshing = ref(false)
+  const scrollTop = ref(0)
+  const currentScrollTop = ref(0)
+
+  // 虚拟滚动计算
+  const totalHeight = computed(() => props.items.length * props.itemHeight)
+
+  const startIndex = computed(() => {
+    const idx =
+      Math.floor(currentScrollTop.value / props.itemHeight) - props.buffer
+    return Math.max(0, idx)
+  })
+
+  const endIndex = computed(() => {
+    const viewCount = Math.ceil(600 / props.itemHeight) // 约600px可视区域
+    const idx = startIndex.value + viewCount + props.buffer * 2
+    return Math.min(props.items.length, idx)
+  })
+
+  const offsetY = computed(() => startIndex.value * props.itemHeight)
+
+  const visibleItems = computed(() =>
+    props.items.slice(startIndex.value, endIndex.value).map((item, i) => ({
+      ...(typeof item === 'object' ? item : { value: item }),
+      _vid: startIndex.value + i,
+    }))
+  )
+
+  const onScroll = (e: any) => {
+    currentScrollTop.value = e.detail?.scrollTop || 0
+  }
 
   const onScrollToLower = () => {
     if (!props.loading && !props.finished && !props.error) {

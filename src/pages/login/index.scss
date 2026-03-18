@@ -33,7 +33,7 @@
         rgba(0, 0, 0, 1) 100%);
     background-size: 150% 150%, 400% 400%;
     animation: gradientShift 20s ease infinite;
-  
+
     /* 添加纹理效果 */
     &::before {
       content: '';
@@ -48,7 +48,7 @@
         radial-gradient(circle at 50% 10%, rgba(0, 200, 255, 0.06) 0%, transparent 40%);
       animation: textureFloat 25s ease-in-out infinite;
     }
-  
+
     /* 添加光效层 */
     &::after {
       content: '';
@@ -69,57 +69,57 @@
       background-position: 0% 50%, 0% 50%;
       transform: scale(1);
     }
-  
+
     25% {
       background-position: 50% 25%, 25% 75%;
       transform: scale(1.02);
     }
-  
+
     50% {
       background-position: 100% 50%, 100% 50%;
       transform: scale(1);
     }
-  
+
     75% {
       background-position: 50% 75%, 75% 25%;
       transform: scale(1.02);
     }
-  
+
     100% {
       background-position: 0% 50%, 0% 50%;
       transform: scale(1);
     }
   }
-  
+
   @keyframes textureFloat {
-  
+
     0%,
     100% {
       transform: translate(0, 0) rotate(0deg);
       opacity: 0.6;
     }
-  
+
     33% {
       transform: translate(30rpx, -20rpx) rotate(120deg);
       opacity: 0.8;
     }
-  
+
     66% {
       transform: translate(-20rpx, 30rpx) rotate(240deg);
       opacity: 0.4;
     }
   }
-  
+
   @keyframes lightSweep {
     0% {
       transform: translateX(-100%) rotate(45deg);
       opacity: 0;
     }
-  
+
     50% {
       opacity: 1;
     }
-  
+
     100% {
       transform: translateX(100%) rotate(45deg);
       opacity: 0;
@@ -133,13 +133,13 @@
   width: 100%;
   height: 100%;
   pointer-events: none;
-  
+
   .shape {
     position: absolute;
     border-radius: 50%;
     animation: float 25s ease-in-out infinite;
       filter: blur(1rpx);
-    
+
     &.shape-1 {
       width: 240rpx;
         height: 240rpx;
@@ -148,7 +148,7 @@
         background: radial-gradient(circle, rgba(100, 150, 255, 0.12) 0%, rgba(120, 160, 255, 0.06) 40%, transparent 70%);
       animation-delay: 0s;
     }
-    
+
     &.shape-2 {
       width: 180rpx;
         height: 180rpx;
@@ -157,7 +157,7 @@
         background: radial-gradient(circle, rgba(255, 120, 200, 0.1) 0%, rgba(255, 140, 220, 0.05) 40%, transparent 70%);
         animation-delay: -8s;
     }
-    
+
     &.shape-3 {
       width: 320rpx;
         height: 320rpx;
@@ -166,7 +166,7 @@
         background: radial-gradient(circle, rgba(0, 200, 255, 0.08) 0%, rgba(50, 220, 255, 0.04) 40%, transparent 70%);
         animation-delay: -15s;
     }
-    
+
     &.shape-4 {
       width: 120rpx;
         height: 120rpx;
@@ -175,7 +175,7 @@
         background: radial-gradient(circle, rgba(200, 100, 255, 0.1) 0%, rgba(220, 120, 255, 0.05) 40%, transparent 70%);
         animation-delay: -22s;
     }
-    
+
     &.shape-5 {
       width: 280rpx;
         height: 280rpx;
@@ -184,7 +184,7 @@
         background: radial-gradient(circle, rgba(255, 200, 100, 0.08) 0%, rgba(255, 220, 120, 0.04) 40%, transparent 70%);
         animation-delay: -12s;
       }
-      
+
       /* 新增更多装饰性元素 */
       &.shape-6 {
         width: 160rpx;
@@ -210,7 +210,7 @@
                                   transform: translateY(-10rpx) translateX(-30rpx) rotate(180deg) scale(0.9);
                                   opacity: 0.4;
                                 }
-                
+
                                 75% {
                                   transform: translateY(30rpx) translateX(10rpx) rotate(270deg) scale(1.05);
                                   opacity: 0.7;
@@ -229,12 +229,12 @@
 .logo-section {
   text-align: center;
   margin-bottom: 60rpx;
-  
+
   .logo-wrapper {
     position: relative;
     display: inline-block;
     margin-bottom: 32rpx;
-    
+
     .logo-bg {
       width: 140rpx;
       height: 140rpx;
@@ -253,7 +253,7 @@
           inset 0 -1rpx 0 rgba(0, 0, 0, 0.1);
       position: relative;
       overflow: hidden;
-      
+
       /* 增强的光泽效果 */
       &::before {
         content: '';
@@ -269,7 +269,7 @@
               transparent 70%);
           animation: shine 4s ease-in-out infinite;
         }
-        
+
         /* 添加内发光效果 */
         &::after {
           content: '';
@@ -286,7 +286,7 @@
       }
     }
   }
-  
+
   .app-name {
     display: block;
     font-size: 56rpx;
@@ -295,14 +295,14 @@
     margin-bottom: 16rpx;
     text-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.3);
   }
-  
+
   .app-desc {
     display: block;
     font-size: 30rpx;
     color: rgba(255, 255, 255, 0.9);
     margin-bottom: 8rpx;
   }
-  
+
   .app-version {
     display: block;
     font-size: 24rpx;
@@ -315,25 +315,25 @@
       transform: translateX(-120%) translateY(-120%) rotate(45deg);
       opacity: 0;
     }
-  
+
     50% {
       opacity: 1;
     }
-  
+
     100% {
       transform: translateX(120%) translateY(120%) rotate(45deg);
       opacity: 0;
     }
   }
-  
+
   @keyframes cardGlow {
-  
+
     0%,
     100% {
       transform: translateX(-50%) translateY(-50%) scale(0.8);
       opacity: 0.3;
     }
-  
+
     50% {
       transform: translateX(-50%) translateY(-50%) scale(1.2);
       opacity: 0.1;
@@ -355,7 +355,7 @@
       inset 0 -1rpx 0 rgba(0, 0, 0, 0.1);
   position: relative;
   overflow: hidden;
-  
+
   /* 增强的顶部高光 */
   &::before {
     content: '';
@@ -364,14 +364,14 @@
     left: 0;
     right: 0;
     height: 2rpx;
-    background: linear-gradient(90deg, 
-      transparent, 
+    background: linear-gradient(90deg,
+          transparent,
       rgba(255, 255, 255, 0.8) 20%,
         rgba(120, 160, 255, 0.6) 50%,
         rgba(255, 255, 255, 0.8) 80%,
       transparent);
   }
-  
+
     /* 添加动态光效 */
     &::after {
       content: '';
@@ -388,8 +388,7 @@
     }
   .card-header {
     text-align: center;
-    margin-bottom: 50rpx;
-    
+    margin-bottom: 32rpx;
     .card-title {
       display: block;
       font-size: 40rpx;
@@ -397,17 +396,51 @@
       color: #fff;
       margin-bottom: 16rpx;
     }
-    
+
     .card-subtitle {
       display: block;
       font-size: 28rpx;
       color: rgba(255, 255, 255, 0.8);
     }
   }
+
+    .login-mode-tabs {
+      display: flex;
+      gap: 0;
+      margin-bottom: 40rpx;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 40rpx;
+      padding: 6rpx;
+      border: 1rpx solid rgba(255, 255, 255, 0.12);
   
+      .mode-tab {
+        flex: 1;
+        text-align: center;
+        padding: 18rpx 0;
+        border-radius: 36rpx;
+        transition: all 0.3s ease;
+  
+        &.active {
+          background: rgba(0, 212, 255, 0.25);
+          border: 1rpx solid rgba(0, 212, 255, 0.4);
+          backdrop-filter: blur(10rpx);
+        }
+  
+        .mode-text {
+          font-size: 26rpx;
+          color: rgba(255, 255, 255, 0.7);
+          font-weight: 500;
+        }
+  
+        &.active .mode-text {
+          color: #00D4FF;
+          font-weight: 600;
+        }
+      }
+    }
   .input-group {
     margin-bottom: 30rpx;
-    
+
     .input-wrapper {
       background: rgba(255, 255, 255, 0.1);
       border: 1rpx solid rgba(255, 255, 255, 0.2);
@@ -418,7 +451,7 @@
       gap: 24rpx;
       backdrop-filter: blur(10rpx);
       transition: all 0.3s ease;
-      
+
       &:focus-within {
         background: rgba(255, 255, 255, 0.15);
         border-color: rgba(0, 212, 255, 0.5);
@@ -431,29 +464,59 @@
   font-size: 32rpx;
   border: none;
   outline: none;
+&.sms-input {
+    flex: 1;
+    min-width: 0;
+  }
 }
+
+.sms-wrapper {
+  flex-wrap: nowrap;
+}
+
+.sms-btn {
+  flex-shrink: 0;
+  padding: 12rpx 24rpx;
+  background: rgba(0, 212, 255, 0.2);
+  border: 1rpx solid rgba(0, 212, 255, 0.4);
+  border-radius: 30rpx;
+  margin-left: 16rpx;
+  transition: all 0.3s ease;
+
+  &.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  .sms-text {
+    font-size: 24rpx;
+    color: #00D4FF;
+    white-space: nowrap;
+    font-weight: 500;
+  }
+            }
     }
   }
-  
+
   .form-options {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin: 30rpx 0;
-    
+
     .option-text {
       font-size: 28rpx;
       color: rgba(255, 255, 255, 0.9);
       margin-left: 16rpx;
     }
-    
+
     .forgot-link {
       font-size: 28rpx;
       color: #00D4FF;
       text-decoration: none;
     }
   }
-  
+
   .login-btn-wrapper {
     margin: 40rpx 0 30rpx;
 .login-btn {
@@ -480,36 +543,36 @@
       pointer-events: none;
     }
   }
-    
+
     .btn-text {
       font-size: 32rpx;
       font-weight: bold;
       color: #ffffff;
     }
   }
-  
+
   .divider {
     display: flex;
     align-items: center;
     margin: 40rpx 0;
-    
+
     .divider-line {
       flex: 1;
       height: 1rpx;
       background: rgba(255, 255, 255, 0.2);
     }
-    
+
     .divider-text {
       font-size: 24rpx;
       color: rgba(255, 255, 255, 0.6);
       margin: 0 30rpx;
     }
   }
-  
+
   .social-login {
     display: flex;
     gap: 30rpx;
-    
+
     .social-btn {
       flex: 1;
       background: rgba(255, 255, 255, 0.1);
@@ -522,12 +585,12 @@
       gap: 16rpx;
       backdrop-filter: blur(10rpx);
       transition: all 0.3s ease;
-      
+
       &:active {
         background: rgba(255, 255, 255, 0.15);
         transform: scale(0.98);
       }
-      
+
       text {
         font-size: 26rpx;
         color: rgba(255, 255, 255, 0.9);
@@ -547,7 +610,7 @@
   background: linear-gradient(180deg, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0.2) 100%);
     backdrop-filter: blur(15rpx);
     border-top: 1rpx solid rgba(255, 255, 255, 0.1);
-  
+
   .copyright {
     display: block;
     font-size: 24rpx;
@@ -555,7 +618,7 @@
     margin-bottom: 8rpx;
     text-shadow: 0 1rpx 2rpx rgba(0, 0, 0, 0.3);
   }
-  
+
   .version {
     display: block;
     font-size: 20rpx;

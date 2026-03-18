@@ -324,6 +324,138 @@
           }
         }
       ]
+    },
+    {
+      "root": "pages/register",
+      "pages": [
+        {
+          "path": "index",
+          "style": {
+            "navigationBarTitleText": "注册",
+            "navigationStyle": "custom"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/guide",
+      "pages": [
+        {
+          "path": "index",
+          "style": {
+            "navigationBarTitleText": "引导页",
+            "navigationStyle": "custom"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/crud-list",
+      "pages": [
+        {
+          "path": "index",
+          "style": {
+            "navigationBarTitleText": "数据列表",
+            "navigationStyle": "custom"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/detail",
+      "pages": [
+        {
+          "path": "index",
+          "style": {
+            "navigationBarTitleText": "详情页",
+            "navigationStyle": "custom"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/form-template",
+      "pages": [
+        {
+          "path": "index",
+          "style": {
+            "navigationBarTitleText": "表单模板",
+            "navigationStyle": "custom"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/approval",
+      "pages": [
+        {
+          "path": "index",
+          "style": {
+            "navigationBarTitleText": "审批流",
+            "navigationStyle": "custom"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/dashboard",
+      "pages": [
+        {
+          "path": "index",
+          "style": {
+            "navigationBarTitleText": "数据看板",
+            "navigationStyle": "custom"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/about",
+      "pages": [
+        {
+          "path": "index",
+          "style": {
+            "navigationBarTitleText": "关于",
+            "navigationStyle": "custom"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/webview",
+      "pages": [
+        {
+          "path": "index",
+          "style": {
+            "navigationBarTitleText": "网页浏览",
+            "navigationStyle": "custom"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/search-result",
+      "pages": [
+        {
+          "path": "index",
+          "style": {
+            "navigationBarTitleText": "搜索结果",
+            "navigationStyle": "custom"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/scan",
+      "pages": [
+        {
+          "path": "index",
+          "style": {
+            "navigationBarTitleText": "扫码",
+            "navigationStyle": "custom"
+          }
+        }
+      ]
     }
   ],
   "tabBar": {

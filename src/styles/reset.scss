@@ -28,9 +28,45 @@ page {
 }
 
 /* #ifdef H5 */
+// H5 桌面端适配：限制页面最大宽度，居中显示，模拟移动端视觉
+page {
+  background: var(--r-h5-outer-bg) !important;
+}
 uni-page-body {
-  max-width: 750rpx;
+  max-width: var(--r-h5-max-width);
   margin: 0 auto;
+  background: var(--r-bg-page);
+    min-height: 100vh;
+    position: relative;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.08);
+    overflow-x: hidden;
+  }
+  
+  // 约束所有 fixed 定位的内容面板在页面最大宽度内
+  // overlay/mask 类遮罩保持全屏，仅限制面板宽度
+  .c-tabbar,
+  .c-action-sheet__panel,
+  .c-number-keyboard__panel,
+  .c-notify,
+  .c-float-button,
+  .global-loading {
+    max-width: var(--r-h5-max-width) !important;
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%);
+  }
+  
+  // 弹窗 overlay 遮罩约束宽度以避免扩散到外部背景
+  .c-modal__overlay,
+  .c-action-sheet__overlay,
+  .c-image-preview,
+  .c-calendar__mask,
+  .c-cascader__mask,
+  .c-number-keyboard__overlay {
+    max-width: var(--r-h5-max-width) !important;
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%);
 }
 
 /* #endif */

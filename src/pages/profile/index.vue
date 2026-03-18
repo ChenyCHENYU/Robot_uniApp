@@ -166,8 +166,14 @@
           label: '消息通知',
           icon: 'notification',
           iconBg: 'linear-gradient(135deg, #fa709a, #fee140)',
-          badge: 5,
+          badge: 8,
           path: '/pages/message/index',
+        },
+        {
+          id: 'privacy',
+          label: '隐私管理',
+          icon: 'shield',
+          iconBg: 'linear-gradient(135deg, #43e97b, #38f9d7)',
         },
       ],
     },
@@ -179,6 +185,14 @@
           label: '开发文档',
           icon: 'books',
           iconBg: 'linear-gradient(135deg, #f093fb, #f5576c)',
+          path: '/pages/webview/index?url=https%3A%2F%2Funiapp.dcloud.net.cn&title=开发文档',
+        },
+        {
+          id: 'components',
+          label: '组件预览',
+          icon: 'view',
+          iconBg: 'linear-gradient(135deg, #4facfe, #00f2fe)',
+          path: '/pages/demo/index',
         },
         {
           id: 'changelog',
@@ -203,6 +217,7 @@
           label: '关于应用',
           icon: 'info-circle',
           iconBg: 'linear-gradient(135deg, #c3cfe2, #f5f7fa)',
+          path: '/pages/about/index',
         },
         {
           id: 'cache',
@@ -236,23 +251,25 @@
       return
     }
 
-    const actions = {
+    const actions: Record<string, () => void> = {
       docs: () => uni.showToast({ title: '开发文档建设中', icon: 'none' }),
       changelog: () =>
         uni.showModal({
           title: '更新日志',
           content:
-            'v1.0.0\n- 迁移 wot-design-uni 组件库\n- 搭建基础设施\n- 封装 15 个 P0 通用组件\n- 新增消息中心、个人设置、主题切换',
+            'v1.0.0\n- 迁移 wot-design-uni 组件库\n- 搭建基础设施\n- 封装 33 个通用组件\n- 新增 11 个业务模板页\n- 新增消息中心、个人设置、主题切换\n- 首页 Dashboard 改版',
           showCancel: false,
         }),
       feedback: () => uni.showToast({ title: '反馈功能开发中', icon: 'none' }),
-      about: () =>
+      privacy: () =>
         uni.showModal({
-          title: 'Robot UniApp',
+          title: '隐私管理',
           content:
-            '企业级跨平台应用开发框架\n\nVue 3.5 + UniApp + wot-design-uni\n\n© 2025 CHENY',
+            '我们重视您的隐私保护。\n\n• 个人信息仅用于应用功能\n• 不会向第三方共享数据\n• 您可随时清除本地数据',
           showCancel: false,
+          confirmText: '我知道了',
         }),
+      about: () => uni.navigateTo({ url: '/pages/about/index' }),
       cache: () => {
         uni.showModal({
           title: '清除缓存',

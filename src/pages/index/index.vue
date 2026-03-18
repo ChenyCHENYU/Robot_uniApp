@@ -6,860 +6,655 @@
     @settings-click="handleSettingsClick"
   >
     <view class="homepage">
-      <!-- 顶部横幅 -->
-      <view class="hero-section">
-        <view class="hero-content">
-          <!-- 项目标识 -->
-          <view class="project-header">
-            <view class="project-badge">
-              <text class="badge-text">企业级跨平台框架</text>
-            </view>
-
-            <view class="project-title">
-              <text class="title-main">Robot UniApp</text>
-              <text class="title-desc">一次开发，多端运行</text>
-            </view>
-
-            <text class="project-intro">
-              基于 Vue3 + UniApp 的企业级跨平台应用开发解决方案，支持
-              H5、小程序、App 多端同步开发
-            </text>
+      <!-- 欢迎区 -->
+      <view class="welcome-section">
+        <view class="welcome-content">
+          <view class="welcome-text">
+            <text class="greeting">{{ greeting }}，</text>
+            <text class="username">ChenY 👋</text>
           </view>
-
-          <!-- 平台支持 -->
-          <view class="platform-support">
-            <view
-              class="platform-item"
-              v-for="platform in supportedPlatforms"
-              :key="platform.name"
-            >
-              <text class="platform-icon">{{ platform.icon }}</text>
-              <text class="platform-name">{{ platform.name }}</text>
-            </view>
-          </view>
+          <text class="welcome-desc"
+            >欢迎回来，今日有 {{ todoCount }} 项待办</text
+          >
+        </view>
+        <view class="avatar-wrap">
+          <image
+            class="avatar"
+            src="/static/images/avatar.png"
+            mode="aspectFill"
+          />
         </view>
       </view>
 
-      <!-- 核心特色 -->
-      <view class="features-section">
-        <view class="section-header">
-          <text class="section-title">核心特色</text>
-          <text class="section-subtitle">企业级移动应用开发能力</text>
-        </view>
-
-        <view class="features-grid">
-          <view
-            class="feature-card"
-            v-for="feature in coreFeatures"
-            :key="feature.name"
-          >
+      <!-- 数据概览卡片 -->
+      <view class="stats-grid">
+        <view
+          v-for="stat in statsCards"
+          :key="stat.label"
+          class="stat-card"
+          @click="handleStatClick(stat)"
+        >
+          <view class="stat-header">
             <view
-              class="feature-icon-wrap"
-              :style="{ background: feature.gradient }"
+              class="stat-icon"
+              :style="{ background: stat.bg }"
             >
-              <text class="feature-icon">{{ feature.icon }}</text>
+              <text class="icon-text">{{ stat.icon }}</text>
             </view>
-            <view class="feature-info">
-              <text class="feature-name">{{ feature.name }}</text>
-              <text class="feature-desc">{{ feature.desc }}</text>
-            </view>
-          </view>
-        </view>
-      </view>
-
-      <!-- 技术栈 -->
-      <view class="tech-section">
-        <view class="section-header">
-          <text class="section-title">技术架构</text>
-          <text class="section-subtitle">现代化前端技术栈</text>
-        </view>
-
-        <view class="tech-stack">
-          <view
-            class="tech-category"
-            v-for="category in techStack"
-            :key="category.name"
-          >
-            <view class="tech-header">
-              <text class="tech-icon">{{ category.icon }}</text>
-              <text class="tech-name">{{ category.name }}</text>
-            </view>
-            <view class="tech-items">
-              <text
-                class="tech-item"
-                v-for="item in category.items"
-                :key="item"
-                >{{ item }}</text
+            <view
+              v-if="stat.trend"
+              class="stat-trend"
+              :class="stat.trend > 0 ? 'up' : 'down'"
+            >
+              <text class="trend-text"
+                >{{ stat.trend > 0 ? '+' : '' }}{{ stat.trend }}%</text
               >
             </view>
           </view>
+          <text class="stat-value">{{ stat.value }}</text>
+          <text class="stat-label">{{ stat.label }}</text>
         </view>
       </view>
 
-      <!-- 开发优势 -->
-      <view class="advantages-section">
-        <view class="section-header">
-          <text class="section-title">开发优势</text>
-          <text class="section-subtitle">高效的开发体验</text>
+      <!-- 快捷操作 -->
+      <view class="quick-section">
+        <view class="section-title-row">
+          <text class="section-title">快捷操作</text>
         </view>
-
-        <view class="advantages-list">
+        <view class="quick-grid">
           <view
-            class="advantage-item"
-            v-for="(advantage, index) in advantages"
-            :key="advantage.title"
+            v-for="action in quickActions"
+            :key="action.label"
+            class="quick-item"
+            @click="handleQuickAction(action)"
           >
-            <view class="advantage-number">{{ index + 1 }}</view>
-            <view class="advantage-content">
-              <text class="advantage-title">{{ advantage.title }}</text>
-              <text class="advantage-desc">{{ advantage.desc }}</text>
+            <view
+              class="quick-icon"
+              :style="{ background: action.bg }"
+            >
+              <text class="icon-text">{{ action.icon }}</text>
             </view>
+            <text class="quick-label">{{ action.label }}</text>
           </view>
         </view>
       </view>
 
-      <!-- 应用场景 -->
-      <view class="scenarios-section">
-        <view class="section-header">
-          <text class="section-title">应用场景</text>
-          <text class="section-subtitle">适用于多种业务需求</text>
+      <!-- 待办事项 -->
+      <view class="todo-section">
+        <view class="section-title-row">
+          <text class="section-title">待办事项</text>
+          <text
+            class="section-action"
+            @click="handleViewAllTodo"
+            >查看全部</text
+          >
         </view>
-
-        <view class="scenarios-grid">
+        <view class="todo-list">
           <view
-            class="scenario-card"
-            v-for="scenario in applicationScenarios"
-            :key="scenario.name"
+            v-for="todo in todoList"
+            :key="todo.id"
+            class="todo-item"
+            @click="handleTodoClick(todo)"
           >
-            <text class="scenario-icon">{{ scenario.icon }}</text>
-            <text class="scenario-name">{{ scenario.name }}</text>
-            <text class="scenario-desc">{{ scenario.desc }}</text>
+            <view
+              class="todo-check"
+              :class="{ done: todo.done }"
+              @click.stop="toggleTodo(todo)"
+            >
+              <wd-icon
+                v-if="todo.done"
+                name="check"
+                size="12px"
+                color="#fff"
+              />
+            </view>
+            <view class="todo-content">
+              <text
+                class="todo-title"
+                :class="{ done: todo.done }"
+                >{{ todo.title }}</text
+              >
+              <text class="todo-time">{{ todo.time }}</text>
+            </view>
+            <view
+              class="todo-priority"
+              :class="todo.priority"
+            >
+              <text class="priority-dot"></text>
+            </view>
           </view>
         </view>
       </view>
 
-      <!-- 快速开始 -->
-      <view class="quickstart-section">
-        <view class="quickstart-content">
-          <text class="quickstart-title">准备开始开发？</text>
-          <text class="quickstart-subtitle"
-            >几行命令即可启动你的跨平台应用</text
+      <!-- 最近动态 -->
+      <view class="activity-section">
+        <view class="section-title-row">
+          <text class="section-title">最近动态</text>
+        </view>
+        <view class="activity-list">
+          <view
+            v-for="item in activities"
+            :key="item.id"
+            class="activity-item"
           >
-
-          <view class="command-steps">
             <view
-              class="command-item"
-              v-for="(cmd, index) in quickCommands"
-              :key="index"
-            >
-              <view class="command-step">{{ index + 1 }}</view>
-              <view class="command-content">
-                <text class="command-desc">{{ cmd.desc }}</text>
-                <view class="command-code">
-                  <text>{{ cmd.command }}</text>
-                </view>
-              </view>
-            </view>
-          </view>
-
-          <view class="action-buttons">
-            <view
-              class="action-btn primary"
-              @click="handleStart"
-            >
-              <text>开始开发</text>
-            </view>
-            <view
-              class="action-btn secondary"
-              @click="handleDocs"
-            >
-              <text>查看文档</text>
+              class="activity-dot"
+              :style="{ background: item.color }"
+            ></view>
+            <view class="activity-content">
+              <text class="activity-text">{{ item.text }}</text>
+              <text class="activity-time">{{ item.time }}</text>
             </view>
           </view>
         </view>
       </view>
 
       <!-- 项目信息 -->
-      <view class="project-info">
-        <view class="info-content">
-          <text class="project-name">Robot UniApp Framework</text>
-          <text class="project-version">v{{ version }}</text>
-          <text class="project-license">MIT License</text>
-          <text class="project-author">Created with ❤️ by ChenY</text>
-        </view>
+      <view class="project-footer">
+        <text class="project-name">Robot UniApp v{{ version }}</text>
+        <text class="project-desc">企业级跨平台应用框架</text>
       </view>
     </view>
   </C_Layout>
 </template>
 
 <script setup lang="ts">
-  import { ref } from 'vue'
+  import { ref, computed } from 'vue'
 
-  // 版本信息
   const version = ref('1.0.0')
+  const notificationCount = ref(3)
 
-  // 通知数量
-  const notificationCount = ref(0)
+  const greeting = computed(() => {
+    const h = new Date().getHours()
+    if (h < 6) return '夜深了'
+    if (h < 12) return '早上好'
+    if (h < 14) return '中午好'
+    if (h < 18) return '下午好'
+    return '晚上好'
+  })
 
-  // 支持平台
-  const supportedPlatforms = ref([
-    { name: 'H5', icon: '🌐' },
-    { name: '小程序', icon: '📱' },
-    { name: 'Android', icon: '🤖' },
-    { name: 'iOS', icon: '🍎' },
-  ])
-
-  // 核心特色
-  const coreFeatures = ref([
+  const statsCards = ref([
     {
-      name: '跨平台开发',
-      desc: '一套代码多端运行',
-      icon: '🚀',
-      gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      label: '活跃用户',
+      value: '12,486',
+      icon: '👥',
+      trend: 12.5,
+      bg: 'linear-gradient(135deg, #667eea, #764ba2)',
     },
     {
-      name: '企业级架构',
-      desc: '完整的开发规范',
-      icon: '🏗️',
-      gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-    },
-    {
-      name: '组件丰富',
-      desc: 'wot-design-uni 组件库',
-      icon: '🧩',
-      gradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
-    },
-    {
-      name: '状态管理',
-      desc: 'Pinia数据管理',
+      label: '今日访问',
+      value: '3,829',
       icon: '📊',
-      gradient: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+      trend: 8.3,
+      bg: 'linear-gradient(135deg, #f093fb, #f5576c)',
     },
     {
-      name: '国际化支持',
-      desc: '多语言切换',
-      icon: '🌍',
-      gradient: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
+      label: '待处理',
+      value: '26',
+      icon: '📋',
+      trend: -4.2,
+      bg: 'linear-gradient(135deg, #4facfe, #00f2fe)',
     },
     {
-      name: '原子化CSS',
-      desc: 'UnoCSS样式引擎',
-      icon: '🎨',
-      gradient: 'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)',
+      label: '完成率',
+      value: '94.6%',
+      icon: '🎯',
+      trend: 2.1,
+      bg: 'linear-gradient(135deg, #43e97b, #38f9d7)',
     },
   ])
 
-  // 技术栈
-  const techStack = ref([
-    {
-      name: '核心框架',
-      icon: '⚡',
-      items: ['Vue 3', 'UniApp', 'Vite'],
-    },
-    {
-      name: 'UI组件',
-      icon: '🎨',
-      items: ['wot-design-uni', 'UnoCSS'],
-    },
-    {
-      name: '状态管理',
-      icon: '📦',
-      items: ['Pinia', 'Persist'],
-    },
-    {
-      name: '工具链',
-      icon: '🔧',
-      items: ['Sass', 'Vue-i18n'],
-    },
-  ])
-
-  // 开发优势
-  const advantages = ref([
-    {
-      title: '快速开发',
-      desc: '丰富的组件库和工具链，大幅提升开发效率',
-    },
-    {
-      title: '多端一致',
-      desc: '统一的开发体验，确保各平台功能和体验一致',
-    },
-    {
-      title: '易于维护',
-      desc: '清晰的项目结构和规范，降低维护成本',
-    },
-    {
-      title: '扩展灵活',
-      desc: '模块化架构设计，支持业务快速扩展',
-    },
-  ])
-
-  // 应用场景
-  const applicationScenarios = ref([
-    { name: '企业管理', desc: 'ERP、CRM、HR系统', icon: '🏢' },
-    { name: '供应链管理', desc: '物流、仓储、配送', icon: '📦' },
-    { name: '制造业', desc: 'MES、质量管理、设备监控', icon: '🏭' },
-    { name: '政务服务', desc: '办事大厅、审批流程', icon: '🏛️' },
-    { name: '医疗健康', desc: '诊疗系统、健康管理', icon: '🏥' },
-    { name: '金融服务', desc: '银行、保险、支付', icon: '🏦' },
-  ])
-
-  // 快速命令
-  const quickCommands = ref([
-    {
-      desc: '克隆项目',
-      command: 'git clone git@github.com:ChenyCHENYU/Robot_uniApp.git',
-    },
-    {
-      desc: '安装依赖',
-      command: 'npm install',
-    },
-    {
-      desc: '启动开发（默认h5）',
-      command: 'npm run dev',
-    },
-  ])
-
-  // 事件处理函数
-  const handleUserClick = _user => {
-    uni.showToast({ title: '查看用户资料', icon: 'none' })
+  interface TodoItem {
+    id: number
+    title: string
+    time: string
+    done: boolean
+    priority: string
   }
 
-  const handleNotificationClick = () => {}
-  const handleSettingsClick = () => {}
+  const todoList = ref<TodoItem[]>([
+    {
+      id: 1,
+      title: '完成首页Dashboard布局',
+      time: '今天 10:00',
+      done: true,
+      priority: 'high',
+    },
+    {
+      id: 2,
+      title: 'Q1产品规划评审',
+      time: '今天 14:00',
+      done: false,
+      priority: 'high',
+    },
+    {
+      id: 3,
+      title: '组件库文档更新',
+      time: '今天 16:00',
+      done: false,
+      priority: 'medium',
+    },
+    {
+      id: 4,
+      title: '优化H5响应式布局',
+      time: '明天 09:00',
+      done: false,
+      priority: 'low',
+    },
+  ])
 
-  // 原有事件处理
-  const handleStart = () => {
-    uni.showToast({
-      title: '开始你的开发之旅',
-      icon: 'none',
-    })
+  const todoCount = computed(() => todoList.value.filter(i => !i.done).length)
+
+  const quickActions = ref([
+    {
+      label: '扫一扫',
+      icon: '📷',
+      bg: 'linear-gradient(135deg, #667eea, #764ba2)',
+      url: '/pages/scan/index',
+    },
+    {
+      label: '审批中心',
+      icon: '✅',
+      bg: 'linear-gradient(135deg, #43e97b, #38f9d7)',
+      url: '/pages/approval/index',
+    },
+    {
+      label: '数据看板',
+      icon: '📊',
+      bg: 'linear-gradient(135deg, #f093fb, #f5576c)',
+      url: '/pages/dashboard/index',
+    },
+    {
+      label: '表单模板',
+      icon: '📝',
+      bg: 'linear-gradient(135deg, #4facfe, #00f2fe)',
+      url: '/pages/form-template/index',
+    },
+    {
+      label: 'CRUD列表',
+      icon: '📋',
+      bg: 'linear-gradient(135deg, #fa709a, #fee140)',
+      url: '/pages/crud-list/index',
+    },
+    {
+      label: '搜索',
+      icon: '🔍',
+      bg: 'linear-gradient(135deg, #a8edea, #fed6e3)',
+      url: '/pages/search-result/index',
+    },
+    {
+      label: '详情展示',
+      icon: '📖',
+      bg: 'linear-gradient(135deg, #fccb90, #d57eeb)',
+      url: '/pages/detail/index',
+    },
+    {
+      label: '关于',
+      icon: 'ℹ️',
+      bg: 'linear-gradient(135deg, #96e6a1, #d4fc79)',
+      url: '/pages/about/index',
+    },
+  ])
+
+  const activities = ref([
+    {
+      id: 1,
+      text: '系统已升级至 v1.0.0 版本',
+      time: '10分钟前',
+      color: '#667eea',
+    },
+    { id: 2, text: '新增11个业务模板页面', time: '30分钟前', color: '#43e97b' },
+    { id: 3, text: 'H5响应式适配优化完成', time: '1小时前', color: '#4facfe' },
+    { id: 4, text: '虚拟滚动组件已上线', time: '2小时前', color: '#f093fb' },
+    { id: 5, text: '骨架屏预渲染方案集成', time: '3小时前', color: '#fa709a' },
+  ])
+
+  const toggleTodo = (todo: TodoItem) => {
+    todo.done = !todo.done
   }
 
-  const handleDocs = () => {
-    uni.showToast({
-      title: '查看开发文档',
-      icon: 'none',
-    })
+  const handleStatClick = (stat: { label: string }) => {
+    uni.showToast({ title: stat.label, icon: 'none' })
+  }
+
+  const handleQuickAction = (action: { label: string; url: string }) => {
+    uni.navigateTo({ url: action.url })
+  }
+
+  const handleViewAllTodo = () => {
+    uni.navigateTo({ url: '/pages/crud-list/index' })
+  }
+
+  const handleTodoClick = (todo: TodoItem) => {
+    uni.showToast({ title: todo.title, icon: 'none' })
+  }
+
+  const handleUserClick = () => {}
+  const handleNotificationClick = () => {
+    uni.switchTab({ url: '/pages/message/index' })
+  }
+  const handleSettingsClick = () => {
+    uni.navigateTo({ url: '/pages/settings/index' })
   }
 </script>
 
 <style lang="scss" scoped>
   .homepage {
     background: var(--r-bg-page);
-
-    // 添加顶部过渡区域（装饰性渐变）
-    &::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 80rpx;
-      background: linear-gradient(
-        180deg,
-        var(--r-bg-hover) 0%,
-        transparent 100%
-      );
-      z-index: 1;
-    }
-
-    position: relative;
+    padding: 24rpx;
+    min-height: 100vh;
   }
 
-  /* 顶部横幅 - 重新设计 */
-  .hero-section {
-    padding: 40rpx 40rpx 80rpx;
-    position: relative;
-    z-index: 2;
+  .welcome-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 28rpx 32rpx;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 24rpx;
+    margin-bottom: 24rpx;
 
-    // 移除原有的重复背景
-    // background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    .welcome-content {
+      .welcome-text {
+        display: flex;
+        align-items: baseline;
+        gap: 4rpx;
+        margin-bottom: 8rpx;
 
-    // 添加精致的光效
-    &::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background:
-        radial-gradient(
-          ellipse at 20% 30%,
-          var(--r-bg-hover) 0%,
-          transparent 50%
-        ),
-        radial-gradient(
-          ellipse at 80% 70%,
-          var(--r-bg-hover) 0%,
-          transparent 50%
-        );
-      z-index: -1;
-    }
+        .greeting {
+          font-size: 28rpx;
+          color: rgba(255, 255, 255, 0.85);
+        }
 
-    .hero-content {
-      position: relative;
-      z-index: 1;
-    }
-
-    .project-header {
-      text-align: center;
-      margin-bottom: 60rpx;
-
-      .project-badge {
-        display: inline-block;
-        padding: 16rpx 32rpx;
-        background: var(--r-bg-hover);
-        border: 1rpx solid var(--r-border-light);
-        border-radius: 50rpx;
-        margin-bottom: 32rpx;
-        backdrop-filter: blur(10rpx);
-
-        .badge-text {
-          color: var(--r-color-primary);
-          font-size: 24rpx;
-          font-weight: 600;
+        .username {
+          font-size: 36rpx;
+          font-weight: 700;
+          color: #fff;
         }
       }
 
-      .project-title {
-        margin-bottom: 24rpx;
-
-        .title-main {
-          display: block;
-          color: var(--r-text-primary);
-          font-size: 56rpx;
-          font-weight: bold;
-          margin-bottom: 16rpx;
-          background: linear-gradient(
-            135deg,
-            var(--r-color-primary) 0%,
-            var(--r-color-primary-light) 100%
-          );
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-        }
-
-        .title-desc {
-          display: block;
-          color: var(--r-text-regular);
-          font-size: 32rpx;
-          font-weight: 500;
-        }
-      }
-
-      .project-intro {
-        color: var(--r-text-regular);
-        font-size: 28rpx;
-        line-height: 1.6;
-        padding: 0 20rpx;
+      .welcome-desc {
+        font-size: 24rpx;
+        color: rgba(255, 255, 255, 0.7);
       }
     }
 
-    .platform-support {
-      display: flex;
-      justify-content: space-around;
+    .avatar-wrap {
+      .avatar {
+        width: 96rpx;
+        height: 96rpx;
+        border-radius: 50%;
+        border: 4rpx solid rgba(255, 255, 255, 0.3);
+      }
+    }
+  }
 
-      .platform-item {
+  .stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16rpx;
+    margin-bottom: 28rpx;
+
+    .stat-card {
+      padding: 24rpx;
+      background: var(--r-bg-card);
+      border-radius: 20rpx;
+      box-shadow: var(--r-shadow-sm);
+
+      .stat-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 16rpx;
+
+        .stat-icon {
+          width: 56rpx;
+          height: 56rpx;
+          border-radius: 14rpx;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          .icon-text {
+            font-size: 24rpx;
+          }
+        }
+
+        .stat-trend {
+          padding: 4rpx 12rpx;
+          border-radius: 8rpx;
+
+          &.up {
+            background: rgba(67, 233, 123, 0.1);
+          }
+          &.down {
+            background: rgba(245, 108, 108, 0.1);
+          }
+
+          .trend-text {
+            font-size: 20rpx;
+            font-weight: 600;
+          }
+
+          &.up .trend-text {
+            color: #43e97b;
+          }
+          &.down .trend-text {
+            color: #f56c6c;
+          }
+        }
+      }
+
+      .stat-value {
+        display: block;
+        font-size: 36rpx;
+        font-weight: 700;
+        color: var(--r-text-primary);
+      }
+
+      .stat-label {
+        font-size: 22rpx;
+        color: var(--r-text-secondary);
+        margin-top: 4rpx;
+      }
+    }
+  }
+
+  .section-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20rpx;
+
+    .section-title {
+      font-size: 30rpx;
+      font-weight: 600;
+      color: var(--r-text-primary);
+    }
+
+    .section-action {
+      font-size: 24rpx;
+      color: #667eea;
+    }
+  }
+
+  .quick-section {
+    margin-bottom: 28rpx;
+
+    .quick-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16rpx;
+
+      .quick-item {
         display: flex;
         flex-direction: column;
         align-items: center;
-        padding: 24rpx;
-        background: var(--r-glass-bg);
-        border: 1rpx solid var(--r-glass-border);
-        border-radius: 20rpx;
-        backdrop-filter: blur(10rpx);
-        box-shadow: var(--r-shadow-sm);
-        transition: all 0.3s ease;
-
-        &:hover {
-          transform: translateY(-4rpx);
-          box-shadow: var(--r-shadow-md);
-        }
-
-        .platform-icon {
-          font-size: 40rpx;
-          margin-bottom: 12rpx;
-        }
-
-        .platform-name {
-          color: var(--r-text-primary);
-          font-size: 24rpx;
-          font-weight: 500;
-        }
-      }
-    }
-  }
-
-  /* 公共样式 */
-  .section-header {
-    text-align: center;
-    margin-bottom: 60rpx;
-
-    .section-title {
-      display: block;
-      font-size: 48rpx;
-      font-weight: bold;
-      color: var(--r-text-primary);
-      margin-bottom: 16rpx;
-    }
-
-    .section-subtitle {
-      display: block;
-      font-size: 28rpx;
-      color: var(--r-text-regular);
-    }
-  }
-
-  /* 核心特色 */
-  .features-section {
-    padding: 60rpx 40rpx 80rpx;
-    position: relative;
-
-    // 添加顶部过渡
-    &::before {
-      content: '';
-      position: absolute;
-      top: -40rpx;
-      left: 0;
-      right: 0;
-      height: 80rpx;
-      background: linear-gradient(
-        180deg,
-        transparent 0%,
-        var(--r-bg-page) 100%
-      );
-      z-index: 1;
-    }
-
-    .features-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 32rpx;
-      position: relative;
-      z-index: 2;
-
-      .feature-card {
-        display: flex;
-        align-items: center;
-        padding: 40rpx;
+        gap: 10rpx;
+        padding: 20rpx 0;
         background: var(--r-bg-card);
-        border-radius: 24rpx;
-        box-shadow: var(--r-shadow-md);
-        transition: all 0.3s ease;
+        border-radius: 16rpx;
+        box-shadow: var(--r-shadow-sm);
 
-        &:hover {
-          transform: translateY(-4rpx);
-          box-shadow: var(--r-shadow-lg);
-        }
-
-        .feature-icon-wrap {
-          width: 80rpx;
-          height: 80rpx;
+        .quick-icon {
+          width: 72rpx;
+          height: 72rpx;
           border-radius: 20rpx;
           display: flex;
           align-items: center;
           justify-content: center;
-          margin-right: 32rpx;
 
-          .feature-icon {
-            font-size: 36rpx;
-          }
-        }
-
-        .feature-info {
-          flex: 1;
-
-          .feature-name {
-            display: block;
-            font-size: 32rpx;
-            font-weight: bold;
-            color: var(--r-text-primary);
-            margin-bottom: 8rpx;
-          }
-
-          .feature-desc {
-            display: block;
-            font-size: 26rpx;
-            color: var(--r-text-regular);
-          }
-        }
-      }
-    }
-  }
-
-  /* 技术栈 */
-  .tech-section {
-    padding: 80rpx 40rpx;
-    background: var(--r-bg-card);
-
-    .tech-stack {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 32rpx;
-
-      .tech-category {
-        padding: 32rpx;
-        background: var(--r-bg-elevated);
-        border-radius: 20rpx;
-        border: 1px solid var(--r-border-color);
-
-        .tech-header {
-          display: flex;
-          align-items: center;
-          margin-bottom: 24rpx;
-
-          .tech-icon {
-            font-size: 32rpx;
-            margin-right: 16rpx;
-          }
-
-          .tech-name {
+          .icon-text {
             font-size: 28rpx;
-            font-weight: bold;
-            color: var(--r-text-primary);
           }
         }
 
-        .tech-items {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 16rpx;
-
-          .tech-item {
-            padding: 8rpx 16rpx;
-            background: var(--r-bg-card);
-            color: var(--r-color-primary);
-            font-size: 22rpx;
-            border-radius: 12rpx;
-            border: 1px solid var(--r-border-color);
-          }
+        .quick-label {
+          font-size: 22rpx;
+          color: var(--r-text-secondary);
         }
       }
     }
   }
 
-  /* 开发优势 */
-  .advantages-section {
-    padding: 80rpx 40rpx;
+  .todo-section {
+    margin-bottom: 28rpx;
 
-    .advantages-list {
-      .advantage-item {
+    .todo-list {
+      background: var(--r-bg-card);
+      border-radius: 20rpx;
+      overflow: hidden;
+      box-shadow: var(--r-shadow-sm);
+
+      .todo-item {
         display: flex;
-        align-items: flex-start;
-        padding: 32rpx;
-        background: var(--r-bg-card);
-        border-radius: 20rpx;
-        margin-bottom: 24rpx;
-        box-shadow: var(--r-shadow-sm);
+        align-items: center;
+        gap: 16rpx;
+        padding: 24rpx 28rpx;
+        border-bottom: 1rpx solid var(--r-border-light);
 
-        .advantage-number {
-          width: 56rpx;
-          height: 56rpx;
-          background: linear-gradient(
-            135deg,
-            var(--r-color-primary) 0%,
-            var(--r-color-primary-light) 100%
-          );
-          color: var(--r-text-inverse);
+        &:last-child {
+          border-bottom: none;
+        }
+
+        .todo-check {
+          width: 36rpx;
+          height: 36rpx;
           border-radius: 50%;
+          border: 2rpx solid #ddd;
           display: flex;
           align-items: center;
           justify-content: center;
-          font-weight: bold;
-          margin-right: 24rpx;
-          font-size: 24rpx;
+          flex-shrink: 0;
+
+          &.done {
+            background: #43e97b;
+            border-color: #43e97b;
+          }
         }
 
-        .advantage-content {
+        .todo-content {
           flex: 1;
 
-          .advantage-title {
+          .todo-title {
             display: block;
-            font-size: 30rpx;
-            font-weight: bold;
+            font-size: 28rpx;
             color: var(--r-text-primary);
-            margin-bottom: 8rpx;
+
+            &.done {
+              color: var(--r-text-placeholder);
+              text-decoration: line-through;
+            }
           }
 
-          .advantage-desc {
+          .todo-time {
+            font-size: 22rpx;
+            color: var(--r-text-placeholder);
+          }
+        }
+
+        .todo-priority {
+          .priority-dot {
+            width: 12rpx;
+            height: 12rpx;
+            border-radius: 50%;
+            display: block;
+          }
+
+          &.high .priority-dot {
+            background: #f56c6c;
+          }
+          &.medium .priority-dot {
+            background: #faad14;
+          }
+          &.low .priority-dot {
+            background: #43e97b;
+          }
+        }
+      }
+    }
+  }
+
+  .activity-section {
+    margin-bottom: 28rpx;
+
+    .activity-list {
+      padding: 8rpx 28rpx;
+      background: var(--r-bg-card);
+      border-radius: 20rpx;
+      box-shadow: var(--r-shadow-sm);
+
+      .activity-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 16rpx;
+        padding: 20rpx 0;
+        border-bottom: 1rpx solid var(--r-border-light);
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        .activity-dot {
+          width: 12rpx;
+          height: 12rpx;
+          border-radius: 50%;
+          margin-top: 10rpx;
+          flex-shrink: 0;
+        }
+
+        .activity-content {
+          flex: 1;
+
+          .activity-text {
             display: block;
             font-size: 26rpx;
-            color: var(--r-text-regular);
-            line-height: 1.5;
+            color: var(--r-text-primary);
           }
-        }
-      }
-    }
-  }
 
-  /* 应用场景 */
-  .scenarios-section {
-    padding: 80rpx 40rpx;
-    background: var(--r-bg-card);
-
-    .scenarios-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 24rpx;
-
-      .scenario-card {
-        padding: 32rpx;
-        text-align: center;
-        background: var(--r-bg-elevated);
-        border-radius: 20rpx;
-        border: 1px solid var(--r-border-color);
-
-        .scenario-icon {
-          font-size: 48rpx;
-          margin-bottom: 16rpx;
-          display: block;
-        }
-
-        .scenario-name {
-          display: block;
-          font-size: 28rpx;
-          font-weight: bold;
-          color: var(--r-text-primary);
-          margin-bottom: 8rpx;
-        }
-
-        .scenario-desc {
-          display: block;
-          font-size: 22rpx;
-          color: var(--r-text-regular);
-        }
-      }
-    }
-  }
-
-  /* 快速开始 */
-  .quickstart-section {
-    padding: 80rpx 40rpx;
-    background: linear-gradient(135deg, #1c1c1e 0%, #0a0a0a 100%);
-
-    .quickstart-content {
-      text-align: center;
-
-      .quickstart-title {
-        display: block;
-        font-size: 48rpx;
-        font-weight: bold;
-        color: rgba(255, 255, 255, 0.92);
-        margin-bottom: 16rpx;
-      }
-
-      .quickstart-subtitle {
-        display: block;
-        font-size: 28rpx;
-        color: rgba(255, 255, 255, 0.6);
-        margin-bottom: 60rpx;
-      }
-
-      .command-steps {
-        margin-bottom: 60rpx;
-
-        .command-item {
-          display: flex;
-          align-items: flex-start;
-          margin-bottom: 32rpx;
-          text-align: left;
-
-          .command-step {
-            width: 48rpx;
-            height: 48rpx;
-            background: var(--r-color-primary);
-            color: rgba(255, 255, 255, 0.92);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            margin-right: 24rpx;
+          .activity-time {
             font-size: 22rpx;
-          }
-
-          .command-content {
-            flex: 1;
-
-            .command-desc {
-              display: block;
-              color: rgba(255, 255, 255, 0.85);
-              font-size: 26rpx;
-              margin-bottom: 12rpx;
-            }
-
-            .command-code {
-              padding: 16rpx 20rpx;
-              background: rgba(0, 0, 0, 0.6);
-              border-radius: 8rpx;
-              font-family: 'Courier New', monospace;
-
-              text {
-                color: var(--r-color-success);
-                font-size: 22rpx;
-              }
-            }
-          }
-        }
-      }
-
-      .action-buttons {
-        display: flex;
-        gap: 24rpx;
-        justify-content: center;
-
-        .action-btn {
-          padding: 24rpx 48rpx;
-          border-radius: 16rpx;
-          font-size: 28rpx;
-          font-weight: bold;
-
-          &.primary {
-            background: var(--r-color-primary);
-            color: rgba(255, 255, 255, 0.92);
-          }
-
-          &.secondary {
-            background: transparent;
-            color: rgba(255, 255, 255, 0.85);
-            border: 2rpx solid var(--r-color-primary);
+            color: var(--r-text-placeholder);
+            margin-top: 4rpx;
           }
         }
       }
     }
   }
 
-  /* 项目信息 */
-  .project-info {
-    padding: 60rpx 40rpx;
-    background: var(--r-bg-grey);
+  .project-footer {
+    text-align: center;
+    padding: 32rpx 0 16rpx;
 
-    .info-content {
-      text-align: center;
+    .project-name {
+      display: block;
+      font-size: 24rpx;
+      color: var(--r-text-placeholder);
+    }
 
-      .project-name {
-        display: block;
-        font-size: 32rpx;
-        font-weight: bold;
-        color: var(--r-text-primary);
-        margin-bottom: 8rpx;
-      }
-
-      .project-version,
-      .project-license {
-        display: block;
-        font-size: 24rpx;
-        color: var(--r-text-regular);
-        margin-bottom: 8rpx;
-      }
-
-      .project-author {
-        display: block;
-        font-size: 24rpx;
-        color: var(--r-text-secondary);
-      }
+    .project-desc {
+      font-size: 22rpx;
+      color: var(--r-text-placeholder);
     }
   }
 </style>

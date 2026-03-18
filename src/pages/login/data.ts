@@ -147,10 +147,25 @@ export function useLoginData() {
 
   // 微信登录
   const handleWechatLogin = () => {
+    // #ifdef MP-WEIXIN
+    uni.getUserProfile({
+      desc: '用于登录',
+      success: res => {
+        uni.showToast({ title: '微信授权成功', icon: 'success' })
+        // TODO: 将 res.userInfo 发送到后端换取 token
+        console.log('微信用户信息:', res.userInfo)
+      },
+      fail: () => {
+        uni.showToast({ title: '用户拒绝授权', icon: 'none' })
+      },
+    })
+    // #endif
+    // #ifndef MP-WEIXIN
     uni.showToast({
-      title: '微信登录功能开发中',
+      title: '微信登录仅在小程序中可用',
       icon: 'none',
     })
+    // #endif
   }
 
   // 快速体验

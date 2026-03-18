@@ -12,6 +12,7 @@
         class="c-upload__preview"
         :src="file.url || file"
         mode="aspectFill"
+        lazy-load
       />
 
       <!-- 上传进度 -->

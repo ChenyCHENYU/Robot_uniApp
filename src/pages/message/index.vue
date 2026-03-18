@@ -30,16 +30,29 @@
         <view class="action-left">
           <text class="msg-count">{{ filteredMessages.length }} 条消息</text>
         </view>
-        <view
-          class="action-right"
-          @click="markAllRead"
-        >
-          <wd-icon
-            name="check"
-            size="14px"
-            color="#667eea"
-          />
-          <text class="action-text">全部已读</text>
+        <view class="action-right-group">
+          <view
+            class="action-btn"
+            @click="handleClearRead"
+          >
+            <wd-icon
+              name="delete"
+              size="14px"
+              color="var(--r-text-secondary)"
+            />
+            <text class="action-text secondary">清除已读</text>
+          </view>
+          <view
+            class="action-btn"
+            @click="markAllRead"
+          >
+            <wd-icon
+              name="check"
+              size="14px"
+              color="#667eea"
+            />
+            <text class="action-text">全部已读</text>
+          </view>
         </view>
       </view>
 
@@ -48,31 +61,47 @@
         <view
           v-for="msg in filteredMessages"
           :key="msg.id"
-          class="message-card"
-          :class="{ unread: !msg.read }"
-          @click="handleMessageClick(msg)"
+          class="message-card-wrapper"
         >
           <view
-            class="msg-icon-wrap"
-            :style="{ background: msg.iconBg }"
+            class="message-card"
+            :class="{ unread: !msg.read }"
+            @click="handleMessageClick(msg)"
+            @longpress="handleLongPress(msg)"
           >
-            <wd-icon
-              :name="msg.icon"
-              size="20px"
-              color="#fff"
-            />
-          </view>
-          <view class="msg-body">
-            <view class="msg-header">
-              <text class="msg-title">{{ msg.title }}</text>
-              <text class="msg-time">{{ msg.time }}</text>
+            <view
+              class="msg-icon-wrap"
+              :style="{ background: msg.iconBg }"
+            >
+              <wd-icon
+                :name="msg.icon"
+                size="20px"
+                color="#fff"
+              />
             </view>
-            <text class="msg-content">{{ msg.content }}</text>
+            <view class="msg-body">
+              <view class="msg-header">
+                <text class="msg-title">{{ msg.title }}</text>
+                <text class="msg-time">{{ msg.time }}</text>
+              </view>
+              <text class="msg-content">{{ msg.content }}</text>
+              <view
+                v-if="msg.actionLabel"
+                class="msg-action"
+              >
+                <text class="msg-action-text">{{ msg.actionLabel }}</text>
+                <wd-icon
+                  name="arrow-right"
+                  size="12px"
+                  color="var(--r-color-primary)"
+                />
+              </view>
+            </view>
+            <view
+              v-if="!msg.read"
+              class="unread-dot"
+            ></view>
           </view>
-          <view
-            v-if="!msg.read"
-            class="unread-dot"
-          ></view>
         </view>
       </view>
 
@@ -89,6 +118,14 @@
         <text class="empty-text">暂无消息</text>
         <text class="empty-desc">当前分类下没有新消息</text>
       </view>
+
+      <!-- 消息详情弹窗 -->
+      <wd-action-sheet
+        v-model="showDetail"
+        :actions="detailActions"
+        cancel-text="取消"
+        @select="handleDetailAction"
+      />
     </view>
   </C_Layout>
 </template>
@@ -96,21 +133,42 @@
 <script setup lang="ts">
   import { ref, computed } from 'vue'
 
+  interface Message {
+    id: number
+    type: string
+    title: string
+    content: string
+    time: string
+    read: boolean
+    icon: string
+    iconBg: string
+    actionLabel?: string
+    actionUrl?: string
+  }
+
   const activeTab = ref('all')
+  const showDetail = ref(false)
+  const currentMsg = ref<Message | null>(null)
+
+  const detailActions = [
+    { name: '标记为已读', value: 'read' },
+    { name: '删除该消息', value: 'delete', color: '#f5576c' },
+  ]
 
   const messageTabs = ref([
-    { key: 'all', label: '全部', count: 5 },
+    { key: 'all', label: '全部', count: 8 },
     { key: 'system', label: '系统', count: 2 },
-    { key: 'notify', label: '通知', count: 2 },
-    { key: 'todo', label: '待办', count: 1 },
+    { key: 'notify', label: '通知', count: 3 },
+    { key: 'todo', label: '待办', count: 2 },
+    { key: 'interact', label: '互动', count: 1 },
   ])
 
-  const messages = ref([
+  const messages = ref<Message[]>([
     {
       id: 1,
       type: 'system',
       title: '系统更新',
-      content: 'Robot UniApp v1.1.0 已发布，新增 15 个通用组件',
+      content: 'Robot UniApp v1.1.0 已发布，新增 15 个通用组件，优化整体性能',
       time: '刚刚',
       read: false,
       icon: 'setting',
@@ -125,6 +183,8 @@
       read: false,
       icon: 'notification',
       iconBg: 'linear-gradient(135deg, #f093fb, #f5576c)',
+      actionLabel: '前往查看',
+      actionUrl: '/pages/demo/index',
     },
     {
       id: 3,
@@ -140,18 +200,54 @@
       id: 4,
       type: 'todo',
       title: '审批待办',
-      content: '您有 1 条新的审批申请需要处理',
+      content: '您有 1 条新的审批申请需要处理，请及时审批',
       time: '2小时前',
       read: false,
       icon: 'edit-outline',
       iconBg: 'linear-gradient(135deg, #4facfe, #00f2fe)',
+      actionLabel: '去处理',
+      actionUrl: '/pages/approval/index',
     },
     {
       id: 5,
       type: 'notify',
+      title: '数据看板',
+      content: '本周访问量同比上升 12.5%，点击查看详情',
+      time: '3小时前',
+      read: false,
+      icon: 'chart',
+      iconBg: 'linear-gradient(135deg, #43e97b, #38f9d7)',
+      actionLabel: '查看详情',
+      actionUrl: '/pages/dashboard/index',
+    },
+    {
+      id: 6,
+      type: 'todo',
+      title: '表单提交',
+      content: '有 2 份新的表单待审核，请尽快处理',
+      time: '昨天',
+      read: false,
+      icon: 'list',
+      iconBg: 'linear-gradient(135deg, #a8edea, #fed6e3)',
+      actionLabel: '去审核',
+      actionUrl: '/pages/crud-list/index',
+    },
+    {
+      id: 7,
+      type: 'interact',
+      title: '新评论',
+      content: '用户 Alex 评论了您的项目：「设计非常出色！」',
+      time: '昨天',
+      read: false,
+      icon: 'comment',
+      iconBg: 'linear-gradient(135deg, #ffecd2, #fcb69f)',
+    },
+    {
+      id: 8,
+      type: 'notify',
       title: '欢迎使用',
       content: '欢迎体验 Robot UniApp 企业级跨平台开发框架',
-      time: '昨天',
+      time: '2天前',
       read: true,
       icon: 'heart',
       iconBg: 'linear-gradient(135deg, #43e97b, #38f9d7)',
@@ -163,23 +259,57 @@
     return messages.value.filter(msg => msg.type === activeTab.value)
   })
 
+  const updateTabCounts = () => {
+    const counts: Record<string, number> = { all: 0 }
+    messages.value.forEach(msg => {
+      if (!msg.read) {
+        counts.all = (counts.all || 0) + 1
+        counts[msg.type] = (counts[msg.type] || 0) + 1
+      }
+    })
+    messageTabs.value.forEach(tab => {
+      tab.count = counts[tab.key] || 0
+    })
+  }
+
   const markAllRead = () => {
     messages.value.forEach(msg => {
       msg.read = true
     })
-    messageTabs.value.forEach(tab => {
-      tab.count = 0
-    })
+    updateTabCounts()
     uni.showToast({ title: '已全部标记为已读', icon: 'none' })
   }
 
-  const handleMessageClick = msg => {
-    msg.read = true
-    // 更新tab计数
-    const tab = messageTabs.value.find(t => t.key === msg.type)
-    if (tab && tab.count > 0) tab.count--
-    const allTab = messageTabs.value.find(t => t.key === 'all')
-    if (allTab && allTab.count > 0) allTab.count--
+  const handleClearRead = () => {
+    const readCount = messages.value.filter(m => m.read).length
+    if (readCount === 0) {
+      uni.showToast({ title: '没有已读消息', icon: 'none' })
+      return
+    }
+    uni.showModal({
+      title: '清除已读消息',
+      content: `确定删除 ${readCount} 条已读消息？`,
+      success: ({ confirm }) => {
+        if (confirm) {
+          messages.value = messages.value.filter(m => !m.read)
+          updateTabCounts()
+          uni.showToast({ title: '已清除', icon: 'success' })
+        }
+      },
+    })
+  }
+
+  const handleMessageClick = (msg: Message) => {
+    if (!msg.read) {
+      msg.read = true
+      updateTabCounts()
+    }
+
+    // 如果有跳转链接，直接导航
+    if (msg.actionUrl) {
+      uni.navigateTo({ url: msg.actionUrl })
+      return
+    }
 
     uni.showModal({
       title: msg.title,
@@ -187,6 +317,23 @@
       showCancel: false,
       confirmText: '知道了',
     })
+  }
+
+  const handleLongPress = (msg: Message) => {
+    currentMsg.value = msg
+    showDetail.value = true
+  }
+
+  const handleDetailAction = ({ value }: { value: string }) => {
+    if (!currentMsg.value) return
+    if (value === 'read') {
+      currentMsg.value.read = true
+      updateTabCounts()
+    } else if (value === 'delete') {
+      messages.value = messages.value.filter(m => m.id !== currentMsg.value!.id)
+      updateTabCounts()
+      uni.showToast({ title: '已删除', icon: 'success' })
+    }
   }
 
   const handleSettingsClick = () => {
@@ -206,6 +353,7 @@
     gap: 16rpx;
     background: var(--r-bg-card);
     border-bottom: 1rpx solid var(--r-divider);
+    overflow-x: auto;
 
     .tab-item {
       position: relative;
@@ -214,6 +362,7 @@
       background: var(--r-bg-hover);
       border: 1rpx solid transparent;
       transition: all 0.3s ease;
+      flex-shrink: 0;
 
       &.active {
         background: var(--r-bg-hover);
@@ -263,18 +412,27 @@
       color: var(--r-text-secondary);
     }
 
-    .action-right {
+    .action-right-group {
       display: flex;
-      align-items: center;
-      gap: 8rpx;
-      padding: 8rpx 16rpx;
-      border-radius: 20rpx;
-      background: var(--r-bg-hover);
+      gap: 16rpx;
 
-      .action-text {
-        font-size: 24rpx;
-        color: var(--r-color-primary);
-        font-weight: 500;
+      .action-btn {
+        display: flex;
+        align-items: center;
+        gap: 8rpx;
+        padding: 8rpx 16rpx;
+        border-radius: 20rpx;
+        background: var(--r-bg-hover);
+
+        .action-text {
+          font-size: 24rpx;
+          color: var(--r-color-primary);
+          font-weight: 500;
+
+          &.secondary {
+            color: var(--r-text-secondary);
+          }
+        }
       }
     }
   }
@@ -282,11 +440,14 @@
   .message-list {
     padding: 0 32rpx;
 
+    .message-card-wrapper {
+      margin-bottom: 16rpx;
+    }
+
     .message-card {
       display: flex;
       align-items: center;
       padding: 28rpx;
-      margin-bottom: 16rpx;
       background: var(--r-bg-card);
       border-radius: 20rpx;
       border: 1rpx solid var(--r-divider);
@@ -296,6 +457,10 @@
       &.unread {
         background: var(--r-bg-card);
         border-color: var(--r-border-color);
+      }
+
+      &:active {
+        transform: scale(0.98);
       }
 
       .msg-icon-wrap {
@@ -337,6 +502,19 @@
           overflow: hidden;
           white-space: nowrap;
           text-overflow: ellipsis;
+        }
+
+        .msg-action {
+          display: flex;
+          align-items: center;
+          gap: 4rpx;
+          margin-top: 12rpx;
+
+          .msg-action-text {
+            font-size: 22rpx;
+            color: var(--r-color-primary);
+            font-weight: 500;
+          }
         }
       }
 

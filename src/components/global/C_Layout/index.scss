@@ -31,11 +31,11 @@ $breakpoint-md: 1024rpx;
   background-color: $content-bg; // 确保是纯白背景
   position: relative;
   overflow: hidden;
-  
+
   // =================================
   // Layout类型样式
   // =================================
-  
+
   // 无Layout样式（登录页、引导页等）
   &.layout-none {
     .layout-content {
@@ -47,7 +47,7 @@ $breakpoint-md: 1024rpx;
       background-color: $content-bg; // 确保内容区域也是白色
     }
   }
-  
+
   // 只有Header的样式（详情页、设置页等）
   &.layout-header-only {
     .layout-content {
@@ -55,13 +55,13 @@ $breakpoint-md: 1024rpx;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
       background-color: $content-bg; // 确保内容区域是白色
-      
+
       // 确保内容不会被Header遮挡
       position: relative;
       z-index: 1;
     }
   }
-  
+
   // 完整布局样式（TabBar页面）
   &.layout-full {
     .layout-content {
@@ -69,20 +69,20 @@ $breakpoint-md: 1024rpx;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
       background-color: $content-bg; // 确保内容区域是白色
-      
+
       // 为Tabbar预留空间
       padding-bottom: $tabbar-height;
-      
+
       // 内容区域样式
       position: relative;
       z-index: 1;
     }
   }
-  
+
   // =================================
   // 状态修饰符
   // =================================
-  
+
   &.has-header {
     .layout-content {
       // Header自动占据顶部空间
@@ -91,13 +91,13 @@ $breakpoint-md: 1024rpx;
       background-color: $content-bg; // 确保背景是白色
     }
   }
-  
+
   &.has-tabbar {
     .layout-content {
       // 确保内容不会被Tabbar遮挡
       padding-bottom: $tabbar-height;
       background-color: $content-bg; // 确保背景是白色
-      
+
       // 在有TabBar的情况下，添加底部安全区域
       padding-bottom: calc(#{$tabbar-height} + constant(safe-area-inset-bottom));
       padding-bottom: calc(#{$tabbar-height} + env(safe-area-inset-bottom));
@@ -114,49 +114,49 @@ $breakpoint-md: 1024rpx;
   z-index: 1;
   transition: $layout-transition;
   background-color: $content-bg !important; // 强制白色背景
-  
+
   // 滚动优化
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
-  
+
   // 确保内容区域的最小高度
   min-height: 0; // 修复flex布局下的滚动问题
-  
+
   // 内容容器的基础样式
   > .page {
     min-height: 100%;
     position: relative;
     background-color: $content-bg; // 确保页面内容也是白色
   }
-  
+
   > .page-content {
     position: relative;
     z-index: 1;
     padding: 0;
     background-color: $content-bg; // 确保页面内容也是白色
   }
-  
+
   // =================================
   // 内容区域变体
   // =================================
-  
+
   // 无间距内容
   &.no-padding {
     padding: 0 !important;
-    
+
     > * {
       padding: 0;
       background-color: $content-bg; // 保持白色背景
     }
   }
-  
+
   // 自定义间距
   &.custom-padding {
     padding: var(--layout-padding, 40rpx);
     background-color: $content-bg; // 保持白色背景
   }
-  
+
   // 带边距的内容区域
   &.with-margin {
     margin: 20rpx;
@@ -188,17 +188,17 @@ $breakpoint-md: 1024rpx;
   z-index: 99;
   flex-shrink: 0;
   height: $tabbar-height;
-  
+
   // 毛玻璃效果
   backdrop-filter: blur(20rpx);
   -webkit-backdrop-filter: blur(20rpx);
   border-top: 1rpx solid var(--r-divider, rgba(0, 0, 0, 0.04));
     background: var(--r-glass-bg, rgba(255, 255, 255, 0.85));
-  
+
   // 安全区域适配
   padding-bottom: constant(safe-area-inset-bottom);
   padding-bottom: env(safe-area-inset-bottom);
-  
+
   // 添加微妙的阴影
   box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.03);
 }
@@ -243,12 +243,12 @@ $breakpoint-md: 1024rpx;
   font-size: 24rpx;
   cursor: pointer;
   transition: $layout-transition;
-  
+
   &:hover {
     background: rgba(255, 0, 0, 1);
     transform: scale(1.1);
   }
-  
+
   .debug-text {
     font-weight: bold;
   }
@@ -280,7 +280,7 @@ $breakpoint-md: 1024rpx;
 @media screen and (max-width: $breakpoint-sm) {
   .c-layout {
     background-color: $content-bg; // 确保小屏幕也是白色背景
-    
+
     &.layout-full {
       .layout-content {
         // 小屏幕上给Tabbar更多空间
@@ -289,15 +289,15 @@ $breakpoint-md: 1024rpx;
       }
     }
   }
-  
+
   .layout-content {
     background-color: $content-bg !important; // 强制白色背景
-    
+
     &.has-tabbar {
       padding-bottom: calc(#{$tabbar-height} + 20rpx);
       background-color: $content-bg; // 确保背景是白色
     }
-    
+
     // 小屏幕优化滚动性能
     &.scroll-optimized {
       will-change: scroll-position;
@@ -314,10 +314,10 @@ $breakpoint-md: 1024rpx;
     margin: 0 auto;
     background-color: $content-bg; // 确保背景是白色
   }
-  
+
   .layout-content {
     background-color: $content-bg !important; // 强制白色背景
-    
+
     // 平板上的内容区域可以有更多空间
     &.tablet-optimized {
       max-width: 1200rpx;
@@ -331,13 +331,13 @@ $breakpoint-md: 1024rpx;
 @media screen and (orientation: landscape) {
   .c-layout {
     background-color: $content-bg; // 确保横屏也是白色背景
-    
+
     .layout-content {
       // 横屏时的特殊处理
       overflow-x: hidden;
       min-height: calc(100vh - #{$tabbar-height});
       background-color: $content-bg; // 确保背景是白色
-      
+
       // 横屏时优化滚动
       &.landscape-optimized {
         padding-bottom: calc(#{$tabbar-height} + 20rpx);
@@ -345,7 +345,7 @@ $breakpoint-md: 1024rpx;
       }
     }
   }
-  
+
   // 横屏时TabBar的特殊样式
   .c-tabbar {
     height: calc(#{$tabbar-height} - 20rpx); // 横屏时稍微降低高度
@@ -366,7 +366,7 @@ $breakpoint-md: 1024rpx;
     transform: none !important;
     will-change: auto !important;
   }
-  
+
   // 禁用所有动画效果
   * {
     animation-duration: 0.01ms !important;
@@ -465,7 +465,7 @@ $breakpoint-md: 1024rpx;
 .layout-hide-scrollbar {
   scrollbar-width: none; // Firefox
   -ms-overflow-style: none; // IE
-  
+
   &::-webkit-scrollbar {
     display: none; // Chrome, Safari, Edge
   }
@@ -478,7 +478,7 @@ $breakpoint-md: 1024rpx;
   // 当Header和TabBar同时存在时的优化
   &.has-header.has-tabbar {
     background-color: $content-bg; // 确保背景是白色
-    
+
     .layout-content {
       // 确保内容区域的合适高度
       height: calc(100vh - #{$tabbar-height});
@@ -486,22 +486,22 @@ $breakpoint-md: 1024rpx;
       background-color: $content-bg; // 确保背景是白色
     }
   }
-  
+
   // 仅有Header时的优化
   &.has-header:not(.has-tabbar) {
     background-color: $content-bg; // 确保背景是白色
-    
+
     .layout-content {
       height: auto;
       min-height: calc(100vh - 200rpx); // 减去大概的Header高度
       background-color: $content-bg; // 确保背景是白色
     }
   }
-  
+
   // 仅有TabBar时的优化（理论上不会出现，但预留）
   &.has-tabbar:not(.has-header) {
     background-color: $content-bg; // 确保背景是白色
-    
+
     .layout-content {
       padding-top: 0;
       height: calc(100vh - #{$tabbar-height});
