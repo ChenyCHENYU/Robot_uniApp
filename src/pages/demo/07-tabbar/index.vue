@@ -1,249 +1,194 @@
 <template>
   <C_Layout>
-    <view class="demo-page">
-      <view class="demo-header">
-        <text class="demo-title">C_Tabbar 标签栏</text>
-        <text class="demo-subtitle"
-          >底部导航标签栏，支持图标、角标、自定义样式</text
-        >
+    <view class="max-w-4xl mx-auto p-5 bg-gray-50 min-h-screen">
+      <view class="text-center mb-8">
+        <C_Title
+          title="C_Tabbar 标签栏"
+          subtitle="底部导航标签栏组件"
+          type="primary"
+          :level="3"
+          size="large"
+          align="center"
+          left-icon="i-mdi-dock-bottom"
+          :show-decoration="true"
+          :show-divider="true"
+        />
       </view>
 
-      <!-- 基础说明 -->
-      <view class="demo-section">
-        <text class="section-title">基础用法</text>
-        <view class="demo-card">
-          <text class="demo-desc"
-            >C_Tabbar 通常由 C_Layout
-            自动集成，Tab页会自动展示底部导航栏。你也可以独立使用它。</text
-          >
-          <view class="code-block">
-            &lt;C_Tabbar v-model="activeIndex" :tabList="tabs"
-            @change="onChange" /&gt;
+      <view class="grid grid-cols-1 gap-6">
+        <!-- 基础用法 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="基础展示"
+            subtitle="默认五个标签"
+            :level="4"
+            type="primary"
+            align="center"
+            left-icon="i-mdi-tab"
+            :show-decoration="true"
+          />
+          <view class="my-6 bg-gray-50 rounded-lg overflow-hidden">
+            <view class="text-center py-8 text-sm text-gray-500"
+              >Tabbar 固定在主页面底部</view
+            >
+            <view class="border-t border-gray-200 bg-white py-4">
+              <view class="flex justify-around">
+                <view
+                  v-for="tab in tabs"
+                  :key="tab.name"
+                  class="flex flex-col items-center gap-1"
+                  :class="tab.active ? 'text-blue-500' : 'text-gray-400'"
+                >
+                  <text
+                    :class="tab.icon"
+                    class="text-xl"
+                  ></text>
+                  <text class="text-xs">{{ tab.name }}</text>
+                </view>
+              </view>
+            </view>
           </view>
         </view>
-      </view>
 
-      <!-- 默认 Tab 配置 -->
-      <view class="demo-section">
-        <text class="section-title">默认 Tab 配置</text>
-        <view class="demo-card">
-          <view class="tab-preview">
-            <view
-              v-for="(tab, index) in defaultTabs"
-              :key="tab.id"
-              :class="['tab-item', index === activeTab && 'tab-item--active']"
-              @click="activeTab = index"
+        <!-- 角标提示 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="角标提示"
+            subtitle="搭配 Badge 徽标"
+            :level="4"
+            type="success"
+            align="center"
+            left-icon="i-mdi-bell-badge"
+            :show-decoration="true"
+          />
+          <view class="my-6 bg-gray-50 rounded-lg overflow-hidden">
+            <view class="text-center py-8 text-sm text-gray-500"
+              >Tab 项可配角标数量与圆点</view
             >
-              <C_Icon
-                :name="
-                  index === activeTab
-                    ? 'i-mdi-' + tab.activeIcon
-                    : 'i-mdi-' + tab.icon
-                "
-                :size="22"
-                :color="index === activeTab ? '#007AFF' : '#8E8E93'"
-              />
+            <view class="border-t border-gray-200 bg-white py-4">
+              <view class="flex justify-around">
+                <view
+                  v-for="tab in badgeTabs"
+                  :key="tab.name"
+                  class="flex flex-col items-center gap-1 relative"
+                >
+                  <C_Badge
+                    v-if="tab.badge"
+                    :value="tab.badge"
+                    :dot="tab.dot"
+                  >
+                    <text
+                      :class="[
+                        tab.icon,
+                        tab.active ? 'text-blue-500' : 'text-gray-400',
+                      ]"
+                      class="text-xl"
+                    ></text>
+                  </C_Badge>
+                  <text
+                    v-else
+                    :class="[
+                      tab.icon,
+                      tab.active ? 'text-blue-500' : 'text-gray-400',
+                    ]"
+                    class="text-xl"
+                  ></text>
+                  <text
+                    class="text-xs"
+                    :class="tab.active ? 'text-blue-500' : 'text-gray-400'"
+                    >{{ tab.name }}</text
+                  >
+                </view>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 功能特性 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="核心能力"
+            subtitle="Tabbar 组件特性"
+            :level="4"
+            type="info"
+            align="center"
+            left-icon="i-mdi-star-four-points"
+            :show-decoration="true"
+          />
+          <view class="my-6 p-4 bg-gray-50 rounded-lg grid grid-cols-1 gap-3">
+            <view class="flex items-center gap-3 p-3 bg-white rounded-lg">
+              <text class="i-mdi-shield-check text-xl text-blue-500"></text>
+              <view>
+                <text class="text-sm font-medium text-gray-700 block"
+                  >安全区适配</text
+                >
+                <text class="text-xs text-gray-500"
+                  >自动适配 iPhone 底部安全距离</text
+                >
+              </view>
+            </view>
+            <view class="flex items-center gap-3 p-3 bg-white rounded-lg">
+              <text class="i-mdi-badge-account text-xl text-green-500"></text>
+              <view>
+                <text class="text-sm font-medium text-gray-700 block"
+                  >Badge 集成</text
+                >
+                <text class="text-xs text-gray-500"
+                  >通过 setBadge(index, value) 动态设置角标</text
+                >
+              </view>
+            </view>
+            <view class="flex items-center gap-3 p-3 bg-white rounded-lg">
               <text
-                :class="['tab-text', index === activeTab && 'tab-text--active']"
-                >{{ tab.text }}</text
-              >
-            </view>
-          </view>
-          <view class="tab-config">
-            <view
-              class="config-item"
-              v-for="tab in defaultTabs"
-              :key="tab.id"
-            >
-              <text class="config-label">{{ tab.text }}</text>
-              <text class="config-value">{{ tab.path }}</text>
+                class="i-mdi-swap-horizontal text-xl text-orange-500"
+              ></text>
+              <view>
+                <text class="text-sm font-medium text-gray-700 block"
+                  >路由联动</text
+                >
+                <text class="text-xs text-gray-500"
+                  >切换标签自动跳转路由，与 uni-app 深度集成</text
+                >
+              </view>
             </view>
           </view>
         </view>
       </view>
 
-      <!-- 角标 -->
-      <view class="demo-section">
-        <text class="section-title">角标提示</text>
-        <view class="demo-card">
-          <text class="demo-desc"
-            >通过 tabList 中每项的 badge 字段控制角标数量</text
-          >
-          <view class="code-block">
-            tabList: [ { id: 'message', text: '消息', badge: 5, ... } ]
-          </view>
-        </view>
-      </view>
-
-      <!-- 事件 -->
-      <view class="demo-section">
-        <text class="section-title">事件</text>
-        <view class="demo-card">
-          <view class="prop-list">
-            <view class="prop-item">
-              <text class="prop-name">change</text>
-              <text class="prop-desc">Tab 切换时触发 { item, index }</text>
-            </view>
-            <view class="prop-item">
-              <text class="prop-name">tabClick</text>
-              <text class="prop-desc">Tab 点击时触发 { item, index }</text>
-            </view>
-          </view>
-        </view>
+      <view class="mt-8 text-center">
+        <C_Title
+          title="一栏导航，全局可达"
+          subtitle="安全区 · 角标 · 路由联动 · 自定义图标"
+          :level="5"
+          type="info"
+          align="center"
+          :show-divider="true"
+          divider-position="top"
+        />
       </view>
     </view>
   </C_Layout>
 </template>
 
 <script setup lang="ts">
-  import { ref } from 'vue'
-
-  const activeTab = ref(0)
-
-  const defaultTabs = [
+  const tabs = [
+    { name: '首页', icon: 'i-mdi-home', active: true },
+    { name: '消息', icon: 'i-mdi-chat', active: false },
+    { name: '机器人', icon: 'i-mdi-robot', active: false },
+    { name: '我的', icon: 'i-mdi-account', active: false },
+    { name: '设置', icon: 'i-mdi-cog', active: false },
+  ]
+  const badgeTabs = [
+    { name: '首页', icon: 'i-mdi-home', active: true, badge: 0, dot: false },
+    { name: '消息', icon: 'i-mdi-chat', active: false, badge: 12, dot: false },
+    { name: '机器人', icon: 'i-mdi-robot', active: false, badge: 0, dot: true },
     {
-      id: 'home',
-      text: '首页',
-      icon: 'home-outline',
-      activeIcon: 'home',
-      path: '/pages/index/index',
+      name: '我的',
+      icon: 'i-mdi-account',
+      active: false,
+      badge: 0,
+      dot: false,
     },
-    {
-      id: 'message',
-      text: '消息',
-      icon: 'chat-outline',
-      activeIcon: 'chat',
-      path: '/pages/message/index',
-    },
-    {
-      id: 'components',
-      text: '组件库',
-      icon: 'apps',
-      activeIcon: 'apps',
-      path: '/pages/robot/index',
-    },
-    {
-      id: 'profile',
-      text: '我的',
-      icon: 'account-outline',
-      activeIcon: 'account',
-      path: '/pages/profile/index',
-    },
+    { name: '设置', icon: 'i-mdi-cog', active: false, badge: 99, dot: false },
   ]
 </script>
-
-<style lang="scss" scoped>
-  .demo-page {
-    min-height: 100%;
-    background: #f5f7fa;
-    padding: 24rpx 32rpx;
-  }
-  .demo-header {
-    margin-bottom: 40rpx;
-    .demo-title {
-      display: block;
-      font-size: 44rpx;
-      font-weight: 700;
-      color: #1f2937;
-      margin-bottom: 8rpx;
-    }
-    .demo-subtitle {
-      display: block;
-      font-size: 26rpx;
-      color: #666;
-    }
-  }
-  .demo-section {
-    margin-bottom: 40rpx;
-    .section-title {
-      display: block;
-      font-size: 30rpx;
-      font-weight: 600;
-      color: #1f2937;
-      margin-bottom: 20rpx;
-      padding-left: 16rpx;
-      border-left: 6rpx solid #667eea;
-    }
-  }
-  .demo-card {
-    background: #fff;
-    border-radius: 20rpx;
-    padding: 32rpx;
-    box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
-    border: 1rpx solid rgba(0, 0, 0, 0.04);
-  }
-  .demo-desc {
-    display: block;
-    font-size: 26rpx;
-    color: #666;
-    margin-bottom: 20rpx;
-  }
-  .code-block {
-    background: #f5f5f5;
-    border-radius: 8rpx;
-    padding: 16rpx 20rpx;
-    font-size: 22rpx;
-    color: #555;
-    font-family: monospace;
-    white-space: pre-wrap;
-  }
-  .tab-preview {
-    display: flex;
-    justify-content: space-around;
-    padding: 20rpx 0;
-    border: 1rpx solid #f0f0f0;
-    border-radius: 12rpx;
-    margin-bottom: 20rpx;
-    background: #fafafa;
-    .tab-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 6rpx;
-    }
-    .tab-text {
-      font-size: 20rpx;
-      color: #8e8e93;
-    }
-    .tab-item--active .tab-text,
-    .tab-text--active {
-      color: #007aff;
-    }
-  }
-  .tab-config {
-    .config-item {
-      display: flex;
-      justify-content: space-between;
-      padding: 10rpx 0;
-      border-bottom: 1rpx solid #f0f0f0;
-    }
-    .config-label {
-      font-size: 24rpx;
-      color: #333;
-      font-weight: 600;
-    }
-    .config-value {
-      font-size: 22rpx;
-      color: #999;
-      font-family: monospace;
-    }
-  }
-  .prop-list {
-    .prop-item {
-      display: flex;
-      justify-content: space-between;
-      padding: 12rpx 0;
-      border-bottom: 1rpx solid #f0f0f0;
-    }
-    .prop-name {
-      font-size: 24rpx;
-      color: #007aff;
-      font-weight: 600;
-      font-family: monospace;
-    }
-    .prop-desc {
-      font-size: 24rpx;
-      color: #666;
-    }
-  }
-</style>

@@ -1,64 +1,126 @@
 <template>
   <C_Layout>
-    <view class="demo-page">
-      <view class="demo-header">
-        <text class="demo-title">C_Notify 消息通知</text>
-        <text class="demo-subtitle">顶部弹出消息通知，支持多种类型</text>
+    <view class="max-w-4xl mx-auto p-5 bg-gray-50 min-h-screen">
+      <view class="text-center mb-8">
+        <C_Title
+          title="C_Notify 消息通知"
+          subtitle="顶部弹出消息提示"
+          type="primary"
+          :level="3"
+          size="large"
+          align="center"
+          left-icon="i-mdi-bell-ring-outline"
+          :show-decoration="true"
+          :show-divider="true"
+        />
       </view>
 
-      <!-- 基础用法 -->
-      <view class="demo-section">
-        <text class="section-title">基础用法</text>
-        <view class="demo-card">
-          <view
-            class="action-btn"
-            @click="showPrimary"
-            >主要通知</view
-          >
-          <view class="code-block">
-            &lt;C_Notify :visible="show" type="primary" message="通知内容" /&gt;
-          </view>
-        </view>
-      </view>
-
-      <!-- 不同类型 -->
-      <view class="demo-section">
-        <text class="section-title">通知类型</text>
-        <view class="demo-card">
-          <view class="btn-group">
-            <view
-              class="action-btn action-btn--primary"
+      <view class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- 基础通知 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="基础通知"
+            subtitle="默认样式"
+            :level="4"
+            type="primary"
+            align="center"
+            left-icon="i-mdi-bell"
+            :show-decoration="true"
+          />
+          <view class="my-6 p-4 bg-gray-50 rounded-lg text-center">
+            <text
+              class="text-sm text-white bg-blue-500 px-6 py-2.5 rounded-full"
               @click="showNotify('primary')"
-              >主要</view
-            >
-            <view
-              class="action-btn action-btn--success"
-              @click="showNotify('success')"
-              >成功</view
-            >
-            <view
-              class="action-btn action-btn--warning"
-              @click="showNotify('warning')"
-              >警告</view
-            >
-            <view
-              class="action-btn action-btn--danger"
-              @click="showNotify('danger')"
-              >危险</view
+              >主要通知</text
             >
           </view>
         </view>
-      </view>
 
-      <!-- 自定义时长 -->
-      <view class="demo-section">
-        <text class="section-title">自定义时长</text>
-        <view class="demo-card">
+        <!-- 成功通知 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="成功通知"
+            subtitle="type=success"
+            :level="4"
+            type="success"
+            align="center"
+            left-icon="i-mdi-check-circle"
+            :show-decoration="true"
+          />
+          <view class="my-6 p-4 bg-gray-50 rounded-lg text-center">
+            <text
+              class="text-sm text-white bg-green-500 px-6 py-2.5 rounded-full"
+              @click="showNotify('success')"
+              >成功通知</text
+            >
+          </view>
+        </view>
+
+        <!-- 警告通知 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="警告通知"
+            subtitle="type=warning"
+            :level="4"
+            type="warning"
+            align="center"
+            left-icon="i-mdi-alert"
+            :show-decoration="true"
+          />
+          <view class="my-6 p-4 bg-gray-50 rounded-lg text-center">
+            <text
+              class="text-sm text-white bg-amber-500 px-6 py-2.5 rounded-full"
+              @click="showNotify('warning')"
+              >警告通知</text
+            >
+          </view>
+        </view>
+
+        <!-- 危险通知 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="危险通知"
+            subtitle="type=danger"
+            :level="4"
+            type="danger"
+            align="center"
+            left-icon="i-mdi-close-circle"
+            :show-decoration="true"
+          />
+          <view class="my-6 p-4 bg-gray-50 rounded-lg text-center">
+            <text
+              class="text-sm text-white bg-red-500 px-6 py-2.5 rounded-full"
+              @click="showNotify('danger')"
+              >危险通知</text
+            >
+          </view>
+        </view>
+
+        <!-- 自定义时长 -->
+        <view class="bg-white rounded-lg shadow-md p-6 lg:col-span-2">
+          <C_Title
+            title="自定义时长"
+            subtitle="duration 属性"
+            :level="4"
+            type="info"
+            align="center"
+            left-icon="i-mdi-timer-outline"
+            :show-decoration="true"
+          />
           <view
-            class="action-btn"
-            @click="showLong"
-            >展示5秒</view
+            class="my-6 flex justify-center gap-4 p-4 bg-gray-50 rounded-lg"
           >
+            <text
+              class="text-sm text-white bg-indigo-500 px-5 py-2.5 rounded-full"
+              @click="showLong"
+              >展示 5 秒</text
+            >
+            <text
+              class="text-sm text-white bg-gray-500 px-5 py-2.5 rounded-full"
+              @click="showShort"
+              >展示 1 秒</text
+            >
+          </view>
         </view>
       </view>
 
@@ -69,121 +131,64 @@
         :duration="notifyDuration"
         @close="notifyVisible = false"
       />
+
+      <view class="mt-8 text-center">
+        <C_Title
+          title="即时反馈，清晰醒目"
+          subtitle="主要 · 成功 · 警告 · 危险 · 自定义时长"
+          :level="5"
+          type="info"
+          align="center"
+          :show-divider="true"
+          divider-position="top"
+        />
+      </view>
     </view>
   </C_Layout>
 </template>
 
 <script setup lang="ts">
   import { ref } from 'vue'
-  import type { NotifyType } from '@/types/modules/notify'
 
   const notifyVisible = ref(false)
-  const notifyType = ref<NotifyType>('primary')
+  const notifyType = ref<string>('primary')
   const notifyMessage = ref('')
   const notifyDuration = ref(3000)
 
-  const showPrimary = () => {
-    notifyType.value = 'primary'
-    notifyMessage.value = '这是一条主要通知'
-    notifyDuration.value = 3000
-    notifyVisible.value = true
+  const messages: Record<string, string> = {
+    primary: '这是一条主要通知',
+    success: '操作成功',
+    warning: '请注意操作安全',
+    danger: '操作失败，请重试',
   }
 
-  const showNotify = (type: NotifyType) => {
+  /**
+   *
+   */
+  function showNotify(type: string) {
     notifyType.value = type
-    const messages: Record<string, string> = {
-      primary: '主要通知消息',
-      success: '操作成功',
-      warning: '请注意操作安全',
-      danger: '操作失败，请重试',
-    }
     notifyMessage.value = messages[type]
     notifyDuration.value = 3000
     notifyVisible.value = true
   }
 
-  const showLong = () => {
+  /**
+   *
+   */
+  function showLong() {
     notifyType.value = 'primary'
-    notifyMessage.value = '这条通知将展示5秒钟'
+    notifyMessage.value = '这条通知将展示 5 秒钟'
     notifyDuration.value = 5000
     notifyVisible.value = true
   }
-</script>
 
-<style lang="scss" scoped>
-  .demo-page {
-    min-height: 100%;
-    background: #f5f7fa;
-    padding: 24rpx 32rpx;
+  /**
+   *
+   */
+  function showShort() {
+    notifyType.value = 'primary'
+    notifyMessage.value = '这条通知只展示 1 秒'
+    notifyDuration.value = 1000
+    notifyVisible.value = true
   }
-  .demo-header {
-    margin-bottom: 40rpx;
-    .demo-title {
-      display: block;
-      font-size: 44rpx;
-      font-weight: 700;
-      color: #1f2937;
-      margin-bottom: 8rpx;
-    }
-    .demo-subtitle {
-      display: block;
-      font-size: 26rpx;
-      color: #666;
-    }
-  }
-  .demo-section {
-    margin-bottom: 40rpx;
-    .section-title {
-      display: block;
-      font-size: 30rpx;
-      font-weight: 600;
-      color: #1f2937;
-      margin-bottom: 20rpx;
-      padding-left: 16rpx;
-      border-left: 6rpx solid #667eea;
-    }
-  }
-  .demo-card {
-    background: #fff;
-    border-radius: 20rpx;
-    padding: 32rpx;
-    box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
-    border: 1rpx solid rgba(0, 0, 0, 0.04);
-  }
-  .btn-group {
-    display: flex;
-    gap: 16rpx;
-    flex-wrap: wrap;
-  }
-  .action-btn {
-    text-align: center;
-    padding: 20rpx;
-    background: #667eea;
-    color: #fff;
-    border-radius: 12rpx;
-    font-size: 28rpx;
-    flex: 1;
-    min-width: 140rpx;
-    &--primary {
-      background: #1989fa;
-    }
-    &--success {
-      background: #07c160;
-    }
-    &--warning {
-      background: #ff976a;
-    }
-    &--danger {
-      background: #ee0a24;
-    }
-  }
-  .code-block {
-    background: #f5f5f5;
-    border-radius: 8rpx;
-    padding: 16rpx 20rpx;
-    font-size: 22rpx;
-    color: #555;
-    font-family: monospace;
-    margin-top: 16rpx;
-  }
-</style>
+</script>

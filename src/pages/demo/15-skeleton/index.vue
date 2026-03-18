@@ -1,116 +1,156 @@
 <template>
   <C_Layout>
-    <view class="demo-page">
-      <view class="demo-header">
-        <text class="demo-title">C_Skeleton 骨架屏</text>
-        <text class="demo-subtitle">数据加载时的占位效果，减少等待感</text>
+    <view class="max-w-4xl mx-auto p-5 bg-gray-50 min-h-screen">
+      <view class="text-center mb-8">
+        <C_Title
+          title="C_Skeleton 骨架屏"
+          subtitle="内容加载占位组件"
+          type="primary"
+          :level="3"
+          size="large"
+          align="center"
+          left-icon="i-mdi-blur-linear"
+          :show-decoration="true"
+          :show-divider="true"
+        />
       </view>
 
-      <!-- 基础用法 -->
-      <view class="demo-section">
-        <text class="section-title">基础用法</text>
-        <view class="demo-card">
-          <C_Skeleton
-            :loading="loading1"
-            :rows="3"
-          >
-            <view class="loaded-content">
-              <text>这是加载完成后的真实内容</text>
-            </view>
-          </C_Skeleton>
-          <view class="toggle-row">
-            <view
-              class="step-btn step-btn--primary"
-              @click="loading1 = !loading1"
-            >
-              {{ loading1 ? '显示内容' : '显示骨架屏' }}
-            </view>
-          </view>
-          <view class="code-block">
-            &lt;C_Skeleton :loading="loading" :rows="3"&gt;
-            &lt;view&gt;真实内容&lt;/view&gt; &lt;/C_Skeleton&gt;
-          </view>
-        </view>
-      </view>
-
-      <!-- 显示头像 -->
-      <view class="demo-section">
-        <text class="section-title">带头像</text>
-        <view class="demo-card">
-          <C_Skeleton
-            :loading="loading2"
-            :rows="3"
-            avatar
-          >
-            <view class="loaded-content">
-              <text>带头像的内容区域</text>
-            </view>
-          </C_Skeleton>
-          <view class="toggle-row">
-            <view
-              class="step-btn step-btn--primary"
-              @click="loading2 = !loading2"
-            >
-              {{ loading2 ? '显示内容' : '显示骨架屏' }}
-            </view>
-          </view>
-          <view class="code-block">
-            &lt;C_Skeleton :loading="true" :rows="3" avatar /&gt;
-          </view>
-        </view>
-      </view>
-
-      <!-- 不显示标题 -->
-      <view class="demo-section">
-        <text class="section-title">无标题骨架</text>
-        <view class="demo-card">
-          <C_Skeleton
-            :loading="true"
-            :rows="4"
-            :title="false"
+      <view class="grid grid-cols-1 gap-6">
+        <!-- 基础骨架屏 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="基础骨架屏"
+            subtitle="默认行数"
+            :level="4"
+            type="primary"
+            align="center"
+            left-icon="i-mdi-text-short"
+            :show-decoration="true"
           />
-          <view class="code-block mt-3">
-            &lt;C_Skeleton :rows="4" :title="false" /&gt;
+          <view class="my-6 p-4 bg-gray-50 rounded-lg">
+            <C_Skeleton
+              :loading="true"
+              :rows="3"
+            />
           </view>
         </view>
-      </view>
 
-      <!-- 自定义行数 -->
-      <view class="demo-section">
-        <text class="section-title">自定义行数</text>
-        <view class="demo-card">
-          <view class="skeleton-list">
-            <view class="skeleton-item">
-              <text class="skeleton-label">2 行</text>
+        <!-- 带头像 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="头像骨架屏"
+            subtitle="avatar 属性"
+            :level="4"
+            type="success"
+            align="center"
+            left-icon="i-mdi-account-circle"
+            :show-decoration="true"
+          />
+          <view class="my-6 p-4 bg-gray-50 rounded-lg">
+            <C_Skeleton
+              :loading="true"
+              :rows="3"
+              :avatar="true"
+            />
+          </view>
+        </view>
+
+        <!-- 预设模式 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="预设模式"
+            subtitle="preset 属性"
+            :level="4"
+            type="warning"
+            align="center"
+            left-icon="i-mdi-view-module"
+            :show-decoration="true"
+          />
+          <view class="my-6 space-y-6">
+            <view class="p-4 bg-gray-50 rounded-lg">
+              <text class="text-xs text-gray-500 mb-2 block"
+                >preset="list"</text
+              >
               <C_Skeleton
                 :loading="true"
-                :rows="2"
+                preset="list"
               />
             </view>
-            <view class="skeleton-item">
-              <text class="skeleton-label">5 行</text>
+            <view class="p-4 bg-gray-50 rounded-lg">
+              <text class="text-xs text-gray-500 mb-2 block"
+                >preset="card"</text
+              >
               <C_Skeleton
                 :loading="true"
-                :rows="5"
+                preset="card"
               />
+            </view>
+            <view class="p-4 bg-gray-50 rounded-lg">
+              <text class="text-xs text-gray-500 mb-2 block"
+                >preset="profile"</text
+              >
+              <C_Skeleton
+                :loading="true"
+                preset="profile"
+              />
+            </view>
+          </view>
+        </view>
+
+        <!-- 动画切换 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="动画效果"
+            subtitle="点击切换 loading 状态"
+            :level="4"
+            type="danger"
+            align="center"
+            left-icon="i-mdi-animation-play"
+            :show-decoration="true"
+          />
+          <view class="my-6 p-4 bg-gray-50 rounded-lg">
+            <C_Skeleton
+              :loading="isLoading"
+              :rows="3"
+              :avatar="true"
+              :animate="true"
+            >
+              <view class="flex items-center gap-4">
+                <view
+                  class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center"
+                >
+                  <text class="text-xl">🤖</text>
+                </view>
+                <view>
+                  <text class="font-bold block">机器人助手</text>
+                  <text class="text-sm text-gray-500"
+                    >已加载完成的真实内容</text
+                  >
+                </view>
+              </view>
+            </C_Skeleton>
+            <view class="mt-4 text-center">
+              <text
+                class="text-sm text-white bg-blue-500 px-4 py-2 rounded-full"
+                @click="toggleLoading"
+              >
+                {{ isLoading ? '显示内容' : '切换为骨架屏' }}
+              </text>
             </view>
           </view>
         </view>
       </view>
 
-      <!-- 关闭动画 -->
-      <view class="demo-section">
-        <text class="section-title">关闭动画</text>
-        <view class="demo-card">
-          <C_Skeleton
-            :loading="true"
-            :rows="3"
-            :animate="false"
-          />
-          <view class="code-block mt-3">
-            &lt;C_Skeleton :animate="false" /&gt;
-          </view>
-        </view>
+      <view class="mt-8 text-center">
+        <C_Title
+          title="优雅加载，提升体验"
+          subtitle="多行 · 头像 · 预设模式 · 动画效果"
+          :level="5"
+          type="info"
+          align="center"
+          :show-divider="true"
+          divider-position="top"
+        />
       </view>
     </view>
   </C_Layout>
@@ -118,97 +158,11 @@
 
 <script setup lang="ts">
   import { ref } from 'vue'
-
-  const loading1 = ref(true)
-  const loading2 = ref(true)
+  const isLoading = ref(true)
+  /**
+   *
+   */
+  function toggleLoading() {
+    isLoading.value = !isLoading.value
+  }
 </script>
-
-<style lang="scss" scoped>
-  .demo-page {
-    min-height: 100%;
-    background: #f5f7fa;
-    padding: 24rpx 32rpx;
-  }
-  .demo-header {
-    margin-bottom: 40rpx;
-    .demo-title {
-      display: block;
-      font-size: 44rpx;
-      font-weight: 700;
-      color: #1f2937;
-      margin-bottom: 8rpx;
-    }
-    .demo-subtitle {
-      display: block;
-      font-size: 26rpx;
-      color: #666;
-    }
-  }
-  .demo-section {
-    margin-bottom: 40rpx;
-    .section-title {
-      display: block;
-      font-size: 30rpx;
-      font-weight: 600;
-      color: #1f2937;
-      margin-bottom: 20rpx;
-      padding-left: 16rpx;
-      border-left: 6rpx solid #667eea;
-    }
-  }
-  .demo-card {
-    background: #fff;
-    border-radius: 20rpx;
-    padding: 32rpx;
-    box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
-    border: 1rpx solid rgba(0, 0, 0, 0.04);
-  }
-  .loaded-content {
-    padding: 20rpx;
-    background: #f0f9ff;
-    border-radius: 8rpx;
-    font-size: 28rpx;
-    color: #007aff;
-  }
-  .toggle-row {
-    display: flex;
-    justify-content: center;
-    margin: 20rpx 0;
-    .step-btn {
-      padding: 12rpx 32rpx;
-      border-radius: 8rpx;
-      font-size: 26rpx;
-      border: 1rpx solid #dcdfe6;
-      color: #606266;
-      &--primary {
-        background: #007aff;
-        color: #fff;
-        border-color: #007aff;
-      }
-    }
-  }
-  .skeleton-list {
-    display: flex;
-    flex-direction: column;
-    gap: 24rpx;
-    .skeleton-item {
-      .skeleton-label {
-        display: block;
-        font-size: 24rpx;
-        color: #999;
-        margin-bottom: 8rpx;
-      }
-    }
-  }
-  .mt-3 {
-    margin-top: 20rpx;
-  }
-  .code-block {
-    background: #f5f5f5;
-    border-radius: 8rpx;
-    padding: 16rpx 20rpx;
-    font-size: 22rpx;
-    color: #555;
-    font-family: monospace;
-  }
-</style>

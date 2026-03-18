@@ -1,53 +1,127 @@
 <template>
   <C_Layout>
-    <view class="demo-page">
-      <view class="demo-header">
-        <text class="demo-title">C_Cascader 级联选择</text>
-        <text class="demo-subtitle">多级联动选择器，用于地区、分类等场景</text>
+    <view class="max-w-4xl mx-auto p-5 bg-gray-50 min-h-screen">
+      <view class="text-center mb-8">
+        <C_Title
+          title="C_Cascader 级联选择"
+          subtitle="多级联动选择器"
+          type="primary"
+          :level="3"
+          size="large"
+          align="center"
+          left-icon="i-mdi-file-tree-outline"
+          :show-decoration="true"
+          :show-divider="true"
+        />
       </view>
 
-      <!-- 基础用法 -->
-      <view class="demo-section">
-        <text class="section-title">基础用法</text>
-        <view class="demo-card">
-          <view
-            class="action-btn"
-            @click="showBasic = true"
-          >
-            {{ selectedText || '请选择地区' }}
+      <view class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- 地区选择 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="地区选择"
+            subtitle="省/市/区 三级联动"
+            :level="4"
+            type="primary"
+            align="center"
+            left-icon="i-mdi-map-marker"
+            :show-decoration="true"
+          />
+          <view class="my-6 p-4 bg-gray-50 rounded-lg text-center">
+            <text
+              class="text-sm text-white bg-blue-500 px-6 py-2.5 rounded-full"
+              @click="showArea = true"
+            >
+              {{ areaText || '请选择地区' }}
+            </text>
           </view>
           <C_Cascader
-            :visible="showBasic"
+            :visible="showArea"
             :options="areaOptions"
             title="选择地区"
-            @confirm="onBasicConfirm"
-            @close="showBasic = false"
+            @confirm="onAreaConfirm"
+            @close="showArea = false"
           />
-          <view class="code-block">
-            &lt;C_Cascader :visible="show" :options="options"
-            @confirm="onConfirm" /&gt;
-          </view>
         </view>
-      </view>
 
-      <!-- 自定义颜色 -->
-      <view class="demo-section">
-        <text class="section-title">自定义高亮颜色</text>
-        <view class="demo-card">
-          <view
-            class="action-btn action-btn--green"
-            @click="showCustom = true"
-            >选择分类</view
-          >
+        <!-- 分类选择 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="分类选择"
+            subtitle="自定义高亮颜色"
+            :level="4"
+            type="success"
+            align="center"
+            left-icon="i-mdi-tag-multiple"
+            :show-decoration="true"
+          />
+          <view class="my-6 p-4 bg-gray-50 rounded-lg text-center">
+            <text
+              class="text-sm text-white bg-green-500 px-6 py-2.5 rounded-full"
+              @click="showCategory = true"
+              >选择分类</text
+            >
+            <text
+              v-if="categoryText"
+              class="text-xs text-gray-500 block mt-3"
+              >{{ categoryText }}</text
+            >
+          </view>
           <C_Cascader
-            :visible="showCustom"
+            :visible="showCategory"
             :options="categoryOptions"
             title="选择分类"
             activeColor="#07c160"
             @confirm="onCategoryConfirm"
-            @close="showCustom = false"
+            @close="showCategory = false"
           />
         </view>
+
+        <!-- 应用场景 -->
+        <view class="bg-white rounded-lg shadow-md p-6 lg:col-span-2">
+          <C_Title
+            title="应用场景"
+            :level="4"
+            type="info"
+            align="center"
+            left-icon="i-mdi-lightbulb-outline"
+            :show-decoration="true"
+          />
+          <view class="my-6 grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <view class="p-4 bg-gray-50 rounded-lg text-center">
+              <text class="text-2xl block mb-2">📍</text>
+              <text class="text-sm font-bold block">地区选择</text>
+              <text class="text-xs text-gray-500">省市区联动</text>
+            </view>
+            <view class="p-4 bg-gray-50 rounded-lg text-center">
+              <text class="text-2xl block mb-2">📂</text>
+              <text class="text-sm font-bold block">分类导航</text>
+              <text class="text-xs text-gray-500">多层级分类</text>
+            </view>
+            <view class="p-4 bg-gray-50 rounded-lg text-center">
+              <text class="text-2xl block mb-2">🏢</text>
+              <text class="text-sm font-bold block">组织架构</text>
+              <text class="text-xs text-gray-500">部门/组/人</text>
+            </view>
+            <view class="p-4 bg-gray-50 rounded-lg text-center">
+              <text class="text-2xl block mb-2">🔍</text>
+              <text class="text-sm font-bold block">搜索过滤</text>
+              <text class="text-xs text-gray-500">filterable</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="mt-8 text-center">
+        <C_Title
+          title="层级选择，直观高效"
+          subtitle="地区 · 分类 · 组织架构 · 搜索过滤"
+          :level="5"
+          type="info"
+          align="center"
+          :show-divider="true"
+          divider-position="top"
+        />
       </view>
     </view>
   </C_Layout>
@@ -56,9 +130,10 @@
 <script setup lang="ts">
   import { ref } from 'vue'
 
-  const showBasic = ref(false)
-  const showCustom = ref(false)
-  const selectedText = ref('')
+  const showArea = ref(false)
+  const showCategory = ref(false)
+  const areaText = ref('')
+  const categoryText = ref('')
 
   const areaOptions = [
     {
@@ -76,7 +151,6 @@
       children: [
         { text: '浦东新区', value: '310115' },
         { text: '徐汇区', value: '310104' },
-        { text: '静安区', value: '310106' },
       ],
     },
     {
@@ -123,80 +197,19 @@
     },
   ]
 
-  const onBasicConfirm = (values: { selectedOptions: { text: string }[] }) => {
-    selectedText.value = values.selectedOptions.map(o => o.text).join(' / ')
-    showBasic.value = false
+  /**
+   *
+   */
+  function onAreaConfirm(values: { selectedOptions: { text: string }[] }) {
+    areaText.value = values.selectedOptions.map(o => o.text).join(' / ')
+    showArea.value = false
   }
 
-  const onCategoryConfirm = (values: {
-    selectedOptions: { text: string }[]
-  }) => {
-    uni.showToast({
-      title: values.selectedOptions.map(o => o.text).join(' > '),
-      icon: 'none',
-    })
-    showCustom.value = false
+  /**
+   *
+   */
+  function onCategoryConfirm(values: { selectedOptions: { text: string }[] }) {
+    categoryText.value = values.selectedOptions.map(o => o.text).join(' > ')
+    showCategory.value = false
   }
 </script>
-
-<style lang="scss" scoped>
-  .demo-page {
-    min-height: 100%;
-    background: #f5f7fa;
-    padding: 24rpx 32rpx;
-  }
-  .demo-header {
-    margin-bottom: 40rpx;
-    .demo-title {
-      display: block;
-      font-size: 44rpx;
-      font-weight: 700;
-      color: #1f2937;
-      margin-bottom: 8rpx;
-    }
-    .demo-subtitle {
-      display: block;
-      font-size: 26rpx;
-      color: #666;
-    }
-  }
-  .demo-section {
-    margin-bottom: 40rpx;
-    .section-title {
-      display: block;
-      font-size: 30rpx;
-      font-weight: 600;
-      color: #1f2937;
-      margin-bottom: 20rpx;
-      padding-left: 16rpx;
-      border-left: 6rpx solid #667eea;
-    }
-  }
-  .demo-card {
-    background: #fff;
-    border-radius: 20rpx;
-    padding: 32rpx;
-    box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
-    border: 1rpx solid rgba(0, 0, 0, 0.04);
-  }
-  .action-btn {
-    text-align: center;
-    padding: 20rpx;
-    background: #667eea;
-    color: #fff;
-    border-radius: 12rpx;
-    font-size: 28rpx;
-    &--green {
-      background: #07c160;
-    }
-  }
-  .code-block {
-    background: #f5f5f5;
-    border-radius: 8rpx;
-    padding: 16rpx 20rpx;
-    font-size: 22rpx;
-    color: #555;
-    font-family: monospace;
-    margin-top: 16rpx;
-  }
-</style>

@@ -1,31 +1,102 @@
 <template>
   <C_Layout>
-    <view class="demo-page">
-      <view class="demo-header">
-        <text class="demo-title">C_IndexList 索引列表</text>
-        <text class="demo-subtitle">通讯录样式索引列表，右侧快速导航</text>
+    <view class="max-w-4xl mx-auto p-5 bg-gray-50 min-h-screen">
+      <view class="text-center mb-8">
+        <C_Title
+          title="C_IndexList 索引列表"
+          subtitle="通讯录样式快速导航"
+          type="primary"
+          :level="3"
+          size="large"
+          align="center"
+          left-icon="i-mdi-format-list-group"
+          :show-decoration="true"
+          :show-divider="true"
+        />
       </view>
 
-      <!-- 基础用法 -->
-      <view class="demo-section">
-        <text class="section-title">基础用法</text>
-        <view class="demo-card demo-card--full">
-          <C_IndexList :list="contactList" />
-          <view class="code-block">
-            &lt;C_IndexList :list="contactList" /&gt;
+      <view class="grid grid-cols-1 gap-6">
+        <!-- 通讯录 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="通讯录列表"
+            subtitle="右侧字母快速定位"
+            :level="4"
+            type="primary"
+            align="center"
+            left-icon="i-mdi-account-box-multiple"
+            :show-decoration="true"
+          />
+          <view
+            class="my-6 bg-gray-50 rounded-lg overflow-hidden"
+            style="height: 400px"
+          >
+            <C_IndexList :list="contactList" />
+          </view>
+        </view>
+
+        <!-- 自定义高亮色 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="自定义高亮色"
+            subtitle="activeColor 属性"
+            :level="4"
+            type="danger"
+            align="center"
+            left-icon="i-mdi-palette"
+            :show-decoration="true"
+          />
+          <view
+            class="my-6 bg-gray-50 rounded-lg overflow-hidden"
+            style="height: 250px"
+          >
+            <C_IndexList
+              :list="techList"
+              activeColor="#ee0a24"
+            />
+          </view>
+        </view>
+
+        <!-- 特性说明 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="组件特点"
+            :level="4"
+            type="info"
+            align="center"
+            left-icon="i-mdi-star-outline"
+            :show-decoration="true"
+          />
+          <view class="my-6 grid grid-cols-3 gap-4">
+            <view class="p-4 bg-gray-50 rounded-lg text-center">
+              <text class="text-2xl block mb-2">📇</text>
+              <text class="text-sm font-bold block">字母索引</text>
+              <text class="text-xs text-gray-500">A-Z 快速定位</text>
+            </view>
+            <view class="p-4 bg-gray-50 rounded-lg text-center">
+              <text class="text-2xl block mb-2">📌</text>
+              <text class="text-sm font-bold block">吸顶分组</text>
+              <text class="text-xs text-gray-500">sticky 标题</text>
+            </view>
+            <view class="p-4 bg-gray-50 rounded-lg text-center">
+              <text class="text-2xl block mb-2">🎨</text>
+              <text class="text-sm font-bold block">自定义色</text>
+              <text class="text-xs text-gray-500">自由配色</text>
+            </view>
           </view>
         </view>
       </view>
 
-      <!-- 自定义颜色 -->
-      <view class="demo-section">
-        <text class="section-title">自定义高亮色</text>
-        <view class="demo-card demo-card--full">
-          <C_IndexList
-            :list="shortList"
-            activeColor="#ee0a24"
-          />
-        </view>
+      <view class="mt-8 text-center">
+        <C_Title
+          title="快速检索，一触即达"
+          subtitle="字母导航 · 吸顶分组 · 自定义颜色"
+          :level="5"
+          type="info"
+          align="center"
+          :show-divider="true"
+          divider-position="top"
+        />
       </view>
     </view>
   </C_Layout>
@@ -51,64 +122,10 @@
     { title: 'Z', items: [{ name: '字节跳动' }, { name: '中兴' }] },
   ]
 
-  const shortList = [
+  const techList = [
     { title: 'A', items: [{ name: 'Apple' }, { name: 'Amazon' }] },
     { title: 'G', items: [{ name: 'Google' }, { name: 'GitHub' }] },
     { title: 'M', items: [{ name: 'Microsoft' }, { name: 'Meta' }] },
+    { title: 'T', items: [{ name: 'Tesla' }, { name: 'Twitter' }] },
   ]
 </script>
-
-<style lang="scss" scoped>
-  .demo-page {
-    min-height: 100%;
-    background: #f5f7fa;
-    padding: 24rpx 32rpx;
-  }
-  .demo-header {
-    margin-bottom: 40rpx;
-    .demo-title {
-      display: block;
-      font-size: 44rpx;
-      font-weight: 700;
-      color: #1f2937;
-      margin-bottom: 8rpx;
-    }
-    .demo-subtitle {
-      display: block;
-      font-size: 26rpx;
-      color: #666;
-    }
-  }
-  .demo-section {
-    margin-bottom: 40rpx;
-    .section-title {
-      display: block;
-      font-size: 30rpx;
-      font-weight: 600;
-      color: #1f2937;
-      margin-bottom: 20rpx;
-      padding-left: 16rpx;
-      border-left: 6rpx solid #667eea;
-    }
-  }
-  .demo-card {
-    background: #fff;
-    border-radius: 20rpx;
-    padding: 32rpx;
-    box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
-    border: 1rpx solid rgba(0, 0, 0, 0.04);
-    &--full {
-      padding: 0;
-      overflow: hidden;
-    }
-  }
-  .code-block {
-    background: #f5f5f5;
-    border-radius: 8rpx;
-    padding: 16rpx 20rpx;
-    font-size: 22rpx;
-    color: #555;
-    font-family: monospace;
-    margin: 16rpx;
-  }
-</style>

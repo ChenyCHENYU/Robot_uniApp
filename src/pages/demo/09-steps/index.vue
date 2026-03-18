@@ -1,80 +1,120 @@
 <template>
   <C_Layout>
-    <view class="demo-page">
-      <view class="demo-header">
-        <text class="demo-title">C_Steps 步骤条</text>
-        <text class="demo-subtitle">引导用户按照流程完成任务的步骤导航条</text>
+    <view class="max-w-4xl mx-auto p-5 bg-gray-50 min-h-screen">
+      <view class="text-center mb-8">
+        <C_Title
+          title="C_Steps 步骤条"
+          subtitle="引导用户按步骤完成任务"
+          type="primary"
+          :level="3"
+          size="large"
+          align="center"
+          left-icon="i-mdi-shoe-print"
+          :show-decoration="true"
+          :show-divider="true"
+        />
       </view>
 
-      <!-- 基础用法 -->
-      <view class="demo-section">
-        <text class="section-title">基础用法</text>
-        <view class="demo-card">
-          <C_Steps
-            :steps="basicSteps"
-            :current="currentStep"
+      <view class="grid grid-cols-1 gap-6">
+        <!-- 基础用法 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="基础步骤条"
+            subtitle="水平方向三步骤"
+            :level="4"
+            type="primary"
+            align="center"
+            left-icon="i-mdi-ray-start-arrow"
+            :show-decoration="true"
           />
-          <view class="step-actions">
+          <view class="my-6 p-4 bg-gray-50 rounded-lg">
+            <C_Steps
+              :current="currentStep"
+              :steps="steps"
+            />
+          </view>
+          <view class="flex justify-center gap-4 mt-4">
             <view
-              class="step-btn"
-              @click="prevStep"
-              >上一步</view
+              class="px-4 py-2 bg-gray-200 rounded-lg text-sm"
+              @click="currentStep > 0 && currentStep--"
             >
+              <text>上一步</text>
+            </view>
             <view
-              class="step-btn step-btn--primary"
-              @click="nextStep"
-              >下一步</view
+              class="px-4 py-2 bg-blue-500 text-white rounded-lg text-sm"
+              @click="currentStep < 2 && currentStep++"
+            >
+              <text>下一步</text>
+            </view>
+          </view>
+          <view class="text-center mt-3">
+            <text class="text-xs text-gray-400"
+              >当前步骤：{{ currentStep + 1 }} / {{ steps.length }}</text
             >
           </view>
-          <view class="code-block">
-            &lt;C_Steps :steps="steps" :current="1" /&gt;
+        </view>
+
+        <!-- 竖向步骤条 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="竖向步骤条"
+            subtitle="direction=vertical"
+            :level="4"
+            type="success"
+            align="center"
+            left-icon="i-mdi-arrow-down-bold"
+            :show-decoration="true"
+          />
+          <view class="my-6 p-4 bg-gray-50 rounded-lg">
+            <C_Steps
+              :current="1"
+              direction="vertical"
+              :steps="verticalSteps"
+            />
+          </view>
+        </view>
+
+        <!-- 自定义颜色 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="自定义颜色"
+            subtitle="activeColor 属性"
+            :level="4"
+            type="warning"
+            align="center"
+            left-icon="i-mdi-palette"
+            :show-decoration="true"
+          />
+          <view class="my-6 p-4 bg-gray-50 rounded-lg space-y-6">
+            <C_Steps
+              :current="1"
+              :steps="steps"
+              activeColor="#67c23a"
+            />
+            <C_Steps
+              :current="2"
+              :steps="steps"
+              activeColor="#e6a23c"
+            />
+            <C_Steps
+              :current="2"
+              :steps="steps"
+              activeColor="#f56c6c"
+            />
           </view>
         </view>
       </view>
 
-      <!-- 竖向步骤条 -->
-      <view class="demo-section">
-        <text class="section-title">竖向步骤条</text>
-        <view class="demo-card">
-          <C_Steps
-            :steps="verticalSteps"
-            :current="2"
-            direction="vertical"
-          />
-          <view class="code-block">
-            &lt;C_Steps :steps="steps" :current="2" direction="vertical" /&gt;
-          </view>
-        </view>
-      </view>
-
-      <!-- 自定义颜色 -->
-      <view class="demo-section">
-        <text class="section-title">自定义颜色</text>
-        <view class="demo-card">
-          <C_Steps
-            :steps="basicSteps"
-            :current="1"
-            activeColor="#67c23a"
-            inactiveColor="#dcdfe6"
-          />
-          <view class="code-block">
-            &lt;C_Steps activeColor="#67c23a" inactiveColor="#dcdfe6" /&gt;
-          </view>
-        </view>
-      </view>
-
-      <!-- 全部完成 -->
-      <view class="demo-section">
-        <text class="section-title">全部完成</text>
-        <view class="demo-card">
-          <C_Steps
-            :steps="basicSteps"
-            :current="3"
-          />
-          <text class="demo-desc"
-            >当 current 等于步骤数时，所有步骤标记为已完成</text
-          >
-        </view>
+      <view class="mt-8 text-center">
+        <C_Title
+          title="步步清晰，流程可控"
+          subtitle="水平 · 竖向 · 自定义颜色 · 交互式"
+          :level="5"
+          type="info"
+          align="center"
+          :show-divider="true"
+          divider-position="top"
+        />
       </view>
     </view>
   </C_Layout>
@@ -82,100 +122,16 @@
 
 <script setup lang="ts">
   import { ref } from 'vue'
-
   const currentStep = ref(1)
-
-  const basicSteps = [
-    { title: '提交订单' },
-    { title: '支付' },
-    { title: '完成' },
+  const steps = [
+    { title: '填写信息', description: '基本资料' },
+    { title: '身份验证', description: '实名认证' },
+    { title: '完成注册', description: '开始使用' },
   ]
-
   const verticalSteps = [
-    { title: '提交申请', description: '2024-01-01 10:00' },
-    { title: '审批中', description: '2024-01-02 14:30' },
-    { title: '审批通过', description: '2024-01-03 09:15' },
-    { title: '完成', description: '等待处理' },
+    { title: '提交申请', description: '2026-03-15 10:00' },
+    { title: '审核中', description: '预计 1-3 个工作日' },
+    { title: '审核完成', description: '等待处理' },
+    { title: '已发放', description: '等待完成' },
   ]
-
-  const nextStep = () => {
-    if (currentStep.value < basicSteps.length) currentStep.value++
-  }
-  const prevStep = () => {
-    if (currentStep.value > 0) currentStep.value--
-  }
 </script>
-
-<style lang="scss" scoped>
-  .demo-page {
-    min-height: 100%;
-    background: #f5f7fa;
-    padding: 24rpx 32rpx;
-  }
-  .demo-header {
-    margin-bottom: 40rpx;
-    .demo-title {
-      display: block;
-      font-size: 44rpx;
-      font-weight: 700;
-      color: #1f2937;
-      margin-bottom: 8rpx;
-    }
-    .demo-subtitle {
-      display: block;
-      font-size: 26rpx;
-      color: #666;
-    }
-  }
-  .demo-section {
-    margin-bottom: 40rpx;
-    .section-title {
-      display: block;
-      font-size: 30rpx;
-      font-weight: 600;
-      color: #1f2937;
-      margin-bottom: 20rpx;
-      padding-left: 16rpx;
-      border-left: 6rpx solid #667eea;
-    }
-  }
-  .demo-card {
-    background: #fff;
-    border-radius: 20rpx;
-    padding: 32rpx;
-    box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
-    border: 1rpx solid rgba(0, 0, 0, 0.04);
-  }
-  .demo-desc {
-    display: block;
-    font-size: 26rpx;
-    color: #666;
-    margin-top: 16rpx;
-  }
-  .step-actions {
-    display: flex;
-    justify-content: center;
-    gap: 20rpx;
-    margin: 24rpx 0;
-    .step-btn {
-      padding: 12rpx 32rpx;
-      border-radius: 8rpx;
-      font-size: 26rpx;
-      border: 1rpx solid #dcdfe6;
-      color: #606266;
-      &--primary {
-        background: #007aff;
-        color: #fff;
-        border-color: #007aff;
-      }
-    }
-  }
-  .code-block {
-    background: #f5f5f5;
-    border-radius: 8rpx;
-    padding: 16rpx 20rpx;
-    font-size: 22rpx;
-    color: #555;
-    font-family: monospace;
-  }
-</style>

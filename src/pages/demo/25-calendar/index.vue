@@ -1,65 +1,97 @@
 <template>
   <C_Layout>
-    <view class="demo-page">
-      <view class="demo-header">
-        <text class="demo-title">C_Calendar 日历</text>
-        <text class="demo-subtitle">日历组件，支持单选、多选、区间选择</text>
+    <view class="max-w-4xl mx-auto p-5 bg-gray-50 min-h-screen">
+      <view class="text-center mb-8">
+        <C_Title
+          title="C_Calendar 日历"
+          subtitle="日期选择日历组件"
+          type="primary"
+          :level="3"
+          size="large"
+          align="center"
+          left-icon="i-mdi-calendar-month"
+          :show-decoration="true"
+          :show-divider="true"
+        />
       </view>
 
-      <!-- 单选模式 -->
-      <view class="demo-section">
-        <text class="section-title">单选模式</text>
-        <view class="demo-card">
-          <view
-            class="action-btn"
-            @click="showSingle = true"
-            >选择日期: {{ selectedDate || '未选择' }}</view
-          >
+      <view class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- 单选模式 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="单选模式"
+            subtitle="选择一个日期"
+            :level="4"
+            type="primary"
+            align="center"
+            left-icon="i-mdi-calendar"
+            :show-decoration="true"
+          />
+          <view class="my-6 p-4 bg-gray-50 rounded-lg text-center">
+            <text
+              class="text-sm text-white bg-blue-500 px-6 py-2.5 rounded-full"
+              @click="showSingle = true"
+            >
+              {{ selectedDate || '选择日期' }}
+            </text>
+          </view>
           <C_Calendar
             :visible="showSingle"
             mode="single"
             @confirm="onSingleConfirm"
             @close="showSingle = false"
           />
-          <view class="code-block">
-            &lt;C_Calendar :visible="show" mode="single" @confirm="onConfirm"
-            /&gt;
-          </view>
         </view>
-      </view>
 
-      <!-- 区间选择 -->
-      <view class="demo-section">
-        <text class="section-title">区间选择</text>
-        <view class="demo-card">
-          <view
-            class="action-btn"
-            @click="showRange = true"
-            >选择日期范围</view
-          >
+        <!-- 区间选择 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="区间选择"
+            subtitle="选择日期范围"
+            :level="4"
+            type="success"
+            align="center"
+            left-icon="i-mdi-calendar-range"
+            :show-decoration="true"
+          />
+          <view class="my-6 p-4 bg-gray-50 rounded-lg text-center">
+            <text
+              class="text-sm text-white bg-green-500 px-6 py-2.5 rounded-full"
+              @click="showRange = true"
+              >选择日期范围</text
+            >
+            <text
+              v-if="rangeText"
+              class="text-xs text-gray-500 block mt-3"
+              >{{ rangeText }}</text
+            >
+          </view>
           <C_Calendar
             :visible="showRange"
             mode="range"
             @confirm="onRangeConfirm"
             @close="showRange = false"
           />
-          <text
-            v-if="rangeText"
-            class="demo-desc"
-            >{{ rangeText }}</text
-          >
         </view>
-      </view>
 
-      <!-- 自定义颜色 -->
-      <view class="demo-section">
-        <text class="section-title">自定义颜色</text>
-        <view class="demo-card">
-          <view
-            class="action-btn action-btn--green"
-            @click="showCustom = true"
-            >自定义主题色</view
-          >
+        <!-- 自定义颜色 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="自定义主题色"
+            subtitle="color 属性"
+            :level="4"
+            type="warning"
+            align="center"
+            left-icon="i-mdi-palette"
+            :show-decoration="true"
+          />
+          <view class="my-6 p-4 bg-gray-50 rounded-lg text-center">
+            <text
+              class="text-sm text-white bg-amber-500 px-6 py-2.5 rounded-full"
+              @click="showCustom = true"
+              >自定义主题色</text
+            >
+          </view>
           <C_Calendar
             :visible="showCustom"
             mode="single"
@@ -68,6 +100,53 @@
             @close="showCustom = false"
           />
         </view>
+
+        <!-- 功能特性 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="功能特性"
+            :level="4"
+            type="info"
+            align="center"
+            left-icon="i-mdi-star-outline"
+            :show-decoration="true"
+          />
+          <view class="my-6 space-y-3">
+            <view class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+              <text class="text-lg">📅</text>
+              <view>
+                <text class="text-sm font-bold block">多种模式</text>
+                <text class="text-xs text-gray-500">单选 / 多选 / 区间</text>
+              </view>
+            </view>
+            <view class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+              <text class="text-lg">📌</text>
+              <view>
+                <text class="text-sm font-bold block">日期标记</text>
+                <text class="text-xs text-gray-500">打点、文字标注</text>
+              </view>
+            </view>
+            <view class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+              <text class="text-lg">🔒</text>
+              <view>
+                <text class="text-sm font-bold block">范围限制</text>
+                <text class="text-xs text-gray-500">minDate / maxDate</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="mt-8 text-center">
+        <C_Title
+          title="日期选择，灵活多变"
+          subtitle="单选 · 多选 · 区间 · 主题色 · 范围限制"
+          :level="5"
+          type="info"
+          align="center"
+          :show-divider="true"
+          divider-position="top"
+        />
       </view>
     </view>
   </C_Layout>
@@ -82,86 +161,27 @@
   const selectedDate = ref('')
   const rangeText = ref('')
 
-  const onSingleConfirm = (date: string) => {
+  /**
+   *
+   */
+  function onSingleConfirm(date: string) {
     selectedDate.value = date
     showSingle.value = false
   }
 
-  const onRangeConfirm = (dates: string[]) => {
+  /**
+   *
+   */
+  function onRangeConfirm(dates: string[]) {
     rangeText.value = `${dates[0]} 至 ${dates[1]}`
     showRange.value = false
   }
 
-  const onCustomConfirm = (date: string) => {
+  /**
+   *
+   */
+  function onCustomConfirm(date: string) {
     uni.showToast({ title: `选择: ${date}`, icon: 'none' })
     showCustom.value = false
   }
 </script>
-
-<style lang="scss" scoped>
-  .demo-page {
-    min-height: 100%;
-    background: #f5f7fa;
-    padding: 24rpx 32rpx;
-  }
-  .demo-header {
-    margin-bottom: 40rpx;
-    .demo-title {
-      display: block;
-      font-size: 44rpx;
-      font-weight: 700;
-      color: #1f2937;
-      margin-bottom: 8rpx;
-    }
-    .demo-subtitle {
-      display: block;
-      font-size: 26rpx;
-      color: #666;
-    }
-  }
-  .demo-section {
-    margin-bottom: 40rpx;
-    .section-title {
-      display: block;
-      font-size: 30rpx;
-      font-weight: 600;
-      color: #1f2937;
-      margin-bottom: 20rpx;
-      padding-left: 16rpx;
-      border-left: 6rpx solid #667eea;
-    }
-  }
-  .demo-card {
-    background: #fff;
-    border-radius: 20rpx;
-    padding: 32rpx;
-    box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
-    border: 1rpx solid rgba(0, 0, 0, 0.04);
-  }
-  .action-btn {
-    text-align: center;
-    padding: 20rpx;
-    background: #667eea;
-    color: #fff;
-    border-radius: 12rpx;
-    font-size: 28rpx;
-    &--green {
-      background: #07c160;
-    }
-  }
-  .demo-desc {
-    display: block;
-    font-size: 26rpx;
-    color: #666;
-    margin-top: 16rpx;
-  }
-  .code-block {
-    background: #f5f5f5;
-    border-radius: 8rpx;
-    padding: 16rpx 20rpx;
-    font-size: 22rpx;
-    color: #555;
-    font-family: monospace;
-    margin-top: 16rpx;
-  }
-</style>

@@ -1,269 +1,283 @@
 <template>
   <C_Layout>
-    <view class="demo-page">
-      <view class="demo-header">
-        <text class="demo-title">C_Title 标题</text>
-        <text class="demo-subtitle"
-          >通用标题组件，支持多种类型、级别、装饰和图标</text
-        >
+    <view class="max-w-4xl mx-auto p-5 bg-gray-50 min-h-screen">
+      <view class="text-center mb-8">
+        <C_Title
+          title="C_Title 标题"
+          subtitle="多功能标题展示组件"
+          type="primary"
+          :level="3"
+          size="large"
+          align="center"
+          left-icon="i-mdi-format-header-1"
+          :show-decoration="true"
+          :show-divider="true"
+        />
       </view>
 
-      <!-- 基础用法 -->
-      <view class="demo-section">
-        <text class="section-title">基础用法</text>
-        <view class="demo-card">
-          <view class="title-list">
-            <C_Title title="默认标题" />
-            <C_Title
-              title="带副标题"
-              subtitle="这是一段副标题描述文字"
-            />
+      <view class="grid grid-cols-1 gap-6">
+        <!-- 标题类型 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="五种类型"
+            subtitle="type 属性"
+            :level="4"
+            type="primary"
+            align="center"
+            left-icon="i-mdi-palette-swatch"
+            :show-decoration="true"
+          />
+          <view class="my-6 space-y-4">
+            <view class="p-3 bg-gray-50 rounded-lg">
+              <C_Title
+                title="Primary 主要"
+                subtitle="默认类型"
+                type="primary"
+              />
+            </view>
+            <view class="p-3 bg-gray-50 rounded-lg">
+              <C_Title
+                title="Success 成功"
+                subtitle="操作成功"
+                type="success"
+              />
+            </view>
+            <view class="p-3 bg-gray-50 rounded-lg">
+              <C_Title
+                title="Warning 警告"
+                subtitle="需要注意"
+                type="warning"
+              />
+            </view>
+            <view class="p-3 bg-gray-50 rounded-lg">
+              <C_Title
+                title="Danger 危险"
+                subtitle="危险操作"
+                type="danger"
+              />
+            </view>
+            <view class="p-3 bg-gray-50 rounded-lg">
+              <C_Title
+                title="Info 信息"
+                subtitle="一般提示"
+                type="info"
+              />
+            </view>
           </view>
-          <view class="code-block mt-3">
-            &lt;C_Title title="标题" subtitle="副标题" /&gt;
+        </view>
+
+        <!-- 标题层级 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="标题层级"
+            subtitle="level 属性"
+            :level="4"
+            type="success"
+            align="center"
+            left-icon="i-mdi-format-header-pound"
+            :show-decoration="true"
+          />
+          <view class="my-6 space-y-4">
+            <view class="p-3 bg-gray-50 rounded-lg">
+              <C_Title
+                title="Level 1 一级标题"
+                :level="1"
+                type="primary"
+              />
+            </view>
+            <view class="p-3 bg-gray-50 rounded-lg">
+              <C_Title
+                title="Level 2 二级标题"
+                :level="2"
+                type="primary"
+              />
+            </view>
+            <view class="p-3 bg-gray-50 rounded-lg">
+              <C_Title
+                title="Level 3 三级标题"
+                :level="3"
+                type="primary"
+              />
+            </view>
+            <view class="p-3 bg-gray-50 rounded-lg">
+              <C_Title
+                title="Level 4 四级标题"
+                :level="4"
+                type="primary"
+              />
+            </view>
+            <view class="p-3 bg-gray-50 rounded-lg">
+              <C_Title
+                title="Level 5 五级标题"
+                :level="5"
+                type="primary"
+              />
+            </view>
+          </view>
+        </view>
+
+        <!-- 图标与装饰 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="图标与装饰"
+            subtitle="left-icon & show-decoration"
+            :level="4"
+            type="warning"
+            align="center"
+            left-icon="i-mdi-star"
+            :show-decoration="true"
+          />
+          <view class="my-6 space-y-4">
+            <view class="p-3 bg-gray-50 rounded-lg">
+              <C_Title
+                title="带图标标题"
+                subtitle="带装饰条"
+                left-icon="i-mdi-rocket-launch"
+                :show-decoration="true"
+                type="primary"
+              />
+            </view>
+            <view class="p-3 bg-gray-50 rounded-lg">
+              <C_Title
+                title="纯文字标题"
+                subtitle="无图标无装饰"
+                type="success"
+              />
+            </view>
+            <view class="p-3 bg-gray-50 rounded-lg">
+              <C_Title
+                title="仅图标"
+                left-icon="i-mdi-heart"
+                type="danger"
+              />
+            </view>
+          </view>
+        </view>
+
+        <!-- 对齐方式 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="对齐方式"
+            subtitle="align 属性"
+            :level="4"
+            type="danger"
+            align="center"
+            left-icon="i-mdi-format-align-center"
+            :show-decoration="true"
+          />
+          <view class="my-6 space-y-4">
+            <view class="p-3 bg-gray-50 rounded-lg">
+              <C_Title
+                title="左对齐"
+                subtitle="align=left"
+                type="primary"
+                align="left"
+              />
+            </view>
+            <view class="p-3 bg-gray-50 rounded-lg">
+              <C_Title
+                title="居中对齐"
+                subtitle="align=center"
+                type="success"
+                align="center"
+              />
+            </view>
+            <view class="p-3 bg-gray-50 rounded-lg">
+              <C_Title
+                title="右对齐"
+                subtitle="align=right"
+                type="warning"
+                align="right"
+              />
+            </view>
+          </view>
+        </view>
+
+        <!-- 分割线 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="分割线"
+            subtitle="show-divider 属性"
+            :level="4"
+            type="info"
+            align="center"
+            left-icon="i-mdi-minus"
+            :show-decoration="true"
+          />
+          <view class="my-6 space-y-4">
+            <view class="p-3 bg-gray-50 rounded-lg">
+              <C_Title
+                title="底部分割线"
+                subtitle="默认位置"
+                :show-divider="true"
+                type="primary"
+              />
+            </view>
+            <view class="p-3 bg-gray-50 rounded-lg">
+              <C_Title
+                title="顶部分割线"
+                subtitle="divider-position=top"
+                :show-divider="true"
+                divider-position="top"
+                type="success"
+              />
+            </view>
+          </view>
+        </view>
+
+        <!-- 尺寸 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="尺寸"
+            subtitle="size 属性"
+            :level="4"
+            type="primary"
+            align="center"
+            left-icon="i-mdi-resize"
+            :show-decoration="true"
+          />
+          <view class="my-6 space-y-4">
+            <view class="p-3 bg-gray-50 rounded-lg">
+              <C_Title
+                title="小尺寸"
+                size="small"
+                type="primary"
+                left-icon="i-mdi-minus"
+              />
+            </view>
+            <view class="p-3 bg-gray-50 rounded-lg">
+              <C_Title
+                title="中等尺寸"
+                size="medium"
+                type="success"
+                left-icon="i-mdi-circle-outline"
+              />
+            </view>
+            <view class="p-3 bg-gray-50 rounded-lg">
+              <C_Title
+                title="大尺寸"
+                size="large"
+                type="danger"
+                left-icon="i-mdi-plus"
+              />
+            </view>
           </view>
         </view>
       </view>
 
-      <!-- 类型 -->
-      <view class="demo-section">
-        <text class="section-title">主题类型</text>
-        <view class="demo-card">
-          <view class="title-list">
-            <C_Title
-              title="Default"
-              type="default"
-            />
-            <C_Title
-              title="Primary"
-              type="primary"
-            />
-            <C_Title
-              title="Success"
-              type="success"
-            />
-            <C_Title
-              title="Warning"
-              type="warning"
-            />
-            <C_Title
-              title="Danger"
-              type="danger"
-            />
-            <C_Title
-              title="Info"
-              type="info"
-            />
-          </view>
-          <view class="code-block mt-3">
-            &lt;C_Title title="Primary" type="primary" /&gt;
-          </view>
-        </view>
-      </view>
-
-      <!-- 级别 -->
-      <view class="demo-section">
-        <text class="section-title">标题级别</text>
-        <view class="demo-card">
-          <view class="title-list">
-            <C_Title
-              title="Level 1"
-              :level="1"
-              type="primary"
-            />
-            <C_Title
-              title="Level 2"
-              :level="2"
-              type="primary"
-            />
-            <C_Title
-              title="Level 3"
-              :level="3"
-              type="primary"
-            />
-            <C_Title
-              title="Level 4"
-              :level="4"
-              type="primary"
-            />
-            <C_Title
-              title="Level 5"
-              :level="5"
-              type="primary"
-            />
-          </view>
-          <view class="code-block mt-3">
-            &lt;C_Title title="Level 1" :level="1" /&gt;
-          </view>
-        </view>
-      </view>
-
-      <!-- 尺寸 -->
-      <view class="demo-section">
-        <text class="section-title">尺寸</text>
-        <view class="demo-card">
-          <view class="title-list">
-            <C_Title
-              title="Small"
-              size="small"
-              type="success"
-            />
-            <C_Title
-              title="Medium"
-              size="medium"
-              type="success"
-            />
-            <C_Title
-              title="Large"
-              size="large"
-              type="success"
-            />
-          </view>
-          <view class="code-block mt-3">
-            &lt;C_Title title="Large" size="large" /&gt;
-          </view>
-        </view>
-      </view>
-
-      <!-- 图标 -->
-      <view class="demo-section">
-        <text class="section-title">带图标</text>
-        <view class="demo-card">
-          <view class="title-list">
-            <C_Title
-              title="左侧图标"
-              left-icon="i-mdi-star"
-              type="warning"
-            />
-            <C_Title
-              title="右侧图标"
-              right-icon="i-mdi-arrow-right"
-              type="primary"
-            />
-            <C_Title
-              title="双侧图标"
-              left-icon="i-mdi-heart"
-              right-icon="i-mdi-chevron-right"
-              type="danger"
-            />
-          </view>
-          <view class="code-block mt-3">
-            &lt;C_Title title="左侧图标" left-icon="i-mdi-star" /&gt;
-          </view>
-        </view>
-      </view>
-
-      <!-- 对齐方式 -->
-      <view class="demo-section">
-        <text class="section-title">对齐方式</text>
-        <view class="demo-card">
-          <view class="title-list">
-            <C_Title
-              title="左对齐"
-              align="left"
-              type="info"
-            />
-            <C_Title
-              title="居中"
-              align="center"
-              type="info"
-            />
-            <C_Title
-              title="右对齐"
-              align="right"
-              type="info"
-            />
-          </view>
-        </view>
-      </view>
-
-      <!-- 装饰 -->
-      <view class="demo-section">
-        <text class="section-title">装饰 & 分割线</text>
-        <view class="demo-card">
-          <view class="title-list">
-            <C_Title
-              title="带装饰"
-              type="primary"
-              :showDecoration="true"
-            />
-            <C_Title
-              title="带分割线"
-              type="success"
-              :showDivider="true"
-            />
-            <C_Title
-              title="顶部分割线"
-              type="warning"
-              :showDivider="true"
-              dividerPosition="top"
-            />
-          </view>
-          <view class="code-block mt-3">
-            &lt;C_Title title="带装饰" :showDecoration="true" /&gt;
-          </view>
-        </view>
+      <view class="mt-8 text-center">
+        <C_Title
+          title="灵活标题，多样展示"
+          subtitle="类型 · 层级 · 图标 · 装饰 · 对齐 · 分割线 · 尺寸"
+          :level="5"
+          type="info"
+          align="center"
+          :show-divider="true"
+          divider-position="top"
+        />
       </view>
     </view>
   </C_Layout>
 </template>
 
 <script setup lang="ts"></script>
-
-<style lang="scss" scoped>
-  .demo-page {
-    min-height: 100%;
-    background: #f5f7fa;
-    padding: 24rpx 32rpx;
-  }
-  .demo-header {
-    margin-bottom: 40rpx;
-    .demo-title {
-      display: block;
-      font-size: 44rpx;
-      font-weight: 700;
-      color: #1f2937;
-      margin-bottom: 8rpx;
-    }
-    .demo-subtitle {
-      display: block;
-      font-size: 26rpx;
-      color: #666;
-    }
-  }
-  .demo-section {
-    margin-bottom: 40rpx;
-    .section-title {
-      display: block;
-      font-size: 30rpx;
-      font-weight: 600;
-      color: #1f2937;
-      margin-bottom: 20rpx;
-      padding-left: 16rpx;
-      border-left: 6rpx solid #667eea;
-    }
-  }
-  .demo-card {
-    background: #fff;
-    border-radius: 20rpx;
-    padding: 32rpx;
-    box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
-    border: 1rpx solid rgba(0, 0, 0, 0.04);
-  }
-  .title-list {
-    display: flex;
-    flex-direction: column;
-    gap: 20rpx;
-  }
-  .mt-3 {
-    margin-top: 20rpx;
-  }
-  .code-block {
-    background: #f5f5f5;
-    border-radius: 8rpx;
-    padding: 16rpx 20rpx;
-    font-size: 22rpx;
-    color: #555;
-    font-family: monospace;
-  }
-</style>

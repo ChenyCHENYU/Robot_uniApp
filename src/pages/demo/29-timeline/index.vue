@@ -1,54 +1,98 @@
 <template>
   <C_Layout>
-    <view class="demo-page">
-      <view class="demo-header">
-        <text class="demo-title">C_Timeline 时间轴</text>
-        <text class="demo-subtitle">按时间顺序展示活动记录或流程节点</text>
+    <view class="max-w-4xl mx-auto p-5 bg-gray-50 min-h-screen">
+      <view class="text-center mb-8">
+        <C_Title
+          title="C_Timeline 时间轴"
+          subtitle="按时间展示流程记录"
+          type="primary"
+          :level="3"
+          size="large"
+          align="center"
+          left-icon="i-mdi-timeline-outline"
+          :show-decoration="true"
+          :show-divider="true"
+        />
       </view>
 
-      <!-- 基础用法 -->
-      <view class="demo-section">
-        <text class="section-title">基础用法</text>
-        <view class="demo-card">
-          <C_Timeline
-            :items="basicItems"
-            :current="2"
+      <view class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- 基础用法 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="物流跟踪"
+            subtitle="基础时间轴"
+            :level="4"
+            type="primary"
+            align="center"
+            left-icon="i-mdi-truck-delivery"
+            :show-decoration="true"
           />
-          <view class="code-block">
-            &lt;C_Timeline :items="items" :current="2" /&gt;
+          <view class="my-6 p-4 bg-gray-50 rounded-lg">
+            <C_Timeline
+              :items="orderItems"
+              :current="2"
+            />
+          </view>
+        </view>
+
+        <!-- 自定义颜色 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="审批流程"
+            subtitle="自定义节点颜色"
+            :level="4"
+            type="success"
+            align="center"
+            left-icon="i-mdi-check-decagram"
+            :show-decoration="true"
+          />
+          <view class="my-6 p-4 bg-gray-50 rounded-lg">
+            <C_Timeline
+              :items="approvalItems"
+              finishedColor="#07c160"
+              pendingColor="#dcdfe6"
+            />
+          </view>
+        </view>
+
+        <!-- 倒序显示 -->
+        <view class="bg-white rounded-lg shadow-md p-6 lg:col-span-2">
+          <C_Title
+            title="倒序显示"
+            subtitle="reverse 属性"
+            :level="4"
+            type="warning"
+            align="center"
+            left-icon="i-mdi-sort-descending"
+            :show-decoration="true"
+          />
+          <view class="my-6 p-4 bg-gray-50 rounded-lg">
+            <C_Timeline
+              :items="orderItems"
+              :current="2"
+              reverse
+            />
           </view>
         </view>
       </view>
 
-      <!-- 自定义颜色 -->
-      <view class="demo-section">
-        <text class="section-title">自定义颜色</text>
-        <view class="demo-card">
-          <C_Timeline
-            :items="colorItems"
-            finishedColor="#07c160"
-            pendingColor="#dcdfe6"
-          />
-        </view>
-      </view>
-
-      <!-- 倒序显示 -->
-      <view class="demo-section">
-        <text class="section-title">倒序显示</text>
-        <view class="demo-card">
-          <C_Timeline
-            :items="basicItems"
-            :current="2"
-            reverse
-          />
-        </view>
+      <view class="mt-8 text-center">
+        <C_Title
+          title="时间可视，流程清晰"
+          subtitle="物流跟踪 · 审批流程 · 倒序显示 · 自定义颜色"
+          :level="5"
+          type="info"
+          align="center"
+          :show-divider="true"
+          divider-position="top"
+        />
       </view>
     </view>
   </C_Layout>
 </template>
 
 <script setup lang="ts">
-  const basicItems = [
+  const orderItems = [
     {
       title: '提交订单',
       content: '订单号: 2024010100001',
@@ -67,61 +111,10 @@
     { title: '已送达', content: '请确认收货', time: '2024-01-01 11:20' },
   ]
 
-  const colorItems = [
+  const approvalItems = [
     { title: '审批发起', time: '09:00', color: '#07c160' },
     { title: '部门经理审批', time: '10:30', color: '#07c160' },
     { title: 'HR审批中', time: '14:00', color: '#ff976a' },
     { title: '总经理审批', time: '待处理', color: '#dcdfe6' },
   ]
 </script>
-
-<style lang="scss" scoped>
-  .demo-page {
-    min-height: 100%;
-    background: #f5f7fa;
-    padding: 24rpx 32rpx;
-  }
-  .demo-header {
-    margin-bottom: 40rpx;
-    .demo-title {
-      display: block;
-      font-size: 44rpx;
-      font-weight: 700;
-      color: #1f2937;
-      margin-bottom: 8rpx;
-    }
-    .demo-subtitle {
-      display: block;
-      font-size: 26rpx;
-      color: #666;
-    }
-  }
-  .demo-section {
-    margin-bottom: 40rpx;
-    .section-title {
-      display: block;
-      font-size: 30rpx;
-      font-weight: 600;
-      color: #1f2937;
-      margin-bottom: 20rpx;
-      padding-left: 16rpx;
-      border-left: 6rpx solid #667eea;
-    }
-  }
-  .demo-card {
-    background: #fff;
-    border-radius: 20rpx;
-    padding: 32rpx;
-    box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
-    border: 1rpx solid rgba(0, 0, 0, 0.04);
-  }
-  .code-block {
-    background: #f5f5f5;
-    border-radius: 8rpx;
-    padding: 16rpx 20rpx;
-    font-size: 22rpx;
-    color: #555;
-    font-family: monospace;
-    margin-top: 16rpx;
-  }
-</style>

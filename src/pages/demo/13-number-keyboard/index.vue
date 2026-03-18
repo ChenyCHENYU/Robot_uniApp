@@ -1,121 +1,177 @@
 <template>
   <C_Layout>
-    <view class="demo-page">
-      <view class="demo-header">
-        <text class="demo-title">C_NumberKeyboard 数字键盘</text>
-        <text class="demo-subtitle">虚拟数字键盘，支持小数点、随机排列</text>
+    <view class="max-w-4xl mx-auto p-5 bg-gray-50 min-h-screen">
+      <view class="text-center mb-8">
+        <C_Title
+          title="C_NumberKeyboard 数字键盘"
+          subtitle="安全数字输入组件"
+          type="primary"
+          :level="3"
+          size="large"
+          align="center"
+          left-icon="i-mdi-dialpad"
+          :show-decoration="true"
+          :show-divider="true"
+        />
       </view>
 
-      <!-- 基础键盘 -->
-      <view class="demo-section">
-        <text class="section-title">基础用法</text>
-        <view class="demo-card">
-          <view
-            class="input-display"
-            @click="showBasic = true"
-          >
-            <text v-if="value1">{{ value1 }}</text>
-            <text
-              v-else
-              class="input-placeholder"
-              >点击输入</text
-            >
-          </view>
-          <C_NumberKeyboard
-            v-model:visible="showBasic"
-            v-model="value1"
-            title="输入金额"
+      <view class="grid grid-cols-1 gap-6">
+        <!-- 基础键盘 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="基础数字键盘"
+            subtitle="点击输入框弹出"
+            :level="4"
+            type="primary"
+            align="center"
+            left-icon="i-mdi-numeric"
+            :show-decoration="true"
           />
-          <view class="code-block mt-3">
-            &lt;C_NumberKeyboard v-model:visible="show" v-model="value"
-            title="输入金额" /&gt;
-          </view>
-        </view>
-      </view>
-
-      <!-- 带小数点 -->
-      <view class="demo-section">
-        <text class="section-title">带小数点</text>
-        <view class="demo-card">
-          <view
-            class="input-display"
-            @click="showDot = true"
-          >
-            <text v-if="value2">{{ value2 }}</text>
-            <text
-              v-else
-              class="input-placeholder"
-              >点击输入小数</text
+          <view class="my-6 p-4 bg-gray-50 rounded-lg">
+            <view
+              class="bg-white border border-gray-200 rounded-lg px-4 py-3 text-center min-h-10"
+              @click="showKeyboard = true"
             >
+              <text
+                v-if="inputValue"
+                class="text-lg font-mono tracking-widest"
+                >{{ inputValue }}</text
+              >
+              <text
+                v-else
+                class="text-sm text-gray-400"
+                >点击此处输入数字</text
+              >
+            </view>
           </view>
           <C_NumberKeyboard
-            v-model:visible="showDot"
-            v-model="value2"
-            showDot
-            title="输入金额"
+            v-model:visible="showKeyboard"
+            v-model="inputValue"
           />
-          <view class="code-block mt-3">
-            &lt;C_NumberKeyboard showDot /&gt;
-          </view>
         </view>
-      </view>
 
-      <!-- 随机排列 -->
-      <view class="demo-section">
-        <text class="section-title">随机排列</text>
-        <view class="demo-card">
-          <view
-            class="input-display"
-            @click="showRandom = true"
-          >
-            <text v-if="value3">{{ value3 }}</text>
-            <text
-              v-else
-              class="input-placeholder"
-              >点击输入（随机键位）</text
-            >
-          </view>
-          <C_NumberKeyboard
-            v-model:visible="showRandom"
-            v-model="value3"
-            randomOrder
-            title="安全输入"
+        <!-- 带小数点 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="小数点键盘"
+            subtitle="showDot 属性"
+            :level="4"
+            type="success"
+            align="center"
+            left-icon="i-mdi-decimal-increase"
+            :show-decoration="true"
           />
-          <text class="demo-desc"
-            >设置 randomOrder
-            后每次弹出键盘，数字顺序都不同，适用于密码输入</text
-          >
-          <view class="code-block">
-            &lt;C_NumberKeyboard randomOrder /&gt;
+          <view class="my-6 p-4 bg-gray-50 rounded-lg">
+            <view
+              class="bg-white border border-gray-200 rounded-lg px-4 py-3 text-center min-h-10"
+              @click="showDotKeyboard = true"
+            >
+              <text
+                v-if="dotValue"
+                class="text-lg font-mono"
+                >¥ {{ dotValue }}</text
+              >
+              <text
+                v-else
+                class="text-sm text-gray-400"
+                >输入金额</text
+              >
+            </view>
           </view>
+          <C_NumberKeyboard
+            v-model:visible="showDotKeyboard"
+            v-model="dotValue"
+            :showDot="true"
+          />
         </view>
-      </view>
 
-      <!-- 最大长度 -->
-      <view class="demo-section">
-        <text class="section-title">限制长度</text>
-        <view class="demo-card">
-          <view
-            class="input-display"
-            @click="showMax = true"
-          >
-            <text v-if="value4">{{ value4 }}</text>
-            <text
-              v-else
-              class="input-placeholder"
-              >最多6位</text
+        <!-- 限制长度 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="长度限制"
+            subtitle="maxLength=6"
+            :level="4"
+            type="warning"
+            align="center"
+            left-icon="i-mdi-ruler"
+            :show-decoration="true"
+          />
+          <view class="my-6 p-4 bg-gray-50 rounded-lg">
+            <view class="flex justify-center gap-2">
+              <view
+                v-for="i in 6"
+                :key="i"
+                class="w-10 h-12 bg-white border-2 rounded-lg flex items-center justify-center"
+                :class="
+                  pinValue.length >= i ? 'border-blue-500' : 'border-gray-200'
+                "
+                @click="showPinKeyboard = true"
+              >
+                <text
+                  v-if="pinValue.length >= i"
+                  class="text-lg font-bold"
+                  >●</text
+                >
+              </view>
+            </view>
+            <text class="text-xs text-gray-400 text-center block mt-3"
+              >密码输入框效果</text
             >
           </view>
           <C_NumberKeyboard
-            v-model:visible="showMax"
-            v-model="value4"
+            v-model:visible="showPinKeyboard"
+            v-model="pinValue"
             :maxLength="6"
-            title="验证码"
+            :showDot="false"
           />
-          <view class="code-block mt-3">
-            &lt;C_NumberKeyboard :maxLength="6" /&gt;
-          </view>
         </view>
+
+        <!-- 随机排列 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="随机排列"
+            subtitle="randomOrder 属性"
+            :level="4"
+            type="danger"
+            align="center"
+            left-icon="i-mdi-shuffle-variant"
+            :show-decoration="true"
+          />
+          <view class="my-6 p-4 bg-gray-50 rounded-lg">
+            <view
+              class="bg-white border border-gray-200 rounded-lg px-4 py-3 text-center min-h-10"
+              @click="showRandomKeyboard = true"
+            >
+              <text
+                v-if="randomValue"
+                class="text-lg font-mono tracking-widest"
+                >{{ randomValue }}</text
+              >
+              <text
+                v-else
+                class="text-sm text-gray-400"
+                >安全键盘（随机排列）</text
+              >
+            </view>
+          </view>
+          <C_NumberKeyboard
+            v-model:visible="showRandomKeyboard"
+            v-model="randomValue"
+            :randomOrder="true"
+          />
+        </view>
+      </view>
+
+      <view class="mt-8 text-center">
+        <C_Title
+          title="安全输入，场景丰富"
+          subtitle="小数点 · 长度限制 · 随机排列 · 密码模式"
+          :level="5"
+          type="info"
+          align="center"
+          :show-divider="true"
+          divider-position="top"
+        />
       </view>
     </view>
   </C_Layout>
@@ -123,88 +179,12 @@
 
 <script setup lang="ts">
   import { ref } from 'vue'
-
-  const showBasic = ref(false)
-  const showDot = ref(false)
-  const showRandom = ref(false)
-  const showMax = ref(false)
-
-  const value1 = ref('')
-  const value2 = ref('')
-  const value3 = ref('')
-  const value4 = ref('')
+  const inputValue = ref('')
+  const dotValue = ref('')
+  const pinValue = ref('')
+  const randomValue = ref('')
+  const showKeyboard = ref(false)
+  const showDotKeyboard = ref(false)
+  const showPinKeyboard = ref(false)
+  const showRandomKeyboard = ref(false)
 </script>
-
-<style lang="scss" scoped>
-  .demo-page {
-    min-height: 100%;
-    background: #f5f7fa;
-    padding: 24rpx 32rpx;
-  }
-  .demo-header {
-    margin-bottom: 40rpx;
-    .demo-title {
-      display: block;
-      font-size: 44rpx;
-      font-weight: 700;
-      color: #1f2937;
-      margin-bottom: 8rpx;
-    }
-    .demo-subtitle {
-      display: block;
-      font-size: 26rpx;
-      color: #666;
-    }
-  }
-  .demo-section {
-    margin-bottom: 40rpx;
-    .section-title {
-      display: block;
-      font-size: 30rpx;
-      font-weight: 600;
-      color: #1f2937;
-      margin-bottom: 20rpx;
-      padding-left: 16rpx;
-      border-left: 6rpx solid #667eea;
-    }
-  }
-  .demo-card {
-    background: #fff;
-    border-radius: 20rpx;
-    padding: 32rpx;
-    box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
-    border: 1rpx solid rgba(0, 0, 0, 0.04);
-  }
-  .demo-desc {
-    display: block;
-    font-size: 26rpx;
-    color: #666;
-    margin-top: 12rpx;
-    margin-bottom: 12rpx;
-  }
-  .input-display {
-    padding: 20rpx 24rpx;
-    border: 2rpx solid #e4e7ed;
-    border-radius: 12rpx;
-    font-size: 32rpx;
-    color: #333;
-    min-height: 80rpx;
-    display: flex;
-    align-items: center;
-    margin-bottom: 16rpx;
-    .input-placeholder {
-      color: #c0c4cc;
-    }
-  }
-  .mt-3 {
-    margin-top: 20rpx;
-  }
-  .code-block {
-    background: #f5f5f5;
-    border-radius: 8rpx;
-    padding: 16rpx 20rpx;
-    font-size: 22rpx;
-    color: #555;
-    font-family: monospace;
-  }
-</style>

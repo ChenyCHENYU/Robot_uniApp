@@ -1,102 +1,145 @@
 <template>
   <C_Layout>
-    <view class="demo-page">
-      <view class="demo-header">
-        <text class="demo-title">C_Upload 上传</text>
-        <text class="demo-subtitle"
-          >图片上传组件，支持预览、删除、数量限制</text
-        >
+    <view class="max-w-4xl mx-auto p-5 bg-gray-50 min-h-screen">
+      <view class="text-center mb-8">
+        <C_Title
+          title="C_Upload 上传"
+          subtitle="图片与文件上传组件"
+          type="primary"
+          :level="3"
+          size="large"
+          align="center"
+          left-icon="i-mdi-cloud-upload"
+          :show-decoration="true"
+          :show-divider="true"
+        />
       </view>
 
-      <!-- 基础用法 -->
-      <view class="demo-section">
-        <text class="section-title">基础用法</text>
-        <view class="demo-card">
-          <C_Upload
-            v-model="fileList1"
-            @delete="onDelete"
-            @oversize="onOversize"
+      <view class="grid grid-cols-1 gap-6">
+        <!-- 基础上传 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="基础用法"
+            subtitle="点击选择图片上传"
+            :level="4"
+            type="primary"
+            align="center"
+            left-icon="i-mdi-image-plus"
+            :show-decoration="true"
           />
-          <view class="code-block mt-3">
-            &lt;C_Upload v-model="fileList" /&gt;
+          <view class="my-6 p-4 bg-gray-50 rounded-lg">
+            <C_Upload
+              v-model="fileList1"
+              :maxCount="3"
+            />
           </view>
+          <text class="text-xs text-gray-400 text-center block"
+            >已选 {{ fileList1.length }} / 3 张</text
+          >
         </view>
-      </view>
 
-      <!-- 限制数量 -->
-      <view class="demo-section">
-        <text class="section-title">限制上传数量</text>
-        <view class="demo-card">
-          <C_Upload
-            v-model="fileList2"
-            :maxCount="3"
+        <!-- 限制数量 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="数量限制"
+            subtitle="maxCount 控制上传数量"
+            :level="4"
+            type="success"
+            align="center"
+            left-icon="i-mdi-numeric"
+            :show-decoration="true"
           />
-          <text class="demo-desc">设置 maxCount 限制最多上传 3 张图片</text>
-          <view class="code-block">
-            &lt;C_Upload v-model="fileList" :maxCount="3" /&gt;
+          <view class="my-6 p-4 bg-gray-50 rounded-lg">
+            <C_Upload
+              v-model="fileList2"
+              :maxCount="6"
+            />
           </view>
+          <text class="text-xs text-gray-400 text-center block"
+            >最多 6 张图片</text
+          >
         </view>
-      </view>
 
-      <!-- 自定义预览尺寸 -->
-      <view class="demo-section">
-        <text class="section-title">预览尺寸</text>
-        <view class="demo-card">
-          <C_Upload
-            v-model="fileList3"
-            previewSize="200rpx"
+        <!-- 禁用状态 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="禁用状态"
+            subtitle="disabled 属性"
+            :level="4"
+            type="warning"
+            align="center"
+            left-icon="i-mdi-block-helper"
+            :show-decoration="true"
           />
-          <view class="code-block mt-3">
-            &lt;C_Upload previewSize="200rpx" /&gt;
+          <view class="my-6 p-4 bg-gray-50 rounded-lg">
+            <C_Upload
+              v-model="disabledList"
+              disabled
+            />
           </view>
+          <text class="text-xs text-gray-400 text-center block"
+            >禁用状态下不可上传/删除</text
+          >
         </view>
-      </view>
 
-      <!-- 禁用状态 -->
-      <view class="demo-section">
-        <text class="section-title">禁用状态</text>
-        <view class="demo-card">
-          <C_Upload
-            v-model="disabledList"
-            disabled
+        <!-- 功能特性 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="核心能力"
+            :level="4"
+            type="info"
+            align="center"
+            left-icon="i-mdi-star-four-points"
+            :show-decoration="true"
           />
-          <view class="code-block mt-3">
-            &lt;C_Upload v-model="fileList" disabled /&gt;
+          <view class="my-6 p-4 bg-gray-50 rounded-lg grid grid-cols-1 gap-3">
+            <view class="flex items-center gap-3 p-3 bg-white rounded-lg">
+              <text
+                class="i-mdi-image-size-select-large text-xl text-blue-500"
+              ></text>
+              <view>
+                <text class="text-sm font-medium text-gray-700 block"
+                  >预览尺寸</text
+                >
+                <text class="text-xs text-gray-500"
+                  >previewSize 自定义缩略图大小</text
+                >
+              </view>
+            </view>
+            <view class="flex items-center gap-3 p-3 bg-white rounded-lg">
+              <text class="i-mdi-file-alert text-xl text-orange-500"></text>
+              <view>
+                <text class="text-sm font-medium text-gray-700 block"
+                  >大小限制</text
+                >
+                <text class="text-xs text-gray-500">maxSize 默认 10MB</text>
+              </view>
+            </view>
+            <view class="flex items-center gap-3 p-3 bg-white rounded-lg">
+              <text class="i-mdi-delete text-xl text-red-500"></text>
+              <view>
+                <text class="text-sm font-medium text-gray-700 block"
+                  >可删除</text
+                >
+                <text class="text-xs text-gray-500"
+                  >deletable 控制删除按钮显示</text
+                >
+              </view>
+            </view>
           </view>
         </view>
       </view>
 
-      <!-- Props -->
-      <view class="demo-section">
-        <text class="section-title">Props 一览</text>
-        <view class="demo-card">
-          <view class="prop-list">
-            <view class="prop-item">
-              <text class="prop-name">v-model</text>
-              <text class="prop-desc">文件列表数组</text>
-            </view>
-            <view class="prop-item">
-              <text class="prop-name">maxCount</text>
-              <text class="prop-desc">最大上传数，默认 9</text>
-            </view>
-            <view class="prop-item">
-              <text class="prop-name">maxSize</text>
-              <text class="prop-desc">最大文件大小(bytes)，默认 10MB</text>
-            </view>
-            <view class="prop-item">
-              <text class="prop-name">previewSize</text>
-              <text class="prop-desc">预览尺寸，默认 160rpx</text>
-            </view>
-            <view class="prop-item">
-              <text class="prop-name">deletable</text>
-              <text class="prop-desc">是否可删除，默认 true</text>
-            </view>
-            <view class="prop-item">
-              <text class="prop-name">disabled</text>
-              <text class="prop-desc">是否禁用</text>
-            </view>
-          </view>
-        </view>
+      <view class="mt-8 text-center">
+        <C_Title
+          title="便捷上传，预览直观"
+          subtitle="多图 · 大小限制 · 禁用 · 可删除"
+          :level="5"
+          type="info"
+          align="center"
+          :show-divider="true"
+          divider-position="top"
+        />
       </view>
     </view>
   </C_Layout>
@@ -104,98 +147,11 @@
 
 <script setup lang="ts">
   import { ref } from 'vue'
-
   const fileList1 = ref([])
   const fileList2 = ref([])
-  const fileList3 = ref([])
   const disabledList = ref([
     {
       url: 'https://cheny-chenyu.oss-cn-chengdu.aliyuncs.com/robot_admin/login.png',
     },
   ])
-
-  const onDelete = index => {
-    console.log('删除文件：', index)
-  }
-
-  const onOversize = _file => {
-    uni.showToast({ title: '文件过大', icon: 'none' })
-  }
 </script>
-
-<style lang="scss" scoped>
-  .demo-page {
-    min-height: 100%;
-    background: #f5f7fa;
-    padding: 24rpx 32rpx;
-  }
-  .demo-header {
-    margin-bottom: 40rpx;
-    .demo-title {
-      display: block;
-      font-size: 44rpx;
-      font-weight: 700;
-      color: #1f2937;
-      margin-bottom: 8rpx;
-    }
-    .demo-subtitle {
-      display: block;
-      font-size: 26rpx;
-      color: #666;
-    }
-  }
-  .demo-section {
-    margin-bottom: 40rpx;
-    .section-title {
-      display: block;
-      font-size: 30rpx;
-      font-weight: 600;
-      color: #1f2937;
-      margin-bottom: 20rpx;
-      padding-left: 16rpx;
-      border-left: 6rpx solid #667eea;
-    }
-  }
-  .demo-card {
-    background: #fff;
-    border-radius: 20rpx;
-    padding: 32rpx;
-    box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
-    border: 1rpx solid rgba(0, 0, 0, 0.04);
-  }
-  .demo-desc {
-    display: block;
-    font-size: 26rpx;
-    color: #666;
-    margin-top: 12rpx;
-  }
-  .mt-3 {
-    margin-top: 20rpx;
-  }
-  .code-block {
-    background: #f5f5f5;
-    border-radius: 8rpx;
-    padding: 16rpx 20rpx;
-    font-size: 22rpx;
-    color: #555;
-    font-family: monospace;
-  }
-  .prop-list {
-    .prop-item {
-      display: flex;
-      justify-content: space-between;
-      padding: 12rpx 0;
-      border-bottom: 1rpx solid #f0f0f0;
-    }
-    .prop-name {
-      font-size: 24rpx;
-      color: #007aff;
-      font-weight: 600;
-      font-family: monospace;
-    }
-    .prop-desc {
-      font-size: 24rpx;
-      color: #666;
-    }
-  }
-</style>

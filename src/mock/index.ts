@@ -54,9 +54,16 @@ export function setupMock() {
             cookies: [],
           } as UniApp.RequestSuccessCallbackResult)
         }
+        // 调用 complete 回调
+        if (typeof options.complete === 'function') {
+          options.complete({} as any)
+        }
 
-        // 返回 false 阻止真实请求发送
-        return false
+        // 将请求重定向到一个空的内联 data URI 以阻止真实网络请求
+        // uni-h5 的 invoke 返回值会被当作 options，返回 false 会导致
+        // "Cannot create property 'method' on boolean 'false'" 错误
+        options.url = 'data:application/json,{}'
+        return options
       }
 
       // 未匹配的请求正常发送

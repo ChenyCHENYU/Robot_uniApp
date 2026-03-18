@@ -1,65 +1,140 @@
 <template>
   <C_Layout>
-    <view class="demo-page">
-      <view class="demo-header">
-        <text class="demo-title">C_Signature 签名板</text>
-        <text class="demo-subtitle">手写签名组件，支持画笔颜色和粗细调整</text>
+    <view class="max-w-4xl mx-auto p-5 bg-gray-50 min-h-screen">
+      <view class="text-center mb-8">
+        <C_Title
+          title="C_Signature 签名板"
+          subtitle="手写电子签名组件"
+          type="primary"
+          :level="3"
+          size="large"
+          align="center"
+          left-icon="i-mdi-draw-pen"
+          :show-decoration="true"
+          :show-divider="true"
+        />
       </view>
 
-      <!-- 基础用法 -->
-      <view class="demo-section">
-        <text class="section-title">基础用法</text>
-        <view class="demo-card">
-          <C_Signature
-            ref="signatureRef"
-            height="400rpx"
+      <view class="grid grid-cols-1 gap-6">
+        <!-- 基础签名 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="基础签名"
+            subtitle="在画布上手写签名"
+            :level="4"
+            type="primary"
+            align="center"
+            left-icon="i-mdi-pencil"
+            :show-decoration="true"
           />
-          <view class="sig-actions">
-            <view
-              class="action-btn"
+          <view class="my-6 bg-gray-50 rounded-lg overflow-hidden">
+            <C_Signature
+              ref="signatureRef"
+              height="400rpx"
+            />
+          </view>
+          <view class="flex justify-center gap-3">
+            <text
+              class="text-sm bg-gray-200 text-gray-600 px-5 py-2 rounded-full"
               @click="handleClear"
-              >清除</view
+              >清除</text
             >
-            <view
-              class="action-btn action-btn--primary"
+            <text
+              class="text-sm text-white bg-blue-500 px-5 py-2 rounded-full"
               @click="handleConfirm"
-              >确认</view
+              >确认签名</text
             >
           </view>
-          <view class="code-block">
-            &lt;C_Signature ref="signatureRef" height="400rpx" /&gt;
+        </view>
+
+        <!-- 自定义画笔 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="自定义画笔"
+            subtitle="红色画笔 · 粗细调整"
+            :level="4"
+            type="danger"
+            align="center"
+            left-icon="i-mdi-brush"
+            :show-decoration="true"
+          />
+          <view class="my-6 bg-gray-50 rounded-lg overflow-hidden">
+            <C_Signature
+              penColor="#ee0a24"
+              :lineWidth="4"
+              height="300rpx"
+            />
+          </view>
+        </view>
+
+        <!-- 签名结果 -->
+        <view
+          v-if="signResult"
+          class="bg-white rounded-lg shadow-md p-6"
+        >
+          <C_Title
+            title="签名结果"
+            subtitle="签名已保存"
+            :level="4"
+            type="success"
+            align="center"
+            left-icon="i-mdi-check-circle"
+            :show-decoration="true"
+          />
+          <view class="my-6 p-4 bg-gray-50 rounded-lg">
+            <image
+              :src="signResult"
+              mode="widthFix"
+              class="w-full rounded-lg"
+            />
+          </view>
+        </view>
+
+        <!-- 特性 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="组件特性"
+            :level="4"
+            type="info"
+            align="center"
+            left-icon="i-mdi-information-outline"
+            :show-decoration="true"
+          />
+          <view class="my-6 grid grid-cols-2 gap-4">
+            <view class="p-4 bg-gray-50 rounded-lg text-center">
+              <text class="text-2xl block mb-2">✏️</text>
+              <text class="text-sm font-bold block">自定义画笔</text>
+              <text class="text-xs text-gray-500">颜色 · 粗细</text>
+            </view>
+            <view class="p-4 bg-gray-50 rounded-lg text-center">
+              <text class="text-2xl block mb-2">📸</text>
+              <text class="text-sm font-bold block">导出图片</text>
+              <text class="text-xs text-gray-500">PNG / JPEG</text>
+            </view>
+            <view class="p-4 bg-gray-50 rounded-lg text-center">
+              <text class="text-2xl block mb-2">🔄</text>
+              <text class="text-sm font-bold block">撤销重做</text>
+              <text class="text-xs text-gray-500">灵活操作</text>
+            </view>
+            <view class="p-4 bg-gray-50 rounded-lg text-center">
+              <text class="text-2xl block mb-2">📱</text>
+              <text class="text-sm font-bold block">触控优化</text>
+              <text class="text-xs text-gray-500">流畅书写</text>
+            </view>
           </view>
         </view>
       </view>
 
-      <!-- 自定义画笔 -->
-      <view class="demo-section">
-        <text class="section-title">自定义画笔</text>
-        <view class="demo-card">
-          <C_Signature
-            penColor="#ee0a24"
-            :lineWidth="4"
-            height="300rpx"
-          />
-          <view class="code-block">
-            &lt;C_Signature penColor="#ee0a24" :lineWidth="4" /&gt;
-          </view>
-        </view>
-      </view>
-
-      <!-- 签名结果 -->
-      <view
-        v-if="signResult"
-        class="demo-section"
-      >
-        <text class="section-title">签名结果</text>
-        <view class="demo-card">
-          <image
-            :src="signResult"
-            mode="widthFix"
-            class="result-image"
-          />
-        </view>
+      <view class="mt-8 text-center">
+        <C_Title
+          title="电子签名，便捷高效"
+          subtitle="手写 · 自定义画笔 · 导出图片 · 触控优化"
+          :level="5"
+          type="info"
+          align="center"
+          :show-divider="true"
+          divider-position="top"
+        />
       </view>
     </view>
   </C_Layout>
@@ -71,12 +146,18 @@
   const signatureRef = ref()
   const signResult = ref('')
 
-  const handleClear = () => {
+  /**
+   *
+   */
+  function handleClear() {
     signatureRef.value?.clear()
     signResult.value = ''
   }
 
-  const handleConfirm = async () => {
+  /**
+   *
+   */
+  async function handleConfirm() {
     const result = await signatureRef.value?.confirm()
     if (result && !result.isEmpty) {
       signResult.value = result.tempFilePath
@@ -86,77 +167,3 @@
     }
   }
 </script>
-
-<style lang="scss" scoped>
-  .demo-page {
-    min-height: 100%;
-    background: #f5f7fa;
-    padding: 24rpx 32rpx;
-  }
-  .demo-header {
-    margin-bottom: 40rpx;
-    .demo-title {
-      display: block;
-      font-size: 44rpx;
-      font-weight: 700;
-      color: #1f2937;
-      margin-bottom: 8rpx;
-    }
-    .demo-subtitle {
-      display: block;
-      font-size: 26rpx;
-      color: #666;
-    }
-  }
-  .demo-section {
-    margin-bottom: 40rpx;
-    .section-title {
-      display: block;
-      font-size: 30rpx;
-      font-weight: 600;
-      color: #1f2937;
-      margin-bottom: 20rpx;
-      padding-left: 16rpx;
-      border-left: 6rpx solid #667eea;
-    }
-  }
-  .demo-card {
-    background: #fff;
-    border-radius: 20rpx;
-    padding: 32rpx;
-    box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
-    border: 1rpx solid rgba(0, 0, 0, 0.04);
-  }
-  .sig-actions {
-    display: flex;
-    justify-content: center;
-    gap: 20rpx;
-    margin-top: 20rpx;
-    .action-btn {
-      padding: 16rpx 40rpx;
-      border-radius: 8rpx;
-      font-size: 28rpx;
-      border: 1rpx solid #dcdfe6;
-      color: #606266;
-      &--primary {
-        background: #007aff;
-        color: #fff;
-        border-color: #007aff;
-      }
-    }
-  }
-  .result-image {
-    width: 100%;
-    border-radius: 8rpx;
-    margin-top: 12rpx;
-  }
-  .code-block {
-    background: #f5f5f5;
-    border-radius: 8rpx;
-    padding: 16rpx 20rpx;
-    font-size: 22rpx;
-    color: #555;
-    font-family: monospace;
-    margin-top: 16rpx;
-  }
-</style>

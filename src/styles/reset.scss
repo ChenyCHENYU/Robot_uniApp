@@ -2,6 +2,14 @@
  * 全局样式重置
  */
 
+// 修复 wot-design-uni 图标字体加载慢导致的 Fallback font 警告
+// 覆盖 @font-face 添加 font-display: swap，让文本先以备选字体渲染
+@font-face {
+  font-family: 'wd-icons';
+  src: local('wd-icons');
+  font-display: swap;
+}
+
 // 隐藏 uni-app 原生 tabbar（使用自定义 C_Tabbar）
 uni-tabbar,
 .uni-tabbar,

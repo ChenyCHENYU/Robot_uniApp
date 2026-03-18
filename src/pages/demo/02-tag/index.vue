@@ -1,250 +1,292 @@
 <template>
   <C_Layout>
-    <view class="demo-page">
-      <view class="demo-header">
-        <text class="demo-title">C_Tag 标签</text>
-        <text class="demo-subtitle">用于标记和分类的小型标签组件</text>
+    <view class="max-w-4xl mx-auto p-5 bg-gray-50 min-h-screen">
+      <view class="text-center mb-8">
+        <C_Title
+          title="C_Tag 标签"
+          subtitle="语义化标记与状态展示"
+          type="primary"
+          :level="3"
+          size="large"
+          align="center"
+          left-icon="i-mdi-label"
+          :show-decoration="true"
+          :show-divider="true"
+        />
       </view>
 
-      <!-- 基础类型 -->
-      <view class="demo-section">
-        <text class="section-title">基础类型</text>
-        <view class="demo-card">
-          <view class="tag-row">
+      <view class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- 基础类型 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="基础类型"
+            subtitle="五种语义色系"
+            :level="4"
+            type="primary"
+            align="center"
+            left-icon="i-mdi-palette"
+            :show-decoration="true"
+          />
+          <view
+            class="flex flex-wrap justify-center items-center gap-3 my-6 p-4 bg-gray-50 rounded-lg"
+          >
             <C_Tag
-              text="Primary"
+              text="主要"
               type="primary"
             />
             <C_Tag
-              text="Success"
+              text="成功"
               type="success"
             />
             <C_Tag
-              text="Warning"
+              text="警告"
               type="warning"
             />
             <C_Tag
-              text="Error"
+              text="错误"
               type="error"
             />
             <C_Tag
-              text="Info"
+              text="信息"
               type="info"
             />
           </view>
-          <view class="code-block">
-            &lt;C_Tag text="Primary" type="primary" /&gt;
-          </view>
         </view>
-      </view>
 
-      <!-- 实心模式 -->
-      <view class="demo-section">
-        <text class="section-title">实心模式</text>
-        <view class="demo-card">
-          <view class="tag-row">
+        <!-- 实心模式 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="实心模式"
+            subtitle="填充色更醒目"
+            :level="4"
+            type="success"
+            align="center"
+            left-icon="i-mdi-format-color-fill"
+            :show-decoration="true"
+          />
+          <view
+            class="flex flex-wrap justify-center items-center gap-3 my-6 p-4 bg-gray-50 rounded-lg"
+          >
             <C_Tag
-              text="Primary"
+              text="主要"
               type="primary"
               :plain="false"
             />
             <C_Tag
-              text="Success"
+              text="成功"
               type="success"
               :plain="false"
             />
             <C_Tag
-              text="Warning"
+              text="警告"
               type="warning"
               :plain="false"
             />
             <C_Tag
-              text="Error"
+              text="错误"
               type="error"
               :plain="false"
             />
             <C_Tag
-              text="Info"
+              text="信息"
               type="info"
               :plain="false"
             />
           </view>
-          <view class="code-block">
-            &lt;C_Tag text="Primary" type="primary" :plain="false" /&gt;
-          </view>
         </view>
-      </view>
 
-      <!-- 圆角标签 -->
-      <view class="demo-section">
-        <text class="section-title">圆角标签</text>
-        <view class="demo-card">
-          <view class="tag-row">
+        <!-- 圆角标签 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="圆角胶囊"
+            subtitle="round 属性"
+            :level="4"
+            type="warning"
+            align="center"
+            left-icon="i-mdi-rounded-corner"
+            :show-decoration="true"
+          />
+          <view
+            class="flex flex-wrap justify-center items-center gap-3 my-6 p-4 bg-gray-50 rounded-lg"
+          >
             <C_Tag
-              text="圆角"
+              text="朴素圆角"
               type="primary"
               round
             />
             <C_Tag
-              text="圆角"
+              text="朴素圆角"
               type="success"
               round
             />
             <C_Tag
-              text="圆角"
+              text="实心圆角"
               type="warning"
               round
+              :plain="false"
+            />
+            <C_Tag
+              text="实心圆角"
+              type="error"
+              round
+              :plain="false"
             />
           </view>
-          <view class="code-block">
-            &lt;C_Tag text="圆角" type="primary" round /&gt;
-          </view>
         </view>
-      </view>
 
-      <!-- 尺寸 -->
-      <view class="demo-section">
-        <text class="section-title">不同尺寸</text>
-        <view class="demo-card">
-          <view class="tag-row">
+        <!-- 尺寸 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="标签尺寸"
+            subtitle="small / default / large"
+            :level="4"
+            type="danger"
+            align="center"
+            left-icon="i-mdi-resize"
+            :show-decoration="true"
+          />
+          <view
+            class="flex flex-wrap justify-center items-end gap-3 my-6 p-4 bg-gray-50 rounded-lg"
+          >
             <C_Tag
-              text="Small"
+              text="小号"
               type="primary"
               size="small"
             />
             <C_Tag
-              text="Default"
+              text="默认"
               type="primary"
               size="default"
             />
             <C_Tag
-              text="Large"
+              text="大号"
               type="primary"
               size="large"
             />
           </view>
-          <view class="code-block">
-            &lt;C_Tag text="Small" size="small" /&gt;
-          </view>
         </view>
-      </view>
 
-      <!-- 可关闭 -->
-      <view class="demo-section">
-        <text class="section-title">可关闭标签</text>
-        <view class="demo-card">
-          <view class="tag-row">
+        <!-- 可关闭 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="可关闭标签"
+            subtitle="点击 × 移除"
+            :level="4"
+            type="info"
+            align="center"
+            left-icon="i-mdi-close-circle"
+            :show-decoration="true"
+          />
+          <view
+            class="flex flex-wrap justify-center items-center gap-3 my-6 p-4 bg-gray-50 rounded-lg min-h-12"
+          >
             <C_Tag
-              text="可关闭"
+              v-for="tag in closableTags"
+              :key="tag"
+              :text="tag"
               type="primary"
               closeable
-              @close="onClose('primary')"
+              @close="removeTag(tag)"
             />
-            <C_Tag
-              text="可关闭"
-              type="error"
-              closeable
-              @close="onClose('error')"
-            />
-            <C_Tag
-              text="可关闭"
-              type="success"
-              closeable
-              @close="onClose('success')"
-            />
+            <text
+              v-if="!closableTags.length"
+              class="text-sm text-gray-400"
+              >已全部移除</text
+            >
           </view>
-          <view class="code-block">
-            &lt;C_Tag text="可关闭" closeable @close="onClose" /&gt;
+          <view
+            v-if="!closableTags.length"
+            class="text-center mt-2"
+          >
+            <text
+              class="text-xs text-blue-500"
+              @click="resetTags"
+              >重置</text
+            >
+          </view>
+        </view>
+
+        <!-- 业务场景 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="业务场景"
+            subtitle="实际应用示例"
+            :level="4"
+            type="primary"
+            align="center"
+            left-icon="i-mdi-briefcase"
+            :show-decoration="true"
+          />
+          <view class="my-6 p-4 bg-gray-50 rounded-lg space-y-4">
+            <view class="flex items-center gap-2">
+              <text class="text-sm text-gray-600 w-16">订单：</text>
+              <C_Tag
+                text="待付款"
+                type="warning"
+                size="small"
+              />
+              <C_Tag
+                text="已发货"
+                type="primary"
+                size="small"
+              />
+              <C_Tag
+                text="已完成"
+                type="success"
+                size="small"
+              />
+            </view>
+            <view class="flex items-center gap-2">
+              <text class="text-sm text-gray-600 w-16">角色：</text>
+              <C_Tag
+                text="管理员"
+                type="error"
+                size="small"
+                round
+                :plain="false"
+              />
+              <C_Tag
+                text="编辑"
+                type="primary"
+                size="small"
+                round
+                :plain="false"
+              />
+              <C_Tag
+                text="访客"
+                type="info"
+                size="small"
+                round
+                :plain="false"
+              />
+            </view>
           </view>
         </view>
       </view>
 
-      <!-- 自定义颜色 -->
-      <view class="demo-section">
-        <text class="section-title">自定义颜色</text>
-        <view class="demo-card">
-          <view class="tag-row">
-            <C_Tag
-              text="自定义"
-              color="#8B5CF6"
-            />
-            <C_Tag
-              text="自定义"
-              color="#EC4899"
-            />
-            <C_Tag
-              text="自定义"
-              color="#14B8A6"
-            />
-          </view>
-          <view class="code-block">
-            &lt;C_Tag text="自定义" color="#8B5CF6" /&gt;
-          </view>
-        </view>
+      <view class="mt-8 text-center">
+        <C_Title
+          title="轻量灵活，场景丰富"
+          subtitle="五种类型 · 三种尺寸 · 圆角 · 可关闭"
+          :level="5"
+          type="info"
+          align="center"
+          :show-divider="true"
+          divider-position="top"
+        />
       </view>
     </view>
   </C_Layout>
 </template>
 
 <script setup lang="ts">
-  const onClose = type => {
-    console.log(`关闭了 ${type} 标签`)
+  import { ref } from 'vue'
+  const allTags = ['前端', '后端', 'UI设计', '产品']
+  const closableTags = ref([...allTags])
+  const removeTag = (tag: string) => {
+    closableTags.value = closableTags.value.filter(t => t !== tag)
+  }
+  const resetTags = () => {
+    closableTags.value = [...allTags]
   }
 </script>
-
-<style lang="scss" scoped>
-  .demo-page {
-    min-height: 100%;
-    background: #f5f7fa;
-    padding: 24rpx 32rpx;
-  }
-  .demo-header {
-    margin-bottom: 40rpx;
-    .demo-title {
-      display: block;
-      font-size: 44rpx;
-      font-weight: 700;
-      color: #1f2937;
-      margin-bottom: 8rpx;
-    }
-    .demo-subtitle {
-      display: block;
-      font-size: 26rpx;
-      color: #666;
-    }
-  }
-  .demo-section {
-    margin-bottom: 40rpx;
-    .section-title {
-      display: block;
-      font-size: 30rpx;
-      font-weight: 600;
-      color: #1f2937;
-      margin-bottom: 20rpx;
-      padding-left: 16rpx;
-      border-left: 6rpx solid #667eea;
-    }
-  }
-  .demo-card {
-    background: #fff;
-    border-radius: 20rpx;
-    padding: 32rpx;
-    box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
-    border: 1rpx solid rgba(0, 0, 0, 0.04);
-  }
-  .tag-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16rpx;
-    align-items: center;
-    margin-bottom: 20rpx;
-  }
-  .code-block {
-    background: #f5f5f5;
-    border-radius: 8rpx;
-    padding: 16rpx 20rpx;
-    font-size: 22rpx;
-    color: #555;
-    font-family: monospace;
-  }
-</style>

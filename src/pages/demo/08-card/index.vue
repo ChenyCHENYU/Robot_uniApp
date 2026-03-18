@@ -1,216 +1,191 @@
 <template>
   <C_Layout>
-    <view class="demo-page">
-      <view class="demo-header">
-        <text class="demo-title">C_Card 卡片</text>
-        <text class="demo-subtitle"
-          >通用的内容容器卡片组件，支持标题、阴影、插槽</text
-        >
+    <view class="max-w-4xl mx-auto p-5 bg-gray-50 min-h-screen">
+      <view class="text-center mb-8">
+        <C_Title
+          title="C_Card 卡片"
+          subtitle="通用内容容器组件"
+          type="primary"
+          :level="3"
+          size="large"
+          align="center"
+          left-icon="i-mdi-card-text"
+          :show-decoration="true"
+          :show-divider="true"
+        />
       </view>
 
-      <!-- 基础用法 -->
-      <view class="demo-section">
-        <text class="section-title">基础用法</text>
-        <view class="demo-card">
-          <C_Card
-            title="卡片标题"
-            subtitle="这是副标题"
-          >
-            <text class="card-content"
-              >这是卡片的内容区域，可以放置任意内容。</text
+      <view class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- 基础用法 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="基础卡片"
+            subtitle="标题与内容"
+            :level="4"
+            type="primary"
+            align="center"
+            left-icon="i-mdi-card"
+            :show-decoration="true"
+          />
+          <view class="my-6 p-4 bg-gray-50 rounded-lg">
+            <C_Card
+              title="卡片标题"
+              subtitle="这是副标题描述"
             >
-          </C_Card>
-          <view class="code-block mt-3">
-            &lt;C_Card title="卡片标题" subtitle="副标题"&gt; 内容
-            &lt;/C_Card&gt;
+              <view class="text-sm text-gray-600"
+                >这里是卡片主体内容区域，可以放置任意内容。</view
+              >
+            </C_Card>
           </view>
         </view>
-      </view>
 
-      <!-- 阴影等级 -->
-      <view class="demo-section">
-        <text class="section-title">阴影等级</text>
-        <view class="demo-card">
-          <view class="card-list">
-            <C_Card
-              title="无阴影"
-              shadow="none"
-            >
-              <text>shadow="none"</text>
-            </C_Card>
+        <!-- 阴影等级 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="阴影等级"
+            subtitle="sm / md / lg / none"
+            :level="4"
+            type="success"
+            align="center"
+            left-icon="i-mdi-box-shadow"
+            :show-decoration="true"
+          />
+          <view class="my-6 p-4 bg-gray-50 rounded-lg space-y-4">
             <C_Card
               title="小阴影"
               shadow="sm"
             >
-              <text>shadow="sm"</text>
+              <text class="text-xs text-gray-500">shadow="sm"</text>
             </C_Card>
             <C_Card
               title="中阴影"
               shadow="md"
             >
-              <text>shadow="md"</text>
+              <text class="text-xs text-gray-500">shadow="md"</text>
             </C_Card>
             <C_Card
               title="大阴影"
               shadow="lg"
             >
-              <text>shadow="lg"</text>
+              <text class="text-xs text-gray-500">shadow="lg"</text>
+            </C_Card>
+          </view>
+        </view>
+
+        <!-- 可点击 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="可点击卡片"
+            subtitle="clickable 属性"
+            :level="4"
+            type="warning"
+            align="center"
+            left-icon="i-mdi-cursor-default-click"
+            :show-decoration="true"
+          />
+          <view class="my-6 p-4 bg-gray-50 rounded-lg">
+            <C_Card
+              title="点击我试试"
+              subtitle="可点击卡片有悬浮反馈"
+              clickable
+              @click="handleClick"
+            >
+              <view class="flex items-center gap-2">
+                <text class="i-mdi-gesture-tap text-lg text-blue-500"></text>
+                <text class="text-sm text-gray-600">点击后触发 click 事件</text>
+              </view>
+            </C_Card>
+          </view>
+        </view>
+
+        <!-- 自定义头部/底部 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="自定义插槽"
+            subtitle="header / footer 插槽"
+            :level="4"
+            type="danger"
+            align="center"
+            left-icon="i-mdi-puzzle"
+            :show-decoration="true"
+          />
+          <view class="my-6 p-4 bg-gray-50 rounded-lg">
+            <C_Card>
+              <template #header>
+                <view class="flex items-center justify-between">
+                  <view class="flex items-center gap-2">
+                    <view
+                      class="w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center"
+                    >
+                      <text class="text-white text-xs font-bold">U</text>
+                    </view>
+                    <text class="text-sm font-medium text-gray-700"
+                      >用户名</text
+                    >
+                  </view>
+                  <text class="text-xs text-gray-400">3分钟前</text>
+                </view>
+              </template>
+              <view class="text-sm text-gray-600"
+                >自定义头部和底部插槽，打造个性化卡片布局。</view
+              >
+              <template #footer>
+                <view class="flex justify-end gap-4 text-xs text-gray-400">
+                  <text>❤️ 128</text>
+                  <text>💬 32</text>
+                  <text>⭐ 56</text>
+                </view>
+              </template>
+            </C_Card>
+          </view>
+        </view>
+
+        <!-- 无内边距 -->
+        <view class="bg-white rounded-lg shadow-md p-6 lg:col-span-2">
+          <C_Title
+            title="无内边距"
+            subtitle="padding 属性"
+            :level="4"
+            type="info"
+            align="center"
+            left-icon="i-mdi-arrow-expand-all"
+            :show-decoration="true"
+          />
+          <view class="my-6 p-4 bg-gray-50 rounded-lg">
+            <C_Card
+              title="图片卡片"
+              :padding="false"
+            >
+              <view
+                class="bg-gradient-to-r from-blue-400 to-purple-500 py-12 text-center"
+              >
+                <text class="text-white text-lg font-medium">全宽内容区域</text>
+                <text class="text-white text-xs block mt-2 opacity-75"
+                  >:padding="false" 取消内边距</text
+                >
+              </view>
             </C_Card>
           </view>
         </view>
       </view>
 
-      <!-- 可点击 -->
-      <view class="demo-section">
-        <text class="section-title">可点击卡片</text>
-        <view class="demo-card">
-          <C_Card
-            title="点击我试试"
-            clickable
-            @click="onCardClick"
-          >
-            <text class="card-content"
-              >设置 clickable 属性后，卡片会有点击态效果</text
-            >
-          </C_Card>
-          <view class="code-block mt-3">
-            &lt;C_Card title="点击我" clickable @click="onCardClick" /&gt;
-          </view>
-        </view>
-      </view>
-
-      <!-- 头部插槽 -->
-      <view class="demo-section">
-        <text class="section-title">自定义头部 & 底部</text>
-        <view class="demo-card">
-          <C_Card>
-            <template #header>
-              <view class="custom-header">
-                <text class="custom-header-title">自定义头部</text>
-                <C_Tag
-                  text="标签"
-                  type="primary"
-                  size="small"
-                />
-              </view>
-            </template>
-            <text class="card-content">使用 header 插槽自定义头部内容</text>
-            <template #footer>
-              <view class="custom-footer">
-                <text class="footer-text">底部操作区</text>
-              </view>
-            </template>
-          </C_Card>
-          <view class="code-block mt-3">
-            &lt;C_Card&gt; &lt;template #header&gt;自定义&lt;/template&gt;
-            &lt;template #footer&gt;底部&lt;/template&gt; &lt;/C_Card&gt;
-          </view>
-        </view>
-      </view>
-
-      <!-- 无内边距 -->
-      <view class="demo-section">
-        <text class="section-title">无内边距</text>
-        <view class="demo-card">
-          <C_Card
-            title="无内边距"
-            :padding="false"
-          >
-            <image
-              src="https://cheny-chenyu.oss-cn-chengdu.aliyuncs.com/robot_admin/login.png"
-              mode="widthFix"
-              style="width: 100%"
-            />
-          </C_Card>
-        </view>
+      <view class="mt-8 text-center">
+        <C_Title
+          title="万能容器，灵活简洁"
+          subtitle="阴影 · 点击 · 插槽 · 无内边距"
+          :level="5"
+          type="info"
+          align="center"
+          :show-divider="true"
+          divider-position="top"
+        />
       </view>
     </view>
   </C_Layout>
 </template>
 
 <script setup lang="ts">
-  const onCardClick = () => {
-    uni.showToast({ title: '卡片被点击', icon: 'none' })
+  const handleClick = () => {
+    uni.showToast({ title: '卡片被点击了', icon: 'none' })
   }
 </script>
-
-<style lang="scss" scoped>
-  .demo-page {
-    min-height: 100%;
-    background: #f5f7fa;
-    padding: 24rpx 32rpx;
-  }
-  .demo-header {
-    margin-bottom: 40rpx;
-    .demo-title {
-      display: block;
-      font-size: 44rpx;
-      font-weight: 700;
-      color: #1f2937;
-      margin-bottom: 8rpx;
-    }
-    .demo-subtitle {
-      display: block;
-      font-size: 26rpx;
-      color: #666;
-    }
-  }
-  .demo-section {
-    margin-bottom: 40rpx;
-    .section-title {
-      display: block;
-      font-size: 30rpx;
-      font-weight: 600;
-      color: #1f2937;
-      margin-bottom: 20rpx;
-      padding-left: 16rpx;
-      border-left: 6rpx solid #667eea;
-    }
-  }
-  .demo-card {
-    background: #fff;
-    border-radius: 20rpx;
-    padding: 32rpx;
-    box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
-    border: 1rpx solid rgba(0, 0, 0, 0.04);
-  }
-  .card-content {
-    font-size: 26rpx;
-    color: #666;
-  }
-  .card-list {
-    display: flex;
-    flex-direction: column;
-    gap: 20rpx;
-  }
-  .custom-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    .custom-header-title {
-      font-size: 30rpx;
-      font-weight: 600;
-      color: #1f2937;
-    }
-  }
-  .custom-footer {
-    display: flex;
-    justify-content: flex-end;
-    .footer-text {
-      font-size: 24rpx;
-      color: #007aff;
-    }
-  }
-  .mt-3 {
-    margin-top: 20rpx;
-  }
-  .code-block {
-    background: #f5f5f5;
-    border-radius: 8rpx;
-    padding: 16rpx 20rpx;
-    font-size: 22rpx;
-    color: #555;
-    font-family: monospace;
-    white-space: pre-wrap;
-  }
-</style>

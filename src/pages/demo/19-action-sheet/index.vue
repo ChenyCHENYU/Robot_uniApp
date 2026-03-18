@@ -1,136 +1,149 @@
 <template>
   <C_Layout>
-    <view class="demo-page">
-      <view class="demo-header">
-        <text class="demo-title">C_ActionSheet 操作面板</text>
-        <text class="demo-subtitle"
-          >从底部弹出的操作菜单，支持图标、危险项、禁用项</text
-        >
+    <view class="max-w-4xl mx-auto p-5 bg-gray-50 min-h-screen">
+      <view class="text-center mb-8">
+        <C_Title
+          title="C_ActionSheet 操作面板"
+          subtitle="底部弹出的操作菜单"
+          type="primary"
+          :level="3"
+          size="large"
+          align="center"
+          left-icon="i-mdi-menu"
+          :show-decoration="true"
+          :show-divider="true"
+        />
       </view>
 
-      <!-- 基础用法 -->
-      <view class="demo-section">
-        <text class="section-title">基础用法</text>
-        <view class="demo-card">
-          <view class="btn-row">
-            <view
-              class="demo-btn"
+      <view class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- 基础用法 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="基础操作面板"
+            subtitle="常用操作选项"
+            :level="4"
+            type="primary"
+            align="center"
+            left-icon="i-mdi-gesture-tap"
+            :show-decoration="true"
+          />
+          <view class="my-6 p-4 bg-gray-50 rounded-lg text-center">
+            <text
+              class="text-sm text-white bg-blue-500 px-6 py-2.5 rounded-full"
               @click="showBasic = true"
-              >打开操作面板</view
+              >打开基础面板</text
             >
           </view>
           <C_ActionSheet
             v-model:visible="showBasic"
-            :actions="basicActions"
+            :items="basicItems"
             @select="onSelect"
           />
-          <view class="code-block mt-3">
-            &lt;C_ActionSheet v-model:visible="show" :actions="actions"
-            @select="onSelect" /&gt;
-          </view>
         </view>
-      </view>
 
-      <!-- 带标题 -->
-      <view class="demo-section">
-        <text class="section-title">带标题</text>
-        <view class="demo-card">
-          <view class="btn-row">
-            <view
-              class="demo-btn"
+        <!-- 带标题 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="带标题面板"
+            subtitle="title 属性"
+            :level="4"
+            type="success"
+            align="center"
+            left-icon="i-mdi-format-title"
+            :show-decoration="true"
+          />
+          <view class="my-6 p-4 bg-gray-50 rounded-lg text-center">
+            <text
+              class="text-sm text-white bg-green-500 px-6 py-2.5 rounded-full"
               @click="showTitle = true"
-              >带标题面板</view
+              >带标题面板</text
             >
           </view>
           <C_ActionSheet
             v-model:visible="showTitle"
-            title="请选择操作"
-            :actions="basicActions"
+            title="请选择分享方式"
+            :items="shareItems"
             @select="onSelect"
           />
-          <view class="code-block mt-3">
-            &lt;C_ActionSheet title="请选择操作" :actions="actions" /&gt;
-          </view>
         </view>
-      </view>
 
-      <!-- 带图标 -->
-      <view class="demo-section">
-        <text class="section-title">带图标</text>
-        <view class="demo-card">
-          <view class="btn-row">
-            <view
-              class="demo-btn"
-              @click="showIcons = true"
-              >带图标面板</view
+        <!-- 带图标 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="带图标选项"
+            subtitle="item.icon 属性"
+            :level="4"
+            type="warning"
+            align="center"
+            left-icon="i-mdi-emoticon-outline"
+            :show-decoration="true"
+          />
+          <view class="my-6 p-4 bg-gray-50 rounded-lg text-center">
+            <text
+              class="text-sm text-white bg-amber-500 px-6 py-2.5 rounded-full"
+              @click="showIcon = true"
+              >带图标面板</text
             >
           </view>
           <C_ActionSheet
-            v-model:visible="showIcons"
-            :actions="iconActions"
+            v-model:visible="showIcon"
+            title="文件操作"
+            :items="iconItems"
             @select="onSelect"
           />
-          <view class="code-block mt-3">
-            actions: [ { name: '分享', icon: 'share' }, { name: '收藏', icon:
-            'star' }, ]
-          </view>
         </view>
-      </view>
 
-      <!-- 危险项和禁用项 -->
-      <view class="demo-section">
-        <text class="section-title">危险项 & 禁用项</text>
-        <view class="demo-card">
-          <view class="btn-row">
-            <view
-              class="demo-btn"
+        <!-- 危险操作 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="危险操作"
+            subtitle="item.danger 样式"
+            :level="4"
+            type="danger"
+            align="center"
+            left-icon="i-mdi-alert-outline"
+            :show-decoration="true"
+          />
+          <view class="my-6 p-4 bg-gray-50 rounded-lg text-center">
+            <text
+              class="text-sm text-white bg-red-500 px-6 py-2.5 rounded-full"
               @click="showDanger = true"
-              >危险操作</view
+              >危险操作面板</text
             >
           </view>
           <C_ActionSheet
             v-model:visible="showDanger"
-            title="文件操作"
-            :actions="dangerActions"
+            :items="dangerItems"
+            :showCancel="true"
+            cancelText="取消"
             @select="onSelect"
           />
-          <view class="code-block mt-3">
-            { name: '删除', danger: true } { name: '不可用', disabled: true }
-          </view>
         </view>
       </view>
 
-      <!-- 带描述 -->
-      <view class="demo-section">
-        <text class="section-title">带描述文字</text>
-        <view class="demo-card">
-          <view class="btn-row">
-            <view
-              class="demo-btn"
-              @click="showDesc = true"
-              >带描述面板</view
-            >
-          </view>
-          <C_ActionSheet
-            v-model:visible="showDesc"
-            :actions="descActions"
-            @select="onSelect"
-          />
-          <view class="code-block mt-3">
-            { name: '微信', description: '分享到微信好友' }
-          </view>
-        </view>
-      </view>
-
-      <!-- 选中结果 -->
+      <!-- 选择结果 -->
       <view
         v-if="selectedAction"
-        class="demo-section"
+        class="mt-6 bg-white rounded-lg shadow-md p-4"
       >
-        <text class="section-title">选中结果</text>
-        <view class="demo-card">
-          <text class="result-text">你选择了：{{ selectedAction }}</text>
+        <view class="flex items-center gap-2 justify-center">
+          <text class="text-blue-500">→</text>
+          <text class="text-sm text-gray-600"
+            >您选择了：{{ selectedAction }}</text
+          >
         </view>
+      </view>
+
+      <view class="mt-8 text-center">
+        <C_Title
+          title="底部弹出，操作便捷"
+          subtitle="基础 · 标题 · 图标 · 危险操作 · 取消按钮"
+          :level="5"
+          type="info"
+          align="center"
+          :show-divider="true"
+          divider-position="top"
+        />
       </view>
     </view>
   </C_Layout>
@@ -141,109 +154,44 @@
 
   const showBasic = ref(false)
   const showTitle = ref(false)
-  const showIcons = ref(false)
+  const showIcon = ref(false)
   const showDanger = ref(false)
-  const showDesc = ref(false)
   const selectedAction = ref('')
 
-  const basicActions = [
-    { name: '选项一' },
-    { name: '选项二' },
-    { name: '选项三' },
+  const basicItems = [
+    { text: '选项一' },
+    { text: '选项二' },
+    { text: '选项三' },
   ]
 
-  const iconActions = [
-    { name: '分享', icon: 'share' },
-    { name: '收藏', icon: 'star' },
-    { name: '下载', icon: 'download' },
+  const shareItems = [
+    { text: '微信好友', icon: 'i-mdi-wechat' },
+    { text: '朋友圈', icon: 'i-mdi-account-group' },
+    { text: '复制链接', icon: 'i-mdi-link-variant' },
+    { text: '保存图片', icon: 'i-mdi-download' },
   ]
 
-  const dangerActions = [
-    { name: '编辑', icon: 'edit' },
-    { name: '复制', icon: 'copy' },
-    { name: '禁用项', disabled: true },
-    { name: '删除', icon: 'delete', danger: true },
+  const iconItems = [
+    { text: '编辑', icon: 'i-mdi-pencil' },
+    { text: '复制', icon: 'i-mdi-content-copy' },
+    { text: '移动', icon: 'i-mdi-folder-move' },
+    { text: '重命名', icon: 'i-mdi-rename-box' },
   ]
 
-  const descActions = [
-    { name: '微信', description: '分享到微信好友', icon: 'chat' },
-    { name: '朋友圈', description: '分享到朋友圈', icon: 'picture' },
-    { name: '链接', description: '复制链接到剪贴板', icon: 'link' },
+  const dangerItems = [
+    { text: '置顶聊天' },
+    { text: '标为已读' },
+    { text: '删除聊天', danger: true },
+    { text: '举报', danger: true },
   ]
 
-  const onSelect = item => {
-    selectedAction.value = item.name
+  /**
+   *
+   */
+  function onSelect(item: { text: string }) {
+    selectedAction.value = item.text
+    setTimeout(() => {
+      selectedAction.value = ''
+    }, 2000)
   }
 </script>
-
-<style lang="scss" scoped>
-  .demo-page {
-    min-height: 100%;
-    background: #f5f7fa;
-    padding: 24rpx 32rpx;
-  }
-  .demo-header {
-    margin-bottom: 40rpx;
-    .demo-title {
-      display: block;
-      font-size: 44rpx;
-      font-weight: 700;
-      color: #1f2937;
-      margin-bottom: 8rpx;
-    }
-    .demo-subtitle {
-      display: block;
-      font-size: 26rpx;
-      color: #666;
-    }
-  }
-  .demo-section {
-    margin-bottom: 40rpx;
-    .section-title {
-      display: block;
-      font-size: 30rpx;
-      font-weight: 600;
-      color: #1f2937;
-      margin-bottom: 20rpx;
-      padding-left: 16rpx;
-      border-left: 6rpx solid #667eea;
-    }
-  }
-  .demo-card {
-    background: #fff;
-    border-radius: 20rpx;
-    padding: 32rpx;
-    box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
-    border: 1rpx solid rgba(0, 0, 0, 0.04);
-  }
-  .btn-row {
-    display: flex;
-    gap: 16rpx;
-    margin-bottom: 16rpx;
-  }
-  .demo-btn {
-    padding: 16rpx 32rpx;
-    background: #007aff;
-    color: #fff;
-    border-radius: 12rpx;
-    font-size: 28rpx;
-    text-align: center;
-  }
-  .result-text {
-    font-size: 28rpx;
-    color: #007aff;
-    font-weight: 600;
-  }
-  .mt-3 {
-    margin-top: 20rpx;
-  }
-  .code-block {
-    background: #f5f5f5;
-    border-radius: 8rpx;
-    padding: 16rpx 20rpx;
-    font-size: 22rpx;
-    color: #555;
-    font-family: monospace;
-    white-space: pre-wrap;
-  }
-</style>

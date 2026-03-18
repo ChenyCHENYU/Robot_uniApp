@@ -1,177 +1,140 @@
 <template>
   <C_Layout>
-    <view class="demo-page">
-      <view class="demo-header">
-        <text class="demo-title">C_Header 页头</text>
-        <text class="demo-subtitle"
-          >页面顶部导航头组件，支持用户信息、返回按钮等模式</text
-        >
+    <view class="max-w-4xl mx-auto p-5 bg-gray-50 min-h-screen">
+      <view class="text-center mb-8">
+        <C_Title
+          title="C_Header 页头"
+          subtitle="智能页头导航组件"
+          type="primary"
+          :level="3"
+          size="large"
+          align="center"
+          left-icon="i-mdi-page-layout-header"
+          :show-decoration="true"
+          :show-divider="true"
+        />
       </view>
 
-      <!-- 用户模式 -->
-      <view class="demo-section">
-        <text class="section-title">用户模式（默认）</text>
-        <view class="demo-card">
-          <text class="demo-desc"
-            >展示头像、昵称、问候语和状态，适用于首页</text
-          >
-          <view class="code-block">
-            &lt;C_Header :showStatus="true" /&gt;
+      <view class="grid grid-cols-1 gap-6">
+        <!-- 用户模式 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="用户模式"
+            subtitle="展示用户头像、昵称与问候语"
+            :level="4"
+            type="primary"
+            align="center"
+            left-icon="i-mdi-account-circle"
+            :show-decoration="true"
+          />
+          <view class="my-6 rounded-lg overflow-hidden shadow-inner">
+            <C_Header
+              :showBack="false"
+              :showStatus="true"
+              :notificationCount="8"
+              @userClick="handleEvent('用户头像')"
+              @notification="handleEvent('通知')"
+              @settings="handleEvent('设置')"
+            />
           </view>
         </view>
-      </view>
 
-      <!-- 返回模式 -->
-      <view class="demo-section">
-        <text class="section-title">返回按钮模式</text>
-        <view class="demo-card">
-          <text class="demo-desc">设置 showBack 展示返回按钮和页面标题</text>
-          <view class="code-block">
-            &lt;C_Header showBack title="页面标题" /&gt;
+        <!-- 返回按钮模式 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="返回模式"
+            subtitle="显示返回按钮与页面标题"
+            :level="4"
+            type="success"
+            align="center"
+            left-icon="i-mdi-arrow-left"
+            :show-decoration="true"
+          />
+          <view class="my-6 rounded-lg overflow-hidden shadow-inner">
+            <C_Header
+              :showBack="true"
+              title="详情页"
+              :notificationCount="3"
+              @back="handleEvent('返回')"
+              @notification="handleEvent('通知')"
+              @settings="handleEvent('设置')"
+            />
           </view>
         </view>
-      </view>
 
-      <!-- 紧凑模式 -->
-      <view class="demo-section">
-        <text class="section-title">紧凑模式</text>
-        <view class="demo-card">
-          <text class="demo-desc"
-            >使用 isCompactMode 减小头部高度，适用于内容页</text
-          >
-          <view class="code-block">
-            &lt;C_Header showBack isCompactMode title="紧凑头部" /&gt;
-          </view>
-        </view>
-      </view>
-
-      <!-- 通知角标 -->
-      <view class="demo-section">
-        <text class="section-title">通知角标</text>
-        <view class="demo-card">
-          <text class="demo-desc">通过 notificationCount 显示未读消息数量</text>
-          <view class="code-block">
-            &lt;C_Header :notificationCount="5" /&gt;
-          </view>
-        </view>
-      </view>
-
-      <!-- 事件回调 -->
-      <view class="demo-section">
-        <text class="section-title">事件回调</text>
-        <view class="demo-card">
-          <text class="demo-desc"
-            >支持 userClick / notificationClick / settingsClick / backClick
-            等事件</text
-          >
-          <view class="code-block">
-            &lt;C_Header @userClick="onUser" @settingsClick="onSettings" /&gt;
-          </view>
-        </view>
-      </view>
-
-      <!-- Props 一览 -->
-      <view class="demo-section">
-        <text class="section-title">Props 一览</text>
-        <view class="demo-card">
-          <view class="prop-list">
-            <view
-              class="prop-item"
-              v-for="prop in propList"
-              :key="prop.name"
-            >
-              <text class="prop-name">{{ prop.name }}</text>
-              <text class="prop-desc">{{ prop.desc }}</text>
+        <!-- 功能说明 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="核心能力"
+            subtitle="Header 组件特性一览"
+            :level="4"
+            type="info"
+            align="center"
+            left-icon="i-mdi-star-four-points"
+            :show-decoration="true"
+          />
+          <view class="my-6 p-4 bg-gray-50 rounded-lg grid grid-cols-1 gap-3">
+            <view class="flex items-center gap-3 p-3 bg-white rounded-lg">
+              <text class="i-mdi-shield-account text-xl text-blue-500"></text>
+              <view>
+                <text class="text-sm font-medium text-gray-700 block"
+                  >安全区适配</text
+                >
+                <text class="text-xs text-gray-500">自动适配状态栏高度</text>
+              </view>
+            </view>
+            <view class="flex items-center gap-3 p-3 bg-white rounded-lg">
+              <text class="i-mdi-robot text-xl text-green-500"></text>
+              <view>
+                <text class="text-sm font-medium text-gray-700 block"
+                  >AI 状态指示</text
+                >
+                <text class="text-xs text-gray-500"
+                  >在线 / 忙碌 / 离线三种状态</text
+                >
+              </view>
+            </view>
+            <view class="flex items-center gap-3 p-3 bg-white rounded-lg">
+              <text class="i-mdi-bell-ring text-xl text-orange-500"></text>
+              <view>
+                <text class="text-sm font-medium text-gray-700 block"
+                  >消息角标</text
+                >
+                <text class="text-xs text-gray-500">右上角通知数量提示</text>
+              </view>
+            </view>
+            <view class="flex items-center gap-3 p-3 bg-white rounded-lg">
+              <text class="i-mdi-view-compact text-xl text-purple-500"></text>
+              <view>
+                <text class="text-sm font-medium text-gray-700 block"
+                  >紧凑模式</text
+                >
+                <text class="text-xs text-gray-500"
+                  >isCompactMode 缩小尺寸</text
+                >
+              </view>
             </view>
           </view>
         </view>
+      </view>
+
+      <view class="mt-8 text-center">
+        <C_Title
+          title="智能导航，场景自适"
+          subtitle="用户模式 · 返回模式 · AI状态 · 安全区适配"
+          :level="5"
+          type="info"
+          align="center"
+          :show-divider="true"
+          divider-position="top"
+        />
       </view>
     </view>
   </C_Layout>
 </template>
 
 <script setup lang="ts">
-  const propList = [
-    { name: 'showBack', desc: '是否显示返回按钮' },
-    { name: 'title', desc: '标题文本' },
-    { name: 'isCompactMode', desc: '是否紧凑模式' },
-    { name: 'showStatus', desc: '是否显示在线状态' },
-    { name: 'notificationCount', desc: '未读通知数' },
-    { name: 'theme', desc: '主题：default' },
-    { name: 'iconSize', desc: '图标尺寸，默认20' },
-  ]
+  const handleEvent = (action: string) => {
+    uni.showToast({ title: `点击了：${action}`, icon: 'none' })
+  }
 </script>
-
-<style lang="scss" scoped>
-  .demo-page {
-    min-height: 100%;
-    background: #f5f7fa;
-    padding: 24rpx 32rpx;
-  }
-  .demo-header {
-    margin-bottom: 40rpx;
-    .demo-title {
-      display: block;
-      font-size: 44rpx;
-      font-weight: 700;
-      color: #1f2937;
-      margin-bottom: 8rpx;
-    }
-    .demo-subtitle {
-      display: block;
-      font-size: 26rpx;
-      color: #666;
-    }
-  }
-  .demo-section {
-    margin-bottom: 40rpx;
-    .section-title {
-      display: block;
-      font-size: 30rpx;
-      font-weight: 600;
-      color: #1f2937;
-      margin-bottom: 20rpx;
-      padding-left: 16rpx;
-      border-left: 6rpx solid #667eea;
-    }
-  }
-  .demo-card {
-    background: #fff;
-    border-radius: 20rpx;
-    padding: 32rpx;
-    box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
-    border: 1rpx solid rgba(0, 0, 0, 0.04);
-  }
-  .demo-desc {
-    display: block;
-    font-size: 26rpx;
-    color: #666;
-    margin-bottom: 20rpx;
-  }
-  .code-block {
-    background: #f5f5f5;
-    border-radius: 8rpx;
-    padding: 16rpx 20rpx;
-    font-size: 22rpx;
-    color: #555;
-    font-family: monospace;
-  }
-  .prop-list {
-    .prop-item {
-      display: flex;
-      justify-content: space-between;
-      padding: 12rpx 0;
-      border-bottom: 1rpx solid #f0f0f0;
-    }
-    .prop-name {
-      font-size: 24rpx;
-      color: #007aff;
-      font-weight: 600;
-      font-family: monospace;
-    }
-    .prop-desc {
-      font-size: 24rpx;
-      color: #666;
-    }
-  }
-</style>

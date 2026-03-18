@@ -1,156 +1,187 @@
 <template>
   <C_Layout>
-    <view class="demo-page">
-      <view class="demo-header">
-        <text class="demo-title">C_Empty 空状态</text>
-        <text class="demo-subtitle">当列表或页面没有数据时展示的占位组件</text>
+    <view class="max-w-4xl mx-auto p-5 bg-gray-50 min-h-screen">
+      <view class="text-center mb-8">
+        <C_Title
+          title="C_Empty 空状态"
+          subtitle="多场景缺省状态展示"
+          type="primary"
+          :level="3"
+          size="large"
+          align="center"
+          left-icon="i-mdi-inbox-outline"
+          :show-decoration="true"
+          :show-divider="true"
+        />
       </view>
 
-      <!-- 默认空状态 -->
-      <view class="demo-section">
-        <text class="section-title">默认</text>
-        <view class="demo-card">
-          <C_Empty />
-          <view class="code-block mt-3"> &lt;C_Empty /&gt; </view>
-        </view>
-      </view>
-
-      <!-- 各类型预设 -->
-      <view class="demo-section">
-        <text class="section-title">预设类型</text>
-        <view class="demo-card">
-          <view class="empty-grid">
-            <view
-              class="empty-item"
-              v-for="t in types"
-              :key="t.type"
-            >
-              <C_Empty
-                :type="t.type"
-                :iconSize="80"
-              />
-              <text class="type-label">type="{{ t.type }}"</text>
-            </view>
-          </view>
-        </view>
-      </view>
-
-      <!-- 带操作按钮 -->
-      <view class="demo-section">
-        <text class="section-title">带操作按钮</text>
-        <view class="demo-card">
-          <C_Empty
-            type="network"
-            showAction
-            actionText="重新加载"
-            @action="onRetry"
+      <view class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- 默认空状态 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="默认空状态"
+            subtitle="通用场景"
+            :level="4"
+            type="primary"
+            align="center"
+            left-icon="i-mdi-inbox"
+            :show-decoration="true"
           />
-          <view class="code-block mt-3">
-            &lt;C_Empty type="network" showAction @action="onRetry" /&gt;
+          <view class="my-6 p-4 bg-gray-50 rounded-lg flex justify-center">
+            <C_Empty />
+          </view>
+        </view>
+
+        <!-- 网络错误 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="网络异常"
+            subtitle="type=network"
+            :level="4"
+            type="danger"
+            align="center"
+            left-icon="i-mdi-wifi-off"
+            :show-decoration="true"
+          />
+          <view class="my-6 p-4 bg-gray-50 rounded-lg flex justify-center">
+            <C_Empty
+              type="network"
+              :showAction="true"
+              actionText="重新加载"
+            />
+          </view>
+        </view>
+
+        <!-- 搜索为空 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="搜索为空"
+            subtitle="type=search"
+            :level="4"
+            type="warning"
+            align="center"
+            left-icon="i-mdi-magnify"
+            :show-decoration="true"
+          />
+          <view class="my-6 p-4 bg-gray-50 rounded-lg flex justify-center">
+            <C_Empty
+              type="search"
+              text="换个关键词试试"
+            />
+          </view>
+        </view>
+
+        <!-- 无权限 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="无权限"
+            subtitle="type=permission"
+            :level="4"
+            type="info"
+            align="center"
+            left-icon="i-mdi-lock-outline"
+            :show-decoration="true"
+          />
+          <view class="my-6 p-4 bg-gray-50 rounded-lg flex justify-center">
+            <C_Empty
+              type="permission"
+              text="暂无访问权限"
+              :showAction="true"
+              actionText="申请权限"
+            />
+          </view>
+        </view>
+
+        <!-- 系统错误 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="系统错误"
+            subtitle="type=error"
+            :level="4"
+            type="danger"
+            align="center"
+            left-icon="i-mdi-alert-circle-outline"
+            :show-decoration="true"
+          />
+          <view class="my-6 p-4 bg-gray-50 rounded-lg flex justify-center">
+            <C_Empty
+              type="error"
+              :showAction="true"
+              actionText="返回首页"
+            />
+          </view>
+        </view>
+
+        <!-- 购物车为空 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="购物车为空"
+            subtitle="type=cart"
+            :level="4"
+            type="success"
+            align="center"
+            left-icon="i-mdi-cart-outline"
+            :show-decoration="true"
+          />
+          <view class="my-6 p-4 bg-gray-50 rounded-lg flex justify-center">
+            <C_Empty
+              type="cart"
+              :showAction="true"
+              actionText="去购物"
+            />
+          </view>
+        </view>
+
+        <!-- 暂无消息 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="暂无消息"
+            subtitle="type=message"
+            :level="4"
+            type="primary"
+            align="center"
+            left-icon="i-mdi-message-text-outline"
+            :show-decoration="true"
+          />
+          <view class="my-6 p-4 bg-gray-50 rounded-lg flex justify-center">
+            <C_Empty type="message" />
+          </view>
+        </view>
+
+        <!-- 暂无收藏 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="暂无收藏"
+            subtitle="type=collect"
+            :level="4"
+            type="warning"
+            align="center"
+            left-icon="i-mdi-heart-outline"
+            :show-decoration="true"
+          />
+          <view class="my-6 p-4 bg-gray-50 rounded-lg flex justify-center">
+            <C_Empty
+              type="collect"
+              :showAction="true"
+              actionText="去发现"
+            />
           </view>
         </view>
       </view>
 
-      <!-- 自定义文案 -->
-      <view class="demo-section">
-        <text class="section-title">自定义图标和文案</text>
-        <view class="demo-card">
-          <C_Empty
-            icon="star"
-            text="还没有收藏任何内容"
-          />
-          <view class="code-block mt-3">
-            &lt;C_Empty icon="star" text="还没有收藏任何内容" /&gt;
-          </view>
-        </view>
+      <view class="mt-8 text-center">
+        <C_Title
+          title="八种场景，一键切换"
+          subtitle="默认 · 网络 · 搜索 · 权限 · 错误 · 购物车 · 消息 · 收藏"
+          :level="5"
+          type="info"
+          align="center"
+          :show-divider="true"
+          divider-position="top"
+        />
       </view>
     </view>
   </C_Layout>
 </template>
 
-<script setup lang="ts">
-  const types = [
-    { type: 'default' },
-    { type: 'network' },
-    { type: 'search' },
-    { type: 'error' },
-    { type: 'message' },
-    { type: 'collect' },
-  ]
-
-  const onRetry = () => {
-    uni.showToast({ title: '重新加载...', icon: 'none' })
-  }
-</script>
-
-<style lang="scss" scoped>
-  .demo-page {
-    min-height: 100%;
-    background: #f5f7fa;
-    padding: 24rpx 32rpx;
-  }
-  .demo-header {
-    margin-bottom: 40rpx;
-    .demo-title {
-      display: block;
-      font-size: 44rpx;
-      font-weight: 700;
-      color: #1f2937;
-      margin-bottom: 8rpx;
-    }
-    .demo-subtitle {
-      display: block;
-      font-size: 26rpx;
-      color: #666;
-    }
-  }
-  .demo-section {
-    margin-bottom: 40rpx;
-    .section-title {
-      display: block;
-      font-size: 30rpx;
-      font-weight: 600;
-      color: #1f2937;
-      margin-bottom: 20rpx;
-      padding-left: 16rpx;
-      border-left: 6rpx solid #667eea;
-    }
-  }
-  .demo-card {
-    background: #fff;
-    border-radius: 20rpx;
-    padding: 32rpx;
-    box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
-    border: 1rpx solid rgba(0, 0, 0, 0.04);
-  }
-  .empty-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 24rpx;
-    .empty-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 16rpx;
-      border: 1rpx solid #f0f0f0;
-      border-radius: 12rpx;
-    }
-    .type-label {
-      font-size: 20rpx;
-      color: #999;
-      margin-top: 8rpx;
-      font-family: monospace;
-    }
-  }
-  .mt-3 {
-    margin-top: 20rpx;
-  }
-  .code-block {
-    background: #f5f5f5;
-    border-radius: 8rpx;
-    padding: 16rpx 20rpx;
-    font-size: 22rpx;
-    color: #555;
-    font-family: monospace;
-  }
-</style>
+<script setup lang="ts"></script>

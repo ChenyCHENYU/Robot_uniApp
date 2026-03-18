@@ -1,97 +1,144 @@
 <template>
   <C_Layout>
-    <view class="demo-page">
-      <view class="demo-header">
-        <text class="demo-title">C_List 列表</text>
-        <text class="demo-subtitle"
-          >滚动列表容器，支持下拉刷新和触底加载更多</text
-        >
+    <view class="max-w-4xl mx-auto p-5 bg-gray-50 min-h-screen">
+      <view class="text-center mb-8">
+        <C_Title
+          title="C_List 列表"
+          subtitle="滚动加载列表组件"
+          type="primary"
+          :level="3"
+          size="large"
+          align="center"
+          left-icon="i-mdi-format-list-bulleted"
+          :show-decoration="true"
+          :show-divider="true"
+        />
       </view>
 
-      <!-- 基础用法 -->
-      <view class="demo-section">
-        <text class="section-title">基础用法</text>
-        <view class="demo-card list-container">
-          <C_List
-            :loading="loading"
-            :finished="finished"
-            :showEmpty="list.length === 0 && !loading"
-            @load="onLoad"
-            @refresh="onRefresh"
+      <view class="grid grid-cols-1 gap-6">
+        <!-- 基础列表 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="基础用法"
+            subtitle="下拉触底加载更多"
+            :level="4"
+            type="primary"
+            align="center"
+            left-icon="i-mdi-arrow-down"
+            :show-decoration="true"
+          />
+          <view
+            class="my-6 bg-gray-50 rounded-lg overflow-hidden"
+            style="height: 300px"
           >
-            <view
-              v-for="item in list"
-              :key="item.id"
-              class="list-item"
+            <C_List
+              :loading="loading"
+              :finished="finished"
+              finishedText="没有更多了"
+              @load="onLoad"
             >
-              <view class="item-avatar">{{ item.id }}</view>
-              <view class="item-content">
-                <text class="item-title">{{ item.title }}</text>
-                <text class="item-desc">{{ item.desc }}</text>
+              <view
+                v-for="item in list"
+                :key="item"
+                class="px-4 py-3 bg-white border-b border-gray-100"
+              >
+                <text class="text-sm">列表项 {{ item }}</text>
+              </view>
+            </C_List>
+          </view>
+          <view class="flex justify-center gap-3 mt-4">
+            <text
+              class="text-sm text-white bg-blue-500 px-4 py-2 rounded-full"
+              @click="resetList"
+              >重置列表</text
+            >
+          </view>
+        </view>
+
+        <!-- 加载状态展示 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="状态演示"
+            subtitle="不同加载状态"
+            :level="4"
+            type="success"
+            align="center"
+            left-icon="i-mdi-state-machine"
+            :show-decoration="true"
+          />
+          <view class="my-6 space-y-4">
+            <view class="p-4 bg-gray-50 rounded-lg">
+              <view class="flex items-center gap-3">
+                <view
+                  class="w-2 h-2 bg-blue-500 rounded-full animate-pulse"
+                ></view>
+                <text class="text-sm text-gray-600"
+                  >loading=true：显示加载中提示</text
+                >
               </view>
             </view>
-          </C_List>
+            <view class="p-4 bg-gray-50 rounded-lg">
+              <view class="flex items-center gap-3">
+                <view class="w-2 h-2 bg-green-500 rounded-full"></view>
+                <text class="text-sm text-gray-600"
+                  >finished=true：显示"没有更多了"</text
+                >
+              </view>
+            </view>
+            <view class="p-4 bg-gray-50 rounded-lg">
+              <view class="flex items-center gap-3">
+                <view class="w-2 h-2 bg-red-500 rounded-full"></view>
+                <text class="text-sm text-gray-600"
+                  >error=true：显示加载失败，点击重试</text
+                >
+              </view>
+            </view>
+            <view class="p-4 bg-gray-50 rounded-lg">
+              <view class="flex items-center gap-3">
+                <view class="w-2 h-2 bg-gray-400 rounded-full"></view>
+                <text class="text-sm text-gray-600"
+                  >emptyType：列表为空时展示空状态</text
+                >
+              </view>
+            </view>
+          </view>
         </view>
-      </view>
 
-      <!-- 操作按钮 -->
-      <view class="demo-section">
-        <text class="section-title">操作</text>
-        <view class="demo-card">
-          <view class="action-row">
-            <view
-              class="step-btn step-btn--primary"
-              @click="resetList"
-              >重置列表</view
+        <!-- 空列表 -->
+        <view class="bg-white rounded-lg shadow-md p-6">
+          <C_Title
+            title="空列表"
+            subtitle="配合 C_Empty"
+            :level="4"
+            type="warning"
+            align="center"
+            left-icon="i-mdi-inbox-outline"
+            :show-decoration="true"
+          />
+          <view
+            class="my-6 bg-gray-50 rounded-lg overflow-hidden"
+            style="height: 200px"
+          >
+            <C_List
+              :loading="false"
+              :finished="true"
+              emptyType="search"
             >
-            <view
-              class="step-btn"
-              @click="clearList"
-              >清空列表</view
-            >
+            </C_List>
           </view>
         </view>
       </view>
 
-      <!-- 代码示例 -->
-      <view class="demo-section">
-        <text class="section-title">代码示例</text>
-        <view class="demo-card">
-          <view class="code-block">
-            &lt;C_List :loading="loading" :finished="finished" @load="onLoad"
-            @refresh="onRefresh" &gt; &lt;view v-for="item in
-            list"&gt;...&lt;/view&gt; &lt;/C_List&gt;
-          </view>
-        </view>
-      </view>
-
-      <!-- Props -->
-      <view class="demo-section">
-        <text class="section-title">Props 一览</text>
-        <view class="demo-card">
-          <view class="prop-list">
-            <view class="prop-item">
-              <text class="prop-name">loading</text>
-              <text class="prop-desc">是否加载中</text>
-            </view>
-            <view class="prop-item">
-              <text class="prop-name">finished</text>
-              <text class="prop-desc">是否已全部加载</text>
-            </view>
-            <view class="prop-item">
-              <text class="prop-name">finishedText</text>
-              <text class="prop-desc">加载完毕文案</text>
-            </view>
-            <view class="prop-item">
-              <text class="prop-name">error</text>
-              <text class="prop-desc">是否加载失败</text>
-            </view>
-            <view class="prop-item">
-              <text class="prop-name">refresherEnabled</text>
-              <text class="prop-desc">是否启用下拉刷新</text>
-            </view>
-          </view>
-        </view>
+      <view class="mt-8 text-center">
+        <C_Title
+          title="滚动加载，体验流畅"
+          subtitle="加载中 · 加载完成 · 加载失败 · 空状态"
+          :level="5"
+          type="info"
+          align="center"
+          :show-divider="true"
+          divider-position="top"
+        />
       </view>
     </view>
   </C_Layout>
@@ -100,187 +147,36 @@
 <script setup lang="ts">
   import { ref } from 'vue'
 
-  const list = ref([])
+  const list = ref<number[]>([])
   const loading = ref(false)
   const finished = ref(false)
   let page = 0
 
-  const generateItems = pageNum => {
-    const items = []
-    for (let i = 1; i <= 10; i++) {
-      const id = (pageNum - 1) * 10 + i
-      items.push({
-        id,
-        title: `列表项 ${id}`,
-        desc: `这是第 ${id} 条数据的描述信息`,
-      })
-    }
-    return items
-  }
-
-  const onLoad = () => {
-    if (loading.value || finished.value) return
+  /**
+   *
+   */
+  function onLoad() {
     loading.value = true
     setTimeout(() => {
       page++
-      const newItems = generateItems(page)
-      list.value.push(...newItems)
+      for (let i = 0; i < 10; i++) {
+        list.value.push(list.value.length + 1)
+      }
       loading.value = false
-      if (page >= 3) finished.value = true
-    }, 1000)
+      if (page >= 3) {
+        finished.value = true
+      }
+    }, 800)
   }
 
-  const onRefresh = done => {
-    page = 0
-    finished.value = false
+  /**
+   *
+   */
+  function resetList() {
     list.value = []
-    setTimeout(() => {
-      page = 1
-      list.value = generateItems(1)
-      done?.()
-    }, 1000)
-  }
-
-  const resetList = () => {
     page = 0
+    loading.value = false
     finished.value = false
-    list.value = []
     onLoad()
   }
-
-  const clearList = () => {
-    page = 0
-    finished.value = false
-    list.value = []
-    loading.value = false
-  }
-
-  // 初始加载
-  onLoad()
 </script>
-
-<style lang="scss" scoped>
-  .demo-page {
-    min-height: 100%;
-    background: #f5f7fa;
-    padding: 24rpx 32rpx;
-  }
-  .demo-header {
-    margin-bottom: 40rpx;
-    .demo-title {
-      display: block;
-      font-size: 44rpx;
-      font-weight: 700;
-      color: #1f2937;
-      margin-bottom: 8rpx;
-    }
-    .demo-subtitle {
-      display: block;
-      font-size: 26rpx;
-      color: #666;
-    }
-  }
-  .demo-section {
-    margin-bottom: 40rpx;
-    .section-title {
-      display: block;
-      font-size: 30rpx;
-      font-weight: 600;
-      color: #1f2937;
-      margin-bottom: 20rpx;
-      padding-left: 16rpx;
-      border-left: 6rpx solid #667eea;
-    }
-  }
-  .demo-card {
-    background: #fff;
-    border-radius: 20rpx;
-    padding: 32rpx;
-    box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
-    border: 1rpx solid rgba(0, 0, 0, 0.04);
-  }
-  .list-container {
-    height: 600rpx;
-    padding: 0;
-    overflow: hidden;
-  }
-  .list-item {
-    display: flex;
-    align-items: center;
-    padding: 24rpx 32rpx;
-    border-bottom: 1rpx solid #f0f0f0;
-    .item-avatar {
-      width: 64rpx;
-      height: 64rpx;
-      border-radius: 50%;
-      background: #e8f0fe;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 24rpx;
-      color: #007aff;
-      font-weight: 600;
-      margin-right: 20rpx;
-      flex-shrink: 0;
-    }
-    .item-content {
-      flex: 1;
-    }
-    .item-title {
-      display: block;
-      font-size: 28rpx;
-      color: #333;
-      font-weight: 500;
-    }
-    .item-desc {
-      display: block;
-      font-size: 24rpx;
-      color: #999;
-      margin-top: 4rpx;
-    }
-  }
-  .action-row {
-    display: flex;
-    justify-content: center;
-    gap: 20rpx;
-    .step-btn {
-      padding: 12rpx 32rpx;
-      border-radius: 8rpx;
-      font-size: 26rpx;
-      border: 1rpx solid #dcdfe6;
-      color: #606266;
-      &--primary {
-        background: #007aff;
-        color: #fff;
-        border-color: #007aff;
-      }
-    }
-  }
-  .code-block {
-    background: #f5f5f5;
-    border-radius: 8rpx;
-    padding: 16rpx 20rpx;
-    font-size: 22rpx;
-    color: #555;
-    font-family: monospace;
-    white-space: pre-wrap;
-  }
-  .prop-list {
-    .prop-item {
-      display: flex;
-      justify-content: space-between;
-      padding: 12rpx 0;
-      border-bottom: 1rpx solid #f0f0f0;
-    }
-    .prop-name {
-      font-size: 24rpx;
-      color: #007aff;
-      font-weight: 600;
-      font-family: monospace;
-    }
-    .prop-desc {
-      font-size: 24rpx;
-      color: #666;
-    }
-  }
-</style>
