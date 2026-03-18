@@ -76,6 +76,14 @@
               v-model="disabledList"
               disabled
             />
+            <view
+              class="mt-3 p-3 bg-amber-50 rounded-lg flex items-center gap-2"
+            >
+              <text class="i-mdi-lock text-amber-500 text-lg"></text>
+              <text class="text-xs text-amber-700"
+                >禁用状态：不可新增、不可删除已有图片</text
+              >
+            </view>
           </view>
           <text class="text-xs text-gray-400 text-center block"
             >禁用状态下不可上传/删除</text
@@ -151,7 +159,10 @@
   const fileList2 = ref([])
   const disabledList = ref([
     {
-      url: 'https://cheny-chenyu.oss-cn-chengdu.aliyuncs.com/robot_admin/login.png',
+      url: 'https://picsum.photos/id/10/200/200',
+    },
+    {
+      url: 'https://picsum.photos/id/20/200/200',
     },
   ])
 </script>

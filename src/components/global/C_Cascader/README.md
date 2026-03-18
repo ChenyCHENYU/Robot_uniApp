@@ -32,6 +32,7 @@
 | update:visible | 显示状态变更         | `visible: Boolean`                 |
 | change         | 选择变更（逐级）     | `{ values: Array, labels: Array }` |
 | confirm        | 选择完成（叶子节点） | `{ values: Array, labels: Array }` |
+| close          | 关闭时触发           | -                                  |
 
 ### 数据格式
 

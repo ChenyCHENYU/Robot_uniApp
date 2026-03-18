@@ -13,10 +13,10 @@
             <view class="dot dot--2"></view>
             <view class="dot dot--3"></view>
           </view>
-          <wd-icon
-            :name="displayIcon"
-            :size="iconSize + 'px'"
-            :color="iconColor"
+          <text
+            :class="displayIcon"
+            class="c-empty__icon"
+            :style="{ fontSize: iconSize + 'px', color: iconColor }"
           />
         </view>
       </slot>

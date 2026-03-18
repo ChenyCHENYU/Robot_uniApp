@@ -4,13 +4,31 @@
 
   &__layer {
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    top: -50%;
+    left: -50%;
+    right: -50%;
+    bottom: -50%;
     pointer-events: none;
     z-index: 1;
-    background-repeat: repeat;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  &__row {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  &__text {
+    display: inline-block;
+    white-space: nowrap;
+    flex-shrink: 0;
+    user-select: none;
   }
 
   &--full-page &__layer {

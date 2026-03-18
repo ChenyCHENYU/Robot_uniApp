@@ -31,7 +31,25 @@
             class="my-6 bg-gray-50 rounded-lg overflow-hidden"
             style="height: 400px"
           >
-            <C_IndexList :list="contactList" />
+            <C_IndexList
+              :data="contactList"
+              indexKey="title"
+            >
+              <template #default="{ items }">
+                <view
+                  v-for="(item, i) in items"
+                  :key="i"
+                  class="px-4 py-3 bg-white flex items-center gap-3 border-b border-gray-100"
+                >
+                  <view
+                    class="w-8 h-8 bg-blue-100 text-blue-500 rounded-full flex items-center justify-center text-sm"
+                  >
+                    {{ item.name.charAt(0) }}
+                  </view>
+                  <text class="text-sm">{{ item.name }}</text>
+                </view>
+              </template>
+            </C_IndexList>
           </view>
         </view>
 
@@ -51,9 +69,20 @@
             style="height: 250px"
           >
             <C_IndexList
-              :list="techList"
+              :data="techList"
               activeColor="#ee0a24"
-            />
+              indexKey="title"
+            >
+              <template #default="{ items }">
+                <view
+                  v-for="(item, i) in items"
+                  :key="i"
+                  class="px-4 py-3 bg-white flex items-center gap-3 border-b border-gray-100"
+                >
+                  <text class="text-sm">{{ item.name }}</text>
+                </view>
+              </template>
+            </C_IndexList>
           </view>
         </view>
 

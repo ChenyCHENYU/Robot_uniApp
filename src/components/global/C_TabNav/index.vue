@@ -3,7 +3,7 @@
     :class="['c-tab-nav', sticky && 'c-tab-nav--sticky']"
     :style="stickyStyle"
   >
-    <ScrollView
+    <scroll-view
       class="c-tab-nav__scroll"
       scroll-x
       :scroll-left="scrollLeft"
@@ -38,17 +38,34 @@
           :style="lineStyle"
         />
       </view>
-    </ScrollView>
+    </scroll-view>
   </view>
 </template>
 
 <script setup lang="ts">
-  import { ref, computed, watch, nextTick, getCurrentInstance } from 'vue'
+  import {
+    ref,
+    computed,
+    watch,
+    nextTick,
+    getCurrentInstance,
+    type PropType,
+  } from 'vue'
   import { defaultProps } from './data'
+
+  interface TabNavItem {
+    label: string
+    value: string | number
+    badge?: string | number
+    disabled?: boolean
+  }
 
   const props = defineProps({
     /** 标签列表 */
-    tabs: { type: Array, default: () => defaultProps.tabs },
+    tabs: {
+      type: Array as PropType<TabNavItem[]>,
+      default: () => defaultProps.tabs,
+    },
     /** 当前激活值 */
     modelValue: { type: [String, Number], default: defaultProps.modelValue },
     /** 是否可滚动 */
@@ -90,7 +107,7 @@
   /**
    *
    */
-  function onTabClick(tab) {
+  function onTabClick(tab: TabNavItem) {
     if (tab.disabled) return
     emit('update:modelValue', tab.value)
     emit('change', tab.value)
@@ -101,18 +118,24 @@
     if (!props.showLine || activeIndex.value < 0) return
 
     nextTick(() => {
+      if (!instance?.proxy) return
       const query = uni.createSelectorQuery().in(instance.proxy)
       query
         .selectAll('.c-tab-nav__item')
         .boundingClientRect(rects => {
           if (!rects || !rects[activeIndex.value]) return
-          const rect = rects[activeIndex.value]
+          const rect = rects[activeIndex.value] as UniApp.NodeInfo
+          if (!instance?.proxy) return
           const containerQuery = uni.createSelectorQuery().in(instance.proxy)
           containerQuery
             .select('.c-tab-nav__scroll')
-            .boundingClientRect(containerRect => {
+            .boundingClientRect(containerResult => {
+              const containerRect = containerResult as UniApp.NodeInfo
               if (!containerRect) return
-              const itemCenter = rect.left - containerRect.left + rect.width / 2
+              const itemCenter =
+                (rect.left ?? 0) -
+                (containerRect.left ?? 0) +
+                (rect.width ?? 0) / 2
               // 转换下划线宽度 rpx -> px
               const sysInfo = uni.getSystemInfoSync()
               const linePx = (props.lineWidth / 750) * sysInfo.windowWidth
@@ -122,10 +145,10 @@
               // 滚动居中
               if (props.scrollable) {
                 scrollLeft.value =
-                  rect.left -
-                  containerRect.left -
-                  containerRect.width / 2 +
-                  rect.width / 2
+                  (rect.left ?? 0) -
+                  (containerRect.left ?? 0) -
+                  (containerRect.width ?? 0) / 2 +
+                  (rect.width ?? 0) / 2
               }
             })
             .exec()

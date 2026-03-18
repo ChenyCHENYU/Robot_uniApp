@@ -29,6 +29,7 @@
           />
           <view class="my-6 p-4 bg-gray-50 rounded-lg">
             <C_Form
+              ref="formRef"
               :model="formData"
               :rules="rules"
             >
@@ -62,6 +63,32 @@
                 />
               </C_Form>
             </C_Form>
+            <view class="flex justify-center gap-3 mt-4">
+              <text
+                class="text-sm bg-gray-200 text-gray-600 px-5 py-2 rounded-full"
+                @click="onReset"
+                >重置</text
+              >
+              <text
+                class="text-sm text-white bg-blue-500 px-5 py-2 rounded-full"
+                @click="onSubmit"
+                >提交校验</text
+              >
+            </view>
+            <view
+              v-if="validateResult !== ''"
+              class="mt-3 text-center"
+            >
+              <text
+                class="text-sm"
+                :class="
+                  validateResult === '校验通过'
+                    ? 'text-green-500'
+                    : 'text-red-500'
+                "
+                >{{ validateResult }}</text
+              >
+            </view>
           </view>
         </view>
 
@@ -164,9 +191,34 @@
 
 <script setup lang="ts">
   import { ref } from 'vue'
+
+  const formRef = ref()
   const formData = ref({ username: '', password: '', remark: '' })
+  const validateResult = ref('')
   const rules = {
     username: [{ required: true, message: '请输入用户名' }],
     password: [{ required: true, message: '请输入密码' }],
+  }
+
+  /**
+   *
+   */
+  function onSubmit() {
+    const valid = formRef.value?.validate()
+    if (valid) {
+      validateResult.value = '校验通过'
+      uni.showToast({ title: '提交成功', icon: 'success' })
+    } else {
+      validateResult.value = '校验失败，请检查必填项'
+    }
+  }
+
+  /**
+   *
+   */
+  function onReset() {
+    formData.value = { username: '', password: '', remark: '' }
+    formRef.value?.resetValidation()
+    validateResult.value = ''
   }
 </script>

@@ -36,10 +36,9 @@
             </text>
           </view>
           <C_Calendar
-            :visible="showSingle"
+            v-model:visible="showSingle"
             mode="single"
             @confirm="onSingleConfirm"
-            @close="showSingle = false"
           />
         </view>
 
@@ -67,10 +66,9 @@
             >
           </view>
           <C_Calendar
-            :visible="showRange"
+            v-model:visible="showRange"
             mode="range"
             @confirm="onRangeConfirm"
-            @close="showRange = false"
           />
         </view>
 
@@ -93,11 +91,10 @@
             >
           </view>
           <C_Calendar
-            :visible="showCustom"
+            v-model:visible="showCustom"
             mode="single"
             color="#07c160"
             @confirm="onCustomConfirm"
-            @close="showCustom = false"
           />
         </view>
 
@@ -166,7 +163,6 @@
    */
   function onSingleConfirm(date: string) {
     selectedDate.value = date
-    showSingle.value = false
   }
 
   /**
@@ -174,7 +170,6 @@
    */
   function onRangeConfirm(dates: string[]) {
     rangeText.value = `${dates[0]} 至 ${dates[1]}`
-    showRange.value = false
   }
 
   /**
@@ -182,6 +177,5 @@
    */
   function onCustomConfirm(date: string) {
     uni.showToast({ title: `选择: ${date}`, icon: 'none' })
-    showCustom.value = false
   }
 </script>

@@ -125,9 +125,9 @@
   import { ref } from 'vue'
 
   const images = [
-    '/static/images/demo-1.jpg',
-    '/static/images/demo-2.jpg',
-    '/static/images/demo-3.jpg',
+    'https://picsum.photos/id/10/800/600',
+    'https://picsum.photos/id/20/800/600',
+    'https://picsum.photos/id/30/800/600',
   ]
   const showPreview = ref(false)
 

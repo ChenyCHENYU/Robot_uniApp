@@ -15,7 +15,7 @@
           class="c-calendar__close"
           @click="onClose"
         >
-          <WdIcon
+          <wd-icon
             name="close"
             size="18px"
           />
@@ -28,7 +28,7 @@
           class="c-calendar__nav-btn"
           @click="prevMonth"
         >
-          <WdIcon
+          <wd-icon
             name="arrow-left"
             size="16px"
           />
@@ -40,7 +40,7 @@
           class="c-calendar__nav-btn"
           @click="nextMonth"
         >
-          <WdIcon
+          <wd-icon
             name="arrow-right"
             size="16px"
           />
@@ -108,7 +108,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, computed, watch } from 'vue'
+  import { ref, computed, watch, type PropType } from 'vue'
   import {
     defaultProps,
     WEEK_DAYS_MON,
@@ -137,19 +137,22 @@
     /** 一周第一天 */
     firstDayOfWeek: { type: Number, default: defaultProps.firstDayOfWeek },
     /** 日期标记 */
-    marks: { type: Array, default: () => defaultProps.marks },
+    marks: {
+      type: Array as PropType<{ date: string; color?: string }[]>,
+      default: () => defaultProps.marks,
+    },
     /** 范围模式最大天数 */
     maxRange: { type: Number, default: defaultProps.maxRange },
   })
 
-  const emit = defineEmits(['update:visible', 'confirm', 'select'])
+  const emit = defineEmits(['update:visible', 'confirm', 'select', 'close'])
 
   const today = new Date()
   const currentYear = ref(today.getFullYear())
   const currentMonth = ref(today.getMonth() + 1)
 
   // 已选日期
-  const selectedDates = ref([])
+  const selectedDates = ref<string[]>([])
 
   // 初始化
   watch(
@@ -157,9 +160,9 @@
     val => {
       if (val && props.defaultDate) {
         if (Array.isArray(props.defaultDate)) {
-          selectedDates.value = [...props.defaultDate]
+          selectedDates.value = [...props.defaultDate] as string[]
         } else {
-          selectedDates.value = [props.defaultDate]
+          selectedDates.value = [props.defaultDate as string]
         }
         // 自动跳转到选中月份
         const d = new Date(selectedDates.value[0])
@@ -322,6 +325,7 @@
 
   /** 关闭 */
   function onClose() {
+    emit('close')
     emit('update:visible', false)
   }
 </script>

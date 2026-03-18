@@ -96,7 +96,6 @@ pnpm run dev:mp-weixin
 ### 📋 快速上手指南
 
 1. **环境准备** 🔧
-
    - 安装 [Node.js](https://nodejs.org/) >= 16.x
    - 安装 [pnpm](https://pnpm.io/) 包管理器
    - 安装 [HBuilderX](https://www.dcloud.io/hbuilderx.html) （可选）
@@ -181,9 +180,10 @@ pnpm run build:app-plus  # App-Plus构建
 |                |   🔴 百度小程序   |              |
 |                | 🟠 字节跳动小程序 |              |
 
-### 🧩 自研组件库（20 个全局组件）
+### 🧩 自研组件库（33 个全局组件）
 
 **基础布局类：**
+
 - **C_Layout** - 统一页面布局容器（Header + Content + Tabbar）
 - **C_Header** - 响应式头部组件（头像/问候语/通知/返回）
 - **C_Tabbar** - 底部导航栏（徽标/路由/安全区域）
@@ -191,25 +191,41 @@ pnpm run build:app-plus  # App-Plus构建
 - **C_Icon** - 五类图标封装（UnoCSS / wot / SVG / Image / Custom）
 
 **数据展示类：**
+
 - **C_Card** - 内容卡片（4 级阴影 / header-body-footer 三段式）
 - **C_List** - 高性能列表容器（下拉刷新 / 上拉加载 / 空态 / 错误态）
-- **C_Empty** - 空状态（8 种预设类型 / 自定义图标文案）
+- **C_Empty** - 空状态（8 种预设类型 / UnoCSS 图标 / 自定义文案）
 - **C_Skeleton** - 骨架屏（头像 + 标题 + 段落 / 脉冲动画）
 - **C_Tag** - 状态标签（5 色 / 朴素实心 / 可关闭）
 - **C_Badge** - 增强徽标（数值 / 圆点 / max 溢出）
 - **C_Steps** - 步骤条（水平 / 垂直 / 审批流）
-- **C_Watermark** - 安全水印（Canvas 生成 / 全页覆盖）
+- **C_Watermark** - 安全水印（CSS 文字网格 / 全页覆盖 / 全平台兼容）
+- **C_Progress** - 进度条（线性/圆形 / 状态色 / 动画）
+- **C_Timeline** - 时间轴（自定义节点 / 倒序 / 进度标记）
+- **C_Divider** - 分割线（水平/垂直 / 文字内容 / 自定义样式）
+- **C_CountDown** - 倒计时（天/时/分/秒 / 自定义格式 / 自动启停）
 
 **表单交互类：**
+
 - **C_Form** - 表单容器（声明式校验 / required+pattern+validator）
 - **C_Search** - 搜索栏（防抖输入 / 搜索历史 / 清空）
 - **C_Upload** - 文件上传（压缩 / 进度 / 预览 / 多文件）
 - **C_NumberKeyboard** - 数字键盘（金额 / 验证码 / 安全随机排列）
+- **C_Rate** - 评分（全星/半星 / 自定义图标 / 可归零）
+- **C_Signature** - 电子签名（Canvas 手写 / 撤销 / 导出图片）
+- **C_Calendar** - 日历（单选/多选/范围 / 日期标记 / 自定义范围）
+- **C_Cascader** - 级联选择器（多级联动 / 搜索过滤 / 自定义字段）
+- **C_TabNav** - 标签页导航（滚动/等分/吸顶 / 徽标）
 
 **反馈交互类：**
+
 - **C_Modal** - 弹窗（v-model 控制 / 自定义内容 / 纯文本）
 - **C_ActionSheet** - 底部操作面板（图标 / 描述 / 危险操作）
 - **C_FloatButton** - 悬浮按钮（固定定位 / 可拖拽 / 安全区适配）
+- **C_SwipeAction** - 滑动操作（左右滑删 / 多按钮 / 自定义背景色）
+- **C_ImagePreview** - 图片预览（多图切换 / 双指缩放 / 保存相册）
+- **C_IndexList** - 索引列表（字母导航 / 快速定位 / 自定义分组）
+- **C_Notify** - 消息通知（顶部提示 / 多类型 / 自动关闭）
 
 ### 🛠️ 企业级能力
 
@@ -232,7 +248,7 @@ Robot_UniApp/
 ├── src/
 │   ├── api/                      # API 接口管理
 │   │   └── modules/              # 按业务域拆分
-│   ├── components/global/        # 全局组件库 (20 个)
+│   ├── components/global/        # 全局组件库 (33 个)
 │   │   ├── C_Header/             # 响应式头部
 │   │   ├── C_Layout/             # 统一布局容器
 │   │   ├── C_Tabbar/             # 底部导航栏
@@ -252,8 +268,21 @@ Robot_UniApp/
 │   │   ├── C_NumberKeyboard/     # 数字键盘
 │   │   ├── C_Modal/              # 弹窗
 │   │   ├── C_ActionSheet/        # 底部操作面板
+│   │   ├── C_SwipeAction/        # 滑动操作
+│   │   ├── C_ImagePreview/       # 图片预览
+│   │   ├── C_IndexList/          # 索引列表
+│   │   ├── C_Signature/          # 电子签名
+│   │   ├── C_Calendar/           # 日历
+│   │   ├── C_Cascader/           # 级联选择器
+│   │   ├── C_TabNav/             # 标签页导航
+│   │   ├── C_Progress/           # 进度条
+│   │   ├── C_Timeline/           # 时间轴
+│   │   ├── C_Rate/               # 评分
+│   │   ├── C_Notify/             # 消息通知
+│   │   ├── C_Divider/            # 分割线
+│   │   ├── C_CountDown/          # 倒计时
 │   │   └── C_FloatButton/        # 悬浮按钮
-│   ├── composables/              # 组合函数库 (7 个)
+│   ├── composables/              # 组合函数库 (8 个)
 │   │   ├── useLoading.js         # 加载态管理
 │   │   ├── usePagination.js      # 分页逻辑
 │   │   ├── useNetwork.js         # 网络状态监听
@@ -274,7 +303,7 @@ Robot_UniApp/
 │   │   ├── robot/                # 组件库展示
 │   │   ├── profile/              # 个人中心
 │   │   ├── settings/             # 个人设置
-│   │   └── demo/                 # 组件演示 (19 个 Demo)
+│   │   └── demo/                 # 组件演示 (33 个 Demo)
 │   ├── stores/                   # Pinia 状态管理
 │   ├── styles/                   # 全局样式体系
 │   │   ├── variables.scss        # CSS 变量 (色板/字号/间距/阴影)

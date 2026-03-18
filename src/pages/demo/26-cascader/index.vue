@@ -36,11 +36,12 @@
             </text>
           </view>
           <C_Cascader
-            :visible="showArea"
+            v-model:visible="showArea"
             :options="areaOptions"
             title="选择地区"
+            valueKey="code"
+            labelKey="name"
             @confirm="onAreaConfirm"
-            @close="showArea = false"
           />
         </view>
 
@@ -68,12 +69,11 @@
             >
           </view>
           <C_Cascader
-            :visible="showCategory"
+            v-model:visible="showCategory"
             :options="categoryOptions"
             title="选择分类"
             activeColor="#07c160"
             @confirm="onCategoryConfirm"
-            @close="showCategory = false"
           />
         </view>
 
@@ -129,70 +129,31 @@
 
 <script setup lang="ts">
   import { ref } from 'vue'
+  import pcaData from '@/data/pca-code.json'
 
   const showArea = ref(false)
   const showCategory = ref(false)
   const areaText = ref('')
   const categoryText = ref('')
 
-  const areaOptions = [
-    {
-      text: '北京市',
-      value: '110000',
-      children: [
-        { text: '朝阳区', value: '110105' },
-        { text: '海淀区', value: '110108' },
-        { text: '西城区', value: '110102' },
-      ],
-    },
-    {
-      text: '上海市',
-      value: '310000',
-      children: [
-        { text: '浦东新区', value: '310115' },
-        { text: '徐汇区', value: '310104' },
-      ],
-    },
-    {
-      text: '广东省',
-      value: '440000',
-      children: [
-        {
-          text: '广州市',
-          value: '440100',
-          children: [
-            { text: '天河区', value: '440106' },
-            { text: '越秀区', value: '440104' },
-          ],
-        },
-        {
-          text: '深圳市',
-          value: '440300',
-          children: [
-            { text: '南山区', value: '440305' },
-            { text: '福田区', value: '440304' },
-          ],
-        },
-      ],
-    },
-  ]
+  const areaOptions = pcaData
 
   const categoryOptions = [
     {
-      text: '电子产品',
+      label: '电子产品',
       value: 'electronics',
       children: [
-        { text: '手机', value: 'phone' },
-        { text: '电脑', value: 'computer' },
-        { text: '平板', value: 'tablet' },
+        { label: '手机', value: 'phone' },
+        { label: '电脑', value: 'computer' },
+        { label: '平板', value: 'tablet' },
       ],
     },
     {
-      text: '服装',
+      label: '服装',
       value: 'clothing',
       children: [
-        { text: '男装', value: 'men' },
-        { text: '女装', value: 'women' },
+        { label: '男装', value: 'men' },
+        { label: '女装', value: 'women' },
       ],
     },
   ]
@@ -200,16 +161,14 @@
   /**
    *
    */
-  function onAreaConfirm(values: { selectedOptions: { text: string }[] }) {
-    areaText.value = values.selectedOptions.map(o => o.text).join(' / ')
-    showArea.value = false
+  function onAreaConfirm(result: { values: string[]; labels: string[] }) {
+    areaText.value = result.labels.join(' / ')
   }
 
   /**
    *
    */
-  function onCategoryConfirm(values: { selectedOptions: { text: string }[] }) {
-    categoryText.value = values.selectedOptions.map(o => o.text).join(' > ')
-    showCategory.value = false
+  function onCategoryConfirm(result: { values: string[]; labels: string[] }) {
+    categoryText.value = result.labels.join(' > ')
   }
 </script>

@@ -55,7 +55,7 @@
       class="c-image-preview__close"
       @click.stop="onClose"
     >
-      <WdIcon
+      <wd-icon
         name="close"
         size="22px"
         color="#fff"

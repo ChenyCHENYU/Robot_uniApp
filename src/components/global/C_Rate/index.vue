@@ -23,7 +23,7 @@
           class="c-rate__half-left"
           @click.stop="onSelect(n - 0.5)"
         >
-          <WdIcon
+          <wd-icon
             :name="modelValue >= n - 0.5 ? activeIcon : inactiveIcon"
             :size="size + 'rpx'"
             :color="modelValue >= n - 0.5 ? activeColor : inactiveColor"
@@ -33,7 +33,7 @@
           class="c-rate__half-right"
           @click.stop="onSelect(n)"
         >
-          <WdIcon
+          <wd-icon
             :name="modelValue >= n ? activeIcon : inactiveIcon"
             :size="size + 'rpx'"
             :color="modelValue >= n ? activeColor : inactiveColor"
@@ -42,7 +42,7 @@
       </view>
 
       <!-- 全星模式 -->
-      <WdIcon
+      <wd-icon
         v-else
         :name="modelValue >= n ? activeIcon : inactiveIcon"
         :size="size + 'rpx'"

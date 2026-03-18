@@ -27,14 +27,15 @@
             left-icon="i-mdi-text"
             :show-decoration="true"
           />
-          <view
-            class="my-6 rounded-lg overflow-hidden relative"
-            style="height: 200px"
-          >
-            <C_Watermark text="机器人助手" />
-            <view class="absolute inset-0 flex items-center justify-center">
-              <text class="text-gray-400 text-sm">内容区域</text>
-            </view>
+          <view class="my-6 rounded-lg overflow-hidden">
+            <C_Watermark text="机器人助手">
+              <view
+                class="flex items-center justify-center"
+                style="height: 200px"
+              >
+                <text class="text-gray-400 text-sm">内容区域</text>
+              </view>
+            </C_Watermark>
           </view>
         </view>
 
@@ -49,17 +50,18 @@
             left-icon="i-mdi-palette"
             :show-decoration="true"
           />
-          <view
-            class="my-6 rounded-lg overflow-hidden relative"
-            style="height: 200px"
-          >
+          <view class="my-6 rounded-lg overflow-hidden">
             <C_Watermark
               text="Robot App"
               color="rgba(22, 119, 255, 0.12)"
-            />
-            <view class="absolute inset-0 flex items-center justify-center">
-              <text class="text-gray-400 text-sm">蓝色水印</text>
-            </view>
+            >
+              <view
+                class="flex items-center justify-center"
+                style="height: 200px"
+              >
+                <text class="text-gray-400 text-sm">蓝色水印</text>
+              </view>
+            </C_Watermark>
           </view>
         </view>
 
@@ -74,17 +76,18 @@
             left-icon="i-mdi-rotate-right"
             :show-decoration="true"
           />
-          <view
-            class="my-6 rounded-lg overflow-hidden relative"
-            style="height: 200px"
-          >
+          <view class="my-6 rounded-lg overflow-hidden">
             <C_Watermark
               text="自定义角度"
               :rotate="-15"
-            />
-            <view class="absolute inset-0 flex items-center justify-center">
-              <text class="text-gray-400 text-sm">rotate = -15°</text>
-            </view>
+            >
+              <view
+                class="flex items-center justify-center"
+                style="height: 200px"
+              >
+                <text class="text-gray-400 text-sm">rotate = -15°</text>
+              </view>
+            </C_Watermark>
           </view>
         </view>
 
@@ -99,18 +102,19 @@
             left-icon="i-mdi-grid-large"
             :show-decoration="true"
           />
-          <view
-            class="my-6 rounded-lg overflow-hidden relative"
-            style="height: 200px"
-          >
+          <view class="my-6 rounded-lg overflow-hidden">
             <C_Watermark
               text="CONFIDENTIAL"
               :gap="[60, 60]"
               :fontSize="12"
-            />
-            <view class="absolute inset-0 flex items-center justify-center">
-              <text class="text-gray-400 text-sm">密集排列效果</text>
-            </view>
+            >
+              <view
+                class="flex items-center justify-center"
+                style="height: 200px"
+              >
+                <text class="text-gray-400 text-sm">密集排列效果</text>
+              </view>
+            </C_Watermark>
           </view>
         </view>
 

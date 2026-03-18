@@ -49,16 +49,16 @@
 
 ### 内置类型
 
-| 类型       | 图标         | 默认文案                 |
-| ---------- | ------------ | ------------------------ |
-| default    | content      | 暂无数据                 |
-| network    | wifi-off     | 网络异常，请检查网络设置 |
-| search     | search       | 未找到相关结果           |
-| permission | warning      | 暂无权限查看             |
-| error      | close-circle | 加载失败，请重试         |
-| cart       | goods        | 购物车是空的             |
-| message    | chat         | 暂无消息                 |
-| collect    | star         | 暂无收藏                 |
+| 类型       | 图标                       | 默认文案                 |
+| ---------- | -------------------------- | ------------------------ |
+| default    | i-mdi-inbox-outline        | 暂无数据                 |
+| network    | i-mdi-wifi-off             | 网络异常，请检查网络设置 |
+| search     | i-mdi-magnify              | 未找到相关结果           |
+| permission | i-mdi-lock-outline         | 暂无权限查看             |
+| error      | i-mdi-alert-circle-outline | 加载失败，请重试         |
+| cart       | i-mdi-cart-outline         | 购物车是空的             |
+| message    | i-mdi-message-text-outline | 暂无消息                 |
+| collect    | i-mdi-heart-outline        | 暂无收藏                 |
 
 ---
 
@@ -88,6 +88,6 @@
 
 ## 注意事项
 
-- `icon` 属性值为 wot-design-uni 图标名
+- `icon` 属性值为 UnoCSS 图标类名（如 `i-mdi-inbox-outline`）
 - 自定义 `text` 会覆盖内置类型的默认文案
 - 自定义 `icon` 会覆盖内置类型的默认图标

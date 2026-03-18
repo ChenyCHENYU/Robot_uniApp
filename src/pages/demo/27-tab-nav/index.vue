@@ -34,7 +34,9 @@
             />
             <view class="p-4 text-center">
               <text class="text-sm text-gray-500"
-                >当前选中：{{ basicTabs[activeTab]?.title }}</text
+                >当前选中：{{
+                  basicTabs.find(t => t.value === activeTab)?.label
+                }}</text
               >
             </view>
           </view>
@@ -59,7 +61,9 @@
             />
             <view class="p-4 text-center">
               <text class="text-sm text-gray-500"
-                >选中：{{ scrollTabs[scrollTab]?.title }}</text
+                >选中：{{
+                  scrollTabs.find(t => t.value === scrollTab)?.label
+                }}</text
               >
             </view>
           </view>
@@ -123,29 +127,29 @@
 <script setup lang="ts">
   import { ref } from 'vue'
 
-  const activeTab = ref(0)
-  const scrollTab = ref(0)
-  const cardTab = ref(0)
-  const badgeTab = ref(0)
+  const activeTab = ref('all')
+  const scrollTab = ref('recommend')
+  const cardTab = ref('all')
+  const badgeTab = ref('msg')
 
   const basicTabs = [
-    { title: '全部' },
-    { title: '进行中' },
-    { title: '已完成' },
+    { label: '全部', value: 'all' },
+    { label: '进行中', value: 'doing' },
+    { label: '已完成', value: 'done' },
   ]
   const scrollTabs = [
-    { title: '推荐' },
-    { title: '热榜' },
-    { title: '科技' },
-    { title: '财经' },
-    { title: '体育' },
-    { title: '娱乐' },
-    { title: '游戏' },
-    { title: '教育' },
+    { label: '推荐', value: 'recommend' },
+    { label: '热榜', value: 'hot' },
+    { label: '科技', value: 'tech' },
+    { label: '财经', value: 'finance' },
+    { label: '体育', value: 'sport' },
+    { label: '娱乐', value: 'entertainment' },
+    { label: '游戏', value: 'game' },
+    { label: '教育', value: 'edu' },
   ]
   const badgeTabs = [
-    { title: '消息', badge: 5 },
-    { title: '通知', dot: true },
-    { title: '设置' },
+    { label: '消息', value: 'msg', badge: 5 },
+    { label: '通知', value: 'notice', badge: '' },
+    { label: '设置', value: 'settings' },
   ]
 </script>

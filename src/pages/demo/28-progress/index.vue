@@ -28,9 +28,9 @@
             :show-decoration="true"
           />
           <view class="my-6 space-y-5 p-4 bg-gray-50 rounded-lg">
-            <C_Progress :percentage="30" />
-            <C_Progress :percentage="60" />
-            <C_Progress :percentage="100" />
+            <C_Progress :percent="30" />
+            <C_Progress :percent="60" />
+            <C_Progress :percent="100" />
           </view>
         </view>
 
@@ -47,7 +47,7 @@
           />
           <view class="my-6 p-4 bg-gray-50 rounded-lg">
             <C_Progress
-              :percentage="progress"
+              :percent="progress"
               showText
             />
             <view class="flex justify-center gap-3 mt-4">
@@ -80,21 +80,21 @@
             <view>
               <text class="text-xs text-gray-500 mb-1 block">绿色</text>
               <C_Progress
-                :percentage="40"
+                :percent="40"
                 color="#07c160"
               />
             </view>
             <view>
               <text class="text-xs text-gray-500 mb-1 block">红色</text>
               <C_Progress
-                :percentage="70"
+                :percent="70"
                 color="#ee0a24"
               />
             </view>
             <view>
               <text class="text-xs text-gray-500 mb-1 block">橙色</text>
               <C_Progress
-                :percentage="50"
+                :percent="50"
                 color="#ff976a"
               />
             </view>
@@ -114,10 +114,9 @@
           />
           <view class="my-6 p-4 bg-gray-50 rounded-lg">
             <C_Progress
-              :percentage="60"
+              :percent="60"
               showText
-              textInside
-              strokeHeight="36rpx"
+              :strokeHeight="36"
             />
           </view>
         </view>

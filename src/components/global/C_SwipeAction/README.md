@@ -43,12 +43,13 @@
 
 ### Action 对象
 
-| 属性  | 类型   | 说明                                                   |
-| ----- | ------ | ------------------------------------------------------ |
-| text  | String | 按钮文字                                               |
-| icon  | String | 按钮图标（wd-icon name）                               |
-| type  | String | 按钮类型：`primary` / `success` / `warning` / `danger` |
-| style | Object | 自定义样式                                             |
+| 属性    | 类型   | 说明                                                   |
+| ------- | ------ | ------------------------------------------------------ |
+| text    | String | 按钮文字                                               |
+| icon    | String | 按钮图标（wd-icon name）                               |
+| type    | String | 按钮类型：`primary` / `success` / `warning` / `danger` |
+| bgColor | String | 自定义背景色（如 `#ee0a24`）                           |
+| style   | Object | 自定义样式                                             |
 
 ### Events
 

@@ -36,7 +36,7 @@
           </view>
           <C_ActionSheet
             v-model:visible="showBasic"
-            :items="basicItems"
+            :actions="basicItems"
             @select="onSelect"
           />
         </view>
@@ -62,7 +62,7 @@
           <C_ActionSheet
             v-model:visible="showTitle"
             title="请选择分享方式"
-            :items="shareItems"
+            :actions="shareItems"
             @select="onSelect"
           />
         </view>
@@ -88,7 +88,7 @@
           <C_ActionSheet
             v-model:visible="showIcon"
             title="文件操作"
-            :items="iconItems"
+            :actions="iconItems"
             @select="onSelect"
           />
         </view>
@@ -113,7 +113,7 @@
           </view>
           <C_ActionSheet
             v-model:visible="showDanger"
-            :items="dangerItems"
+            :actions="dangerItems"
             :showCancel="true"
             cancelText="取消"
             @select="onSelect"
@@ -159,37 +159,37 @@
   const selectedAction = ref('')
 
   const basicItems = [
-    { text: '选项一' },
-    { text: '选项二' },
-    { text: '选项三' },
+    { name: '选项一' },
+    { name: '选项二' },
+    { name: '选项三' },
   ]
 
   const shareItems = [
-    { text: '微信好友', icon: 'i-mdi-wechat' },
-    { text: '朋友圈', icon: 'i-mdi-account-group' },
-    { text: '复制链接', icon: 'i-mdi-link-variant' },
-    { text: '保存图片', icon: 'i-mdi-download' },
+    { name: '微信好友', icon: 'i-mdi-wechat' },
+    { name: '朋友圈', icon: 'i-mdi-account-group' },
+    { name: '复制链接', icon: 'i-mdi-link-variant' },
+    { name: '保存图片', icon: 'i-mdi-download' },
   ]
 
   const iconItems = [
-    { text: '编辑', icon: 'i-mdi-pencil' },
-    { text: '复制', icon: 'i-mdi-content-copy' },
-    { text: '移动', icon: 'i-mdi-folder-move' },
-    { text: '重命名', icon: 'i-mdi-rename-box' },
+    { name: '编辑', icon: 'i-mdi-pencil' },
+    { name: '复制', icon: 'i-mdi-content-copy' },
+    { name: '移动', icon: 'i-mdi-folder-move' },
+    { name: '重命名', icon: 'i-mdi-rename-box' },
   ]
 
   const dangerItems = [
-    { text: '置顶聊天' },
-    { text: '标为已读' },
-    { text: '删除聊天', danger: true },
-    { text: '举报', danger: true },
+    { name: '置顶聊天' },
+    { name: '标为已读' },
+    { name: '删除聊天', danger: true },
+    { name: '举报', danger: true },
   ]
 
   /**
    *
    */
-  function onSelect(item: { text: string }) {
-    selectedAction.value = item.text
+  function onSelect(item: { name?: string; text?: string }) {
+    selectedAction.value = item.name || item.text || ''
     setTimeout(() => {
       selectedAction.value = ''
     }, 2000)

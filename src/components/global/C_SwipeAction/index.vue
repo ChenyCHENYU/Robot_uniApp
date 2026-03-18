@@ -18,10 +18,10 @@
           'c-swipe-action__btn',
           action.type && `c-swipe-action__btn--${action.type}`,
         ]"
-        :style="action.style"
+        :style="{ backgroundColor: action.bgColor, ...action.style }"
         @click.stop="onAction(action, idx, 'left')"
       >
-        <WdIcon
+        <wd-icon
           v-if="action.icon"
           :name="action.icon"
           size="18px"
@@ -59,10 +59,10 @@
           'c-swipe-action__btn',
           action.type && `c-swipe-action__btn--${action.type}`,
         ]"
-        :style="action.style"
+        :style="{ backgroundColor: action.bgColor, ...action.style }"
         @click.stop="onAction(action, idx, 'right')"
       >
-        <WdIcon
+        <wd-icon
           v-if="action.icon"
           :name="action.icon"
           size="18px"
@@ -79,16 +79,30 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, computed } from 'vue'
+  import { ref, computed, type PropType } from 'vue'
   import { defaultProps } from './data'
+
+  interface SwipeActionItem {
+    text?: string
+    icon?: string
+    type?: string
+    bgColor?: string
+    style?: Record<string, string>
+  }
 
   const props = defineProps({
     /** 是否禁用 */
     disabled: { type: Boolean, default: defaultProps.disabled },
     /** 左侧操作按钮 */
-    leftActions: { type: Array, default: () => defaultProps.leftActions },
+    leftActions: {
+      type: Array as PropType<SwipeActionItem[]>,
+      default: () => defaultProps.leftActions,
+    },
     /** 右侧操作按钮 */
-    rightActions: { type: Array, default: () => defaultProps.rightActions },
+    rightActions: {
+      type: Array as PropType<SwipeActionItem[]>,
+      default: () => defaultProps.rightActions,
+    },
     /** 滑动阈值(rpx) */
     threshold: { type: Number, default: defaultProps.threshold },
   })

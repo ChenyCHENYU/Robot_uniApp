@@ -31,7 +31,7 @@
         class="c-signature__btn c-signature__btn--clear"
         @click="clear"
       >
-        <WdIcon
+        <wd-icon
           name="delete"
           size="16px"
         />
@@ -41,7 +41,7 @@
         class="c-signature__btn c-signature__btn--undo"
         @click="undo"
       >
-        <WdIcon
+        <wd-icon
           name="arrow-left"
           size="16px"
         />
@@ -51,7 +51,7 @@
         class="c-signature__btn c-signature__btn--confirm"
         @click="confirm"
       >
-        <WdIcon
+        <wd-icon
           name="check"
           size="16px"
           color="#fff"
@@ -63,7 +63,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, onMounted } from 'vue'
+  import { ref, onMounted, getCurrentInstance } from 'vue'
   import { defaultProps } from './data'
 
   const props = defineProps({
@@ -85,15 +85,16 @@
 
   const emit = defineEmits(['confirm', 'clear'])
 
+  const instance = getCurrentInstance()
   const canvasId = `signature-${Date.now()}`
   const isEmpty = ref(true)
 
-  let ctx = null
-  let paths = [] // 所有笔画
-  let currentPath = [] // 当前笔画
+  let ctx: UniApp.CanvasContext | null = null
+  let paths: { x: number; y: number }[][] = []
+  let currentPath: { x: number; y: number }[] = []
 
   onMounted(() => {
-    ctx = uni.createCanvasContext(canvasId)
+    ctx = uni.createCanvasContext(canvasId, instance?.proxy)
     _initCanvas()
   })
 
@@ -111,6 +112,7 @@
 
   /** 触摸开始 */
   function onTouchStart(e) {
+    if (!ctx) return
     const { x, y } = e.touches[0]
     currentPath = [{ x, y }]
     ctx.beginPath()
@@ -119,6 +121,7 @@
 
   /** 触摸移动 */
   function onTouchMove(e) {
+    if (!ctx) return
     const { x, y } = e.touches[0]
     currentPath.push({ x, y })
     ctx.lineTo(x, y)
@@ -158,15 +161,16 @@
     _initCanvas()
     // 需要等初始化 draw 完成后再绘制
     setTimeout(() => {
+      if (!ctx) return
       paths.forEach(path => {
-        ctx.beginPath()
-        ctx.moveTo(path[0].x, path[0].y)
+        ctx!.beginPath()
+        ctx!.moveTo(path[0].x, path[0].y)
         path.forEach((point, i) => {
-          if (i > 0) ctx.lineTo(point.x, point.y)
+          if (i > 0) ctx!.lineTo(point.x, point.y)
         })
-        ctx.stroke()
+        ctx!.stroke()
       })
-      ctx.draw(true)
+      ctx!.draw(true)
     }, 50)
   }
 

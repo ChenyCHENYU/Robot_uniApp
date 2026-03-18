@@ -16,7 +16,7 @@
             class="c-timeline__dot"
             :style="{ background: getDotColor(item, index) }"
           >
-            <WdIcon
+            <wd-icon
               v-if="item.icon"
               :name="item.icon"
               size="12px"
@@ -56,12 +56,24 @@
 </template>
 
 <script setup lang="ts">
-  import { computed } from 'vue'
+  import { computed, type PropType } from 'vue'
   import { defaultProps, NODE_STATUS } from './data'
+
+  interface TimelineItem {
+    title: string
+    content?: string
+    time?: string
+    icon?: string
+    color?: string
+    [key: string]: any
+  }
 
   const props = defineProps({
     /** 时间轴数据 */
-    items: { type: Array, default: () => defaultProps.items },
+    items: {
+      type: Array as PropType<TimelineItem[]>,
+      default: () => defaultProps.items,
+    },
     /** 排列方向 */
     direction: { type: String, default: defaultProps.direction },
     /** 是否倒序 */

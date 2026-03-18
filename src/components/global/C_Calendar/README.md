@@ -33,6 +33,7 @@
 | update:visible | 显示状态变更   | `visible: Boolean`     |
 | select         | 选择日期时触发 | `date: String / Array` |
 | confirm        | 确认选择       | `date: String / Array` |
+| close          | 关闭时触发     | -                      |
 
 ## 代码示例
 

@@ -15,7 +15,7 @@
           class="c-cascader__close"
           @click="onClose"
         >
-          <WdIcon
+          <wd-icon
             name="close"
             size="18px"
           />
@@ -27,7 +27,7 @@
         v-if="filterable"
         class="c-cascader__search"
       >
-        <WdIcon
+        <wd-icon
           name="search"
           size="16px"
         />
@@ -40,7 +40,7 @@
       </view>
 
       <!-- 搜索结果列表 -->
-      <ScrollView
+      <scroll-view
         v-if="keyword"
         class="c-cascader__search-result"
         scroll-y
@@ -59,7 +59,7 @@
         >
           <text>无匹配结果</text>
         </view>
-      </ScrollView>
+      </scroll-view>
 
       <!-- 已选面包屑 -->
       <view
@@ -80,7 +80,7 @@
       </view>
 
       <!-- 选项列表 -->
-      <ScrollView
+      <scroll-view
         v-if="!keyword"
         class="c-cascader__options"
         scroll-y
@@ -95,21 +95,30 @@
           @click="onSelect(item)"
         >
           <text class="c-cascader__option-text">{{ item[labelKey] }}</text>
-          <WdIcon
+          <wd-icon
             v-if="isOptionSelected(item)"
             name="check"
             size="16px"
             color="var(--r-color-primary, #2b6bff)"
           />
         </view>
-      </ScrollView>
+      </scroll-view>
     </view>
   </view>
 </template>
 
 <script setup lang="ts">
-  import { ref, computed, watch } from 'vue'
+  import { ref, computed, watch, type PropType } from 'vue'
   import { defaultProps, flattenOptions } from './data'
+
+  interface CascaderOption {
+    [key: string]: any
+  }
+
+  interface CascaderTab {
+    value: any
+    label: string
+  }
 
   const props = defineProps({
     /** 是否显示 */
@@ -117,9 +126,15 @@
     /** 标题 */
     title: { type: String, default: defaultProps.title },
     /** 选项数据 */
-    options: { type: Array, default: () => defaultProps.options },
+    options: {
+      type: Array as PropType<CascaderOption[]>,
+      default: () => defaultProps.options,
+    },
     /** 默认选中值 */
-    defaultValue: { type: Array, default: () => defaultProps.defaultValue },
+    defaultValue: {
+      type: Array as PropType<any[]>,
+      default: () => defaultProps.defaultValue,
+    },
     /** 值字段名 */
     valueKey: { type: String, default: defaultProps.valueKey },
     /** 文本字段名 */
@@ -134,10 +149,10 @@
     resetOnClose: { type: Boolean, default: defaultProps.resetOnClose },
   })
 
-  const emit = defineEmits(['update:visible', 'confirm', 'change'])
+  const emit = defineEmits(['update:visible', 'confirm', 'change', 'close'])
 
   // Tab 数据 [{ value, label }]
-  const tabs = ref([{ value: null, label: '' }])
+  const tabs = ref<CascaderTab[]>([{ value: null, label: '' }])
   const activeTab = ref(0)
   const keyword = ref('')
 
@@ -193,7 +208,7 @@
       return
     }
 
-    const newTabs = []
+    const newTabs: CascaderTab[] = []
     let currentList = props.options
 
     for (const val of props.defaultValue) {
@@ -298,6 +313,7 @@
    *
    */
   function onClose() {
+    emit('close')
     emit('update:visible', false)
   }
 </script>
