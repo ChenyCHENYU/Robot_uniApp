@@ -132,156 +132,49 @@
 
 <script setup lang="ts">
   import { ref, computed } from 'vue'
+  import { useMessageStore, type MessageItem } from '@/stores/modules/message'
 
-  interface Message {
-    id: number
-    type: string
-    title: string
-    content: string
-    time: string
-    read: boolean
-    icon: string
-    iconBg: string
-    actionLabel?: string
-    actionUrl?: string
-  }
+  const messageStore = useMessageStore()
 
   const activeTab = ref('all')
   const showDetail = ref(false)
-  const currentMsg = ref<Message | null>(null)
+  const currentMsg = ref<MessageItem | null>(null)
 
   const detailActions = [
     { name: '标记为已读', value: 'read' },
     { name: '删除该消息', value: 'delete', color: '#f5576c' },
   ]
 
-  const messageTabs = ref([
-    { key: 'all', label: '全部', count: 8 },
-    { key: 'system', label: '系统', count: 2 },
-    { key: 'notify', label: '通知', count: 3 },
-    { key: 'todo', label: '待办', count: 2 },
-    { key: 'interact', label: '互动', count: 1 },
-  ])
+  const tabKeys = [
+    { key: 'all', label: '全部' },
+    { key: 'system', label: '系统' },
+    { key: 'notify', label: '通知' },
+    { key: 'todo', label: '待办' },
+    { key: 'interact', label: '互动' },
+  ]
 
-  const messages = ref<Message[]>([
-    {
-      id: 1,
-      type: 'system',
-      title: '系统更新',
-      content: 'Robot UniApp v1.1.0 已发布，新增 15 个通用组件，优化整体性能',
-      time: '刚刚',
-      read: false,
-      icon: 'setting',
-      iconBg: 'linear-gradient(135deg, #667eea, #764ba2)',
-    },
-    {
-      id: 2,
-      type: 'notify',
-      title: '组件库更新',
-      content: 'C_Form、C_Upload 等组件已完成开发，可前往组件库查看',
-      time: '10分钟前',
-      read: false,
-      icon: 'notification',
-      iconBg: 'linear-gradient(135deg, #f093fb, #f5576c)',
-      actionLabel: '前往查看',
-      actionUrl: '/pages/demo/index',
-    },
-    {
-      id: 3,
-      type: 'system',
-      title: '安全提醒',
-      content: '检测到新设备登录，请确认是否为本人操作',
-      time: '1小时前',
-      read: false,
-      icon: 'warning',
-      iconBg: 'linear-gradient(135deg, #fa709a, #fee140)',
-    },
-    {
-      id: 4,
-      type: 'todo',
-      title: '审批待办',
-      content: '您有 1 条新的审批申请需要处理，请及时审批',
-      time: '2小时前',
-      read: false,
-      icon: 'edit-outline',
-      iconBg: 'linear-gradient(135deg, #4facfe, #00f2fe)',
-      actionLabel: '去处理',
-      actionUrl: '/pages/approval/index',
-    },
-    {
-      id: 5,
-      type: 'notify',
-      title: '数据看板',
-      content: '本周访问量同比上升 12.5%，点击查看详情',
-      time: '3小时前',
-      read: false,
-      icon: 'chart',
-      iconBg: 'linear-gradient(135deg, #43e97b, #38f9d7)',
-      actionLabel: '查看详情',
-      actionUrl: '/pages/dashboard/index',
-    },
-    {
-      id: 6,
-      type: 'todo',
-      title: '表单提交',
-      content: '有 2 份新的表单待审核，请尽快处理',
-      time: '昨天',
-      read: false,
-      icon: 'list',
-      iconBg: 'linear-gradient(135deg, #a8edea, #fed6e3)',
-      actionLabel: '去审核',
-      actionUrl: '/pages/crud-list/index',
-    },
-    {
-      id: 7,
-      type: 'interact',
-      title: '新评论',
-      content: '用户 Alex 评论了您的项目：「设计非常出色！」',
-      time: '昨天',
-      read: false,
-      icon: 'comment',
-      iconBg: 'linear-gradient(135deg, #ffecd2, #fcb69f)',
-    },
-    {
-      id: 8,
-      type: 'notify',
-      title: '欢迎使用',
-      content: '欢迎体验 Robot UniApp 企业级跨平台开发框架',
-      time: '2天前',
-      read: true,
-      icon: 'heart',
-      iconBg: 'linear-gradient(135deg, #43e97b, #38f9d7)',
-    },
-  ])
+  const messageTabs = computed(() =>
+    tabKeys.map(t => ({
+      ...t,
+      count:
+        t.key === 'all'
+          ? messageStore.totalUnread
+          : messageStore.unreadByType[t.key] || 0,
+    }))
+  )
 
   const filteredMessages = computed(() => {
-    if (activeTab.value === 'all') return messages.value
-    return messages.value.filter(msg => msg.type === activeTab.value)
+    if (activeTab.value === 'all') return messageStore.messages
+    return messageStore.messages.filter(msg => msg.type === activeTab.value)
   })
 
-  const updateTabCounts = () => {
-    const counts: Record<string, number> = { all: 0 }
-    messages.value.forEach(msg => {
-      if (!msg.read) {
-        counts.all = (counts.all || 0) + 1
-        counts[msg.type] = (counts[msg.type] || 0) + 1
-      }
-    })
-    messageTabs.value.forEach(tab => {
-      tab.count = counts[tab.key] || 0
-    })
-  }
-
   const markAllRead = () => {
-    messages.value.forEach(msg => {
-      msg.read = true
-    })
-    updateTabCounts()
+    messageStore.markAllRead()
     uni.showToast({ title: '已全部标记为已读', icon: 'none' })
   }
 
   const handleClearRead = () => {
-    const readCount = messages.value.filter(m => m.read).length
+    const readCount = messageStore.messages.filter(m => m.read).length
     if (readCount === 0) {
       uni.showToast({ title: '没有已读消息', icon: 'none' })
       return
@@ -291,21 +184,16 @@
       content: `确定删除 ${readCount} 条已读消息？`,
       success: ({ confirm }) => {
         if (confirm) {
-          messages.value = messages.value.filter(m => !m.read)
-          updateTabCounts()
+          messageStore.deleteReadMessages()
           uni.showToast({ title: '已清除', icon: 'success' })
         }
       },
     })
   }
 
-  const handleMessageClick = (msg: Message) => {
-    if (!msg.read) {
-      msg.read = true
-      updateTabCounts()
-    }
+  const handleMessageClick = (msg: MessageItem) => {
+    if (!msg.read) messageStore.markRead(msg.id)
 
-    // 如果有跳转链接，直接导航
     if (msg.actionUrl) {
       uni.navigateTo({ url: msg.actionUrl })
       return
@@ -319,7 +207,7 @@
     })
   }
 
-  const handleLongPress = (msg: Message) => {
+  const handleLongPress = (msg: MessageItem) => {
     currentMsg.value = msg
     showDetail.value = true
   }
@@ -327,11 +215,9 @@
   const handleDetailAction = ({ value }: { value: string }) => {
     if (!currentMsg.value) return
     if (value === 'read') {
-      currentMsg.value.read = true
-      updateTabCounts()
+      messageStore.markRead(currentMsg.value.id)
     } else if (value === 'delete') {
-      messages.value = messages.value.filter(m => m.id !== currentMsg.value!.id)
-      updateTabCounts()
+      messageStore.deleteMessage(currentMsg.value.id)
       uni.showToast({ title: '已删除', icon: 'success' })
     }
   }

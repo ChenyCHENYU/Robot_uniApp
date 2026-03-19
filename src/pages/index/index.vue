@@ -1,48 +1,56 @@
 <template>
   <C_Layout
-    :notification-count="notificationCount"
+    :notification-count="unreadCount"
     @user-click="handleUserClick"
     @notification-click="handleNotificationClick"
     @settings-click="handleSettingsClick"
   >
     <view class="dashboard">
-      <!-- 问候语（轻量文字，无色块） -->
+      <!-- 问候语 -->
       <view class="greeting">
-        <text class="greeting-text"
-          >你好，<text class="greeting-name">ChenY</text> 👋</text
-        >
+        <text class="greeting-text">{{ greeting }}，<text class="greeting-name">ChenY</text> 👋</text>
         <text class="greeting-sub">今日有 {{ todoCount }} 项待办</text>
       </view>
 
-      <!-- 数据概览 -->
-      <view class="stats-grid">
-        <view
-          v-for="stat in statsCards"
-          :key="stat.label"
-          class="glass-stat"
-          @click="handleStatClick(stat)"
-        >
-          <view class="stat-top">
-            <view
-              class="stat-icon"
-              :style="{ background: stat.bg }"
-            >
-              <text class="stat-emoji">{{ stat.icon }}</text>
-            </view>
-            <view
-              v-if="stat.trend"
-              class="stat-badge"
-              :class="stat.trend > 0 ? 'is-up' : 'is-down'"
-            >
-              <text class="badge-val"
-                >{{ stat.trend > 0 ? '+' : '' }}{{ stat.trend }}%</text
+      <!-- 核心指标卡片 — 横向滑动 -->
+      <scroll-view
+        class="kpi-scroll"
+        scroll-x
+        enhanced
+        :show-scrollbar="false"
+      >
+        <view class="kpi-track">
+          <view
+            v-for="kpi in kpiCards"
+            :key="kpi.label"
+            class="kpi-card"
+            @click="handleStatClick(kpi)"
+          >
+            <view class="kpi-head">
+              <text class="kpi-emoji">{{ kpi.icon }}</text>
+              <view
+                v-if="kpi.trend"
+                class="kpi-trend"
+                :class="kpi.trend > 0 ? 'is-up' : 'is-down'"
               >
+                <text class="trend-val">{{ kpi.trend > 0 ? '↑' : '↓' }}{{ Math.abs(kpi.trend) }}%</text>
+              </view>
+            </view>
+            <text class="kpi-value">{{ kpi.value }}</text>
+            <text class="kpi-label">{{ kpi.label }}</text>
+            <!-- 迷你进度条 -->
+            <view
+              v-if="kpi.progress != null"
+              class="kpi-bar"
+            >
+              <view
+                class="kpi-bar-fill"
+                :style="{ width: kpi.progress + '%', background: kpi.barColor }"
+              />
             </view>
           </view>
-          <text class="stat-value">{{ stat.value }}</text>
-          <text class="stat-label">{{ stat.label }}</text>
         </view>
-      </view>
+      </scroll-view>
 
       <!-- 快捷操作 -->
       <view class="section">
@@ -72,8 +80,7 @@
           <text
             class="section-link"
             @click="handleViewAllTodo"
-            >全部</text
-          >
+          >全部</text>
         </view>
         <view class="glass-card">
           <view
@@ -98,8 +105,7 @@
               <text
                 class="todo-title"
                 :class="{ done: todo.done }"
-                >{{ todo.title }}</text
-              >
+              >{{ todo.title }}</text>
               <text class="todo-time">{{ todo.time }}</text>
             </view>
             <view
@@ -141,38 +147,54 @@
 
 <script setup lang="ts">
   import { ref, computed } from 'vue'
+  import { useMessageStore } from '@/stores/modules/message'
+
+  const messageStore = useMessageStore()
+  const unreadCount = computed(() => messageStore.totalUnread)
 
   const version = ref('1.0.0')
-  const notificationCount = ref(3)
 
-  const statsCards = ref([
+  const greeting = computed(() => {
+    const h = new Date().getHours()
+    if (h < 6) return '夜深了'
+    if (h < 12) return '早上好'
+    if (h < 14) return '中午好'
+    if (h < 18) return '下午好'
+    return '晚上好'
+  })
+
+  const kpiCards = ref([
     {
       label: '活跃用户',
       value: '12,486',
       icon: '👥',
       trend: 12.5,
-      bg: 'linear-gradient(135deg, #667eea, #764ba2)',
+      progress: 78,
+      barColor: 'linear-gradient(90deg,#667eea,#764ba2)',
     },
     {
       label: '今日访问',
       value: '3,829',
       icon: '📊',
       trend: 8.3,
-      bg: 'linear-gradient(135deg, #f093fb, #f5576c)',
+      progress: 62,
+      barColor: 'linear-gradient(90deg,#f093fb,#f5576c)',
     },
     {
       label: '待处理',
       value: '26',
       icon: '📋',
       trend: -4.2,
-      bg: 'linear-gradient(135deg, #4facfe, #00f2fe)',
+      progress: 26,
+      barColor: 'linear-gradient(90deg,#4facfe,#00f2fe)',
     },
     {
       label: '完成率',
       value: '94.6%',
       icon: '🎯',
       trend: 2.1,
-      bg: 'linear-gradient(135deg, #43e97b, #38f9d7)',
+      progress: 94.6,
+      barColor: 'linear-gradient(90deg,#43e97b,#38f9d7)',
     },
   ])
 
@@ -319,7 +341,7 @@
 </script>
 
 <style lang="scss" scoped>
-  /* ── 玻璃拟态基础 mixin（通过 placeholder 复用） ── */
+  /* ── 玻璃拟态基础 mixin ── */
   %glass-surface {
     background: rgba(255, 255, 255, 0.72);
     backdrop-filter: blur(20px) saturate(180%);
@@ -333,7 +355,7 @@
 
   .dashboard {
     min-height: 100vh;
-    padding: 24rpx 24rpx 200rpx;
+    padding: 24rpx 24rpx 0;
     background:
       linear-gradient(180deg, rgba(102, 126, 234, 0.06) 0%, transparent 40%),
       var(--r-bg-page);
@@ -341,7 +363,7 @@
 
   /* ── 问候 ── */
   .greeting {
-    padding: 16rpx 8rpx 28rpx;
+    padding: 16rpx 8rpx 24rpx;
 
     .greeting-text {
       display: block;
@@ -362,50 +384,47 @@
     }
   }
 
-  /* ── 数据概览 ── */
-  .stats-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16rpx;
-    margin-bottom: 32rpx;
+  /* ── KPI 横滑卡片 ── */
+  .kpi-scroll {
+    margin: 0 -24rpx 28rpx;
+    white-space: nowrap;
   }
 
-  .glass-stat {
+  .kpi-track {
+    display: inline-flex;
+    gap: 16rpx;
+    padding: 0 24rpx 8rpx;
+  }
+
+  .kpi-card {
     @extend %glass-surface;
-    border-radius: 24rpx;
+    display: inline-flex;
+    flex-direction: column;
+    width: 240rpx;
     padding: 24rpx;
+    border-radius: 24rpx;
+    flex-shrink: 0;
+    white-space: normal;
     transition: transform 0.2s ease;
 
     &:active {
-      transform: scale(0.97);
+      transform: scale(0.96);
     }
 
-    .stat-top {
+    .kpi-head {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 20rpx;
+      margin-bottom: 16rpx;
     }
 
-    .stat-icon {
-      width: 60rpx;
-      height: 60rpx;
-      border-radius: 16rpx;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+    .kpi-emoji {
+      font-size: 32rpx;
     }
 
-    .stat-emoji {
-      font-size: 26rpx;
-    }
-
-    .stat-badge {
-      padding: 4rpx 14rpx;
-      border-radius: 12rpx;
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
+    .kpi-trend {
+      padding: 2rpx 10rpx;
+      border-radius: 8rpx;
 
       &.is-up {
         background: rgba(67, 233, 123, 0.14);
@@ -414,32 +433,46 @@
         background: rgba(245, 108, 108, 0.14);
       }
 
-      .badge-val {
-        font-size: 20rpx;
+      .trend-val {
+        font-size: 18rpx;
         font-weight: 600;
       }
-
-      &.is-up .badge-val {
+      &.is-up .trend-val {
         color: #2bb85a;
       }
-      &.is-down .badge-val {
+      &.is-down .trend-val {
         color: #e84545;
       }
     }
 
-    .stat-value {
+    .kpi-value {
       display: block;
-      font-size: 40rpx;
+      font-size: 36rpx;
       font-weight: 700;
       color: var(--r-text-primary);
       letter-spacing: -0.5px;
+      line-height: 1.2;
     }
 
-    .stat-label {
+    .kpi-label {
       display: block;
       font-size: 22rpx;
       color: var(--r-text-secondary);
       margin-top: 4rpx;
+    }
+
+    .kpi-bar {
+      height: 6rpx;
+      border-radius: 3rpx;
+      background: rgba(0, 0, 0, 0.05);
+      margin-top: 16rpx;
+      overflow: hidden;
+    }
+
+    .kpi-bar-fill {
+      height: 100%;
+      border-radius: 3rpx;
+      transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
     }
   }
 

@@ -8,7 +8,7 @@
       v-if="showHeader"
       ref="headerRef"
       v-bind="headerConfig"
-      :notification-count="notificationCount"
+      :notification-count="realNotificationCount"
       @user-click="emit('userClick', $event)"
       @notification-click="handleNotificationClick"
       @settings-click="handleSettingsClick"
@@ -48,7 +48,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, onMounted, watch, nextTick } from 'vue'
+  import { ref, computed, onMounted, watch, nextTick } from 'vue'
   import { onShow } from '@dcloudio/uni-app'
   import {
     useSmartLayout,
@@ -57,12 +57,19 @@
     tabbarConfig,
     getCurrentTabIndex,
   } from './data'
+  import { useMessageStore } from '@/stores/modules/message'
   import C_Header from '../C_Header/index.vue'
   import C_Tabbar from '../C_Tabbar/index.vue'
   import './index.scss'
 
   const props = defineProps(layoutProps)
   const emit = defineEmits(layoutEmits)
+
+  // 全局未读消息数（优先使用 store，允许 prop 覆盖）
+  const messageStore = useMessageStore()
+  const realNotificationCount = computed(
+    () => props.notificationCount > 0 ? props.notificationCount : messageStore.totalUnread
+  )
 
   const headerRef = ref()
   const tabbarRef = ref()
@@ -107,7 +114,18 @@
         currentTabIndex.value = activeIndex
       }
     }
+    // 同步消息 tabbar 角标
+    syncMessageBadge()
   })
+
+  // 同步 tabbar 消息角标
+  const syncMessageBadge = () => {
+    const msgTab = tabbarConfig.tabList.find(t => t.id === 'message')
+    if (msgTab) msgTab.badge = messageStore.totalUnread
+  }
+
+  // 监听未读数变化，实时同步 tabbar badge
+  watch(() => messageStore.totalUnread, syncMessageBadge, { immediate: true })
 
   // 返回首页兜底策略
   const navigateToHome = () => {

@@ -6,7 +6,19 @@
  */
 
 import { computed, ref } from 'vue'
+import type { PropType } from 'vue'
 import { useAppStore } from '@/stores/modules/app'
+
+/** 单个 Tab 项的类型 */
+export interface TabItem {
+  id: string
+  text: string
+  icon: string
+  activeIcon: string
+  unoIcon?: string
+  path: string
+  badge: number
+}
 
 /** Tabbar 数据与逻辑 */
 export function useTabbarData(props, emit) {
@@ -110,7 +122,7 @@ export const tabbarProps = {
   },
   // 标签列表
   tabList: {
-    type: Array,
+    type: Array as PropType<TabItem[]>,
     default: () => defaultTabList,
   },
   // 风格模式: glass(苹果拟态玻璃) | flat(扁平简约)
