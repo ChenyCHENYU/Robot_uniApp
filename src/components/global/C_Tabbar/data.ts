@@ -61,12 +61,14 @@ export function useTabbarData(props, emit) {
 }
 
 // 默认Tab列表配置
+// fluent-color: 微软 Fluent Color 多色图标，激活/未激活用同一图标，CSS 控制灰度
 export const defaultTabList = [
   {
     id: 'home',
     text: '首页',
     icon: 'home',
     activeIcon: 'home1',
+    unoIcon: 'i-fluent-color-home-28',
     path: '/pages/index/index',
     badge: 0,
   },
@@ -75,6 +77,7 @@ export const defaultTabList = [
     text: '消息',
     icon: 'chat',
     activeIcon: 'chat1',
+    unoIcon: 'i-fluent-color-chat-28',
     path: '/pages/message/index',
     badge: 0,
   },
@@ -83,15 +86,16 @@ export const defaultTabList = [
     text: '组件库',
     icon: 'app',
     activeIcon: 'app',
+    unoIcon: 'i-fluent-color-apps-28',
     path: '/pages/robot/index',
     badge: 0,
-    showText: 'C',
   },
   {
     id: 'profile',
     text: '我的',
     icon: 'user',
     activeIcon: 'user-circle',
+    unoIcon: 'i-fluent-color-person-28',
     path: '/pages/profile/index',
     badge: 0,
   },
@@ -109,15 +113,20 @@ export const tabbarProps = {
     type: Array,
     default: () => defaultTabList,
   },
+  // 风格模式: glass(苹果拟态玻璃) | flat(扁平简约)
+  mode: {
+    type: String as () => 'glass' | 'flat',
+    default: 'glass',
+  },
   // 激活颜色
   activeColor: {
     type: String,
-    default: '#00D4FF',
+    default: '#007AFF', // iOS Theme Blue
   },
   // 非激活颜色
   inactiveColor: {
     type: String,
-    default: '#8E8E93',
+    default: '#8E8E93', // iOS Inactive Grey
   },
   // 是否固定在底部
   fixed: {

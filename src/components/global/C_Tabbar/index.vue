@@ -1,25 +1,16 @@
 <!--
  * @Author: ChenYu ycyplus@gmail.com
  * @Date: 2025-01-09
- * @Description: 全局底部Tabbar组件 - 玻璃风设计
+ * @Description: 全局底部Tabbar组件 - 双模式(glass玻璃拟态 / flat扁平简约)
  * Copyright (c) 2025 by CHENY, All Rights Reserved 😎.
 -->
 <template>
   <view
     class="c-tabbar"
-    :class="{ 'is-fixed': fixed }"
+    :class="['is-fixed', `mode-${mode}`]"
+    :style="{ paddingBottom: safeAreaBottom + 'px' }"
   >
-    <!-- 玻璃风背景 -->
-    <view class="tabbar-backdrop">
-      <view class="glass-bg"></view>
-      <view class="border-line"></view>
-    </view>
-
-    <!-- 内容区域 -->
-    <view
-      class="tabbar-container"
-      :style="{ paddingBottom: safeAreaBottom + 'px' }"
-    >
+    <view class="tabbar-container">
       <view
         class="tab-item"
         v-for="(item, index) in tabList"
@@ -27,42 +18,28 @@
         :class="{ 'is-active': currentIndex === index }"
         @click="handleTabClick(item, index)"
       >
-        <!-- 激活状态背景 -->
-        <view
-          class="active-indicator"
-          v-show="currentIndex === index"
-        >
-          <view class="glow-bg"></view>
-        </view>
-
         <!-- 图标区域 -->
         <view class="icon-wrapper">
+          <!-- Fluent Color 多色图标 —— 始终同一图标，CSS 控制激活/未激活 -->
           <view
-            class="icon-bg"
-            :class="{ 'is-active': currentIndex === index }"
-          >
-            <!-- 如果有自定义文字，显示文字，否则显示图标 -->
-            <text
-              v-if="item.showText"
-              class="custom-text-icon"
-              :class="{ 'is-active': currentIndex === index }"
-            >
-              {{ item.showText }}
-            </text>
-            <wd-icon
-              v-else
-              :name="currentIndex === index ? item.activeIcon : item.icon"
-              :size="currentIndex === index ? '20px' : '18px'"
-              :color="currentIndex === index ? '#ffffff' : inactiveColor"
-            />
-          </view>
+            v-if="item.unoIcon"
+            class="tab-icon"
+            :class="[item.unoIcon, { 'is-active': currentIndex === index }]"
+          ></view>
+          <!-- 降级：wd-icon -->
+          <wd-icon
+            v-else
+            :name="currentIndex === index ? item.activeIcon : item.icon"
+            size="26px"
+            :color="currentIndex === index ? activeColor : inactiveColor"
+          />
 
           <!-- 角标 -->
           <wd-badge
             v-if="item.badge > 0"
             :modelValue="item.badge"
             :max="99"
-            custom-style="position: absolute; top: -4px; right: -4px;"
+            custom-style="position: absolute; top: -4px; right: -8px;"
           />
         </view>
 
@@ -80,36 +57,22 @@
 
 <script setup lang="ts">
   import { useTabbarData, tabbarProps, tabbarEmits } from './data'
-  import './index.scss'
 
-  // Props
   const props = defineProps(tabbarProps)
-
-  // Emits
   const emit = defineEmits(tabbarEmits)
 
-  // 使用数据和逻辑
   const {
-    // 响应式数据
     isNavigating: _isNavigating,
-
-    // 计算属性
     currentIndex,
     safeAreaBottom,
-
-    // 方法
     handleTabClick,
     setBadge,
     setCurrentIndex,
   } = useTabbarData(props, emit)
 
-  // 暴露方法给父组件
-  defineExpose({
-    setBadge,
-    setCurrentIndex,
-  })
+  defineExpose({ setBadge, setCurrentIndex })
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
   @import './index.scss';
 </style>

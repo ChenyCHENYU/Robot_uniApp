@@ -100,7 +100,7 @@
             v-if="notificationCount > 0"
             :modelValue="notificationCount"
             :max="99"
-            custom-style="position: absolute; top: -4px; right: -4px;"
+            custom-style="position: absolute; top: 0px; right: 0px;"
           />
         </view>
 

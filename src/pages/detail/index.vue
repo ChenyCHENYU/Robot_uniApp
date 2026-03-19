@@ -460,12 +460,13 @@
     bottom: 0;
     left: 0;
     right: 0;
+    z-index: 50;
     display: flex;
     gap: 20rpx;
-    padding: 20rpx 32rpx;
-    padding-bottom: calc(env(safe-area-inset-bottom) + 20rpx);
+    padding: 16rpx 32rpx;
+    padding-bottom: calc(env(safe-area-inset-bottom) + 16rpx);
     background: var(--r-bg-card);
-    box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.05);
+    box-shadow: 0 -2rpx 16rpx rgba(0, 0, 0, 0.06);
 
     .bar-btn {
       flex: 1;

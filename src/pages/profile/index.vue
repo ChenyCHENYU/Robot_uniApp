@@ -588,7 +588,7 @@
 
   .footer-info {
     text-align: center;
-    padding: 48rpx 0 100rpx;
+    padding: 32rpx 0 20rpx;
 
     .version-text {
       display: block;

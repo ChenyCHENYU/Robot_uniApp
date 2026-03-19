@@ -1,10 +1,13 @@
 /**
  * @Author: ChenYu ycyplus@gmail.com
  * @Date: 2025-01-09
- * @Description: C_Tabbar 组件样式 - 玻璃风设计
+ * @Description: C_Tabbar — glass 玻璃拟态胶囊 / flat 扁平简约 双模式
  * Copyright (c) 2025 by CHENY, All Rights Reserved 😎.
  */
 
+// ─────────────────────────────────────────────
+// 公共基础
+// ─────────────────────────────────────────────
 .c-tabbar {
   position: relative;
   z-index: 1000;
@@ -17,48 +20,11 @@
   }
 }
 
-.tabbar-backdrop {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-}
-
-.glass-bg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: var(--r-glass-bg, rgba(255, 255, 255, 0.85));
-  backdrop-filter: blur(40rpx);
-  border-top: 1rpx solid var(--r-glass-border, rgba(255, 255, 255, 0.3));
-}
-
-.border-line {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2rpx;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(0, 212, 255, 0.4) 20%,
-    rgba(0, 212, 255, 0.8) 50%,
-    rgba(0, 212, 255, 0.4) 80%,
-    transparent 100%
-  );
-}
-
 .tabbar-container {
-  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-around;
-  padding: 12rpx 24rpx 16rpx;
-    min-height: 100rpx;
+  height: 56px;
 }
 
 .tab-item {
@@ -67,98 +33,138 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  position: relative;
-  padding: 8rpx 4rpx;
-  transition: all 0.3s ease;
-
-  &.is-active {
-    transform: translateY(-2rpx);
-  }
-}
-
-.active-indicator {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 80rpx;
-  height: 80rpx;
-  pointer-events: none;
-}
-
-.glow-bg {
-  width: 100%;
+  gap: 3px;
   height: 100%;
-  background: radial-gradient(
-    circle,
-    rgba(0, 212, 255, 0.15) 0%,
-    rgba(0, 212, 255, 0.08) 50%,
-    transparent 100%
-  );
-  border-radius: 50%;
-  animation: pulse-glow 2s ease-in-out infinite;
+  position: relative;
+  box-sizing: border-box;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .icon-wrapper {
   position: relative;
-  margin-bottom: 4rpx;
-  z-index: 2;
-}
-
-.icon-bg {
-  width: 64rpx;
-    height: 64rpx;
-    border-radius: 18rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--r-divider, rgba(0, 0, 0, 0.05));
-    border: 1rpx solid var(--r-divider-strong, rgba(0, 0, 0, 0.1));
-  transition: all 0.4s ease;
+}
+
+// Fluent Color 图标
+.tab-icon {
+  width: 26px;
+  height: 26px;
+  display: inline-block;
+  flex-shrink: 0;
+  filter: grayscale(1) opacity(0.4);
+  transition:
+    filter 0.3s ease,
+    transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
 
   &.is-active {
-    background: linear-gradient(135deg, var(--r-color-primary) 0%, var(--r-color-primary-dark) 100%);
-    border-color: var(--r-border-light);
-    box-shadow: var(--r-shadow-md);
-    transform: scale(1.08);
+    filter: grayscale(0) opacity(1);
+    transform: scale(1.15) translateY(-1px);
   }
 }
 
-// 自定义文字图标样式
-.custom-text-icon {
-  font-size: 30rpx;
-  font-weight: bold;
-  color: var(--r-text-secondary, #8e8e93);
-  transition: all 0.3s ease;
-
-  &.is-active {
-    color: var(--r-text-inverse);
-    font-size: 32rpx;
-  }
-}
 .tab-label {
-  font-size: 22rpx;
-  color: var(--r-text-secondary, #8e8e93);
-  font-weight: 500;
-  transition: all 0.3s ease;
   text-align: center;
-  z-index: 2;
-  margin-top: 4rpx;
+  line-height: 1;
+  white-space: nowrap;
+}
 
-  &.is-active {
-    color: var(--r-color-primary);
-    font-weight: 600;
+// ─────────────────────────────────────────────
+// 🔷 GLASS MODE — iOS 拟态毛玻璃胶囊
+// ─────────────────────────────────────────────
+.c-tabbar.mode-glass {
+  &.is-fixed {
+    bottom: 16px;
+    left: 0;
+    right: 0;
+    width: calc(100% - 32px);
+    max-width: calc(var(--r-h5-max-width, 100vw) - 32px);
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  border-radius: 28px;
+  overflow: hidden;
+
+  // ── 毛玻璃 ──
+  // 微妙的蓝紫色渐变底色，确保在浅色背景下也能看到玻璃质感
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.82) 0%,
+      rgba(240, 243, 255, 0.72) 50%,
+      rgba(248, 245, 255, 0.76) 100%
+    );
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+
+  // 不支持 backdrop-filter 时降级为高不透明度
+  @supports not (backdrop-filter: blur(1px)) {
+    background: rgba(250, 250, 255, 0.96);
+  }
+
+  // ── 玻璃边框：上边亮线模拟光折射 ──
+  border: 0.5px solid rgba(255, 255, 255, 0.65);
+
+  // ── 阴影层次：内白光 + 外扩散 + 主题色光晕 ──
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -0.5px 0 rgba(0, 0, 0, 0.03),
+    0 2px 8px rgba(0, 0, 0, 0.05),
+    0 8px 32px rgba(102, 126, 234, 0.12),
+    0 2px 60px rgba(118, 75, 162, 0.06);
+
+  .tabbar-container {
+    height: 58px;
+    padding: 0 4px;
+  }
+
+  .tab-item {
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    border-radius: 16px;
+
+    &:active {
+      transform: scale(0.82);
+    }
+  }
+
+  .tab-label {
+    font-size: 10px;
+    color: #8e8e93;
+    font-weight: 500;
+    letter-spacing: 0.1px;
+    transition: color 0.25s ease, font-weight 0.25s ease;
+
+    &.is-active {
+      color: #667eea;
+      font-weight: 700;
+    }
   }
 }
 
-@keyframes pulse-glow {
-  0%,
-  100% {
-    transform: scale(1);
-    opacity: 0.6;
+// ─────────────────────────────────────────────
+// 🔹 FLAT MODE — 扁平简约
+// ─────────────────────────────────────────────
+.c-tabbar.mode-flat {
+  background: #ffffff;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.03);
+
+  .tabbar-container {
+    height: 52px;
   }
-  50% {
-    transform: scale(1.05);
-    opacity: 0.8;
+
+  .tab-label {
+    font-size: 10px;
+    color: #999;
+    font-weight: 400;
+    margin-top: 2px;
+
+    &.is-active {
+      color: #667eea;
+      font-weight: 600;
+    }
   }
 }

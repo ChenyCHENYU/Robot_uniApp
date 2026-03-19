@@ -44,6 +44,7 @@ export const tabbarConfig = {
       text: '首页',
       icon: 'home',
       activeIcon: 'home1',
+      unoIcon: 'i-fluent-color-home-28',
       path: '/pages/index/index',
       badge: 0,
     },
@@ -52,6 +53,7 @@ export const tabbarConfig = {
       text: '消息',
       icon: 'chat',
       activeIcon: 'chat1',
+      unoIcon: 'i-fluent-color-chat-28',
       path: '/pages/message/index',
       badge: 0,
     },
@@ -60,24 +62,23 @@ export const tabbarConfig = {
       text: '组件库',
       icon: 'app',
       activeIcon: 'app',
+      unoIcon: 'i-fluent-color-apps-28',
       path: '/pages/robot/index',
       badge: 0,
-      showText: 'C',
     },
     {
       id: 'profile',
       text: '我的',
       icon: 'user',
       activeIcon: 'user-circle',
+      unoIcon: 'i-fluent-color-person-28',
       path: '/pages/profile/index',
       badge: 0,
     },
   ],
   fixed: true,
-  backgroundColor: '#ffffff',
   activeColor: '#007AFF',
   inactiveColor: '#8E8E93',
-  borderTopColor: 'rgba(0, 0, 0, 0.05)',
 }
 
 // 特殊页面配置
@@ -385,7 +386,7 @@ export function useSmartLayout(props) {
 
   const contentStyles = computed(() => {
     const styles: Record<string, string> = {}
-    if (showTabbar.value) styles.paddingBottom = '120rpx'
+    if (showTabbar.value) styles.paddingBottom = '180rpx'
     return styles
   })
 

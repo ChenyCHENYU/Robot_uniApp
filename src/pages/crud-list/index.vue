@@ -24,10 +24,7 @@
             name="close"
             size="14px"
             color="#ccc"
-            @click="
-              keyword = ''
-              handleSearch()
-            "
+            @click="clearAndSearch"
           />
         </view>
         <view
@@ -266,6 +263,10 @@
   })
 
   const handleSearch = () => {}
+  const clearAndSearch = () => {
+    keyword.value = ''
+    handleSearch()
+  }
   const handleAdd = () => uni.showToast({ title: '新增数据', icon: 'none' })
   const handleDetail = (item: DataItem) =>
     uni.showToast({ title: `查看: ${item.title}`, icon: 'none' })

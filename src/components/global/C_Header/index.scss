@@ -288,6 +288,7 @@ $shadow-inset: inset 0 1rpx 0 rgba(255, 255, 255, 0.15);
 }
 
 .action-button {
+  position: relative;
   .button-glass-bg {
     @include glass-button(72rpx);
     .c-header.compact-mode & {

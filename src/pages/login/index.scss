@@ -600,29 +600,21 @@
 }
 
 .footer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  position: relative;
   text-align: center;
-  padding: 30rpx 40rpx;
+  padding: 40rpx 40rpx 60rpx;
   z-index: 2;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0.2) 100%);
-    backdrop-filter: blur(15rpx);
-    border-top: 1rpx solid rgba(255, 255, 255, 0.1);
 
   .copyright {
     display: block;
-    font-size: 24rpx;
-    color: rgba(255, 255, 255, 0.8);
-    margin-bottom: 8rpx;
-    text-shadow: 0 1rpx 2rpx rgba(0, 0, 0, 0.3);
+    font-size: 20rpx;
+      color: rgba(255, 255, 255, 0.45);
+      margin-bottom: 4rpx;
   }
 
   .version {
     display: block;
-    font-size: 20rpx;
-    color: rgba(255, 255, 255, 0.6);
-      text-shadow: 0 1rpx 2rpx rgba(0, 0, 0, 0.3);
+    font-size: 18rpx;
+      color: rgba(255, 255, 255, 0.3);
   }
 }
