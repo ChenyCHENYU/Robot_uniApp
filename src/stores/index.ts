@@ -26,3 +26,5 @@ export default pinia
 export { useUserStore } from './modules/user'
 export { useAppStore } from './modules/app'
 export { useMessageStore } from './modules/message'
+export { useNotificationStore } from './modules/notification'
+export { useSettingsStore } from './modules/settings'

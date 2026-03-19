@@ -6,10 +6,18 @@
  */
 import { delay, type MockResponse } from './helpers'
 import { userMocks } from './modules/user'
+import { messageMocks } from './modules/message'
+import { approvalMocks } from './modules/approval'
+import { dashboardMocks } from './modules/dashboard'
+import { crudMocks } from './modules/crud'
 
 /** 合并所有模块的 mock 路由 */
 const mockRoutes: Record<string, (options: any) => MockResponse> = {
   ...userMocks,
+  ...messageMocks,
+  ...approvalMocks,
+  ...dashboardMocks,
+  ...crudMocks,
 }
 
 /** 从请求配置中提取 mock key，如 "GET /user/info" */

@@ -3,7 +3,6 @@ import pinia from './stores'
 import { initRouter, setUserStore } from './utils/router'
 import { installDirectives } from './directives'
 import { setupErrorHandler } from './utils/error-handler'
-import { setupMock } from './mock'
 import App from './App.vue'
 import 'virtual:uno.css'
 
@@ -13,9 +12,6 @@ export function createApp() {
 
   // 全局错误处理
   setupErrorHandler(app)
-
-  // 开发环境 Mock 拦截
-  setupMock()
 
   // 初始化 Pinia
   app.use(pinia)

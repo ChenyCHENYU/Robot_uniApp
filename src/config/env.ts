@@ -69,7 +69,7 @@ const envConfig = {
   // 开发环境配置
   development: {
     // API相关配置
-    API_BASE_URL: 'https://dev-api.example.com',
+    API_BASE_URL: '/api',
     API_TIMEOUT: 30000, // 请求超时时间(ms)
     API_VERSION: 'v1',
 

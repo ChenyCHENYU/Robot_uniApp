@@ -119,7 +119,7 @@
 
       <!-- 底部版本 -->
       <view class="footer-info">
-        <text class="version-text">Robot UniApp v1.0.0</text>
+        <text class="version-text">Robot UniApp v{{ appVersion }}</text>
         <text class="copyright-text">© 2025 CHENY. All Rights Reserved.</text>
       </view>
     </view>
@@ -129,6 +129,9 @@
 <script setup lang="ts">
   import { ref, computed } from 'vue'
   import { useUserStore } from '@/stores/modules/user'
+  import { APP_VERSION } from '@/constants'
+
+  const appVersion = APP_VERSION
 
   const userStore = useUserStore()
 
@@ -199,7 +202,7 @@
           label: '更新日志',
           icon: 'calendar',
           iconBg: 'linear-gradient(135deg, #a8edea, #fed6e3)',
-          extra: 'v1.0.0',
+          extra: `v${APP_VERSION}`,
         },
       ],
     },
@@ -256,8 +259,7 @@
       changelog: () =>
         uni.showModal({
           title: '更新日志',
-          content:
-            'v1.0.0\n- 迁移 wot-design-uni 组件库\n- 搭建基础设施\n- 封装 33 个通用组件\n- 新增 11 个业务模板页\n- 新增消息中心、个人设置、主题切换\n- 首页 Dashboard 改版',
+          content: `v${APP_VERSION}\n- 迁移 wot-design-uni 组件库\n- 搭建基础设施\n- 封装 33 个通用组件\n- 新增 11 个业务模板页\n- 新增消息中心、个人设置、主题切换\n- 首页 Dashboard 改版`,
           showCancel: false,
         }),
       feedback: () => uni.showToast({ title: '反馈功能开发中', icon: 'none' }),

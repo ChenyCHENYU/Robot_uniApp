@@ -139,3 +139,15 @@
     opacity: 0.7;
   }
 }
+
+// 玻璃拟态表面 — 全局通用
+@mixin glass-surface($blur: 20px) {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur($blur) saturate(180%);
+  -webkit-backdrop-filter: blur($blur) saturate(180%);
+  border: 1rpx solid rgba(255, 255, 255, 0.8);
+  box-shadow:
+    0 2rpx 12rpx rgba(0, 0, 0, 0.03),
+    0 8rpx 24rpx rgba(0, 0, 0, 0.05),
+    inset 0 1rpx 0 rgba(255, 255, 255, 0.9);
+}

@@ -1,4 +1,11 @@
 import { defineStore } from 'pinia'
+import {
+  getMessageList,
+  markMessageRead,
+  markAllMessageRead,
+  deleteMessage as deleteMessageApi,
+  getUnreadCount,
+} from '@/api'
 
 export interface MessageItem {
   id: number
@@ -15,100 +22,21 @@ export interface MessageItem {
 
 interface MessageState {
   messages: MessageItem[]
+  loading: boolean
+  page: number
+  pageSize: number
+  total: number
+  hasMore: boolean
 }
 
 export const useMessageStore = defineStore('message', {
   state: (): MessageState => ({
-    messages: [
-      {
-        id: 1,
-        type: 'system',
-        title: '系统更新',
-        content: 'Robot UniApp v1.1.0 已发布，新增 15 个通用组件，优化整体性能',
-        time: '刚刚',
-        read: false,
-        icon: 'setting',
-        iconBg: 'linear-gradient(135deg, #667eea, #764ba2)',
-      },
-      {
-        id: 2,
-        type: 'notify',
-        title: '组件库更新',
-        content: 'C_Form、C_Upload 等组件已完成开发，可前往组件库查看',
-        time: '10分钟前',
-        read: false,
-        icon: 'notification',
-        iconBg: 'linear-gradient(135deg, #f093fb, #f5576c)',
-        actionLabel: '前往查看',
-        actionUrl: '/pages/demo/index',
-      },
-      {
-        id: 3,
-        type: 'system',
-        title: '安全提醒',
-        content: '检测到新设备登录，请确认是否为本人操作',
-        time: '1小时前',
-        read: false,
-        icon: 'warning',
-        iconBg: 'linear-gradient(135deg, #fa709a, #fee140)',
-      },
-      {
-        id: 4,
-        type: 'todo',
-        title: '审批待办',
-        content: '您有 1 条新的审批申请需要处理，请及时审批',
-        time: '2小时前',
-        read: false,
-        icon: 'edit-outline',
-        iconBg: 'linear-gradient(135deg, #4facfe, #00f2fe)',
-        actionLabel: '去处理',
-        actionUrl: '/pages/approval/index',
-      },
-      {
-        id: 5,
-        type: 'notify',
-        title: '数据看板',
-        content: '本周访问量同比上升 12.5%，点击查看详情',
-        time: '3小时前',
-        read: false,
-        icon: 'chart',
-        iconBg: 'linear-gradient(135deg, #43e97b, #38f9d7)',
-        actionLabel: '查看详情',
-        actionUrl: '/pages/dashboard/index',
-      },
-      {
-        id: 6,
-        type: 'todo',
-        title: '表单提交',
-        content: '有 2 份新的表单待审核，请尽快处理',
-        time: '昨天',
-        read: false,
-        icon: 'list',
-        iconBg: 'linear-gradient(135deg, #a8edea, #fed6e3)',
-        actionLabel: '去审核',
-        actionUrl: '/pages/crud-list/index',
-      },
-      {
-        id: 7,
-        type: 'interact',
-        title: '新评论',
-        content: '用户 Alex 评论了您的项目：「设计非常出色！」',
-        time: '昨天',
-        read: false,
-        icon: 'comment',
-        iconBg: 'linear-gradient(135deg, #ffecd2, #fcb69f)',
-      },
-      {
-        id: 8,
-        type: 'notify',
-        title: '欢迎使用',
-        content: '欢迎体验 Robot UniApp 企业级跨平台开发框架',
-        time: '2天前',
-        read: true,
-        icon: 'heart',
-        iconBg: 'linear-gradient(135deg, #43e97b, #38f9d7)',
-      },
-    ],
+    messages: [],
+    loading: false,
+    page: 1,
+    pageSize: 10,
+    total: 0,
+    hasMore: true,
   }),
 
   getters: {
@@ -126,17 +54,84 @@ export const useMessageStore = defineStore('message', {
   },
 
   actions: {
-    markRead(id: number) {
+    /** 拉取消息列表（首次或刷新） */
+    async fetchMessages(type?: string) {
+      this.loading = true
+      this.page = 1
+      try {
+        const res = await getMessageList({
+          page: 1,
+          pageSize: this.pageSize,
+          type,
+        })
+        const { list, total } = res as any
+        this.messages = list || []
+        this.total = total || 0
+        this.hasMore = this.messages.length < this.total
+      } finally {
+        this.loading = false
+      }
+    },
+
+    /** 加载更多 */
+    async loadMore(type?: string) {
+      if (this.loading || !this.hasMore) return
+      this.loading = true
+      this.page++
+      try {
+        const res = await getMessageList({
+          page: this.page,
+          pageSize: this.pageSize,
+          type,
+        })
+        const { list } = res as any
+        if (list?.length) {
+          this.messages.push(...list)
+          this.hasMore = this.messages.length < this.total
+        } else {
+          this.hasMore = false
+        }
+      } finally {
+        this.loading = false
+      }
+    },
+
+    /** 刷新未读数（轻量接口） */
+    async refreshUnreadCount() {
+      try {
+        const res = await getUnreadCount()
+        // 服务端返回 count，本地标记同步
+        return (res as any)?.count ?? this.totalUnread
+      } catch {
+        return this.totalUnread
+      }
+    },
+
+    async markRead(id: number) {
       const msg = this.messages.find(m => m.id === id)
-      if (msg) msg.read = true
+      if (msg && !msg.read) {
+        msg.read = true
+        await markMessageRead(id).catch(() => {
+          msg.read = false
+        })
+      }
     },
 
-    markAllRead() {
+    async markAllRead() {
+      const prev = this.messages.map(m => m.read)
       this.messages.forEach(m => (m.read = true))
+      await markAllMessageRead().catch(() => {
+        this.messages.forEach((m, i) => (m.read = prev[i]))
+      })
     },
 
-    deleteMessage(id: number) {
-      this.messages = this.messages.filter(m => m.id !== id)
+    async deleteMessage(id: number) {
+      const idx = this.messages.findIndex(m => m.id === id)
+      if (idx === -1) return
+      const [removed] = this.messages.splice(idx, 1)
+      await deleteMessageApi(id).catch(() => {
+        this.messages.splice(idx, 0, removed)
+      })
     },
 
     deleteReadMessages() {

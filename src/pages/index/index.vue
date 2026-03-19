@@ -8,7 +8,9 @@
     <view class="dashboard">
       <!-- 问候语 -->
       <view class="greeting">
-        <text class="greeting-text">{{ greeting }}，<text class="greeting-name">ChenY</text> 👋</text>
+        <text class="greeting-text"
+          >{{ greeting }}，<text class="greeting-name">ChenY</text> 👋</text
+        >
         <text class="greeting-sub">今日有 {{ todoCount }} 项待办</text>
       </view>
 
@@ -33,7 +35,10 @@
                 class="kpi-trend"
                 :class="kpi.trend > 0 ? 'is-up' : 'is-down'"
               >
-                <text class="trend-val">{{ kpi.trend > 0 ? '↑' : '↓' }}{{ Math.abs(kpi.trend) }}%</text>
+                <text class="trend-val"
+                  >{{ kpi.trend > 0 ? '↑' : '↓'
+                  }}{{ Math.abs(kpi.trend) }}%</text
+                >
               </view>
             </view>
             <text class="kpi-value">{{ kpi.value }}</text>
@@ -80,7 +85,8 @@
           <text
             class="section-link"
             @click="handleViewAllTodo"
-          >全部</text>
+            >全部</text
+          >
         </view>
         <view class="glass-card">
           <view
@@ -105,7 +111,8 @@
               <text
                 class="todo-title"
                 :class="{ done: todo.done }"
-              >{{ todo.title }}</text>
+                >{{ todo.title }}</text
+              >
               <text class="todo-time">{{ todo.time }}</text>
             </view>
             <view
@@ -148,11 +155,12 @@
 <script setup lang="ts">
   import { ref, computed } from 'vue'
   import { useMessageStore } from '@/stores/modules/message'
+  import { APP_VERSION } from '@/constants'
 
   const messageStore = useMessageStore()
   const unreadCount = computed(() => messageStore.totalUnread)
 
-  const version = ref('1.0.0')
+  const version = APP_VERSION
 
   const greeting = computed(() => {
     const h = new Date().getHours()
@@ -341,18 +349,6 @@
 </script>
 
 <style lang="scss" scoped>
-  /* ── 玻璃拟态基础 mixin ── */
-  %glass-surface {
-    background: rgba(255, 255, 255, 0.72);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border: 1rpx solid rgba(255, 255, 255, 0.8);
-    box-shadow:
-      0 2rpx 12rpx rgba(0, 0, 0, 0.03),
-      0 8rpx 24rpx rgba(0, 0, 0, 0.05),
-      inset 0 1rpx 0 rgba(255, 255, 255, 0.9);
-  }
-
   .dashboard {
     min-height: 100vh;
     padding: 24rpx 24rpx 0;
@@ -397,7 +393,7 @@
   }
 
   .kpi-card {
-    @extend %glass-surface;
+    @include glass-surface;
     display: inline-flex;
     flex-direction: column;
     width: 240rpx;
@@ -516,7 +512,7 @@
   }
 
   .glass-action {
-    @extend %glass-surface;
+    @include glass-surface;
     border-radius: 20rpx;
     display: flex;
     flex-direction: column;
@@ -552,7 +548,7 @@
 
   /* ── 玻璃卡片容器 ── */
   .glass-card {
-    @extend %glass-surface;
+    @include glass-surface;
     border-radius: 24rpx;
     overflow: hidden;
   }

@@ -7,20 +7,16 @@
  * @Description: 导入所有指令模块
  * Copyright (c) 2025 by CHENY, All Rights Reserved 😎.
  */
+import type { App } from 'vue'
 import { permissionDirectives } from './modules/permission'
-// 未来添加新指令时在这里导入
-// import { copyDirectives } from './modules/copy'
 
-// 合并所有指令
 const allDirectives = {
   ...permissionDirectives,
-  // 未来添加新指令时在这里展开
-  // ...copyDirectives,
 }
 
 /** 安装所有自定义指令 */
-export function installDirectives(app) {
+export function installDirectives(app: App) {
   Object.keys(allDirectives).forEach(key => {
-    app.directive(key, allDirectives[key])
+    app.directive(key, allDirectives[key as keyof typeof allDirectives])
   })
 }

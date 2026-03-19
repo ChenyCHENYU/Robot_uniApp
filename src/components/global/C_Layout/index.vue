@@ -67,8 +67,10 @@
 
   // 全局未读消息数（优先使用 store，允许 prop 覆盖）
   const messageStore = useMessageStore()
-  const realNotificationCount = computed(
-    () => props.notificationCount > 0 ? props.notificationCount : messageStore.totalUnread
+  const realNotificationCount = computed(() =>
+    props.notificationCount > 0
+      ? props.notificationCount
+      : messageStore.totalUnread
   )
 
   const headerRef = ref()
@@ -105,6 +107,12 @@
     { immediate: true }
   )
 
+  // 同步 tabbar 消息角标
+  const syncMessageBadge = () => {
+    const msgTab = tabbarConfig.tabList.find(t => t.id === 'message')
+    if (msgTab) msgTab.badge = messageStore.totalUnread
+  }
+
   // 页面再次显示时重新同步 tab 索引（修复缓存页面 tab 高亮不一致）
   onShow(() => {
     if (showTabbar.value) {
@@ -117,12 +125,6 @@
     // 同步消息 tabbar 角标
     syncMessageBadge()
   })
-
-  // 同步 tabbar 消息角标
-  const syncMessageBadge = () => {
-    const msgTab = tabbarConfig.tabList.find(t => t.id === 'message')
-    if (msgTab) msgTab.badge = messageStore.totalUnread
-  }
 
   // 监听未读数变化，实时同步 tabbar badge
   watch(() => messageStore.totalUnread, syncMessageBadge, { immediate: true })

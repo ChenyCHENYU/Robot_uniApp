@@ -11,3 +11,6 @@ export {
   PAGINATION,
   PLATFORM,
 } from './business'
+export { APP_VERSION, APP_NAME } from './app'
+export { GRADIENT } from './gradients'
+export type { GradientKey } from './gradients'

@@ -7,27 +7,54 @@
  * @Description: 权限指令定义
  * Copyright (c) 2025 by CHENY, All Rights Reserved 😎.
  */
+import type { DirectiveBinding } from 'vue'
+import { useUserStore } from '@/stores/modules/user'
+
+/**
+ *
+ */
+function checkPermission(
+  el: HTMLElement,
+  binding: DirectiveBinding<string | string[]>
+) {
+  const userStore = useUserStore()
+  const { value } = binding
+  const required = Array.isArray(value) ? value : [value]
+  const hasAccess = binding.modifiers.some
+    ? required.some(p => userStore.hasPermission(p))
+    : required.every(p => userStore.hasPermission(p))
+  if (!hasAccess) {
+    el.parentNode?.removeChild(el)
+  }
+}
+
+/**
+ *
+ */
+function checkRole(
+  el: HTMLElement,
+  binding: DirectiveBinding<string | string[]>
+) {
+  const userStore = useUserStore()
+  const { value } = binding
+  const required = Array.isArray(value) ? value : [value]
+  const hasAccess = binding.modifiers.some
+    ? required.some(r => userStore.hasRole(r))
+    : required.every(r => userStore.hasRole(r))
+  if (!hasAccess) {
+    el.parentNode?.removeChild(el)
+  }
+}
+
 export const permissionDirectives = {
+  /** v-auth="'user:create'" 或 v-auth="['user:create','user:edit']" */
   auth: {
-    /**
-     *
-     */
-    mounted(_el, _binding) {
-      // 权限检查逻辑
-    },
-    /**
-     *
-     */
-    updated(_el, _binding) {
-      // 权限更新逻辑
-    },
+    mounted: checkPermission,
+    updated: checkPermission,
   },
+  /** v-role="'admin'" 或 v-role="['admin','editor']" */
   role: {
-    /**
-     *
-     */
-    mounted(_el, _binding) {
-      // 角色检查逻辑
-    },
+    mounted: checkRole,
+    updated: checkRole,
   },
 }

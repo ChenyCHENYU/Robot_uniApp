@@ -94,8 +94,9 @@
 
 <script setup lang="ts">
   import { ref } from 'vue'
+  import { APP_VERSION } from '@/constants'
 
-  const version = ref('1.0.0')
+  const version = APP_VERSION
 
   const features = ref([
     {

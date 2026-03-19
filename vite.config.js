@@ -15,12 +15,19 @@
     const { default: UnoCSS } = await import("unocss/vite");
     const { default: AutoImport } = await import("unplugin-auto-import/vite");
 
+    // Mock 插件仅开发环境加载
+    const isDev = mode === 'development'
+    const mockPlugin = isDev
+      ? (await import('vite-plugin-mock-dev-server')).default
+      : null
+
     // 加载环境变量
     const env = loadEnv(mode, process.cwd(), "");
 
     return {
       plugins: [
-        UnoCSS(), // 添加 UnoCSS 插件
+        UnoCSS(),
+        mockPlugin && mockPlugin(),
         AutoImport({
           imports: [
             'vue',
@@ -55,6 +62,8 @@
             silenceDeprecations: ['legacy-js-api', 'import', 'global-builtin'],
             // 额外配置：抑制其他可能的警告
             quietDeps: true,
+            // 自动注入全局 mixins / variables，每个 Vue SFC <style> 均可直接使用
+            additionalData: `@use "@/styles/mixins.scss" as *;\n`,
           },
         },
       },
@@ -72,17 +81,13 @@
         headers: {
           'X-Frame-Options': 'SAMEORIGIN',
         },
-        proxy:
-          env.VITE_ENV === 'development'
-            ? {
-                // 开发环境代理配置
-                '/api': {
-                  target: env.VITE_API_BASE_URL,
-                  changeOrigin: true,
-                  rewrite: path => path.replace(/^\/api/, ''),
-                },
-              }
-            : {},
+        proxy: {
+          '/api': {
+            target: env.VITE_API_BASE_URL || 'http://localhost:3000',
+            changeOrigin: true,
+            rewrite: path => path.replace(/^\/api/, ''),
+          },
+        },
       },
     }
   });
