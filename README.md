@@ -90,7 +90,7 @@ pnpm install
 pnpm run dev:h5
 
 # 4. 启动微信小程序开发
-pnpm run dev:mp-weixin
+pnpm run dev:wx
 ```
 
 ### 📋 快速上手指南
@@ -122,34 +122,32 @@ pnpm run dev:mp-weixin
 <details>
 <summary>📝 点击查看完整命令列表</summary>
 
-```
-# 🖥️ H5 开发命令
-pnpm run dev:h5          # H5开发服务器
-pnpm run build:h5        # H5生产构建
-pnpm run dev:h5:ssr      # H5 SSR开发
-pnpm run build:h5:ssr    # H5 SSR构建
+```bash
+# 🖥️ H5 命令
+pnpm run dev:h5          # H5 开发服务器
+pnpm run build:h5        # H5 生产构建
 
-# 📱 小程序开发命令
-pnpm run dev:mp-weixin   # 微信小程序
-pnpm run dev:mp-alipay   # 支付宝小程序
-pnpm run dev:mp-baidu    # 百度小程序
-pnpm run dev:mp-toutiao  # 字节跳动小程序
-pnpm run dev:mp-qq       # QQ小程序
-pnpm run dev:mp-kuaishou # 快手小程序
+# 📱 小程序命令
+pnpm run dev:wx          # 微信小程序开发
+pnpm run build:wx        # 微信小程序构建
 
-# 📱 App 开发命令
-pnpm run dev:app         # App开发
-pnpm run dev:app-android # Android开发
-pnpm run dev:app-ios     # iOS开发
+# 📱 App 命令
+pnpm run dev:app         # App 开发
+pnpm run build:app       # App 构建
+pnpm run build:app-android  # Android 构建
+pnpm run build:app-ios   # iOS 构建
 
-# 🔍 其他平台
-pnpm run dev:quickapp-webview # 快应用
-pnpm run dev:mp-360      # 360小程序
+# 🧪 测试 / 预发布
+pnpm run test            # H5 测试环境
+pnpm run test:wx         # 小程序测试环境
+pnpm run staging         # H5 预发布环境
+pnpm run staging:wx      # 小程序预发布环境
 
-# 🏗️ 构建命令
-pnpm run build:mp-weixin # 微信小程序构建
-pnpm run build:app       # App构建
-pnpm run build:app-plus  # App-Plus构建
+# 🔧 工程工具
+pnpm run lint            # Lint + 自动修复
+pnpm run format          # Prettier 格式化
+pnpm run cz              # 规范提交
+pnpm run push            # 推送到 origin / gitee / gitcode
 ```
 
 </details>
@@ -180,7 +178,7 @@ pnpm run build:app-plus  # App-Plus构建
 |                |   🔴 百度小程序   |              |
 |                | 🟠 字节跳动小程序 |              |
 
-### 🧩 自研组件库（33 个全局组件）
+### 🧩 自研组件库（33 个全局组件，全部 TypeScript）
 
 **基础布局类：**
 
@@ -233,6 +231,21 @@ pnpm run build:app-plus  # App-Plus构建
 - **主题系统** - CSS Variables 60+ 语义化变量 + 统一浅色主题 + 全页面主题适配
 - **国际化** - vue-i18n 11.x 已集成
 - **表单校验** - v_verify 工具 + C_Form 声明式校验
+- **Mock 系统** - 内置 Mock 数据，开发阶段不依赖后端
+- **WebSocket** - useWebSocket 带心跳重连封装
+- **业务模板** - 内置 Dashboard / 审批 / CRUD / 表单等完整模板页
+
+**组合函数（9 个）：**
+
+- `useLoading` — 加载态管理
+- `usePagination` — 分页逻辑
+- `useNetwork` — 网络状态监听
+- `useModal` — Promise 化弹窗
+- `useCountdown` — 倒计时
+- `useUpload` — 文件上传
+- `useShare` — 分享能力
+- `usePageSkeleton` — 页面骨架屏控制
+- `useWebSocket` — WebSocket 封装
 
 ---
 
@@ -282,38 +295,69 @@ Robot_UniApp/
 │   │   ├── C_Divider/            # 分割线
 │   │   ├── C_CountDown/          # 倒计时
 │   │   └── C_FloatButton/        # 悬浮按钮
-│   ├── composables/              # 组合函数库 (8 个)
-│   │   ├── useLoading.js         # 加载态管理
-│   │   ├── usePagination.js      # 分页逻辑
-│   │   ├── useNetwork.js         # 网络状态监听
-│   │   ├── useModal.js           # Promise 化弹窗
-│   │   ├── useCountdown.js       # 倒计时
-│   │   ├── useUpload.js          # 文件上传
-│   │   └── useShare.js           # 分享能力
+│   ├── composables/              # 组合函数库 (9 个)
+│   │   ├── useLoading.ts         # 加载态管理
+│   │   ├── usePagination.ts      # 分页逻辑
+│   │   ├── useNetwork.ts         # 网络状态监听
+│   │   ├── useModal.ts           # Promise 化弹窗
+│   │   ├── useCountdown.ts       # 倒计时
+│   │   ├── useUpload.ts          # 文件上传
+│   │   ├── useShare.ts           # 分享能力
+│   │   ├── usePageSkeleton.ts    # 页面骨架屏控制
+│   │   └── useWebSocket.ts       # WebSocket 封装
 │   ├── constants/                # 常量管理
-│   │   ├── storage.js            # 存储 Key 枚举
-│   │   ├── regex.js              # 正则集合
-│   │   └── business.js           # 业务状态码/字典
+│   │   ├── app.ts                # 应用级常量
+│   │   ├── storage.ts            # 存储 Key 枚举
+│   │   ├── regex.ts              # 正则集合
+│   │   ├── gradients.ts          # 渐变色预设
+│   │   └── business.ts           # 业务状态码/字典
 │   ├── config/                   # 运行时配置
 │   ├── directives/               # 自定义指令
+│   ├── mock/                     # 前端 Mock 数据
+│   │   └── modules/              # 按业务域拆分
 │   ├── pages/                    # 页面目录
 │   │   ├── index/                # 首页
 │   │   ├── login/                # 登录页
-│   │   ├── message/              # 消息中心
+│   │   ├── register/             # 注册页
+│   │   ├── guide/                # 引导页
 │   │   ├── robot/                # 组件库展示
+│   │   ├── message/              # 消息中心
 │   │   ├── profile/              # 个人中心
-│   │   ├── settings/             # 个人设置
+│   │   ├── about/                # 关于
+│   │   ├── settings/             # 设置（含修改密码）
+│   │   ├── search-result/        # 搜索结果
+│   │   ├── detail/               # 详情页
+│   │   ├── dashboard/            # 数据看板
+│   │   ├── approval/             # 审批流程
+│   │   ├── crud-list/            # 增删改查列表
+│   │   ├── form-template/        # 表单模板
+│   │   ├── scan/                 # 扫码
+│   │   ├── webview/              # WebView 容器
 │   │   └── demo/                 # 组件演示 (33 个 Demo)
 │   ├── stores/                   # Pinia 状态管理
+│   │   └── modules/              # app / user / message / notification / settings
 │   ├── styles/                   # 全局样式体系
 │   │   ├── variables.scss        # CSS 变量 (色板/字号/间距/阴影)
 │   │   ├── mixins.scss           # SCSS Mixins
 │   │   ├── reset.scss            # 样式重置
 │   │   ├── transition.scss       # 统一过渡动画
 │   │   └── index.scss            # 入口
+│   ├── types/                    # TypeScript 类型定义
+│   │   ├── http.ts               # HTTP 请求类型
+│   │   ├── store.ts              # Store 类型
+│   │   └── websocket.ts          # WebSocket 类型
 │   ├── utils/                    # 工具函数
 │   ├── static/                   # 静态资源
-│   └── main.js                   # 入口文件
+│   └── main.ts                   # 入口文件
+├── mock/                         # 根级 Mock 文件（msw / viteMock）
+├── docs/                         # 架构文档
+│   └── PLAN.md                   # 项目规划路线图
+├── .husky/                       # Git hooks
+├── .cz-config.js                 # Commitizen 提交规范
+├── commitlint.config.js          # Commitlint 配置
+├── eslint.config.ts              # ESLint 配置
+├── .prettierrc.js                # Prettier 配置
+├── tsconfig.json                 # TypeScript 配置
 ├── package.json                  # 项目配置
 ├── vite.config.js                # Vite 配置
 └── uno.config.js                 # UnoCSS 配置
