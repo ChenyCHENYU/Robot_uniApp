@@ -2,7 +2,10 @@
  * @Description: WebView页面 - 内嵌网页浏览器（带域名白名单校验）
 -->
 <template>
-  <view class="webview-page">
+  <view
+    class="webview-page"
+    :class="themeClass"
+  >
     <!-- 顶部导航栏 -->
     <view class="nav-bar">
       <view class="nav-left">
@@ -73,6 +76,9 @@
 </template>
 
 <script setup lang="ts">
+  import { useTheme } from '@/composables/useTheme'
+
+  const { themeClass } = useTheme()
   import { ref, computed, onUnmounted } from 'vue'
   import { onLoad } from '@dcloudio/uni-app'
   import { isUrlAllowed } from '@/utils/url-policy'

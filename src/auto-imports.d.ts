@@ -22,6 +22,7 @@ declare global {
   const getCurrentScope: typeof import('vue').getCurrentScope
   const getCurrentWatcher: typeof import('vue').getCurrentWatcher
   const h: typeof import('vue').h
+  const initTheme: typeof import('./composables/useTheme').initTheme
   const inject: typeof import('vue').inject
   const isProxy: typeof import('vue').isProxy
   const isReactive: typeof import('vue').isReactive
@@ -97,6 +98,7 @@ declare global {
   const useShare: typeof import('./composables/useShare').useShare
   const useSlots: typeof import('vue').useSlots
   const useTemplateRef: typeof import('vue').useTemplateRef
+  const useTheme: typeof import('./composables/useTheme').useTheme
   const useUpload: typeof import('./composables/useUpload').useUpload
   const useUserStore: typeof import('./stores/modules/user').useUserStore
   const useWebSocket: typeof import('./composables/useWebSocket').useWebSocket
@@ -113,6 +115,9 @@ declare global {
   // @ts-ignore
   export type { KpiCard } from './composables/useDashboardData'
   import('./composables/useDashboardData')
+  // @ts-ignore
+  export type { ThemeMode } from './composables/useTheme'
+  import('./composables/useTheme')
   // @ts-ignore
   export type { MessageItem } from './stores/modules/message'
   import('./stores/modules/message')
@@ -142,6 +147,7 @@ declare module 'vue' {
     readonly getCurrentScope: UnwrapRef<typeof import('vue')['getCurrentScope']>
     readonly getCurrentWatcher: UnwrapRef<typeof import('vue')['getCurrentWatcher']>
     readonly h: UnwrapRef<typeof import('vue')['h']>
+    readonly initTheme: UnwrapRef<typeof import('./composables/useTheme')['initTheme']>
     readonly inject: UnwrapRef<typeof import('vue')['inject']>
     readonly isProxy: UnwrapRef<typeof import('vue')['isProxy']>
     readonly isReactive: UnwrapRef<typeof import('vue')['isReactive']>
@@ -217,6 +223,7 @@ declare module 'vue' {
     readonly useShare: UnwrapRef<typeof import('./composables/useShare')['useShare']>
     readonly useSlots: UnwrapRef<typeof import('vue')['useSlots']>
     readonly useTemplateRef: UnwrapRef<typeof import('vue')['useTemplateRef']>
+    readonly useTheme: UnwrapRef<typeof import('./composables/useTheme')['useTheme']>
     readonly useUpload: UnwrapRef<typeof import('./composables/useUpload')['useUpload']>
     readonly useUserStore: UnwrapRef<typeof import('./stores/modules/user')['useUserStore']>
     readonly useWebSocket: UnwrapRef<typeof import('./composables/useWebSocket')['useWebSocket']>

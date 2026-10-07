@@ -1,11 +1,16 @@
 /**
- * 全局主题变量（纯浅色主题）
+ * 全局主题变量（亮色 / 暗色双主题）
  *
  * 基于 CSS Custom Properties
  * 命名约定：--r-{类别}-{语义}-{变体}
  *
- * 同时挂载到 :root（H5）与 page（小程序/App），
- * 小程序 WXSS 不识别 :root，缺 page 声明会导致 token 全部失效。
+ * 挂载方式：
+ * - 亮色默认值挂 :root（H5）与 page（小程序/App）
+ * - 暗色通过 .theme-dark 类（C_Layout 根节点由 useTheme 切换）
+ *   与 [data-theme='dark']（H5 html，覆盖页面级背景）双选择器覆盖
+ *
+ * 页面/组件请始终使用语义 token，避免硬编码色值，
+ * 否则暗色模式下会出现"破相"。
  */
 
 :root,
@@ -90,8 +95,63 @@ page {
   --r-z-overlay: 200;
   --r-z-modal: 300;
   --r-z-toast: 400;
-// ============ H5 桌面端适配 ============
+
+  // ============ H5 桌面端适配 ============
   --r-h5-max-width: 480px;
   --r-h5-outer-bg: #f0f1f5;
 }
 
+/**
+ * 暗色主题覆盖
+ * - .theme-dark：C_Layout 根节点类（全端生效，CSS 变量向子树级联）
+ * - [data-theme='dark']：H5 html 属性（覆盖 :root 层变量与页面级背景）
+ */
+.theme-dark,
+[data-theme='dark'] {
+  // ============ 色板（暗色下调高亮度补偿） ============
+  --r-color-primary: #0a84ff;
+  --r-color-primary-light: #5eb0ff;
+  --r-color-primary-dark: #409cff;
+  --r-color-success: #30d158;
+  --r-color-warning: #ff9f0a;
+  --r-color-error: #ff453a;
+  --r-color-info: #98989d;
+
+  // ============ 文字颜色 ============
+  --r-text-primary: #f2f2f7;
+  --r-text-regular: #e5e5ea;
+  --r-text-secondary: #98989d;
+  --r-text-placeholder: #636366;
+  --r-text-disabled: #48484c;
+  --r-text-inverse: #1c1c1e;
+
+  // ============ 背景色（iOS 分组式暗色层次） ============
+  --r-bg-page: #151517;
+  --r-bg-card: #1f1f23;
+  --r-bg-elevated: #2a2a2e;
+  --r-bg-hover: rgba(120, 120, 128, 0.24);
+  --r-bg-mask: rgba(0, 0, 0, 0.6);
+  --r-bg-grey: #2a2a2e;
+
+  // ============ 玻璃拟态（暗玻璃） ============
+  --r-glass-bg: rgba(30, 30, 34, 0.72);
+  --r-glass-border: rgba(255, 255, 255, 0.08);
+  --r-glass-shadow: 0 2rpx 16rpx rgba(0, 0, 0, 0.4);
+  --r-glass-inner-shadow: inset 0 0.5rpx 0 rgba(255, 255, 255, 0.06);
+
+  // ============ 分隔线 ============
+  --r-divider: rgba(235, 235, 245, 0.12);
+  --r-divider-strong: rgba(235, 235, 245, 0.2);
+
+  // ============ 边框 ============
+  --r-border-color: rgba(235, 235, 245, 0.14);
+  --r-border-light: rgba(235, 235, 245, 0.08);
+
+  // ============ 阴影（暗色下加深） ============
+  --r-shadow-sm: 0 1rpx 6rpx rgba(0, 0, 0, 0.3);
+  --r-shadow-md: 0 4rpx 16rpx rgba(0, 0, 0, 0.45);
+  --r-shadow-lg: 0 8rpx 32rpx rgba(0, 0, 0, 0.6);
+
+  // ============ H5 桌面端适配 ============
+  --r-h5-outer-bg: #0a0a0c;
+}

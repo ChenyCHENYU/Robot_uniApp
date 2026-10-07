@@ -6,7 +6,7 @@
 // 变量定义
 // =================================
 $layout-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-$content-bg: var(--r-bg-card, #ffffff); // 跟随主题变量
+$content-bg: var(--r-bg-page, #f2f2f7); // 页面底色（跟随主题）
 $loading-bg: rgba(0, 0, 0, 0.3);
 $loading-backdrop-blur: 10rpx;
 $tabbar-height: 110rpx;

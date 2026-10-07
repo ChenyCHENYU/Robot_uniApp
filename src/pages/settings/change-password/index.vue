@@ -365,7 +365,7 @@
 
     &:focus-within {
       border-color: var(--r-color-primary, #409eff);
-      background: #fff;
+      background: var(--r-bg-card);
     }
 
     .form-input {

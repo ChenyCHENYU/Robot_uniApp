@@ -1,7 +1,7 @@
 <template>
   <view
     class="c-layout"
-    :class="layoutClasses"
+    :class="[layoutClasses, themeClass]"
   >
     <!-- Header区域 -->
     <C_Header
@@ -61,6 +61,7 @@
     getCurrentTabIndex,
   } from './data'
   import { useMessageStore } from '@/stores/modules/message'
+  import { useTheme } from '@/composables/useTheme'
   import http from '@/utils/http'
   import C_Header from '../C_Header/index.vue'
   import C_Tabbar from '../C_Tabbar/index.vue'
@@ -71,6 +72,7 @@
 
   // 全局未读消息数（优先使用 store，允许 prop 覆盖）
   const messageStore = useMessageStore()
+  const { themeClass } = useTheme()
   const realNotificationCount = computed(() =>
     props.notificationCount > 0
       ? props.notificationCount

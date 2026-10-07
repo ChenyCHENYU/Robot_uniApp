@@ -523,7 +523,7 @@
           &.closed {
             background: rgba(153, 153, 153, 0.1);
             .status-text {
-              color: #999;
+              color: var(--r-text-placeholder, #999);
             }
           }
         }

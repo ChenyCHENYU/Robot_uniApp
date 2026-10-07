@@ -245,6 +245,33 @@
         <view class="group-card">
           <view
             class="setting-item"
+            @click="handleThemeSelect"
+          >
+            <view class="item-left">
+              <view
+                class="item-icon"
+                style="background: linear-gradient(135deg, #667eea, #764ba2)"
+              >
+                <wd-icon
+                  name="brightness"
+                  size="16px"
+                  color="#fff"
+                />
+              </view>
+              <text class="item-label">外观模式</text>
+            </view>
+            <view class="item-right">
+              <text class="item-value">{{ themeModeLabel }}</text>
+              <wd-icon
+                name="arrow-right"
+                size="14px"
+                color="#ccc"
+              />
+            </view>
+          </view>
+
+          <view
+            class="setting-item"
             @click="cycleFontSize"
           >
             <view class="item-left">
@@ -315,6 +342,7 @@
   import { updateUser } from '@/api'
   import { setLanguage, t, traditionalChineseEnabled } from '@/composables/locale'
   import { maskPhone } from '@/utils/format'
+  import { useTheme } from '@/composables/useTheme'
 
   const userStore = useUserStore()
   const settingsStore = useSettingsStore()
@@ -335,6 +363,18 @@
   // 外观（来自 settingsStore）
   const fontSizeLabel = computed(() => settingsStore.fontSizeLabel)
   const languageLabel = computed(() => settingsStore.languageLabel)
+
+  // 外观模式（浅色/深色/跟随系统）
+  const { themeModeLabel, setThemeMode } = useTheme()
+  const handleThemeSelect = () => {
+    uni.showActionSheet({
+      itemList: ['跟随系统', '浅色', '深色'],
+      success: ({ tapIndex }) => {
+        setThemeMode((['system', 'light', 'dark'] as const)[tapIndex])
+        uni.showToast({ title: `已切换：${themeModeLabel.value}`, icon: 'none' })
+      },
+    })
+  }
 
   // 字号循环：小 → 标准 → 大 → 特大
   const cycleFontSize = () => {

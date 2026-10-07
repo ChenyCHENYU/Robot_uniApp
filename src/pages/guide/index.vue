@@ -231,14 +231,14 @@
       display: block;
       font-size: 44rpx;
       font-weight: 700;
-      color: #1a1a2e;
+      color: var(--r-text-primary, #1a1a2e);
       margin-bottom: 20rpx;
     }
 
     .slide-desc {
       display: block;
       font-size: 28rpx;
-      color: #666;
+      color: var(--r-text-secondary, #666);
       line-height: 1.6;
     }
   }
@@ -282,7 +282,7 @@
 
     .skip-btn {
       font-size: 28rpx;
-      color: #999;
+      color: var(--r-text-placeholder, #999);
       padding: 16rpx 24rpx;
     }
 

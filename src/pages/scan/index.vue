@@ -2,7 +2,10 @@
  * @Description: 扫码页面 - 二维码/条形码扫描
 -->
 <template>
-  <view class="scan-page">
+  <view
+    class="scan-page"
+    :class="themeClass"
+  >
     <!-- 扫描视图 -->
     <view class="scan-view">
       <!-- 顶部导航 -->
@@ -115,6 +118,9 @@
 </template>
 
 <script setup lang="ts">
+  import { useTheme } from '@/composables/useTheme'
+
+  const { themeClass } = useTheme()
   import { ref, onMounted } from 'vue'
   import { platform, PlatformError } from '@/platform'
 

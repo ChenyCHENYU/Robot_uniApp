@@ -132,10 +132,14 @@ pnpm dev:app        # App 开发（需 HBuilderX）
 - 扫码结果打开链接前弹窗展示域名并要求用户确认
 - 接入业务时请把业务域名加入白名单
 
-### 设计 Token（`src/styles/variables.scss`）
+### 设计 Token 与双主题（`src/styles/variables.scss` + `composables/useTheme`）
 
 - 命名约定 `--r-{类别}-{语义}`，同时挂载 `:root`（H5）与 `page`（小程序/App）
-- 组件内请使用 `var(--r-color-primary)` 等 token，避免硬编码色值
+- **亮/暗双主题**：暗色值经 `.theme-dark`（C_Layout 根节点类，CSS 变量向子树级联）
+  与 `[data-theme='dark']`（H5 html）双选择器覆盖，全端生效
+- 主题模式：浅色 / 深色 / 跟随系统（`uni.onThemeChange` 实时跟随），设置页可切换，选择持久化
+- 组件内请使用 `var(--r-color-primary)` 等 token，避免硬编码色值（破坏暗色）
+- 全局网络状态监听：断网/恢复 toast 提示（App.vue）
 
 ---
 
