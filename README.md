@@ -137,6 +137,9 @@ pnpm dev:app        # App 开发（需 HBuilderX）
 - 命名约定 `--r-{类别}-{语义}`，同时挂载 `:root`（H5）与 `page`（小程序/App）
 - **亮/暗双主题**：暗色值经 `.theme-dark`（C_Layout 根节点类，CSS 变量向子树级联）
   与 `[data-theme='dark']`（H5 html）双选择器覆盖，全端生效
+- **wot-design-uni 官方暗色集成**：C_Layout/webview/scan 内容经 `wd-config-provider`
+  包裹，`:theme` 随应用主题联动；`themeVars` 将品牌 token（colorTheme/语义色/文字色）
+  注入组件库，业务 token 与组件库 token 单向统一
 - 主题模式：浅色 / 深色 / 跟随系统（`uni.onThemeChange` 实时跟随），设置页可切换，选择持久化
 - 组件内请使用 `var(--r-color-primary)` 等 token，避免硬编码色值（破坏暗色）
 - 全局网络状态监听：断网/恢复 toast 提示（App.vue）

@@ -3,6 +3,11 @@
     class="c-layout"
     :class="[layoutClasses, themeClass]"
   >
+    <!-- wot-design-uni 官方主题接入：theme 切换暗色，themeVars 注入品牌 token -->
+    <wd-config-provider
+      :theme="wotTheme"
+      :theme-vars="wotThemeVars"
+    >
     <!-- Header区域 -->
     <C_Header
       v-if="showHeader"
@@ -47,6 +52,7 @@
       />
       <text class="c-layout__loading-text">加载中...</text>
     </view>
+    </wd-config-provider>
   </view>
 </template>
 
@@ -72,7 +78,7 @@
 
   // 全局未读消息数（优先使用 store，允许 prop 覆盖）
   const messageStore = useMessageStore()
-  const { themeClass } = useTheme()
+  const { themeClass, wotTheme, wotThemeVars } = useTheme()
   const realNotificationCount = computed(() =>
     props.notificationCount > 0
       ? props.notificationCount

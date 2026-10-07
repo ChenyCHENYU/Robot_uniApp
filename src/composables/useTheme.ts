@@ -44,6 +44,20 @@ export function initTheme() {
   ensureSystemListener()
 }
 
+/**
+ * wot-design-uni 主题变量（官方 themeVars API）
+ * 将本项目品牌 token 注入组件库（值引用 var()，随主题切换自动解析）
+ */
+const WOT_THEME_VARS = {
+  colorTheme: 'var(--r-color-primary)',
+  colorSuccess: 'var(--r-color-success)',
+  colorWarning: 'var(--r-color-warning)',
+  colorDanger: 'var(--r-color-error)',
+  colorTitle: 'var(--r-text-primary)',
+  colorContent: 'var(--r-text-regular)',
+  colorSecondary: 'var(--r-text-secondary)',
+}
+
 /** 主题 composable */
 export function useTheme() {
   const settingsStore = useSettingsStore()
@@ -75,6 +89,12 @@ export function useTheme() {
     settingsStore.setTheme(mode)
   }
 
+  /** wot-design-uni 组件库主题（官方 ConfigProvider theme 值） */
+  const wotTheme = computed<'light' | 'dark'>(() => effectiveTheme.value)
+
+  /** wot-design-uni 主题变量（品牌 token 注入） */
+  const wotThemeVars = WOT_THEME_VARS
+
   /** 当前模式文案 */
   const themeModeLabel = computed(
     () =>
@@ -90,6 +110,8 @@ export function useTheme() {
     effectiveTheme,
     themeClass,
     themeModeLabel,
+    wotTheme,
+    wotThemeVars,
     setThemeMode,
   }
 }

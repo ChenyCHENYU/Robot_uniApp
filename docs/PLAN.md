@@ -1,7 +1,7 @@
 # Robot UniApp 项目路线图与开发指南
 
 > 最后更新：2025年  
-> 当前版本：v1.5.0（双主题体系：亮/暗 token/跟随系统/组件暗色适配/全局网络监听）  
+> 当前版本：v1.5.1（wot-design-uni 官方暗色集成：ConfigProvider + themeVars 品牌 token 注入）  
 > 定位：企业级跨平台应用开发框架，开箱即用
 
 ---

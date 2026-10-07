@@ -6,6 +6,7 @@
     class="webview-page"
     :class="themeClass"
   >
+    <wd-config-provider :theme="wotTheme">
     <!-- 顶部导航栏 -->
     <view class="nav-bar">
       <view class="nav-left">
@@ -72,13 +73,14 @@
       @error="onLoadError"
       @message="onMessage"
     ></web-view>
+    </wd-config-provider>
   </view>
 </template>
 
 <script setup lang="ts">
   import { useTheme } from '@/composables/useTheme'
 
-  const { themeClass } = useTheme()
+  const { themeClass, wotTheme } = useTheme()
   import { ref, computed, onUnmounted } from 'vue'
   import { onLoad } from '@dcloudio/uni-app'
   import { isUrlAllowed } from '@/utils/url-policy'

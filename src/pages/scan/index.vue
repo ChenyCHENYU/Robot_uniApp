@@ -6,6 +6,7 @@
     class="scan-page"
     :class="themeClass"
   >
+    <wd-config-provider :theme="wotTheme">
     <!-- 扫描视图 -->
     <view class="scan-view">
       <!-- 顶部导航 -->
@@ -114,13 +115,14 @@
         </view>
       </view>
     </view>
+    </wd-config-provider>
   </view>
 </template>
 
 <script setup lang="ts">
   import { useTheme } from '@/composables/useTheme'
 
-  const { themeClass } = useTheme()
+  const { themeClass, wotTheme } = useTheme()
   import { ref, onMounted } from 'vue'
   import { platform, PlatformError } from '@/platform'
 
