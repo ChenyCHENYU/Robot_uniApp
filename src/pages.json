@@ -25,7 +25,8 @@
       "path": "pages/message/index",
       "style": {
         "navigationBarTitleText": "消息中心",
-        "navigationStyle": "custom"
+        "navigationStyle": "custom",
+        "enablePullDownRefresh": true
       }
     },
     {
@@ -302,30 +303,6 @@
       ]
     },
     {
-      "root": "pages/test-back",
-      "pages": [
-        {
-          "path": "index",
-          "style": {
-            "navigationBarTitleText": "测试返回页面",
-            "navigationStyle": "custom"
-          }
-        }
-      ]
-    },
-    {
-      "root": "pages/test-nav",
-      "pages": [
-        {
-          "path": "index",
-          "style": {
-            "navigationBarTitleText": "导航测试页面",
-            "navigationStyle": "custom"
-          }
-        }
-      ]
-    },
-    {
       "root": "pages/register",
       "pages": [
         {
@@ -464,10 +441,22 @@
     "selectedColor": "#007AFF",
     "backgroundColor": "#ffffff",
     "list": [
-      { "pagePath": "pages/index/index", "text": "首页" },
-      { "pagePath": "pages/message/index", "text": "消息" },
-      { "pagePath": "pages/robot/index", "text": "组件库" },
-      { "pagePath": "pages/profile/index", "text": "我的" }
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/message/index",
+        "text": "消息"
+      },
+      {
+        "pagePath": "pages/robot/index",
+        "text": "组件库"
+      },
+      {
+        "pagePath": "pages/profile/index",
+        "text": "我的"
+      }
     ]
   },
   "globalStyle": {
@@ -477,6 +466,15 @@
     "backgroundColor": "#F8F8F8",
     "app-plus": {
       "titleNView": false
+    }
+  },
+  "lazyCodeLoading": "requiredComponents",
+  "preloadRule": {
+    "pages/index/index": {
+      "network": "wifi",
+      "packages": [
+        "pages/demo"
+      ]
     }
   }
 }

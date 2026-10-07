@@ -602,7 +602,7 @@
 .footer {
   position: relative;
   text-align: center;
-  padding: 40rpx 40rpx 60rpx;
+  padding: 40rpx 40rpx calc(60rpx + env(safe-area-inset-bottom));
   z-index: 2;
 
   .copyright {
@@ -616,5 +616,16 @@
     display: block;
     font-size: 18rpx;
       color: rgba(255, 255, 255, 0.3);
+  }
+}
+
+// 开发环境演示账号提示
+.demo-hint {
+  margin-top: 20rpx;
+  text-align: center;
+
+  .demo-hint-text {
+    font-size: 22rpx;
+    color: rgba(255, 255, 255, 0.55);
   }
 }

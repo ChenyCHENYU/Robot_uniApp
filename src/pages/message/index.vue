@@ -132,6 +132,7 @@
 
 <script setup lang="ts">
   import { ref, computed } from 'vue'
+  import { onShow, onPullDownRefresh, onReachBottom } from '@dcloudio/uni-app'
   import { useMessageStore, type MessageItem } from '@/stores/modules/message'
 
   const messageStore = useMessageStore()
@@ -139,6 +140,35 @@
   const activeTab = ref('all')
   const showDetail = ref(false)
   const currentMsg = ref<MessageItem | null>(null)
+  const loading = ref(false)
+
+  // 进入页面拉取最新消息（静默失败，保留本地缓存展示）
+  const loadMessages = async () => {
+    if (loading.value) return
+    loading.value = true
+    try {
+      await messageStore.fetchMessages()
+    } catch {
+      // 错误提示由 http 层处理
+    } finally {
+      loading.value = false
+    }
+  }
+
+  onShow(() => {
+    loadMessages()
+  })
+
+  // 下拉刷新
+  onPullDownRefresh(async () => {
+    await loadMessages().catch(() => {})
+    uni.stopPullDownRefresh()
+  })
+
+  // 触底加载更多
+  onReachBottom(() => {
+    messageStore.loadMore()
+  })
 
   const detailActions = [
     { name: '标记为已读', value: 'read' },

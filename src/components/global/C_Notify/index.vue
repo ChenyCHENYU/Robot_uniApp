@@ -37,7 +37,7 @@
   const emit = defineEmits(['update:visible', 'close'])
 
   const innerVisible = ref(false)
-  let timer = null
+  let timer: ReturnType<typeof setTimeout> | null = null
   let startY = 0
 
   const typeStyle = computed(
@@ -116,7 +116,8 @@
       } else {
         close()
       }
-    }
+    },
+    { immediate: true }
   )
 
   onBeforeUnmount(clearTimer)

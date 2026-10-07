@@ -4,6 +4,7 @@
  * 原理：拦截 uni.addInterceptor('request') 匹配已注册的 mock 路由，
  * 若命中则直接返回模拟数据，不发真实请求。
  */
+import config from '@/config/env'
 import { delay, type MockResponse } from './helpers'
 import { userMocks } from './modules/user'
 import { messageMocks } from './modules/message'
@@ -20,11 +21,42 @@ const mockRoutes: Record<string, (options: any) => MockResponse> = {
   ...crudMocks,
 }
 
-/** 从请求配置中提取 mock key，如 "GET /user/info" */
+/** 从 baseURL 中提取路径前缀（如 '/api'），避免依赖 URL 构造器（小程序端不存在） */
+function getBasePath(): string {
+  let base = config.API_BASE_URL || ''
+  const schemeIdx = base.indexOf('://')
+  if (schemeIdx > -1) {
+    const slashIdx = base.indexOf('/', schemeIdx + 3)
+    base = slashIdx > -1 ? base.slice(slashIdx) : '/'
+  }
+  const qIdx = base.indexOf('?')
+  if (qIdx > -1) base = base.slice(0, qIdx)
+  return base.endsWith('/') ? base.slice(0, -1) : base
+}
+
+/** 从请求配置中提取 mock key，如 "GET /user/info"（剥离域名/baseURL 前缀/查询参数） */
 function getMockKey(options: UniApp.RequestOptions): string {
   const method = (options.method || 'GET').toUpperCase()
-  const url = new URL(options.url, 'http://localhost')
-  return `${method} ${url.pathname}`
+  let path: string = options.url || ''
+
+  // 剥离协议与域名
+  const schemeIdx = path.indexOf('://')
+  if (schemeIdx > -1) {
+    const slashIdx = path.indexOf('/', schemeIdx + 3)
+    path = slashIdx > -1 ? path.slice(slashIdx) : '/'
+  }
+
+  // 剥离查询参数
+  const qIdx = path.indexOf('?')
+  if (qIdx > -1) path = path.slice(0, qIdx)
+
+  // 剥离 baseURL 路径前缀（如 '/api/auth/login' → '/auth/login'）
+  const basePath = getBasePath()
+  if (basePath && basePath !== '/' && path.startsWith(basePath)) {
+    path = path.slice(basePath.length) || '/'
+  }
+
+  return `${method} ${path}`
 }
 
 /** 安装 Mock 拦截器 */
@@ -57,7 +89,7 @@ export function setupMock() {
         if (typeof options.success === 'function') {
           options.success({
             data: mockData,
-            statusCode: mockData.code === 200 ? 200 : mockData.code,
+            statusCode: 200, // HTTP 层恒为 200，业务码在 body 中（0 = 成功）
             header: { 'content-type': 'application/json' },
             cookies: [],
           } as UniApp.RequestSuccessCallbackResult)
@@ -78,4 +110,7 @@ export function setupMock() {
       return options
     },
   })
+
+  // 暴露 mock 路由数便于调试
+  console.log(`[Mock] 已注册 ${Object.keys(mockRoutes).length} 个路由`)
 }

@@ -28,19 +28,11 @@
       <view class="logo-section">
         <view class="logo-wrapper">
           <view class="logo-bg">
-            <video
-              src="/static/videos/logo.webm"
+            <image
+              src="/static/images/logo.png"
               style="width: 140rpx; height: 140rpx"
-              autoplay
-              loop
-              muted
-              :show-play-btn="false"
-              :show-center-play-btn="false"
-              :show-progress="false"
-              :show-fullscreen-btn="false"
-              :enable-progress-gesture="false"
-              object-fit="cover"
-            ></video>
+              mode="aspectFit"
+            />
           </view>
         </view>
         <text class="app-name">Robot App</text>
@@ -194,9 +186,7 @@
           <view
             class="login-btn"
             :class="{ 'is-loading': loading }"
-            @click="
-              loginMode === 'account' ? handleLogin() : handlePhoneLogin()
-            "
+            @click="loginMode === 'account' ? handleLogin() : handleSmsLogin()"
           >
             <wd-loading
               v-if="loading"
@@ -209,6 +199,14 @@
           </view>
         </view>
 
+        <!-- 开发环境演示账号提示 -->
+        <view
+          v-if="isDev"
+          class="demo-hint"
+        >
+          <text class="demo-hint-text">演示账号：admin / admin123（仅开发环境）</text>
+        </view>
+
         <!-- 分割线 -->
         <view class="divider">
           <view class="divider-line"></view>
@@ -218,17 +216,6 @@
 
         <!-- 第三方登录 -->
         <view class="social-login">
-          <view
-            class="social-btn"
-            @click="handleQuickLogin"
-          >
-            <wd-icon
-              name="fill-camera"
-              size="24px"
-              color="#00D4FF"
-            ></wd-icon>
-            <text>快速体验</text>
-          </view>
           <view
             class="social-btn"
             @click="handleWechatLogin"
@@ -246,37 +233,36 @@
     <!-- 底部信息 -->
     <view class="footer">
       <text class="copyright">© 2025 CHENY.智启未来</text>
-      <text class="version">Version 1.0.0</text>
+      <text class="version">Version {{ appVersion }}</text>
     </view>
   </view>
 </template>
 
 <script setup lang="ts">
-  import { ref, reactive } from 'vue'
-  import { useLoginData } from './data'
+  import { ref, onUnmounted } from 'vue'
+  import { useLoginData, useSmsLogin } from './data'
+  import config from '@/config/env'
+
+  // 是否显示演示账号提示（仅开发环境）
+  const isDev = config.IS_DEV
+  const appVersion = config.APP_VERSION
 
   // 登录方式切换
   const loginMode = ref<'account' | 'phone'>('account')
 
-  // 手机登录表单
-  const phoneForm = reactive({
-    phone: '',
-    code: '',
-  })
+  // 手机登录（短信验证码走 /auth/sms-login）
+  const { phoneForm, smsCountdown, sendSmsCode, handleSmsLogin } = useSmsLogin()
 
-  // 短信倒计时
-  const smsCountdown = ref(0)
   let smsTimer: ReturnType<typeof setInterval> | null = null
 
   const handleSendSms = () => {
-    if (smsCountdown.value > 0) return
-    if (!/^1\d{10}$/.test(phoneForm.phone)) {
-      uni.showToast({ title: '请输入正确的手机号', icon: 'none' })
-      return
-    }
-    // 模拟发送短信
-    uni.showToast({ title: '验证码已发送', icon: 'success' })
-    smsCountdown.value = 60
+    const before = smsCountdown.value
+    sendSmsCode()
+    if (smsCountdown.value > 0 && before === 0) startCountdown()
+  }
+
+  // 倒计时驱动
+  const startCountdown = () => {
     smsTimer = setInterval(() => {
       smsCountdown.value--
       if (smsCountdown.value <= 0 && smsTimer) {
@@ -286,20 +272,13 @@
     }, 1000)
   }
 
-  const handlePhoneLogin = async () => {
-    if (!/^1\d{10}$/.test(phoneForm.phone)) {
-      uni.showToast({ title: '请输入正确的手机号', icon: 'none' })
-      return
+  // 页面卸载清理定时器
+  onUnmounted(() => {
+    if (smsTimer) {
+      clearInterval(smsTimer)
+      smsTimer = null
     }
-    if (!/^\d{4,6}$/.test(phoneForm.code)) {
-      uni.showToast({ title: '请输入正确的验证码', icon: 'none' })
-      return
-    }
-    // 复用账号登录流程（模拟）
-    form.username = phoneForm.phone
-    form.password = '123456'
-    await handleLogin()
-  }
+  })
 
   // 使用数据和逻辑
   const {
@@ -312,7 +291,6 @@
     handleLogin,
     handleForgotPassword,
     handleWechatLogin,
-    handleQuickLogin,
     handleFieldBlur,
     toggleRemember,
   } = useLoginData()

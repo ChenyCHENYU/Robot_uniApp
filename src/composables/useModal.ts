@@ -25,13 +25,13 @@ export function useModal() {
   const confirm = (content: string, options: ModalOptions = {}) => {
     return new Promise<boolean>(resolve => {
       uni.showModal({
+        ...options,
         title: options.title || '提示',
         content,
-        showCancel: true,
+        showCancel: options.showCancel ?? true,
         confirmText: options.confirmText || '确定',
         cancelText: options.cancelText || '取消',
-        confirmColor: options.confirmColor || '#007AFF',
-        ...options,
+        confirmColor: options.confirmColor || 'var(--r-color-primary)',
         success: res => resolve(!!res.confirm),
         fail: () => resolve(false),
       })
@@ -41,11 +41,11 @@ export function useModal() {
   const alert = (content: string, options: ModalOptions = {}) => {
     return new Promise<void>(resolve => {
       uni.showModal({
+        ...options,
         title: options.title || '提示',
         content,
-        showCancel: false,
+        showCancel: options.showCancel ?? false,
         confirmText: options.confirmText || '知道了',
-        ...options,
         success: () => resolve(),
         fail: () => resolve(),
       })

@@ -5,22 +5,22 @@
     :style="{ paddingTop: safeAreaTop + 'px' }"
   >
     <!-- 动态背景层 -->
-    <view class="background-layers">
-      <view class="gradient-bg"></view>
-      <view class="pattern-overlay"></view>
-      <view class="glass-overlay"></view>
+    <view class="c-header__bg-layers">
+      <view class="c-header__gradient"></view>
+      <view class="c-header__pattern"></view>
+      <view class="c-header__glass"></view>
     </view>
 
     <!-- 内容区域 -->
-    <view class="header-content">
+    <view class="c-header__content">
       <!-- 返回按钮区域 -->
       <view
         v-if="showBack"
-        class="back-section"
+        class="c-header__back-section"
         @click="handleBack"
       >
-        <view class="back-btn">
-          <view class="btn-glass-bg">
+        <view class="c-header__back-btn">
+          <view class="c-header__btn-glass">
             <wd-icon
               name="arrow-left"
               :size="iconSize + 'px'"
@@ -30,7 +30,7 @@
         </view>
         <text
           v-if="title"
-          class="back-title"
+          class="c-header__back-title"
           >{{ title }}</text
         >
       </view>
@@ -38,58 +38,58 @@
       <!-- 用户区域 -->
       <view
         v-else
-        class="user-section"
+        class="c-header__user-section"
         @click="handleUserClick"
       >
         <!-- 头像容器 -->
-        <view class="avatar-container">
-          <view class="avatar-glass-ring">
+        <view class="c-header__avatar-box">
+          <view class="c-header__avatar-ring">
             <image
-              class="user-avatar"
+              class="c-header__avatar"
               :src="avatarSrc"
               mode="aspectFill"
               @error="handleAvatarError"
             />
             <view
-              class="online-indicator"
+              class="c-header__online"
               v-if="showStatus"
             >
-              <view class="pulse-ring"></view>
-              <view class="status-dot"></view>
+              <view class="c-header__pulse-ring"></view>
+              <view class="c-header__status-dot"></view>
             </view>
           </view>
         </view>
 
         <!-- 用户信息 -->
-        <view class="user-info">
-          <text class="greeting">{{ greeting }}</text>
-          <text class="username">{{ displayNickname }}</text>
+        <view class="c-header__user-info">
+          <text class="c-header__greeting">{{ greeting }}</text>
+          <text class="c-header__username">{{ displayNickname }}</text>
         </view>
       </view>
 
       <!-- 操作区域 -->
-      <view class="action-section">
+      <view class="c-header__actions">
         <!-- 状态指示器 -->
         <view
           v-if="showStatus && !showBack"
-          class="status-pill"
+          class="c-header__status-pill"
           @click="handleStatusClick"
         >
-          <view class="status-pill-bg">
+          <view class="c-header__status-pill-bg">
             <view
-              class="status-dot"
+              class="c-header__status-dot"
               :class="statusClass"
             ></view>
-            <text class="status-text">{{ statusText }}</text>
+            <text class="c-header__status-text">{{ statusText }}</text>
           </view>
         </view>
 
         <!-- 通知按钮 -->
         <view
-          class="action-button"
+          class="c-header__action-btn"
           @click="handleNotification"
         >
-          <view class="button-glass-bg">
+          <view class="c-header__action-glass">
             <wd-icon
               name="notification"
               :size="iconSize + 'px'"
@@ -106,10 +106,10 @@
 
         <!-- 设置按钮 -->
         <view
-          class="action-button"
+          class="c-header__action-btn"
           @click="handleSettings"
         >
-          <view class="button-glass-bg">
+          <view class="c-header__action-glass">
             <wd-icon
               name="setting"
               :size="iconSize + 'px'"
@@ -125,7 +125,6 @@
 <script setup lang="ts">
   import { computed } from 'vue' // 🔥 添加computed导入
   import { useHeaderData, headerProps, headerEmits } from './data'
-  import './index.scss'
 
   // =================================
   // 组件配置
@@ -176,3 +175,8 @@
     getUserInfo: () => userInfo.value,
   })
 </script>
+
+<style lang="scss" scoped>
+  @import './index.scss';
+</style>
+

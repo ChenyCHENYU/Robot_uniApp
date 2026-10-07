@@ -137,13 +137,13 @@
     level: {
       type: [Number, String],
       default: 2,
-      validator: value => [1, 2, 3, 4, 5, 6].includes(Number(value)),
+      validator: (value: string | number) => [1, 2, 3, 4, 5, 6].includes(Number(value)),
     },
     // 标题类型/主题
     type: {
       type: String,
       default: 'primary',
-      validator: value =>
+      validator: (value: string) =>
         ['default', 'primary', 'success', 'warning', 'danger', 'info'].includes(
           value
         ),
@@ -152,13 +152,13 @@
     align: {
       type: String,
       default: 'left',
-      validator: value => ['left', 'center', 'right'].includes(value),
+      validator: (value: string) => ['left', 'center', 'right'].includes(value),
     },
     // 尺寸大小
     size: {
       type: String,
       default: 'medium',
-      validator: value => ['small', 'medium', 'large'].includes(value),
+      validator: (value: string) => ['small', 'medium', 'large'].includes(value),
     },
     // 左侧图标
     leftIcon: {
@@ -189,7 +189,7 @@
     dividerPosition: {
       type: String,
       default: 'bottom',
-      validator: value => ['top', 'bottom'].includes(value),
+      validator: (value: string) => ['top', 'bottom'].includes(value),
     },
     // 是否显示装饰元素
     showDecoration: {

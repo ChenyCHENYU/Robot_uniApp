@@ -129,14 +129,32 @@
 <script setup lang="ts">
   import { ref, computed } from 'vue'
   import { useUserStore } from '@/stores/modules/user'
+  import { useMessageStore } from '@/stores/modules/message'
   import { APP_VERSION } from '@/constants'
 
   const appVersion = APP_VERSION
 
   const userStore = useUserStore()
+  const messageStore = useMessageStore()
+
+  interface ProfileMenuItem {
+    id: string
+    label: string
+    icon: string
+    iconBg: string
+    path?: string
+    badge?: number
+    extra?: string
+    [key: string]: any
+  }
+
+  interface MenuGroup {
+    title: string
+    items: ProfileMenuItem[]
+  }
 
   const userAvatar = computed(
-    () => userStore.avatar || '/static/robot-avatar.png'
+    () => userStore.avatar || '/static/images/default-avatar.png'
   )
   const userName = computed(() => userStore.userInfo?.nickname || 'CHENY')
   const userRole = computed(() => {
@@ -153,7 +171,7 @@
     { value: '5', label: '样式' },
   ])
 
-  const menuGroups = ref([
+  const menuGroups = ref<MenuGroup[]>([
     {
       title: '个人服务',
       items: [
@@ -169,7 +187,7 @@
           label: '消息通知',
           icon: 'notification',
           iconBg: 'linear-gradient(135deg, #fa709a, #fee140)',
-          badge: 8,
+          badge: messageStore.totalUnread,
           path: '/pages/message/index',
         },
         {
@@ -275,9 +293,21 @@
       cache: () => {
         uni.showModal({
           title: '清除缓存',
-          content: '确定要清除应用缓存吗？',
+          content: '将清除本地缓存（保留登录态与偏好设置）',
           success: ({ confirm }) => {
-            if (confirm) uni.showToast({ title: '缓存已清除', icon: 'success' })
+            if (!confirm) return
+            // 保留登录态与记住的用户名，其余缓存全部清除
+            const keepKeys = ['user-store', 'remembered_username']
+            const keepValues = keepKeys.map(k => [k, uni.getStorageSync(k)])
+            uni.clearStorageSync()
+            keepValues.forEach(([k, v]) => {
+              if (v !== '' && v !== undefined && v !== null) {
+                uni.setStorageSync(k as string, v)
+              }
+            })
+            // 刷新未读数等可恢复数据
+            messageStore.fetchMessages().catch(() => {})
+            uni.showToast({ title: '缓存已清除', icon: 'success' })
           },
         })
       },
@@ -294,9 +324,12 @@
         uni.showLoading({ title: '退出中...' })
         userStore
           .logout()
-          .then(() => uni.showToast({ title: '退出成功', icon: 'success' }))
-          .catch(() => uni.showToast({ title: '退出失败', icon: 'error' }))
-          .finally(() => uni.hideLoading())
+          .catch(() => {})
+          .finally(() => {
+            // 先关 loading 再弹 toast，避免部分平台 hideLoading 吞掉 toast
+            uni.hideLoading()
+            uni.showToast({ title: '已退出登录', icon: 'success' })
+          })
       },
     })
   }

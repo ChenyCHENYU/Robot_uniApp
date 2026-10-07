@@ -45,13 +45,14 @@
   const offsetY = ref(0)
   let startX = 0
   let startY = 0
-  let moved = false
 
   const btnStyle = computed(() => {
-    const style = {
+    const style: Record<string, string> = {
       width: `${props.size}rpx`,
       height: `${props.size}rpx`,
-      bottom: `calc(${props.bottom}rpx + env(safe-area-inset-bottom) + ${offsetY.value}px)`,
+      bottom: `calc(${props.bottom}rpx + env(safe-area-inset-bottom))`,
+      // 拖拽偏移统一用 transform（px 与触摸事件单位一致）
+      transform: `translate(${offsetX.value}px, ${offsetY.value}px)`,
     }
     if (props.position === 'left-bottom') {
       style.left = `${props.left}rpx`
@@ -61,28 +62,23 @@
     return style
   })
 
-  const onTouchStart = e => {
+  const onTouchStart = (e: TouchEvent) => {
     if (!props.draggable) return
     const touch = e.touches[0]
     startX = touch.clientX - offsetX.value
     startY = touch.clientY - offsetY.value
-    moved = false
     dragging.value = true
   }
 
-  const onTouchMove = e => {
+  const onTouchMove = (e: TouchEvent) => {
     if (!props.draggable || !dragging.value) return
     const touch = e.touches[0]
     offsetX.value = touch.clientX - startX
-    offsetY.value = -(touch.clientY - startY)
-    moved = true
+    offsetY.value = touch.clientY - startY
   }
 
   const onTouchEnd = () => {
     dragging.value = false
-    if (moved) {
-      // 吸边效果可后续增加
-    }
   }
 </script>
 

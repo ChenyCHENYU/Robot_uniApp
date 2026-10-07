@@ -103,7 +103,7 @@
     const radius = (size - lineWidth) / 2
     const center = size / 2
 
-    const ctx = uni.createCanvasContext(canvasId, instance.proxy)
+    const ctx = uni.createCanvasContext(canvasId, instance?.proxy ?? undefined)
 
     // 轨道
     ctx.beginPath()

@@ -55,6 +55,16 @@
 </template>
 
 <script setup lang="ts">
+  import type { PropType } from 'vue'
+
+  interface ActionItem {
+    name: string
+    icon?: string
+    description?: string
+    danger?: boolean
+    disabled?: boolean
+    [key: string]: any
+  }
   import { defaultProps } from './data'
 
   const props = defineProps({
@@ -63,7 +73,7 @@
     /** 标题 */
     title: { type: String, default: defaultProps.title },
     /** 操作项 [{ name, icon, description, danger, disabled }] */
-    actions: { type: Array, default: () => [] },
+    actions: { type: Array as PropType<ActionItem[]>, default: () => [] },
     /** 取消按钮文案 */
     cancelText: { type: String, default: defaultProps.cancelText },
     /** 是否显示取消按钮 */

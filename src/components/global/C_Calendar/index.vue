@@ -169,7 +169,8 @@
         currentYear.value = d.getFullYear()
         currentMonth.value = d.getMonth() + 1
       }
-    }
+    },
+    { immediate: true }
   )
 
   const weekDays = computed(() =>

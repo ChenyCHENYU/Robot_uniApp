@@ -29,8 +29,8 @@
     colon: { type: Boolean, default: defaultProps.colon },
   })
 
-  const errors = reactive({})
-  const fields = ref([])
+  const fields = ref<any[]>([])
+  const errors = reactive<Record<string, string>>({})
 
   /** 注册表单项 */
   const addField = field => {

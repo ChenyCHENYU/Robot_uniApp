@@ -18,7 +18,7 @@
 
     <!-- 页面内容区域 -->
     <view
-      class="layout-content"
+      class="c-layout__content"
       :style="contentStyles"
     >
       <slot />
@@ -36,20 +36,20 @@
     <!-- 全局Loading -->
     <view
       v-if="globalLoading"
-      class="global-loading"
+      class="c-layout__loading"
     >
       <wd-loading
         :size="60"
-        color="#007AFF"
+        color="var(--r-color-primary, #007AFF)"
       />
-      <text class="loading-text">加载中...</text>
+      <text class="c-layout__loading-text">加载中...</text>
     </view>
   </view>
 </template>
 
 <script setup lang="ts">
-  import { ref, computed, onMounted, watch, nextTick } from 'vue'
-  import { onShow } from '@dcloudio/uni-app'
+  import { ref, computed, onMounted, watch, nextTick, onUnmounted } from 'vue'
+  import { onShow, onUnload } from '@dcloudio/uni-app'
   import {
     useSmartLayout,
     layoutProps,
@@ -58,9 +58,9 @@
     getCurrentTabIndex,
   } from './data'
   import { useMessageStore } from '@/stores/modules/message'
+  import http from '@/utils/http'
   import C_Header from '../C_Header/index.vue'
   import C_Tabbar from '../C_Tabbar/index.vue'
-  import './index.scss'
 
   const props = defineProps(layoutProps)
   const emit = defineEmits(layoutEmits)
@@ -124,6 +124,18 @@
     }
     // 同步消息 tabbar 角标
     syncMessageBadge()
+  })
+
+  // 页面卸载：取消该页面所有在飞请求，避免 setData 浪费与内存泄漏
+  onUnload(() => {
+    const path = getCurrentPath()
+    if (path) http.cancelPageRequests(path)
+  })
+
+  // H5 端组件卸载兜底（部分场景 onUnload 不触发）
+  onUnmounted(() => {
+    const path = getCurrentPath()
+    if (path) http.cancelPageRequests(path)
   })
 
   // 监听未读数变化，实时同步 tabbar badge
@@ -266,3 +278,7 @@
     getCurrentTabIndex: () => currentTabIndex.value,
   })
 </script>
+
+<style lang="scss" scoped>
+  @import './index.scss';
+</style>

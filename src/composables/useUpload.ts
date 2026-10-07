@@ -1,15 +1,15 @@
 /**
  * useUpload - 文件上传
  *
+ * 上传统一走 http.upload 拦截链（token 注入 / baseURL 拼接 / 业务码判定 / 401 处理）
+ *
  * @example
  * const { files, chooseImage, upload, removeFile } = useUpload({ maxCount: 9 })
  */
 import { ref } from 'vue'
 import { FILE_ACCEPT } from '@/constants'
+import http from '@/utils/http'
 
-/**
- *
- */
 interface UploadOptions {
   maxCount?: number
   maxSize?: number
@@ -36,6 +36,8 @@ export function useUpload(options: UploadOptions = {}) {
     accept: _accept = FILE_ACCEPT.IMAGE,
     compress = true,
   } = options
+
+  void _accept // 预留：按类型筛选相册
 
   const files = ref<UploadFileItem[]>([])
   const uploading = ref(false)
@@ -90,27 +92,24 @@ export function useUpload(options: UploadOptions = {}) {
     if (!file || file.status === 'success') return Promise.resolve(file)
 
     file.status = 'uploading'
-    return new Promise((resolve, reject) => {
-      const task = uni.uploadFile({
-        url: uploadUrl,
-        filePath: file.url,
-        name: 'file',
-        formData,
-        success: res => {
-          const data = JSON.parse(res.data)
-          file.status = 'success'
-          file.response = data
-          resolve(data)
-        },
-        fail: err => {
-          file.status = 'error'
-          reject(err)
+    // 复用 http 层：自动携带 token、拼接 baseURL、校验业务码与 401
+    return http
+      .upload(uploadUrl, file.url, formData, {
+        silent: true,
+        onProgress: progress => {
+          file.progress = progress
         },
       })
-      task.onProgressUpdate(res => {
-        file.progress = res.progress
+      .then(data => {
+        file.status = 'success'
+        file.progress = 100
+        file.response = data
+        return data
       })
-    })
+      .catch(error => {
+        file.status = 'error'
+        throw error
+      })
   }
 
   const uploadAll = async (

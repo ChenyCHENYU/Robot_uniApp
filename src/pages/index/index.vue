@@ -9,7 +9,7 @@
       <!-- 问候语 -->
       <view class="greeting">
         <text class="greeting-text"
-          >{{ greeting }}，<text class="greeting-name">ChenY</text> 👋</text
+          >{{ greeting }}，<text class="greeting-name">{{ displayName }}</text> 👋</text
         >
         <text class="greeting-sub">今日有 {{ todoCount }} 项待办</text>
       </view>
@@ -155,10 +155,15 @@
 <script setup lang="ts">
   import { ref, computed } from 'vue'
   import { useMessageStore } from '@/stores/modules/message'
+  import { useUserStore } from '@/stores/modules/user'
   import { APP_VERSION } from '@/constants'
 
   const messageStore = useMessageStore()
+  const userStore = useUserStore()
   const unreadCount = computed(() => messageStore.totalUnread)
+
+  // 登录用户昵称（未登录兜底为访客）
+  const displayName = computed(() => userStore.nickname || '访客')
 
   const version = APP_VERSION
 
@@ -339,13 +344,12 @@
     uni.showToast({ title: todo.title, icon: 'none' })
   }
 
-  const handleUserClick = () => {}
-  const handleNotificationClick = () => {
-    uni.switchTab({ url: '/pages/message/index' })
+  const handleUserClick = () => {
+    uni.navigateTo({ url: '/pages/profile/index' })
   }
-  const handleSettingsClick = () => {
-    uni.navigateTo({ url: '/pages/settings/index' })
-  }
+  // 通知/设置跳转由 C_Layout 默认处理，此处仅占位扩展
+  const handleNotificationClick = () => {}
+  const handleSettingsClick = () => {}
 </script>
 
 <style lang="scss" scoped>

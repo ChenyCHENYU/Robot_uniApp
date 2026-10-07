@@ -93,7 +93,7 @@
   const keyword = ref('')
   const focused = ref(false)
   const historyList = ref([])
-  let debounceTimer = null
+  let debounceTimer: ReturnType<typeof setTimeout> | null = null
 
   onMounted(() => {
     historyList.value = getSearchHistory()

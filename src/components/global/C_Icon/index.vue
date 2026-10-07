@@ -109,10 +109,11 @@
   // });
 
   // 构建 wot-design-uni 图标的完整属性对象
-  const wotProps = computed(() => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const wotProps = computed((): any => {
     if (!hasValidName.value) return {}
 
-    const propsObj = {
+    const propsObj: Record<string, any> = {
       name: props.name.trim(),
       size: typeof props.size === 'number' ? props.size + 'px' : props.size,
       color: props.color,

@@ -195,7 +195,8 @@
         tabs.value = [{ value: null, label: '' }]
         activeTab.value = 0
       }
-    }
+    },
+    { immediate: true }
   )
 
   /**

@@ -231,7 +231,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, reactive } from 'vue'
+  import { ref, reactive, onUnmounted } from 'vue'
 
   const mode = ref<'account' | 'phone'>('account')
   const loading = ref(false)
@@ -254,8 +254,44 @@
 
   let timer: ReturnType<typeof setInterval> | null = null
 
+  /** 表单校验（注册前全量校验） */
+  const validateForm = (): boolean => {
+    if (mode.value === 'account') {
+      if (!/^[a-zA-Z0-9_]{3,20}$/.test(form.username)) {
+        uni.showToast({ title: '用户名需 3-20 位字母/数字/下划线', icon: 'none' })
+        return false
+      }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+        uni.showToast({ title: '请输入正确的邮箱地址', icon: 'none' })
+        return false
+      }
+    } else {
+      if (!/^1\d{10}$/.test(form.phone)) {
+        uni.showToast({ title: '请输入正确的手机号', icon: 'none' })
+        return false
+      }
+      if (!/^\d{4,6}$/.test(form.code)) {
+        uni.showToast({ title: '请输入正确的验证码', icon: 'none' })
+        return false
+      }
+    }
+    if (form.password.length < 6 || form.password.length > 20) {
+      uni.showToast({ title: '密码长度需 6-20 位', icon: 'none' })
+      return false
+    }
+    if (form.password !== form.confirmPassword) {
+      uni.showToast({ title: '两次输入的密码不一致', icon: 'none' })
+      return false
+    }
+    return true
+  }
+
   const sendCode = () => {
-    if (countdown.value > 0 || !form.phone) return
+    if (countdown.value > 0) return
+    if (!/^1\d{10}$/.test(form.phone)) {
+      uni.showToast({ title: '请输入正确的手机号', icon: 'none' })
+      return
+    }
     countdown.value = 60
     timer = setInterval(() => {
       countdown.value--
@@ -272,7 +308,9 @@
       uni.showToast({ title: '请先同意用户协议', icon: 'none' })
       return
     }
+    if (!validateForm()) return
     loading.value = true
+    // TODO: 对接真实注册接口（api.post('/auth/register')）
     setTimeout(() => {
       loading.value = false
       uni.showToast({ title: '注册成功', icon: 'success' })
@@ -280,14 +318,30 @@
     }, 2000)
   }
 
-  const goBack = () => uni.navigateBack()
-  const goLogin = () => uni.navigateBack()
+  /** 返回登录：有页面栈走返回，否则直达登录页 */
+  const goBack = () => {
+    const pages = getCurrentPages()
+    if (pages.length > 1) {
+      uni.navigateBack()
+    } else {
+      uni.reLaunch({ url: '/pages/login/index' })
+    }
+  }
+  const goLogin = () => goBack()
   const showAgreement = (type: string) => {
     uni.showToast({
       title: `查看${type === 'user' ? '用户协议' : '隐私政策'}`,
       icon: 'none',
     })
   }
+
+  // 页面卸载清理倒计时
+  onUnmounted(() => {
+    if (timer) {
+      clearInterval(timer)
+      timer = null
+    }
+  })
 </script>
 
 <style lang="scss" scoped>
@@ -356,7 +410,7 @@
     position: relative;
     z-index: 1;
     padding: 0 48rpx;
-    padding-top: calc(var(--status-bar-height, 44px) + 20rpx);
+    padding-top: calc(var(--status-bar-height, 0px) + 20rpx);
   }
 
   .top-bar {

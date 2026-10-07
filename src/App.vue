@@ -33,12 +33,19 @@
     // 初始化系统信息
     await appStore.initSystemInfo()
 
+    // 首次启动进入引导页（未完成引导且未登录）
+    const guided = uni.getStorageSync('guide_completed')
+    if (!guided && !userStore.isLoggedIn) {
+      uni.reLaunch({ url: '/pages/guide/index' })
+      return
+    }
+
     // 如果已登录，尝试获取最新用户信息
     if (userStore.isLoggedIn && userStore.token) {
       try {
         await userStore.fetchUserInfo()
       } catch (error) {
-        // 获取用户信息失败，可能 token 已过期
+        // 获取用户信息失败，可能 token 已过期（401 已由 http 层统一处理）
         console.warn('获取用户信息失败:', error)
       }
     }

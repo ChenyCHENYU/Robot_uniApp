@@ -1,9 +1,10 @@
 import { computed, ref } from 'vue'
 import { useUserStore } from '@/stores/modules/user'
+import type { UserInfo } from '@/types/store'
 
 // Props定义
 export const headerProps = {
-  defaultAvatar: { type: String, default: '/static/robot-avatar.png' },
+  defaultAvatar: { type: String, default: '/static/images/default-avatar.png' },
   defaultNickname: { type: String, default: 'CHENY' },
   showStatus: { type: Boolean, default: true },
   showBack: { type: Boolean, default: false },
@@ -49,7 +50,7 @@ export function useHeaderData(props, emit) {
   const avatarError = ref(false)
 
   // 计算属性
-  const userInfo = computed(() => userStore.userInfo || {})
+  const userInfo = computed(() => userStore.userInfo as Partial<UserInfo> | null || {})
 
   const safeAreaTop = computed(() => {
     try {

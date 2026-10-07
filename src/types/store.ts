@@ -1,11 +1,15 @@
 /** Store 模块 - 类型定义 */
 
 export interface UserInfo {
-  id: number
+  id: number | string
   username: string
   nickname: string
   avatar: string
+  name?: string
   email?: string
+  phone?: string
+  roles?: string[]
+  permissions?: string[]
 }
 
 export interface UserStoreState {
@@ -23,9 +27,13 @@ export interface LoginCredentials {
 
 export interface LoginResult {
   token: string
-  userInfo: UserInfo
-  permissions: string[]
-  roles: string[]
+}
+
+export interface PageResult<T = any> {
+  list: T[]
+  total: number
+  page: number
+  pageSize: number
 }
 
 export interface AppStoreState {
@@ -33,32 +41,4 @@ export interface AppStoreState {
   networkType: string
   statusBarHeight: number
   globalLoading: boolean
-}
-
-export interface EnvConfig {
-  API_BASE_URL: string
-  API_TIMEOUT: number
-  API_VERSION: string
-  WS_URL: string
-  WS_RECONNECT_INTERVAL: number
-  WS_MAX_RECONNECT_ATTEMPTS: number
-  CDN_URL: string
-  STATIC_URL: string
-  APP_NAME: string
-  APP_VERSION: string
-  BUILD_TIME: string
-  DEBUG: boolean
-  LOG_LEVEL: string
-  ENABLE_VCONSOLE: boolean
-  ENABLE_PERFORMANCE_MONITOR: boolean
-  FEATURES: {
-    enablePush: boolean
-    enableShare: boolean
-    enablePayment: boolean
-    enableAnalytics: boolean
-  }
-  SERVICES: {
-    sentry: { dsn: string; enabled: boolean }
-    analytics: { enabled: boolean; trackingId: string }
-  }
 }

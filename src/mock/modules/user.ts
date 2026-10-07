@@ -38,10 +38,29 @@ export const userMocks: Record<string, (options: any) => MockResponse> = {
     if (username === 'admin' && password === 'admin123') {
       return success({ token: mockToken })
     }
-    return fail('用户名或密码错误', 401)
+    return fail('用户名或密码错误')
+  },
+
+  // 短信验证码登录（演示：任意合法手机号 + 4-6 位验证码通过）
+  'POST /auth/sms-login': options => {
+    const { phone, code } = options.data || {}
+    if (/^1\d{10}$/.test(phone || '') && /^\d{4,6}$/.test(code || '')) {
+      return success({ token: mockToken })
+    }
+    return fail('验证码错误或已过期')
   },
 
   'POST /auth/logout': () => success(null, '退出成功'),
+
+  // 修改密码（演示：旧密码非空 + 新密码 >= 6 位即通过）
+  'POST /user/password': options => {
+    const { oldPassword, newPassword } = options.data || {}
+    if (!oldPassword) return fail('请输入原密码')
+    if (!newPassword || String(newPassword).length < 6) {
+      return fail('新密码长度不能少于 6 位')
+    }
+    return success(null, '密码修改成功')
+  },
 
   'GET /user/info': () => success(mockUser),
 

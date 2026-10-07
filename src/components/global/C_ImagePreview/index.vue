@@ -84,7 +84,7 @@
     longPress: { type: Boolean, default: defaultProps.longPress },
   })
 
-  const emit = defineEmits(['update:visible', 'change', 'save'])
+  const emit = defineEmits(['update:visible', 'update:current', 'change', 'save'])
 
   const currentIndex = ref(props.current)
 
@@ -99,6 +99,7 @@
   function onSwiperChange(e) {
     currentIndex.value = e.detail.current
     emit('change', currentIndex.value)
+    emit('update:current', currentIndex.value)
   }
 
   /** 关闭预览 */
@@ -109,11 +110,16 @@
   /** 长按保存 */
   function onLongPress(imgUrl) {
     if (!props.longPress) return
+    // 不可保存时无菜单可展示，直接提示（showActionSheet 要求 itemList 非空）
+    if (!props.saveable) {
+      uni.showToast({ title: '图片不支持保存', icon: 'none' })
+      return
+    }
 
     uni.showActionSheet({
-      itemList: props.saveable ? ['保存到相册'] : [],
+      itemList: ['保存到相册'],
       success: res => {
-        if (res.tapIndex === 0 && props.saveable) {
+        if (res.tapIndex === 0) {
           saveImage(imgUrl)
         }
       },

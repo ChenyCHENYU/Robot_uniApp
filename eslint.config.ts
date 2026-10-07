@@ -19,7 +19,13 @@ export default [
 
   {
     name: 'app/files-to-ignore',
-    ignores: ['**/dist/**', '**/dist-ssr/**', '**/coverage/**'],
+    ignores: [
+      '**/dist/**',
+      '**/dist-ssr/**',
+      '**/coverage/**',
+      '**/unpackage/**',
+      'src/static/**',
+    ],
   },
 
   //MARK: 核心规则组（按优先级排序）
@@ -71,8 +77,8 @@ export default [
       'max-depth': ['error', 4],
       complexity: ['warn', 10],
 
-      //! 异步代码规范
-      'no-await-in-loop': 'error',
+      //! 异步代码规范（分页串行拉取等场景合法，降级为警告）
+      'no-await-in-loop': 'warn',
 
       // Vue 规范
       //! PascalCase 命名规范
@@ -91,6 +97,7 @@ export default [
             '/^c_/',
             '/^wd-/',
             '/^scroll-/',
+            'web-view',
             'v-md-editor',
           ],
         },
@@ -137,22 +144,14 @@ export default [
 
   //MARK: ESLINT 白名单配置组
   {
-    name: 'app/ignore-assets',
-    ignores: [
-      'src/assets/images/**/*',
-      '**/*.d.ts',
-      '**/auto-imports.d.ts',
-      'src/views/**/components/*.vue',
-      'scripts/**/*',
-    ],
+    name: 'app/ignore-generated',
+    ignores: ['**/*.d.ts', '**/auto-imports.d.ts'],
   },
 
   //MARK: JSDoc 白名单覆盖规则
   {
     files: [
-      'src/router/**/*.ts',
       'src/stores/**/*.ts',
-      'src/views/**/components/*.vue',
       'src/composables/**/*.ts',
       'src/utils/**/*.ts',
       'src/mock/**/*.ts',

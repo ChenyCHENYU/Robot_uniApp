@@ -53,13 +53,13 @@ $shadow-inset: inset 0 1rpx 0 rgba(255, 255, 255, 0.15);
 // =================================
 // 背景层
 // =================================
-.background-layers {
+.c-header__bg-layers {
   position: absolute;
   inset: 0;
   z-index: 1;
 }
 
-.gradient-bg {
+.c-header__gradient {
   position: absolute;
   inset: 0;
   background: linear-gradient(135deg,
@@ -72,7 +72,7 @@ $shadow-inset: inset 0 1rpx 0 rgba(255, 255, 255, 0.15);
     border-radius: 0 0 $border-radius $border-radius;
 }
 
-.pattern-overlay {
+.c-header__pattern {
   position: absolute;
   inset: 0;
     background: radial-gradient(circle at 25% 25%, $glass-light 0%, transparent 55%),
@@ -80,7 +80,7 @@ $shadow-inset: inset 0 1rpx 0 rgba(255, 255, 255, 0.15);
     opacity: 0.7;
 }
 
-.glass-overlay {
+.c-header__glass {
   position: absolute;
   inset: 0;
     background: linear-gradient(135deg, $glass-base 0%, rgba(255, 255, 255, 0.04) 50%, rgba(255, 255, 255, 0.02) 100%);
@@ -90,7 +90,7 @@ $shadow-inset: inset 0 1rpx 0 rgba(255, 255, 255, 0.15);
 // =================================
 // 内容区域
 // =================================
-.header-content {
+.c-header__content {
   position: relative;
   z-index: 2;
   padding: 24rpx 36rpx 32rpx;
@@ -105,20 +105,20 @@ $shadow-inset: inset 0 1rpx 0 rgba(255, 255, 255, 0.15);
 // =================================
 // 返回按钮区域
 // =================================
-.back-section {
+.c-header__back-section {
   display: flex;
   align-items: center;
   flex: 1;
   gap: 20rpx;
 
-  .back-btn .btn-glass-bg {
+  .c-header__back-btn .c-header__btn-glass {
       @include glass-button(64rpx);
     .c-header.compact-mode & {
         @include glass-button(56rpx);
     }
   }
 
-  .back-title {
+  .c-header__back-title {
     font-size: 32rpx;
       font-weight: 600;
     color: white;
@@ -136,7 +136,7 @@ $shadow-inset: inset 0 1rpx 0 rgba(255, 255, 255, 0.15);
 // =================================
 // 用户区域
 // =================================
-.user-section {
+.c-header__user-section {
   display: flex;
   align-items: center;
   flex: 1;
@@ -151,9 +151,9 @@ $shadow-inset: inset 0 1rpx 0 rgba(255, 255, 255, 0.15);
   }
 }
 
-.avatar-container {
+.c-header__avatar-box {
   position: relative;
-  .avatar-glass-ring {
+  .c-header__avatar-ring {
       position: relative;
     padding: 4rpx;
       background: linear-gradient(145deg, $glass-light, $glass-base);
@@ -165,7 +165,7 @@ $shadow-inset: inset 0 1rpx 0 rgba(255, 255, 255, 0.15);
       }
     }
     
-    .user-avatar {
+    .c-header__avatar {
     width: 80rpx;
       height: 80rpx;
       border-radius: 50%;
@@ -175,7 +175,7 @@ $shadow-inset: inset 0 1rpx 0 rgba(255, 255, 255, 0.15);
       }
     }
     
-    .online-indicator {
+    .c-header__online {
       position: absolute;
     bottom: 4rpx;
       right: 4rpx;
@@ -195,7 +195,7 @@ $shadow-inset: inset 0 1rpx 0 rgba(255, 255, 255, 0.15);
         right: 2rpx;
       }
     
-      .status-dot {
+      .c-header__status-dot {
       width: 12rpx;
         height: 12rpx;
       background: var(--r-color-success);
@@ -211,10 +211,10 @@ $shadow-inset: inset 0 1rpx 0 rgba(255, 255, 255, 0.15);
       }
 }
 
-.user-info {
+.c-header__user-info {
   flex: 1;
   
-  .greeting {
+  .c-header__greeting {
     display: block;
     font-size: 26rpx;
       color: rgba(255, 255, 255, 0.85);
@@ -227,7 +227,7 @@ $shadow-inset: inset 0 1rpx 0 rgba(255, 255, 255, 0.15);
       }
   }
 
-  .username {
+  .c-header__username {
     display: block;
     font-size: 36rpx;
       font-weight: 700;
@@ -245,7 +245,7 @@ $shadow-inset: inset 0 1rpx 0 rgba(255, 255, 255, 0.15);
 // =================================
 // 操作区域
 // =================================
-.action-section {
+.c-header__actions {
   display: flex;
   align-items: center;
   gap: 20rpx;
@@ -255,7 +255,7 @@ $shadow-inset: inset 0 1rpx 0 rgba(255, 255, 255, 0.15);
   }
 }
 
-.status-pill .status-pill-bg {
+.c-header__status-pill .c-header__status-pill-bg {
   display: flex;
   align-items: center;
   gap: 12rpx;
@@ -275,7 +275,7 @@ $shadow-inset: inset 0 1rpx 0 rgba(255, 255, 255, 0.15);
   }
 }
 
-.status-text {
+.c-header__status-text {
   font-size: 22rpx;
   color: white;
   font-weight: 600;
@@ -287,9 +287,9 @@ $shadow-inset: inset 0 1rpx 0 rgba(255, 255, 255, 0.15);
   }
 }
 
-.action-button {
+.c-header__action-btn {
   position: relative;
-  .button-glass-bg {
+  .c-header__action-glass {
     @include glass-button(72rpx);
     .c-header.compact-mode & {
         @include glass-button(60rpx);
@@ -335,14 +335,14 @@ $shadow-inset: inset 0 1rpx 0 rgba(255, 255, 255, 0.15);
     }
   }
 
-    .header-content {
+    .c-header__content {
       padding: 20rpx 24rpx 28rpx;
     .c-header.compact-mode & {
         padding: 12rpx 24rpx 16rpx;
       }
   }
 
-  .user-avatar {
+  .c-header__avatar {
     width: 64rpx;
     height: 64rpx;
     
@@ -352,8 +352,8 @@ $shadow-inset: inset 0 1rpx 0 rgba(255, 255, 255, 0.15);
       }
   }
 
-  .user-info {
-    .greeting {
+  .c-header__user-info {
+    .c-header__greeting {
       font-size: 22rpx;
       
       .c-header.compact-mode & {
@@ -361,7 +361,7 @@ $shadow-inset: inset 0 1rpx 0 rgba(255, 255, 255, 0.15);
         }
       }
 
-        .username {
+        .c-header__username {
           font-size: 28rpx;
       
       .c-header.compact-mode & {
@@ -370,7 +370,7 @@ $shadow-inset: inset 0 1rpx 0 rgba(255, 255, 255, 0.15);
       }
     }
 
-    .back-title {
+    .c-header__back-title {
       font-size: 28rpx;
     .c-header.compact-mode & {
         font-size: 24rpx;

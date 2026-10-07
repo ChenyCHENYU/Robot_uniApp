@@ -3,14 +3,17 @@ import { createPersistedState } from 'pinia-plugin-persistedstate'
 
 const pinia = createPinia()
 
-// uni-app 存储适配器
+// uni-app 存储适配器（补齐 removeItem，对齐 Storage 接口）
 const uniStorage = {
-  getItem(key) {
+  getItem(key: string): string | null {
     const value = uni.getStorageSync(key)
-    return value === '' ? null : value
+    return value === '' || value === undefined ? null : String(value)
   },
-  setItem(key, value) {
+  setItem(key: string, value: string) {
     uni.setStorageSync(key, value)
+  },
+  removeItem(key: string) {
+    uni.removeStorageSync(key)
   },
 }
 

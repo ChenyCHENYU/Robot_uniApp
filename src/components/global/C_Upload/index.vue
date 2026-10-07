@@ -72,11 +72,21 @@
 </template>
 
 <script setup lang="ts">
+  import type { PropType } from 'vue'
+
+  interface UploadItem {
+    url: string
+    name?: string
+    size?: number
+    status?: string
+    progress?: number
+    [key: string]: any
+  }
   import { defaultProps } from './data'
 
   const props = defineProps({
     /** 文件列表 (v-model) */
-    modelValue: { type: Array, default: () => [] },
+    modelValue: { type: Array as PropType<UploadItem[]>, default: () => [] },
     /** 最大上传数 */
     maxCount: { type: Number, default: defaultProps.maxCount },
     /** 最大文件大小 (bytes) */
@@ -106,8 +116,9 @@
       sizeType: ['compressed'],
       sourceType: ['album', 'camera'],
       success: res => {
-        const validFiles = []
-        for (const file of res.tempFiles) {
+        const tempFiles = (res.tempFiles as any[]) || []
+        const validFiles: UploadItem[] = []
+        for (const file of tempFiles) {
           if (file.size > props.maxSize) {
             emit('oversize', file)
             continue
@@ -135,7 +146,7 @@
   }
 
   const onPreview = index => {
-    const urls = props.modelValue.map(f => f.url || f)
+    const urls = props.modelValue.map((f: UploadItem) => f.url || (f as unknown as string))
     uni.previewImage({ urls, current: index })
     emit('preview', props.modelValue[index], index)
   }

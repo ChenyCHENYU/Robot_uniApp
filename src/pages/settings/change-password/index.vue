@@ -219,6 +219,7 @@
 
 <script setup lang="ts">
   import { ref, reactive, computed } from 'vue'
+  import { changePassword } from '@/api'
 
   const formData = reactive({
     oldPassword: '',
@@ -277,14 +278,18 @@
 
     submitting.value = true
     try {
-      // 模拟 API 调用
-      await new Promise(resolve => setTimeout(resolve, 1500))
+      await changePassword({
+        oldPassword: formData.oldPassword,
+        newPassword: formData.newPassword,
+      })
       uni.showToast({ title: '密码修改成功', icon: 'success' })
       setTimeout(() => {
-        uni.navigateBack()
+        // 修改密码后回到设置页（真实场景建议强制重新登录）
+        uni.navigateBack({ fail: () => uni.reLaunch({ url: '/pages/settings/index' }) })
       }, 1500)
-    } catch {
-      uni.showToast({ title: '修改失败，请重试', icon: 'error' })
+    } catch (error) {
+      const err = error as { message?: string }
+      uni.showToast({ title: err?.message || '修改失败，请重试', icon: 'none' })
     } finally {
       submitting.value = false
     }

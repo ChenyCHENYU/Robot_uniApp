@@ -115,12 +115,19 @@
 </template>
 
 <script setup lang="ts">
-  import { ref } from 'vue'
+  import { ref, onMounted } from 'vue'
 
   const flashOn = ref(false)
   const scanResult = ref('')
 
-  const goBack = () => uni.navigateBack()
+  const goBack = () => {
+    const pages = getCurrentPages()
+    if (pages.length > 1) {
+      uni.navigateBack()
+    } else {
+      uni.reLaunch({ url: '/pages/index/index' })
+    }
+  }
 
   const toggleFlash = () => {
     flashOn.value = !flashOn.value
@@ -131,12 +138,15 @@
   }
 
   const handleAlbum = () => {
-    uni.chooseImage({
-      count: 1,
-      sourceType: ['album'],
-      success: () => {
-        // 模拟从相册识别二维码
-        scanResult.value = 'https://github.com/ChenyCHENYU/Robot_uniApp'
+    // 相册二维码识别依赖扫码 API 的相册能力
+    uni.scanCode({
+      onlyFromCamera: false,
+      scanType: ['qrCode'],
+      success: res => {
+        scanResult.value = res.result
+      },
+      fail: () => {
+        uni.showToast({ title: '未识别到二维码', icon: 'none' })
       },
     })
   }
@@ -145,26 +155,27 @@
     uni.showToast({ title: '我的二维码', icon: 'none' })
   }
 
-  // H5环境模拟扫码 — 实际运行依赖 uni.scanCode
-  // #ifdef APP-PLUS || MP
+  // App / 小程序：进入页面后自动唤起扫码
   const startScan = () => {
     uni.scanCode({
       success: res => {
         scanResult.value = res.result
       },
-      fail: () => {
-        uni.showToast({ title: '扫码取消', icon: 'none' })
+      fail: err => {
+        const msg = err?.errMsg || ''
+        if (msg.includes('auth') || msg.includes('deny')) {
+          uni.showToast({ title: '相机权限被拒绝，请在设置中开启', icon: 'none' })
+        } else if (!msg.includes('cancel')) {
+          uni.showToast({ title: '扫码失败，请重试', icon: 'none' })
+        }
       },
     })
   }
-  startScan()
-  // #endif
 
-  // #ifdef H5
-  // H5下通过模拟按钮触发
-  setTimeout(() => {
-    scanResult.value = 'https://github.com/ChenyCHENYU/Robot_uniApp'
-  }, 3000)
+  // #ifdef APP-PLUS || MP
+  onMounted(() => {
+    startScan()
+  })
   // #endif
 
   const handleCopy = () => {
@@ -174,10 +185,26 @@
     })
   }
 
+  /** 打开扫码结果：URL 需用户确认后进入白名单 WebView */
   const handleOpen = () => {
-    if (scanResult.value.startsWith('http')) {
-      uni.navigateTo({
-        url: `/pages/webview/index?url=${encodeURIComponent(scanResult.value)}`,
+    if (/^https?:\/\//i.test(scanResult.value)) {
+      let host = ''
+      try {
+        host = scanResult.value.split('/')[2] || ''
+      } catch {
+        host = ''
+      }
+      uni.showModal({
+        title: '打开外部链接',
+        content: `即将访问：${host}\n请确认链接来源可信`,
+        confirmText: '继续',
+        success: ({ confirm }) => {
+          if (confirm) {
+            uni.navigateTo({
+              url: `/pages/webview/index?url=${encodeURIComponent(scanResult.value)}`,
+            })
+          }
+        },
       })
     } else {
       uni.showToast({ title: scanResult.value, icon: 'none' })
@@ -203,8 +230,8 @@
     align-items: center;
     justify-content: space-between;
     padding: 0 24rpx;
-    padding-top: calc(var(--status-bar-height, 44px) + 10rpx);
-    height: calc(var(--status-bar-height, 44px) + 88rpx);
+    padding-top: calc(var(--status-bar-height, 0px) + 10rpx);
+    height: calc(var(--status-bar-height, 0px) + 88rpx);
 
     .nav-btn {
       width: 72rpx;

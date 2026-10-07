@@ -11,14 +11,34 @@ export const defaultProps = {
   extraKey: '',
 }
 
-/** 生成键盘按键 */
-export const generateKeys = (showDot, extraKey, randomOrder) => {
-  let numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9]
-  if (randomOrder) {
-    numbers = numbers.sort(() => Math.random() - 0.5)
-  }
+export interface KeyItem {
+  text: string
+  type: 'number' | 'dot' | 'extra' | 'delete' | 'empty'
+}
 
-  const keys = numbers.map(n => ({ text: String(n), type: 'number' }))
+/** Fisher-Yates 洗牌（sort(() => Math.random() - 0.5) 分布不均匀） */
+function shuffle<T>(arr: T[]): T[] {
+  const a = [...arr]
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[a[i], a[j]] = [a[j], a[i]]
+  }
+  return a
+}
+
+/** 生成键盘按键（randomOrder 时对 0-9 整体洗牌，保证不丢数字、不重复） */
+export const generateKeys = (
+  showDot: boolean,
+  extraKey: string,
+  randomOrder: boolean
+): KeyItem[] => {
+  const base = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+  const numbers = randomOrder ? shuffle(base) : base
+
+  // 前 9 个占据主区域
+  const keys: KeyItem[] = numbers
+    .slice(0, 9)
+    .map(n => ({ text: String(n), type: 'number' as const }))
 
   // 左下角
   if (extraKey) {
@@ -29,9 +49,8 @@ export const generateKeys = (showDot, extraKey, randomOrder) => {
     keys.push({ text: '', type: 'empty' })
   }
 
-  // 0
-  const zero = randomOrder ? Math.floor(Math.random() * 10) : 0
-  keys.push({ text: String(randomOrder ? zero : 0), type: 'number' })
+  // 第 10 个数字占据 0 键位置（randomOrder 时同样随机）
+  keys.push({ text: String(numbers[9]), type: 'number' })
 
   // 退格
   keys.push({ text: 'delete', type: 'delete' })

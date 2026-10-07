@@ -1,5 +1,5 @@
 <!--
- * @Description: WebView页面 - 内嵌网页浏览器
+ * @Description: WebView页面 - 内嵌网页浏览器（带域名白名单校验）
 -->
 <template>
   <view class="webview-page">
@@ -16,27 +16,16 @@
             color="var(--r-text-primary)"
           />
         </view>
-        <view
-          v-if="canGoBack"
-          class="nav-btn"
-          @click="handleClose"
-        >
-          <wd-icon
-            name="close"
-            size="18px"
-            color="var(--r-text-primary)"
-          />
-        </view>
       </view>
       <view class="nav-title-wrap">
-        <text class="nav-title">{{ pageTitle || '网页浏览' }}</text>
+        <text class="nav-title">{{ pageTitle || host || '网页浏览' }}</text>
         <view
           v-if="loading"
           class="loading-indicator"
         >
           <wd-loading
             :size="12"
-            color="#667eea"
+            color="var(--r-color-primary)"
           />
         </view>
       </view>
@@ -64,59 +53,82 @@
       </view>
     </view>
 
-    <!-- 进度条 -->
+    <!-- 进度条（真实加载态，@load 后隐藏；5s 兜底超时） -->
     <view
       v-if="loading"
       class="progress-bar"
     >
-      <view
-        class="progress-fill"
-        :style="{ width: progress + '%' }"
-      ></view>
+      <view class="progress-fill"></view>
     </view>
 
-    <!-- WebView -->
-    <WebView
+    <!-- WebView（仅加载白名单内地址） -->
+    <web-view
+      v-if="url"
       :src="url"
+      @load="onLoadComplete"
+      @error="onLoadError"
       @message="onMessage"
-    ></WebView>
+    ></web-view>
   </view>
 </template>
 
 <script setup lang="ts">
-  import { ref } from 'vue'
+  import { ref, computed, onUnmounted } from 'vue'
   import { onLoad } from '@dcloudio/uni-app'
+  import { isUrlAllowed } from '@/utils/url-policy'
 
   const url = ref('')
   const pageTitle = ref('')
-  const loading = ref(true)
-  const progress = ref(30)
-  const canGoBack = ref(false)
+  const loading = ref(false)
+  /** 兜底超时：部分平台不触发 @load，5s 后强制结束加载态 */
+  let fallbackTimer: ReturnType<typeof setTimeout> | null = null
+
+  /** 当前页面的域名（标题缺省时展示） */
+  const host = computed(() => {
+    if (!url.value) return ''
+    try {
+      return url.value.split('/')[2] || ''
+    } catch {
+      return ''
+    }
+  })
+
+  const startLoading = () => {
+    loading.value = true
+    if (fallbackTimer) clearTimeout(fallbackTimer)
+    fallbackTimer = setTimeout(() => {
+      loading.value = false
+    }, 5000)
+  }
 
   onLoad(query => {
     if (query?.url) {
-      url.value = decodeURIComponent(query.url)
+      const target = decodeURIComponent(query.url)
+      // 安全校验：强制 https + 域名白名单
+      if (!isUrlAllowed(target)) {
+        uni.showToast({ title: '不允许打开该链接', icon: 'none' })
+        setTimeout(() => uni.navigateBack({ fail: () => uni.reLaunch({ url: '/pages/index/index' }) }), 600)
+        return
+      }
+      url.value = target
+      startLoading()
     }
     if (query?.title) {
       pageTitle.value = decodeURIComponent(query.title)
     }
-    // 模拟加载进度
-    simulateProgress()
   })
 
-  const simulateProgress = () => {
-    const timer = setInterval(() => {
-      if (progress.value < 90) {
-        progress.value += Math.random() * 15
-      }
-    }, 300)
-    setTimeout(() => {
-      clearInterval(timer)
-      progress.value = 100
-      setTimeout(() => {
-        loading.value = false
-      }, 200)
-    }, 2000)
+  const onLoadComplete = () => {
+    if (fallbackTimer) {
+      clearTimeout(fallbackTimer)
+      fallbackTimer = null
+    }
+    loading.value = false
+  }
+
+  const onLoadError = () => {
+    onLoadComplete()
+    uni.showToast({ title: '页面加载失败', icon: 'none' })
   }
 
   const onMessage = (e: { detail: { data: unknown[] } }) => {
@@ -130,48 +142,49 @@
   }
 
   const goBack = () => {
-    uni.navigateBack()
-  }
-
-  const handleClose = () => {
-    uni.navigateBack()
+    const pages = getCurrentPages()
+    if (pages.length > 1) {
+      uni.navigateBack()
+    } else {
+      uni.reLaunch({ url: '/pages/index/index' })
+    }
   }
 
   const handleRefresh = () => {
-    loading.value = true
-    progress.value = 0
-    // 通过重新设置url触发刷新
+    // 通过重新设置 src 触发刷新
     const currentUrl = url.value
     url.value = ''
     setTimeout(() => {
       url.value = currentUrl
-      simulateProgress()
+      startLoading()
     }, 100)
   }
 
   const handleMore = () => {
     uni.showActionSheet({
-      itemList: ['复制链接', '在浏览器中打开', '分享'],
+      itemList: ['复制链接', '在浏览器中打开'],
       success: res => {
-        switch (res.tapIndex) {
-          case 0:
-            uni.setClipboardData({ data: url.value })
-            break
-          case 1:
-            // #ifdef H5
-            window.open(url.value)
-            // #endif
-            // #ifndef H5
-            uni.showToast({ title: '请使用浏览器打开', icon: 'none' })
-            // #endif
-            break
-          case 2:
-            uni.showToast({ title: '分享功能', icon: 'none' })
-            break
+        if (res.tapIndex === 0) {
+          uni.setClipboardData({ data: url.value })
+        } else if (res.tapIndex === 1) {
+          // url 已通过白名单校验
+          // #ifdef H5
+          window.open(url.value, '_blank', 'noopener')
+          // #endif
+          // #ifndef H5
+          uni.showToast({ title: '请复制链接后使用浏览器打开', icon: 'none' })
+          // #endif
         }
       },
     })
   }
+
+  onUnmounted(() => {
+    if (fallbackTimer) {
+      clearTimeout(fallbackTimer)
+      fallbackTimer = null
+    }
+  })
 </script>
 
 <style lang="scss" scoped>
@@ -186,7 +199,7 @@
     justify-content: space-between;
     padding: 0 16rpx;
     height: 88rpx;
-    padding-top: var(--status-bar-height, 44px);
+    padding-top: var(--status-bar-height, 0px);
     background: var(--r-bg-card);
     box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
     position: relative;
@@ -232,11 +245,26 @@
     background: transparent;
     position: relative;
     z-index: 10;
+    overflow: hidden;
 
     .progress-fill {
       height: 100%;
-      background: linear-gradient(90deg, #667eea, #764ba2);
-      transition: width 0.3s ease;
+      width: 40%;
+      background: linear-gradient(
+        90deg,
+        var(--r-color-primary),
+        var(--r-color-primary-dark)
+      );
+      animation: webview-loading 1.2s ease-in-out infinite;
+    }
+  }
+
+  @keyframes webview-loading {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(350%);
     }
   }
 </style>

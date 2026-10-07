@@ -20,6 +20,17 @@ export default defineConfig({
     presetIcons({
       scale: 1.2,
       warn: true,
+      // 显式声明图标集（静态 import，避免运行时按包名探测在部分环境下失败）
+      collections: {
+        mdi: () => import('@iconify-json/mdi/icons.json').then(i => i.default),
+        fluent: () =>
+          import('@iconify-json/fluent/icons.json').then(i => i.default),
+        'fluent-color': () =>
+          import('@iconify-json/fluent-color/icons.json').then(i => i.default),
+        ion: () => import('@iconify-json/ion/icons.json').then(i => i.default),
+        solar: () =>
+          import('@iconify-json/solar/icons.json').then(i => i.default),
+      },
       extraProperties: {
         display: 'inline-block',
         'vertical-align': 'middle',

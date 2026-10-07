@@ -1,15 +1,12 @@
 /**
- * @Author: ChenYu ycyplus@gmail.com
- * @Date: 2025-09-09
- * @LastEditors: ChenYu ycyplus@gmail.com
- * @LastEditTime: 2025-09-09
- * @FilePath: \Robot_uniApp\src\pages\login\data.js
  * @Description: 登录页面数据和逻辑
- * Copyright (c) 2025 by CHENY, All Rights Reserved 😎.
  */
 
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import { useUserStore } from '@/stores/modules/user'
+import { loginBySms } from '@/api'
+import { consumeRedirectUrl } from '@/utils/router'
+import type { HttpError } from '@/utils/http'
 import {
   required,
   length,
@@ -17,15 +14,18 @@ import {
   validateWithToast,
 } from '@/utils/v_verify'
 
+/** 记住用户名的本地存储 key（仅存用户名，不存密码） */
+const REMEMBERED_USERNAME_KEY = 'remembered_username'
+
 export function useLoginData() {
   const userStore = useUserStore()
   const loading = ref(false)
-  const rememberLogin = ref(['remember'])
+  const rememberLogin = ref<string[]>([])
 
-  // 表单数据
+  // 表单数据（不预填任何凭证）
   const form = reactive({
-    username: 'CHENY',
-    password: '123456',
+    username: '',
+    password: '',
   })
 
   // 表单验证规则
@@ -33,16 +33,13 @@ export function useLoginData() {
     username: [
       required('用户名'),
       length('用户名', 3, 20),
-      // 支持用户名或邮箱登录
       {
         validator: (rule, value, callback) => {
           if (!value) {
             callback()
             return
           }
-          // 检查是否为邮箱格式
           const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-          // 检查是否为用户名格式
           const usernamePattern = /^[a-zA-Z0-9_]{3,20}$/
 
           if (emailPattern.test(value) || usernamePattern.test(value)) {
@@ -57,6 +54,15 @@ export function useLoginData() {
     password: [required('密码'), length('密码', 6, 20)],
   }
 
+  // 回填记住的用户名
+  onMounted(() => {
+    const saved = uni.getStorageSync(REMEMBERED_USERNAME_KEY)
+    if (saved) {
+      form.username = String(saved)
+      rememberLogin.value = ['remember']
+    }
+  })
+
   // 切换记住登录
   const toggleRemember = () => {
     if (rememberLogin.value.includes('remember')) {
@@ -67,7 +73,7 @@ export function useLoginData() {
   }
 
   // 字段失焦验证
-  const handleFieldBlur = field => {
+  const handleFieldBlur = (field: 'username' | 'password') => {
     const value = form[field]
     const fieldRules = rules[field]
     const result = quickValidate(value, fieldRules, field)
@@ -81,56 +87,43 @@ export function useLoginData() {
     }
   }
 
-  // 登录处理
+  // 登录成功后的统一跳转（优先回跳 401 前的来源页）
+  const redirectAfterLogin = () => {
+    const target = consumeRedirectUrl()
+    uni.reLaunch({ url: target })
+  }
+
+  // 登录处理（走 userStore.login → API → mock 拦截）
   const handleLogin = async () => {
-    // 使用弹框验证表单
     if (!validateWithToast(form, rules)) {
       return
     }
 
     loading.value = true
     try {
-      // 模拟登录API调用
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      await userStore.login({
+        username: form.username.trim(),
+        password: form.password,
+      })
 
-      // 模拟登录成功
-      const mockUserData = {
-        token: 'mock_token_' + Date.now(),
-        userInfo: {
-          id: 1,
-          username: form.username,
-          nickname: 'CHENY',
-          avatar: '/static/avatar.png',
-          email: 'user@example.com',
-        },
-        permissions: ['user:read', 'user:write'],
-        roles: ['user'],
+      // 记住登录：仅持久化用户名
+      if (rememberLogin.value.includes('remember')) {
+        uni.setStorageSync(REMEMBERED_USERNAME_KEY, form.username.trim())
+      } else {
+        uni.removeStorageSync(REMEMBERED_USERNAME_KEY)
       }
 
-      // 更新store
-      userStore.token = mockUserData.token
-      userStore.userInfo = mockUserData.userInfo as any
-      userStore.permissions = mockUserData.permissions
-      userStore.roles = mockUserData.roles
-      userStore.loginTime = new Date().toISOString()
+      uni.showToast({ title: '登录成功！', icon: 'success' })
 
-      uni.showToast({
-        title: '登录成功！',
-        icon: 'success',
-      })
-
-      // 延迟跳转到主页
       setTimeout(() => {
-        uni.reLaunch({
-          url: '/pages/index/index',
-        })
-      }, 1500)
+        redirectAfterLogin()
+      }, 800)
     } catch (error) {
+      const err = error as HttpError
       uni.showToast({
-        title: '登录失败，请重试',
+        title: err?.message || '登录失败，请重试',
         icon: 'none',
       })
-      console.error('登录失败:', error)
     } finally {
       loading.value = false
     }
@@ -145,18 +138,17 @@ export function useLoginData() {
     })
   }
 
-  // 微信登录
+  // 微信登录（小程序端）
   const handleWechatLogin = () => {
     // #ifdef MP-WEIXIN
-    uni.getUserProfile({
-      desc: '用于登录',
+    uni.login({
+      provider: 'weixin',
       success: res => {
-        uni.showToast({ title: '微信授权成功', icon: 'success' })
-        // TODO: 将 res.userInfo 发送到后端换取 token
-        console.log('微信用户信息:', res.userInfo)
+        // TODO: 将 res.code 发送到后端换取 token（code2Session）
+        uni.showToast({ title: `已获取微信凭证 ${res.code ? '成功' : '失败'}` , icon: 'none' })
       },
       fail: () => {
-        uni.showToast({ title: '用户拒绝授权', icon: 'none' })
+        uni.showToast({ title: '微信登录已取消', icon: 'none' })
       },
     })
     // #endif
@@ -166,14 +158,6 @@ export function useLoginData() {
       icon: 'none',
     })
     // #endif
-  }
-
-  // 快速体验
-  const handleQuickLogin = async () => {
-    // 直接使用游客账户登录
-    form.username = 'guest'
-    form.password = '123456'
-    await handleLogin()
   }
 
   return {
@@ -186,8 +170,59 @@ export function useLoginData() {
     handleLogin,
     handleForgotPassword,
     handleWechatLogin,
-    handleQuickLogin,
     handleFieldBlur,
     toggleRemember,
+    redirectAfterLogin,
   }
+}
+
+/** 短信验证码登录（供手机号登录 Tab 使用） */
+export function useSmsLogin() {
+  const userStore = useUserStore()
+  const phoneForm = reactive({
+    phone: '',
+    code: '',
+  })
+
+  const smsCountdown = ref(0)
+
+  const sendSmsCode = () => {
+    if (!/^1\d{10}$/.test(phoneForm.phone)) {
+      uni.showToast({ title: '请输入正确的手机号', icon: 'none' })
+      return
+    }
+    if (smsCountdown.value > 0) return
+    // TODO: 对接真实短信发送接口
+    smsCountdown.value = 60
+    uni.showToast({ title: '验证码已发送（演示）', icon: 'none' })
+  }
+
+  const handleSmsLogin = async () => {
+    if (!/^1\d{10}$/.test(phoneForm.phone)) {
+      uni.showToast({ title: '请输入正确的手机号', icon: 'none' })
+      return
+    }
+    if (!/^\d{4,6}$/.test(phoneForm.code)) {
+      uni.showToast({ title: '请输入正确的验证码', icon: 'none' })
+      return
+    }
+    try {
+      const result = await loginBySms({
+        phone: phoneForm.phone,
+        code: phoneForm.code,
+      })
+      userStore.token = result.token
+      userStore.loginTime = new Date().toISOString()
+      await userStore.fetchUserInfo().catch(() => {})
+      uni.showToast({ title: '登录成功！', icon: 'success' })
+      setTimeout(() => {
+        uni.reLaunch({ url: consumeRedirectUrl() })
+      }, 800)
+    } catch (error) {
+      const err = error as HttpError
+      uni.showToast({ title: err?.message || '登录失败', icon: 'none' })
+    }
+  }
+
+  return { phoneForm, smsCountdown, sendSmsCode, handleSmsLogin }
 }

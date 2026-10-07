@@ -5,8 +5,7 @@
  * Copyright (c) 2025 by CHENY, All Rights Reserved 😎.
  */
 
-import { computed, ref } from 'vue'
-import type { PropType } from 'vue'
+import { computed, ref, type PropType } from 'vue'
 import { useAppStore } from '@/stores/modules/app'
 
 /** 单个 Tab 项的类型 */

@@ -1,601 +1,170 @@
 <div align="center">
-  <a href="https://github.com/ChenyCHENYU/Robot_uniApp">
-    <img src="./src/static/robot-avatar.png" height="120" />
-  </a>
-  
   <h1>🤖 Robot UniApp</h1>
   <p><strong>企业级跨平台移动应用开发框架</strong></p>
-  <p><em>一次开发，十端运行 | 现代化架构 | 开箱即用</em></p>
-  
-  <p>
-    <img src="https://img.shields.io/badge/vue-3.5.30-4FC08D?style=for-the-badge&logo=vue.js&logoColor=white" alt="Vue Version">
-    <img src="https://img.shields.io/badge/UniApp-3.0.0-07C160?style=for-the-badge&logo=wechat&logoColor=white" alt="UniApp Version">
-    <img src="https://img.shields.io/badge/Pinia-2.3.1-FFD43B?style=for-the-badge&logo=pinia&logoColor=black" alt="Pinia Version">
-    <img src="https://img.shields.io/badge/UnoCSS-66.5.1-FF6B35?style=for-the-badge&logo=css3&logoColor=white" alt="UnoCSS Version">
-    <img src="https://img.shields.io/badge/wot--design--uni-1.14.0-0078D7?style=for-the-badge" alt="wot-design-uni">
-    <img src="https://img.shields.io/badge/Vite-5.2.8-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite Version">
-  </p>
+  <p><em>一次开发，多端运行 | 现代化架构 | 开箱即用</em></p>
 
   <p>
-    <img src="https://img.shields.io/github/stars/ChenyCHENYU/Robot_uniApp?style=social" alt="GitHub stars">
-    <img src="https://img.shields.io/github/forks/ChenyCHENYU/Robot_uniApp?style=social" alt="GitHub forks">
-    <img src="https://img.shields.io/badge/license-MIT-blue?style=flat" alt="License">
-    <img src="https://img.shields.io/github/last-commit/ChenyCHENYU/Robot_uniApp?style=flat&color=orange" alt="Last Commit">
+    <img src="https://img.shields.io/badge/vue-3.5-4FC08D?style=for-the-badge&logo=vue.js&logoColor=white" alt="Vue Version">
+    <img src="https://img.shields.io/badge/UniApp-3.0-07C160?style=for-the-badge&logo=wechat&logoColor=white" alt="UniApp Version">
+    <img src="https://img.shields.io/badge/Pinia-2.3-FFD43B?style=for-the-badge&logo=pinia&logoColor=black" alt="Pinia Version">
+    <img src="https://img.shields.io/badge/UnoCSS-66.5-FF6B35?style=for-the-badge&logo=css3&logoColor=white" alt="UnoCSS Version">
+    <img src="https://img.shields.io/badge/wot--design--uni-1.14-0078D7?style=for-the-badge" alt="wot-design-uni">
+    <img src="https://img.shields.io/badge/Vite-5-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite Version">
   </p>
-
-  <p>
-    <a href="#-快速开始">⚡ 快速开始</a> •
-    <a href="#-核心特性">✨ 核心特性</a> •
-    <a href="#-项目架构">🏗️ 项目架构</a> •
-    <a href="#-开发指南">📖 开发指南</a> •
-    <a href="#-演示预览">📱 在线预览</a>
-  </p>
-
-  <h3>🎯 一个真正意义上的企业级跨平台解决方案</h3>
 </div>
 
 ---
 
 ## 🚀 项目简介
 
-**Robot UniApp** 是一个基于 **Vue 3 + UniApp + UnoCSS** 的企业级跨平台移动应用开发框架，旨在为开发者提供统一、高效的开发体验，支持 **H5、小程序、App** 等多端同步开发。
+**Robot UniApp** 是基于 **Vue 3 + uni-app + TypeScript + UnoCSS + Pinia + wot-design-uni** 的跨平台移动应用模板，支持 H5 / 微信小程序 / App 多端开发。
 
-> 💫 面向未来的跨平台解决方案，让您专注于业务逻辑，而不是平台差异。
-
-### 🎨 设计理念
-
-<table>
-<tr>
-<td width="25%" align="center">
-  <h4>🚀 一码多端</h4>
-  <p>一套代码，同时运行在 H5、小程序、App 等 10+ 平台</p>
-</td>
-<td width="25%" align="center">
-  <h4>🏗️ 企业级</h4>
-  <p>完整的开发规范和最佳实践，支持大型项目</p>
-</td>
-<td width="25%" align="center">
-  <h4>✨ 现代化</h4>
-  <p>Vue3 + Vite + UnoCSS + wot-design-uni 等最新技术栈</p>
-</td>
-<td width="25%" align="center">
-  <h4>🛠️ 开箱即用</h4>
-  <p>丰富的组件库和工具链，新手也能快速上手</p>
-</td>
-</tr>
-</table>
-
-### 🏆 为什么选择 Robot UniApp？
-
-- 📊 **数据驱动**: 支持实时数据同步，状态管理统一
-- 🎨 **原子化 CSS**: UnoCSS 提供极速的样式开发体验
-- 🔒 **权限系统**: 完整的 RBAC 权限控制体系
-- 🌍 **国际化**: 支持多语言和国际化配置
-- 🛡️ **类型安全**: TypeScript 支持，提供更好的开发体验
-- 🔌 **热更新**: Vite 提供闪电般的热更新速度
+- H5 / 小程序 / App 共用一套业务代码，静态演示页隔离在独立分包
+- 请求层内置去重、指数退避重试（仅网络错误/5xx）、页面级取消、401 统一处理与登录回跳
+- 开发环境通过 `uni.addInterceptor` 拦截请求返回 Mock 数据（与 HTTP 层同协议：`code === 0` 为成功）
+- 路由守卫采用「默认需登录 + 白名单放行」，并支持按页面配置角色/权限
+- 34 个自研 `C_*` 组件（easycom 自动注册）+ wot-design-uni 按需引入
+- 类型检查（vue-tsc）、oxlint + ESLint、commitlint + husky 全链路质量保障
 
 ---
 
 ## ⚡ 快速开始
 
-```
-# 1. 克隆项目
-git clone https://github.com/ChenyCHENYU/Robot_uniApp.git
-cd Robot_uniApp
+### 环境要求
 
-# 2. 安装依赖
-pnpm install
+- Node.js **≥ 18**（推荐 20+）
+- pnpm **≥ 10**
 
-# 3. 启动H5开发（推荐新手）
-pnpm run dev:h5
-
-# 4. 启动微信小程序开发
-pnpm run dev:wx
-```
-
-### 📋 快速上手指南
-
-1. **环境准备** 🔧
-   - 安装 [Node.js](https://nodejs.org/) >= 16.x
-   - 安装 [pnpm](https://pnpm.io/) 包管理器
-   - 安装 [HBuilderX](https://www.dcloud.io/hbuilderx.html) （可选）
-
-2. **开始开发** 💻
-
-   ```bash
-   # 克隆下来后，进入项目目录
-   cd Robot_uniApp
-
-   # 安装依赖
-   pnpm install
-
-   # 启动H5开发服务器
-   pnpm run dev:h5
-   ```
-
-3. **查看效果** 👀
-   - 打开浏览器访问 `http://localhost:3000`
-   - 就可以看到精美的页面了！
-
-### 📦 更多命令
-
-<details>
-<summary>📝 点击查看完整命令列表</summary>
+### 安装与启动
 
 ```bash
-# 🖥️ H5 命令
-pnpm run dev:h5          # H5 开发服务器
-pnpm run build:h5        # H5 生产构建
-
-# 📱 小程序命令
-pnpm run dev:wx          # 微信小程序开发
-pnpm run build:wx        # 微信小程序构建
-
-# 📱 App 命令
-pnpm run dev:app         # App 开发
-pnpm run build:app       # App 构建
-pnpm run build:app-android  # Android 构建
-pnpm run build:app-ios   # iOS 构建
-
-# 🧪 测试 / 预发布
-pnpm run test            # H5 测试环境
-pnpm run test:wx         # 小程序测试环境
-pnpm run staging         # H5 预发布环境
-pnpm run staging:wx      # 小程序预发布环境
-
-# 🔧 工程工具
-pnpm run lint            # Lint + 自动修复
-pnpm run format          # Prettier 格式化
-pnpm run cz              # 规范提交
-pnpm run push            # 推送到 origin / gitee / gitcode
+pnpm install        # 安装依赖（pnpm-workspace.yaml 已声明允许构建的依赖）
+pnpm dev            # H5 开发（端口 1999，自动加载 Mock）
+pnpm dev:wx         # 微信小程序开发（需微信开发者工具）
+pnpm dev:app        # App 开发（需 HBuilderX）
 ```
 
-</details>
+> 开发环境演示账号：`admin / admin123`（仅 Mock，登录页有提示）。短信登录任意合法手机号 + 4-6 位验证码。
 
----
+### 常用命令
 
-## ✨ 核心特性
-
-### 🏗️ 技术栈
-
-- **Vue 3.5.30** - 最新稳定版，Composition API
-- **UniApp 3.0.0** - 跨平台应用开发框架
-- **Pinia 2.3.1** - 新一代状态管理（+ persistedstate 持久化插件）
-- **UnoCSS 66.5.1** - 原子化 CSS 引擎（Wind3 + Attributify + Icons）
-- **wot-design-uni 1.14.0** - 京东风格 Vue 3 跨平台 UI 组件库
-- **vue-i18n 11.3.0** - 国际化支持
-- **Vite 5.2.8** - 下一代构建工具
-
-### 📱 平台支持
-
-支持 **10+** 平台编译部署：
-
-|     移动端     |      小程序       |     其他     |
-| :------------: | :---------------: | :----------: |
-|     📱 H5      |   🟢 微信小程序   | 🚀 HarmonyOS |
-|   🍎 iOS App   |  🔵 支付宝小程序  |  ⚡ 快应用   |
-| 🤖 Android App |   🟡 QQ 小程序    |              |
-|                |   🔴 百度小程序   |              |
-|                | 🟠 字节跳动小程序 |              |
-
-### 🧩 自研组件库（33 个全局组件，全部 TypeScript）
-
-**基础布局类：**
-
-- **C_Layout** - 统一页面布局容器（Header + Content + Tabbar）
-- **C_Header** - 响应式头部组件（头像/问候语/通知/返回）
-- **C_Tabbar** - 底部导航栏（徽标/路由/安全区域）
-- **C_Title** - 玻璃风标题（6 主题 / 3 尺寸 / 图标 / 分割线）
-- **C_Icon** - 五类图标封装（UnoCSS / wot / SVG / Image / Custom）
-
-**数据展示类：**
-
-- **C_Card** - 内容卡片（4 级阴影 / header-body-footer 三段式）
-- **C_List** - 高性能列表容器（下拉刷新 / 上拉加载 / 空态 / 错误态）
-- **C_Empty** - 空状态（8 种预设类型 / UnoCSS 图标 / 自定义文案）
-- **C_Skeleton** - 骨架屏（头像 + 标题 + 段落 / 脉冲动画）
-- **C_Tag** - 状态标签（5 色 / 朴素实心 / 可关闭）
-- **C_Badge** - 增强徽标（数值 / 圆点 / max 溢出）
-- **C_Steps** - 步骤条（水平 / 垂直 / 审批流）
-- **C_Watermark** - 安全水印（CSS 文字网格 / 全页覆盖 / 全平台兼容）
-- **C_Progress** - 进度条（线性/圆形 / 状态色 / 动画）
-- **C_Timeline** - 时间轴（自定义节点 / 倒序 / 进度标记）
-- **C_Divider** - 分割线（水平/垂直 / 文字内容 / 自定义样式）
-- **C_CountDown** - 倒计时（天/时/分/秒 / 自定义格式 / 自动启停）
-
-**表单交互类：**
-
-- **C_Form** - 表单容器（声明式校验 / required+pattern+validator）
-- **C_Search** - 搜索栏（防抖输入 / 搜索历史 / 清空）
-- **C_Upload** - 文件上传（压缩 / 进度 / 预览 / 多文件）
-- **C_NumberKeyboard** - 数字键盘（金额 / 验证码 / 安全随机排列）
-- **C_Rate** - 评分（全星/半星 / 自定义图标 / 可归零）
-- **C_Signature** - 电子签名（Canvas 手写 / 撤销 / 导出图片）
-- **C_Calendar** - 日历（单选/多选/范围 / 日期标记 / 自定义范围）
-- **C_Cascader** - 级联选择器（多级联动 / 搜索过滤 / 自定义字段）
-- **C_TabNav** - 标签页导航（滚动/等分/吸顶 / 徽标）
-
-**反馈交互类：**
-
-- **C_Modal** - 弹窗（v-model 控制 / 自定义内容 / 纯文本）
-- **C_ActionSheet** - 底部操作面板（图标 / 描述 / 危险操作）
-- **C_FloatButton** - 悬浮按钮（固定定位 / 可拖拽 / 安全区适配）
-- **C_SwipeAction** - 滑动操作（左右滑删 / 多按钮 / 自定义背景色）
-- **C_ImagePreview** - 图片预览（多图切换 / 双指缩放 / 保存相册）
-- **C_IndexList** - 索引列表（字母导航 / 快速定位 / 自定义分组）
-- **C_Notify** - 消息通知（顶部提示 / 多类型 / 自动关闭）
-
-### 🛠️ 企业级能力
-
-- **权限体系** - 路由守卫 + v-permission 指令 + Store RBAC
-- **主题系统** - CSS Variables 60+ 语义化变量 + 统一浅色主题 + 全页面主题适配
-- **国际化** - vue-i18n 11.x 已集成
-- **表单校验** - v_verify 工具 + C_Form 声明式校验
-- **Mock 系统** - 内置 Mock 数据，开发阶段不依赖后端
-- **WebSocket** - useWebSocket 带心跳重连封装
-- **业务模板** - 内置 Dashboard / 审批 / CRUD / 表单等完整模板页
-
-**组合函数（9 个）：**
-
-- `useLoading` — 加载态管理
-- `usePagination` — 分页逻辑
-- `useNetwork` — 网络状态监听
-- `useModal` — Promise 化弹窗
-- `useCountdown` — 倒计时
-- `useUpload` — 文件上传
-- `useShare` — 分享能力
-- `usePageSkeleton` — 页面骨架屏控制
-- `useWebSocket` — WebSocket 封装
+| 命令 | 说明 |
+| --- | --- |
+| `pnpm dev` / `dev:wx` / `dev:app` | 各端开发模式（Mock 自动启用） |
+| `pnpm dev:test` / `dev:staging` | 测试/预发布环境 dev server |
+| `pnpm build` / `build:wx` / `build:app` | 生产构建 |
+| `pnpm build:test` / `build:staging` | 测试/预发布构建 |
+| `pnpm type-check` | vue-tsc 全量类型检查 |
+| `pnpm lint` | oxlint + ESLint 检查并修复 |
+| `pnpm cz` | 交互式规范化提交 |
+| `pnpm push` | 推送当前分支到 origin |
 
 ---
 
 ## 🏗️ 项目架构
 
-### 📁 目录结构
-
 ```
-Robot_UniApp/
-├── docs/                         # 架构文档
-│   └── PLAN.md                   # 项目规划路线图
-├── env/                          # 多环境配置
+├── env/                      # 环境变量（单一配置源，vite envDir 指向此处）
+│   ├── .env                  # 通用配置
+│   ├── .env.development      # 开发（H5 走 /api 代理 → VITE_API_PROXY_TARGET）
+│   ├── .env.test / staging / production
 ├── src/
-│   ├── api/                      # API 接口管理
-│   │   └── modules/              # 按业务域拆分
-│   ├── components/global/        # 全局组件库 (33 个)
-│   │   ├── C_Header/             # 响应式头部
-│   │   ├── C_Layout/             # 统一布局容器
-│   │   ├── C_Tabbar/             # 底部导航栏
-│   │   ├── C_Title/              # 玻璃风标题
-│   │   ├── C_Icon/               # 五类图标
-│   │   ├── C_Card/               # 内容卡片
-│   │   ├── C_List/               # 高性能列表
-│   │   ├── C_Empty/              # 空状态
-│   │   ├── C_Skeleton/           # 骨架屏
-│   │   ├── C_Tag/                # 状态标签
-│   │   ├── C_Badge/              # 增强徽标
-│   │   ├── C_Steps/              # 步骤条
-│   │   ├── C_Watermark/          # 安全水印
-│   │   ├── C_Form/               # 表单容器
-│   │   ├── C_Search/             # 搜索栏
-│   │   ├── C_Upload/             # 文件上传
-│   │   ├── C_NumberKeyboard/     # 数字键盘
-│   │   ├── C_Modal/              # 弹窗
-│   │   ├── C_ActionSheet/        # 底部操作面板
-│   │   ├── C_SwipeAction/        # 滑动操作
-│   │   ├── C_ImagePreview/       # 图片预览
-│   │   ├── C_IndexList/          # 索引列表
-│   │   ├── C_Signature/          # 电子签名
-│   │   ├── C_Calendar/           # 日历
-│   │   ├── C_Cascader/           # 级联选择器
-│   │   ├── C_TabNav/             # 标签页导航
-│   │   ├── C_Progress/           # 进度条
-│   │   ├── C_Timeline/           # 时间轴
-│   │   ├── C_Rate/               # 评分
-│   │   ├── C_Notify/             # 消息通知
-│   │   ├── C_Divider/            # 分割线
-│   │   ├── C_CountDown/          # 倒计时
-│   │   └── C_FloatButton/        # 悬浮按钮
-│   ├── composables/              # 组合函数库 (9 个)
-│   │   ├── useLoading.ts         # 加载态管理
-│   │   ├── usePagination.ts      # 分页逻辑
-│   │   ├── useNetwork.ts         # 网络状态监听
-│   │   ├── useModal.ts           # Promise 化弹窗
-│   │   ├── useCountdown.ts       # 倒计时
-│   │   ├── useUpload.ts          # 文件上传
-│   │   ├── useShare.ts           # 分享能力
-│   │   ├── usePageSkeleton.ts    # 页面骨架屏控制
-│   │   └── useWebSocket.ts       # WebSocket 封装
-│   ├── constants/                # 常量管理
-│   │   ├── app.ts                # 应用级常量
-│   │   ├── storage.ts            # 存储 Key 枚举
-│   │   ├── regex.ts              # 正则集合
-│   │   ├── gradients.ts          # 渐变色预设
-│   │   └── business.ts           # 业务状态码/字典
-│   ├── config/                   # 运行时配置
-│   ├── directives/               # 自定义指令
-│   ├── mock/                     # 前端 Mock 数据
-│   │   └── modules/              # 按业务域拆分
-│   ├── pages/                    # 页面目录
-│   │   ├── index/                # 首页
-│   │   ├── login/                # 登录页
-│   │   ├── register/             # 注册页
-│   │   ├── guide/                # 引导页
-│   │   ├── robot/                # 组件库展示
-│   │   ├── message/              # 消息中心
-│   │   ├── profile/              # 个人中心
-│   │   ├── about/                # 关于
-│   │   ├── settings/             # 设置（含修改密码）
-│   │   ├── search-result/        # 搜索结果
-│   │   ├── detail/               # 详情页
-│   │   ├── dashboard/            # 数据看板
-│   │   ├── approval/             # 审批流程
-│   │   ├── crud-list/            # 增删改查列表
-│   │   ├── form-template/        # 表单模板
-│   │   ├── scan/                 # 扫码
-│   │   ├── webview/              # WebView 容器
-│   │   └── demo/                 # 组件演示 (33 个 Demo)
-│   ├── stores/                   # Pinia 状态管理
-│   │   └── modules/              # app / user / message / notification / settings
-│   ├── styles/                   # 全局样式体系
-│   │   ├── variables.scss        # CSS 变量 (色板/字号/间距/阴影)
-│   │   ├── mixins.scss           # SCSS Mixins
-│   │   ├── reset.scss            # 样式重置
-│   │   ├── transition.scss       # 统一过渡动画
-│   │   └── index.scss            # 入口
-│   ├── types/                    # TypeScript 类型定义
-│   │   ├── http.ts               # HTTP 请求类型
-│   │   ├── store.ts              # Store 类型
-│   │   └── websocket.ts          # WebSocket 类型
-│   ├── utils/                    # 工具函数
-│   ├── static/                   # 静态资源
-│   └── main.ts                   # 入口文件
-├── mock/                         # 根级 Mock 文件（msw / viteMock）
-├── docs/                         # 架构文档
-│   └── PLAN.md                   # 项目规划路线图
-├── .husky/                       # Git hooks
-├── .cz-config.js                 # Commitizen 提交规范
-├── commitlint.config.js          # Commitlint 配置
-├── eslint.config.ts              # ESLint 配置
-├── .prettierrc.js                # Prettier 配置
-├── tsconfig.json                 # TypeScript 配置
-├── package.json                  # 项目配置
-├── vite.config.js                # Vite 配置
-└── uno.config.js                 # UnoCSS 配置
-```
-
-### 🔄 架构设计
-
-```
-mermaid
-graph TB
-    A[表现层] --> B[业务层]
-    B --> C[数据层]
-
-    subgraph "表现层"
-        A1[Pages] --> A2[Components]
-    end
-
-    subgraph "业务层"
-        B1[Stores] --> B2[Utils]
-    end
-
-    subgraph "数据层"
-        C1[API] --> C2[HTTP]
-    end
-```
-
-### 🔊 实用功能
-
-<details>
-<summary>📈 点击查看更多功能特性</summary>
-
-#### 🌌 现代化开发体验
-
-- **热重载** - Vite 提供闪电般的开发体验
-- **TypeScript** - 完整的类型支持（可选）
-- **ESLint + Prettier** - 代码质量保障
-- **自动导入** - 组件和 API 自动导入
-
-#### 📱 移动端优化
-
-- **触摸反馈** - 丰富的手势交互
-- **性能优化** - 懒加载和代码分割
-- **离线支持** - Service Worker 缓存策略
-- **响应式设计** - 适配各种屏幕尺寸
-
-#### 🔒 企业级特性
-
-- **权限系统** - 基于 RBAC 的权限控制
-- **安全防护** - XSS/CSRF 防护机制
-- **错误监控** - 全局错误处理和日志
-- **数据持久化** - 多级缓存策略
-
-</details>
-
----
-
-## 📖 开发指南
-
-### 🔧 环境要求
-
-- **Node.js**: >= 16.x (推荐 18.x+)
-- **pnpm**: >= 7.x (推荐最新版)
-- **HBuilderX**: 官方推荐 IDE
-- **微信开发者工具**: 小程序开发必需
-
-### 🎨 开发规范
-
-#### 创建新页面
-
-```
-# 1. 在src/pages下创建页面目录
-mkdir src/pages/your-page
-
-# 2. 创建页面文件
-touch src/pages/your-page/index.vue
-
-# 3. 在pages.json中注册页面
-```
-
-#### 创建新组件
-
-```
-# 在src/components/global下创建组件
-mkdir src/components/global/C_YourComponent
-```
-
-#### 主题定制
-
-```scss
-// src/styles/variables.scss - 全局 CSS 变量
-:root {
-  --r-color-primary: #007aff;
-  --r-bg-page: #f5f6fa;
-  --r-bg-card: #ffffff;
-  --r-glass-bg: rgba(255, 255, 255, 0.85);
-  --r-text-primary: #333333;
-  // ... 60+ 语义化变量
-}
+│   ├── api/                  # API 工厂 + 业务接口模块（类型化）
+│   ├── components/global/    # 34 个 C_* 全局组件（easycom: C_Xxx → 自动注册）
+│   ├── composables/          # useUpload / useWebSocket / useModal / usePagination ...
+│   ├── config/env.ts         # 读取 VITE_* 并导出类型化运行时配置
+│   ├── constants/            # RESPONSE_CODE / 业务枚举 / 正则
+│   ├── directives/           # v-auth / v-role 权限指令（仅 H5，小程序用 v-if 方案）
+│   ├── mock/                 # Mock 拦截器（DEV 自动挂载，code:0 协议）
+│   ├── pages/                # 主包 7 页 + 12 个分包（demo 33 页独立分包）
+│   ├── stores/               # Pinia + 持久化（uni storage 适配器）
+│   ├── styles/               # 设计 token（:root + page 双挂载）/ reset / mixins
+│   ├── types/                # UserInfo / LoginResult / PageResult 等共享类型
+│   ├── utils/                # http / router(守卫) / url-policy / error-handler / v_verify
+│   └── main.ts               # 入口：错误处理 → Pinia → 守卫依赖注入 → Mock 挂载
+├── uno.config.js             # UnoCSS（图标集显式声明，避免环境性加载失败）
+└── vite.config.js            # envDir=env / AutoImport / 生产 drop console
 ```
 
 ---
 
-## 🛠️ 功能特性
+## 🔧 核心机制说明
 
-### 🔐 权限管理
+### 请求层（`src/utils/http.ts`）
 
-- 路由级权限控制
-- 菜单动态生成
-- 按钮级权限控制
-- JWT Token 认证
+- 响应协议：HTTP 200 且 `code === 0`（`RESPONSE_CODE.SUCCESS`）为成功
+- GET 默认重试 2 次，**仅网络错误/5xx 重试**（指数退避），业务错误不重试
+- 401 统一处理：清登录态 → 保存 `REDIRECT_URL` → reLaunch 登录页（并发去重）；登录成功后由 `consumeRedirectUrl()` 回跳
+- 页面级请求取消：`C_Layout` 在页面 `onUnload` 时自动调用 `http.cancelPageRequests`
 
-### 🎨 主题系统
+### 路由守卫（`src/utils/router.ts`）
 
-- **统一浅色主题** - 纯浅色模式，不跟随系统深色切换
-- **CSS Variables** - 60+ 语义化变量（色板/文字/背景/玻璃拟态/阴影/间距/圆角等）
-- **全页面适配** - 所有页面、组件硬编码颜色已替换为 CSS 变量
+- 模型：**默认所有页面需要登录**，`WHITE_LIST` 放行（登录/注册/引导）
+- 基于 `uni.addInterceptor` 拦截 navigateTo/redirectTo/reLaunch/switchTab
+- `PERMISSION_PAGES` 可按页面声明角色/权限要求
 
-### 📱 响应式设计
+### Mock（`src/mock/`）
 
-- 移动优先设计
-- 多屏幕适配
-- 触摸友好交互
-- 性能优化
+- 仅 `import.meta.env.DEV` 生效，`main.ts` 动态挂载（生产构建不打包）
+- 拦截 `uni.request`，按 `METHOD /path` 匹配（自动剥离 baseURL 前缀）
+- 与业务层同一成功协议（`success()` 返回 `code: 0`）
+
+### 环境配置
+
+- 单一配置源：`env/` 目录的 `VITE_*` 变量（`vite.config.js` 已设 `envDir: 'env'`）
+- `src/config/env.ts` 负责读取并导出类型化配置；`VITE_ENV` 决定环境（development/test/staging/production）
+- H5 开发用相对路径 `/api` 走 vite proxy；小程序/App 自动回退到 `VITE_API_PROXY_TARGET` 绝对地址
+- H5 可用 `?env=xxx` 临时切换环境（**仅开发构建**，生产被摇树移除）
+
+### WebView 安全（`src/utils/url-policy.ts`）
+
+- WebView 页面仅允许加载**白名单内**的 https 地址（`WEBVIEW_ALLOWED_HOSTS`，支持 `*.example.com` 通配）
+- 扫码结果打开链接前弹窗展示域名并要求用户确认
+- 接入业务时请把业务域名加入白名单
+
+### 设计 Token（`src/styles/variables.scss`）
+
+- 命名约定 `--r-{类别}-{语义}`，同时挂载 `:root`（H5）与 `page`（小程序/App）
+- 组件内请使用 `var(--r-color-primary)` 等 token，避免硬编码色值
 
 ---
 
-## 📊 性能优化
+## 📱 页面一览
 
-|   优化项    |   效果   |
-| :---------: | :------: |
-| 🚀 启动速度 |   < 2s   |
-|  ⚡ 热更新  | < 200ms  |
-|  📦 包体积  | 减少 60% |
-| 🔄 路由切换 | < 100ms  |
-
-### 优化策略
-
-- 代码分割和懒加载
-- Tree Shaking 无用代码移除
-- 图片压缩和格式优化
-- 智能缓存机制
+| 分类 | 页面 |
+| --- | --- |
+| 主包 | 登录（账号/短信）、首页主控台、消息中心、组件库、个人中心、设置、修改密码 |
+| 业务模板 | crud-list 列表 / form-template 表单 / approval 审批 / dashboard 看板 / detail 详情 / search-result 搜索 |
+| 功能 | scan 扫码（URL 确认）/ webview（白名单）/ guide 首次启动引导 / about / register |
+| 组件演示 | `pages/demo` 分包，33 个组件逐一演示 |
 
 ---
 
-## 🤝 参与贡献
+## 🧪 质量保障
 
-### 快速贡献
-
+```bash
+pnpm type-check   # vue-tsc --noEmit（0 错误）
+pnpm lint         # oxlint + eslint
+pnpm build:h5     # H5 生产构建
+pnpm build:wx     # 微信小程序构建（主包约 1MB，含分包优化/按需注入/预下载配置）
 ```
-# 1. Fork项目
-# 2. 创建功能分支
-git checkout -b feature/awesome-feature
 
-# 3. 提交修改
-git commit -m "feat: 添加新功能"
-
-# 4. 提交PR
-```
-
-### 贡献方向
-
-- 🎨 页面/组件开发
-- 🐛 Bug 修复
-- 📖 文档完善
-- ⚡ 性能优化
+- 提交：husky + lint-staged（本地 `pnpm exec`，无需联网）+ commitlint
+- 生产构建自动移除 `console`/`debugger`
 
 ---
 
-## 🔒 安全特性
+## 📄 接入指引（新项目 Checklist）
 
-- **身份认证**: JWT Token + 自动刷新
-- **权限控制**: RBAC 权限体系
-- **数据安全**: HTTPS + 数据加密
-- **代码安全**: 依赖扫描 + 代码混淆
-
----
-
-## 📞 联系我们
-
-- **项目地址**: [GitHub](https://github.com/ChenyCHENYU/Robot_uniApp)
-- **问题反馈**: [提交 Issue](https://github.com/ChenyCHENYU/Robot_uniApp/issues)
-- **功能建议**: [讨论区](https://github.com/ChenyCHENYU/Robot_uniApp/discussions)
-- **作者**: [@ChenyCHENYU](https://github.com/ChenyCHENYU)
+1. 替换 `env/` 中的 API/WS/CDN 地址为真实后端
+2. 在 `src/utils/url-policy.ts` 配置 WebView 域名白名单
+3. 在 `src/manifest.json` 填入微信 `appid`（或使用 CI 注入），并按需调整 App 权限
+4. 对照 `src/api/modules/` 替换真实接口定义与返回类型
+5. 按需调整 `src/utils/router.ts` 的 `WHITE_LIST` 与 `PERMISSION_PAGES`
+6. 首页/仪表盘等演示数据接入真实 API（参考消息中心 `fetchMessages` 的接法）
 
 ---
 
-## 🏆 致谢
+## 📜 License
 
-感谢以下开源项目的支持：
-
-- [Vue.js](https://vuejs.org/) - 渐进式 JavaScript 框架
-- [UniApp](https://uniapp.dcloud.io/) - 跨平台应用开发框架
-- [wot-design-uni](https://wot-design-uni.pages.dev/) - 京东风格 Vue 3 跨平台 UI 组件库
-- [Pinia](https://pinia.vuejs.org/) - Vue 的状态管理库
-- [UnoCSS](https://unocss.dev/) - 原子化 CSS 引擎
-- [Vite](https://vitejs.dev/) - 下一代前端构建工具
-
-特别感谢所有开源贡献者的无私奉献！🙏
-
----
-
-## 📄 开源协议
-
-本项目基于 [MIT License](./LICENSE) 开源协议。
-
----
-
-<div align="center">
-
-### 🚀 开始你的跨平台开发之旅
-
-<p>
-  <strong>如果这个项目对你有帮助，请给个 ⭐ Star 支持一下！</strong><br>
-  <em>你的支持是我们前进的动力 🌟</em>
-</p>
-
-<p>
-  <a href="https://github.com/ChenyCHENYU/Robot_uniApp">
-    <img src="https://img.shields.io/badge/⭐-给个Star-yellow?style=for-the-badge&logo=github" alt="GitHub Star">
-  </a>
-  <a href="https://github.com/ChenyCHENYU/Robot_uniApp/fork">
-    <img src="https://img.shields.io/badge/🍴-Fork项目-blue?style=for-the-badge&logo=github" alt="GitHub Fork">
-  </a>
-</p>
-
-**🤖 Robot UniApp - 让跨平台开发变得简单而高效**
-
-<p>
-  <em>"好的框架不仅要功能强大，更要让开发者用得愉快"</em><br>
-  <strong>— Robot UniApp 团队</strong>
-</p>
-
-<p>
-  <strong>Made with ❤️ by ChenY</strong><br>
-  <em>感谢开源让世界更美好 🌍</em>
-</p>
-
-<h3>💫 一次开发，十端运行</h3>
-<p><em>让每个开发者都能享受跨平台的便利</em></p>
-
-</div>
+私有项目，未配置开源许可证。

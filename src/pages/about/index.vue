@@ -163,7 +163,7 @@
     'Pinia 2.3',
     'wot-design-uni',
     'Sass 1.98',
-    'vue-i18n 11.3',
+    'v_verify 校验',
     'Iconify/MDI',
   ]
 

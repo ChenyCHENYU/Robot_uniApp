@@ -250,8 +250,17 @@
   ])
 
   const currentResults = computed(() => {
-    if (activeTab.value === 'all') return allResults.value
-    return allResults.value.filter(i => i.type === activeTab.value)
+    const kw = keyword.value.trim().toLowerCase()
+    return allResults.value.filter(i => {
+      const matchTab = activeTab.value === 'all' || i.type === activeTab.value
+      if (!matchTab) return false
+      // 关键词过滤（标题/描述）
+      if (!kw || !hasSearched.value) return true
+      return (
+        (i.title || '').toLowerCase().includes(kw) ||
+        (i.desc || '').toLowerCase().includes(kw)
+      )
+    })
   })
 
   const handleSearch = () => {

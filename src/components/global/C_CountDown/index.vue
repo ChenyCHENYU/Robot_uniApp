@@ -28,7 +28,7 @@
 
   const remaining = ref(props.time)
   let endTime = 0
-  let timer = null
+  let timer: ReturnType<typeof setTimeout> | null = null
   let counting = false
 
   const timeData = computed(() => parseTime(remaining.value))

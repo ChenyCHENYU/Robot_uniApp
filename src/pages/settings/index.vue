@@ -309,7 +309,7 @@
 
   // 用户信息
   const userAvatar = computed(
-    () => userStore.avatar || '/static/robot-avatar.png'
+    () => userStore.avatar || '/static/images/default-avatar.png'
   )
   const nickname = ref(userStore.userInfo?.nickname || 'CHENY')
   const bio = ref('')
@@ -342,7 +342,12 @@
         if (userStore.userInfo) {
           userStore.userInfo.avatar = tempPath
         } else {
-          userStore.userInfo = { avatar: tempPath }
+          userStore.userInfo = {
+            id: '',
+            username: '',
+            nickname: userStore.nickname === '未设置昵称' ? '' : userStore.nickname,
+            avatar: tempPath,
+          }
         }
         uni.showToast({ title: '头像已更新', icon: 'success' })
       },

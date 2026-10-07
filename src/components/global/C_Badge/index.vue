@@ -23,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-  import { computed } from 'vue'
+  import { computed, type PropType } from 'vue'
   import { defaultProps } from './data'
 
   const props = defineProps({
@@ -38,7 +38,7 @@
     /** 颜色 */
     color: { type: String, default: defaultProps.color },
     /** 偏移 [x, y] (rpx) */
-    offset: { type: Array, default: () => defaultProps.offset },
+    offset: { type: Array as PropType<number[]>, default: () => defaultProps.offset },
   })
 
   const showBadge = computed(() => {

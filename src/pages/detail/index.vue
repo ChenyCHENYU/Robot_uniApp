@@ -223,7 +223,7 @@
   .detail-cover {
     position: relative;
     padding: 0 32rpx 40rpx;
-    padding-top: calc(var(--status-bar-height, 44px) + 8rpx);
+    padding-top: calc(var(--status-bar-height, 0px) + 8rpx);
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 
     .cover-nav {

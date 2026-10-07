@@ -1,31 +1,52 @@
-/*
- * @Author: ChenYu ycyplus@gmail.com
- * @Date: 2025-09-08 15:53:45
- * @LastEditors: ChenYu ycyplus@gmail.com
- * @LastEditTime: 2025-09-09 16:38:49
- * @FilePath: \Robot_uniApp\src\utils\router.js
- * @Description: 路由封装和权限控制
- * Copyright (c) 2025 by CHENY, All Rights Reserved 😎.
+/**
+ * 路由封装和权限控制
+ *
+ * 守卫模型：默认所有页面需要登录，whiteList 中的页面放行；
+ * permissionPages 可按页面追加角色/权限要求。
+ *
+ * 使用 uni.addInterceptor 官方拦截 API（不再覆写 uni.navigateTo）。
+ * 依赖注入：main.ts 在 Pinia 初始化后调用 setUserStore（全平台，不依赖 window）。
  */
+/** 守卫所需的用户状态结构（与 useUserStore 保持结构兼容） */
+interface UserLikeStore {
+  isLoggedIn: boolean
+  permissions: string[]
+  roles: string[]
+}
 
-// 使用依赖注入模式，避免循环引用
-let userStoreInstance: any = null
+/** 无需登录即可访问的页面 */
+const WHITE_LIST = [
+  '/pages/login/index',
+  '/pages/register/index',
+  '/pages/guide/index',
+]
 
-// 设置 store 实例（由 main.ts 在初始化后调用）
-export function setUserStore(store: any) {
+/** 需要特定角色/权限的页面（角色与权限任一命中即通过） */
+const PERMISSION_PAGES: Record<string, string[]> = {
+  // 示例：'/pages/admin/index': ['admin'],
+}
+
+/** 权限检查结果 */
+interface CheckResult {
+  pass: boolean
+  type?: 'auth' | 'permission'
+  message?: string
+  redirectTo?: string
+}
+
+/** 用户状态依赖（由 main.ts 注入，避免循环引用） */
+let userStoreInstance: UserLikeStore | null = null
+
+/** 设置 store 实例（由 main.ts 在初始化后调用） */
+export function setUserStore(store: UserLikeStore) {
   userStoreInstance = store
 }
 
-// 获取当前用户状态（纯函数，无副作用）
+/** 获取当前用户状态 */
 function getCurrentUserState() {
   if (!userStoreInstance) {
-    return {
-      isLoggedIn: false,
-      permissions: [],
-      roles: [],
-    }
+    return { isLoggedIn: false, permissions: [] as string[], roles: [] as string[] }
   }
-
   return {
     isLoggedIn: userStoreInstance.isLoggedIn,
     permissions: userStoreInstance.permissions || [],
@@ -33,222 +54,174 @@ function getCurrentUserState() {
   }
 }
 
-/**
- * 路由配置
- */
-export const routeConfig = {
-  // 无需登录的页面
-  whiteList: [
-    '/pages/login/index',
-    '/pages/register/index',
-    '/pages/forgot/index',
-    '/pages/index/index',
-  ],
+/** 权限检查（纯函数） */
+export function checkPermission(pagePath: string): CheckResult {
+  const userState = getCurrentUserState()
 
-  // 需要登录的页面
-  authPages: [
-    '/pages/user/profile',
-    '/pages/user/settings',
-    '/pages/order/list',
-    '/pages/order/detail',
-  ],
-
-  // 需要特定权限的页面
-  permissionPages: {
-    '/pages/admin/dashboard': ['admin'],
-    '/pages/admin/users': ['admin', 'user:manage'],
-    '/pages/finance/report': ['finance:view'],
-  },
-}
-
-/**
- * 路由守卫类
- */
-class RouterGuard {
-  constructor() {
-    this.interceptRoutes()
-  }
-
-  // 拦截所有路由方法
-  interceptRoutes() {
-    const routeMethods = ['navigateTo', 'redirectTo', 'reLaunch', 'switchTab']
-    routeMethods.forEach(method => {
-      this.interceptRoute(method)
-    })
-  }
-
-  // 拦截单个路由方法
-  interceptRoute(method) {
-    const originalMethod = uni[method]
-    uni[method] = options => {
-      return this.beforeRoute(options, originalMethod, method)
-    }
-  }
-
-  // 路由前置守卫
-  beforeRoute(options, originalMethod, method) {
-    const { url } = options
-    const pagePath = this.getPagePath(url)
-    const checkResult = this.checkPermission(pagePath)
-
-    if (!checkResult.pass) {
-      this.handlePermissionDenied(checkResult, method)
-      return
-    }
-
-    return originalMethod.call(uni, options)
-  }
-
-  // 提取页面路径（去掉参数）
-  getPagePath(url) {
-    return url.split('?')[0]
-  }
-
-  // 权限检查（纯函数，无副作用）
-  checkPermission(pagePath) {
-    const userState = getCurrentUserState()
-
-    // 白名单直接通过
-    if (routeConfig.whiteList.includes(pagePath)) {
-      return { pass: true }
-    }
-
-    // 检查是否需要登录
-    if (routeConfig.authPages.includes(pagePath)) {
-      if (!userState.isLoggedIn) {
-        return {
-          pass: false,
-          type: 'auth',
-          message: '请先登录',
-          redirectTo: '/pages/login/index',
-        }
-      }
-    }
-
-    // 检查特定权限
-    const requiredPermissions = routeConfig.permissionPages[pagePath]
-    if (requiredPermissions) {
-      if (!userState.isLoggedIn) {
-        return {
-          pass: false,
-          type: 'auth',
-          message: '请先登录',
-          redirectTo: '/pages/login/index',
-        }
-      }
-
-      const hasPermission = requiredPermissions.some(
-        permission =>
-          userState.permissions.includes(permission) ||
-          userState.roles.includes(permission)
-      )
-
-      if (!hasPermission) {
-        return {
-          pass: false,
-          type: 'permission',
-          message: '权限不足',
-          redirectTo: '/pages/index/index',
-        }
-      }
-    }
-
+  // 白名单直接通过
+  if (WHITE_LIST.includes(pagePath)) {
     return { pass: true }
   }
 
-  // 处理权限拒绝
-  handlePermissionDenied(checkResult, routeMethod) {
-    const { type, message, redirectTo } = checkResult
-
-    uni.showToast({
-      title: message,
-      icon: 'none',
-      duration: 2000,
-    })
-
-    setTimeout(() => {
-      if (type === 'auth') {
-        if (routeMethod === 'switchTab') {
-          uni.reLaunch({ url: redirectTo })
-        } else {
-          uni.navigateTo({ url: redirectTo })
-        }
-      } else if (type === 'permission') {
-        if (routeMethod === 'switchTab') {
-          uni.switchTab({ url: redirectTo })
-        } else {
-          const pages = getCurrentPages()
-          if (pages.length > 1) {
-            uni.navigateBack()
-          } else {
-            uni.reLaunch({ url: redirectTo })
-          }
-        }
-      }
-    }, 2000)
+  // 默认需要登录
+  if (!userState.isLoggedIn) {
+    return {
+      pass: false,
+      type: 'auth',
+      message: '请先登录',
+      redirectTo: '/pages/login/index',
+    }
   }
+
+  // 特定权限检查
+  const required = PERMISSION_PAGES[pagePath]
+  if (required && required.length > 0) {
+    const hasPermission = required.some(
+      item =>
+        userState.permissions.includes(item) || userState.roles.includes(item)
+    )
+    if (!hasPermission) {
+      return {
+        pass: false,
+        type: 'permission',
+        message: '权限不足',
+        redirectTo: '/pages/index/index',
+      }
+    }
+  }
+
+  return { pass: true }
 }
+
+/** 处理权限拒绝：提示后立即跳转 */
+function handlePermissionDenied(result: CheckResult) {
+  uni.showToast({
+    title: result.message || '无权访问',
+    icon: 'none',
+    duration: 1500,
+  })
+
+  const target = result.redirectTo || '/pages/login/index'
+  // 登录页使用 reLaunch 清空页面栈，避免返回键回到受保护页
+  setTimeout(() => {
+    uni.reLaunch({ url: target })
+  }, 300)
+}
+
+/** 提取页面路径（去掉参数） */
+export function getPagePath(url: string): string {
+  return (url || '').split('?')[0]
+}
+
+/** 安装路由守卫（拦截 4 种跳转 API） */
+function installGuard() {
+  const methods = ['navigateTo', 'redirectTo', 'reLaunch', 'switchTab'] as const
+  methods.forEach(method => {
+    uni.addInterceptor(method, {
+      invoke(args: { url: string }) {
+        const pagePath = getPagePath(args?.url || '')
+        if (!pagePath) return args
+
+        const result = checkPermission(pagePath)
+        if (!result.pass) {
+          handlePermissionDenied(result)
+          return false
+        }
+        return args
+      },
+    })
+  })
+}
+
+installGuard()
 
 /**
  * 编程式导航封装
  */
 export const router = {
-  push(url, params = {}) {
-    const fullUrl = this.buildUrl(url, params)
-    uni.navigateTo({ url: fullUrl })
+  push(url: string, params: Record<string, string | number> = {}) {
+    uni.navigateTo({ url: this.buildUrl(url, params) })
   },
 
-  replace(url, params = {}) {
-    const fullUrl = this.buildUrl(url, params)
-    uni.redirectTo({ url: fullUrl })
+  replace(url: string, params: Record<string, string | number> = {}) {
+    uni.redirectTo({ url: this.buildUrl(url, params) })
   },
 
-  reLaunch(url, params = {}) {
-    const fullUrl = this.buildUrl(url, params)
-    uni.reLaunch({ url: fullUrl })
+  reLaunch(url: string, params: Record<string, string | number> = {}) {
+    uni.reLaunch({ url: this.buildUrl(url, params) })
   },
 
-  switchTab(url) {
+  switchTab(url: string) {
     uni.switchTab({ url })
   },
 
   back(delta = 1) {
-    uni.navigateBack({ delta })
+    const pages = getCurrentPages()
+    if (pages.length > 1) {
+      uni.navigateBack({ delta })
+    } else {
+      // 页面栈仅一层时回首页，避免卡死
+      uni.reLaunch({ url: '/pages/index/index' })
+    }
   },
 
-  buildUrl(url, params) {
-    if (!params || Object.keys(params).length === 0) {
-      return url
-    }
+  /** 智能跳转：tabbar 页自动 switchTab，普通页 navigateTo */
+  smartNavigate(url: string, params: Record<string, string | number> = {}) {
+    const fullUrl = this.buildUrl(url, params)
+    uni.switchTab({
+      url: fullUrl,
+      fail: () => {
+        uni.navigateTo({ url: fullUrl })
+      },
+    })
+  },
 
+  buildUrl(url: string, params: Record<string, string | number> = {}) {
+    if (!params || Object.keys(params).length === 0) return url
     const queryString = Object.keys(params)
-      .map(key => `${key}=${encodeURIComponent(params[key])}`)
+      .map(
+        key =>
+          `${encodeURIComponent(key)}=${encodeURIComponent(String(params[key]))}`
+      )
       .join('&')
-
     return `${url}?${queryString}`
   },
 
-  parseQuery(url) {
-    const [path, queryString] = url.split('?')
-    const params = {}
-
+  parseQuery(url: string): { path: string; params: Record<string, string> } {
+    const [path, queryString] = (url || '').split('?')
+    const params: Record<string, string> = {}
     if (queryString) {
       queryString.split('&').forEach(param => {
         const [key, value] = param.split('=')
-        params[key] = decodeURIComponent(value || '')
+        if (key) params[decodeURIComponent(key)] = decodeURIComponent(value || '')
       })
     }
-
     return { path, params }
   },
 }
 
-// 初始化路由守卫
-const routerGuard = new RouterGuard()
-
-// 导出初始化函数
-export function initRouter() {
-  console.log('路由系统初始化完成')
+/**
+ * 消费登录回跳地址（http 401 时保存，登录成功后调用）
+ * 无保存地址时回首页
+ */
+export function consumeRedirectUrl(fallback = '/pages/index/index'): string {
+  let redirect = fallback
+  try {
+    const saved = uni.getStorageSync('REDIRECT_URL') as string
+    if (saved && typeof saved === 'string' && saved.startsWith('/')) {
+      // 白名单页不作为回跳目标
+      if (!WHITE_LIST.includes(getPagePath(saved))) {
+        redirect = saved
+      }
+      uni.removeStorageSync('REDIRECT_URL')
+    }
+  } catch {
+    // 存储异常时忽略，回退默认地址
+  }
+  return redirect
 }
 
-export default routerGuard
+/** 路由系统初始化（守卫已在模块加载时安装，此处保留语义入口） */
+export function initRouter() {
+  // noop: guard installed on module load
+}

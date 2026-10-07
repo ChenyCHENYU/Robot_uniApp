@@ -50,7 +50,6 @@ export const noLayoutPages = [
   '/pages/login/index',
   '/pages/register/index',
   '/pages/guide/index',
-  '/pages/splash/index',
 ]
 
 export const noBackPages: string[] = []
@@ -65,11 +64,12 @@ const MAX_HISTORY = 5
 const saveNavHistory = path => {
   // #ifdef H5
   try {
-    const history = JSON.parse(localStorage.getItem(NAV_KEY) || '[]')
+    const raw = uni.getStorageSync(NAV_KEY)
+    const history: string[] = raw ? JSON.parse(String(raw)) : []
     if (history[history.length - 1] !== path) {
       history.push(path)
       if (history.length > MAX_HISTORY) history.shift()
-      localStorage.setItem(NAV_KEY, JSON.stringify(history))
+      uni.setStorageSync(NAV_KEY, JSON.stringify(history))
     }
   } catch {}
   // #endif
@@ -78,7 +78,8 @@ const saveNavHistory = path => {
 const getNavHistory = (): string[] => {
   // #ifdef H5
   try {
-    return JSON.parse(localStorage.getItem(NAV_KEY) || '[]')
+    const raw = uni.getStorageSync(NAV_KEY)
+    return raw ? JSON.parse(String(raw)) : []
   } catch {
     return []
   }
@@ -212,8 +213,8 @@ export const getSmartHeaderConfig = (
   const isCompactMode = layoutType === 'header-only' // 无TabBar的页面使用紧凑模式
 
   return {
-    defaultAvatar: '/static/robot-avatar.png',
-    defaultNickname: 'CHENY',
+    defaultAvatar: '/static/images/default-avatar.png',
+    defaultNickname: '未设置昵称',
     showBack:
       props.showBack !== undefined
         ? props.showBack
@@ -286,7 +287,7 @@ const enhancedGoBack = (delta = 1) => {
   if (history.length > 1) {
     const previousPage = history[history.length - 2]
     const newHistory = history.slice(0, -1)
-    localStorage.setItem(NAV_KEY, JSON.stringify(newHistory))
+    uni.setStorageSync(NAV_KEY, JSON.stringify(newHistory))
     return uni.navigateTo({ url: previousPage })
   }
   // #endif
@@ -411,6 +412,6 @@ export const debugCurrentPage = () => {
 }
 
 // 开发环境注册调试
-if (process.env.NODE_ENV === 'development') {
-  globalThis.debugCurrentPage = debugCurrentPage
+if (import.meta.env.DEV) {
+  ;(globalThis as any).debugCurrentPage = debugCurrentPage
 }

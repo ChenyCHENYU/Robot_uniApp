@@ -2,8 +2,8 @@
   <view
     :class="[
       'c-rate',
-      disabled && 'c-rate--disabled',
-      readonly && 'c-rate--readonly',
+      $props.disabled && 'c-rate--disabled',
+      $props.readonly && 'c-rate--readonly',
     ]"
   >
     <view
@@ -81,6 +81,8 @@
     /** 是否允许归零 */
     clearable: { type: Boolean, default: defaultProps.clearable },
   })
+
+  // readonly 与 vue 自动导入的 readonly() API 命名冲突，用计算属性别名
 
   const emit = defineEmits(['update:modelValue', 'change'])
 

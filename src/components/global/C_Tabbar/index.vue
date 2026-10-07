@@ -1,8 +1,5 @@
 <!--
- * @Author: ChenYu ycyplus@gmail.com
- * @Date: 2025-01-09
  * @Description: 全局底部Tabbar组件 - 双模式(glass玻璃拟态 / flat扁平简约)
- * Copyright (c) 2025 by CHENY, All Rights Reserved 😎.
 -->
 <template>
   <view
@@ -10,20 +7,22 @@
     :class="['is-fixed', `mode-${mode}`]"
     :style="{ paddingBottom: safeAreaBottom + 'px' }"
   >
-    <view class="tabbar-container">
+    <view class="c-tabbar__container">
       <view
-        class="tab-item"
+        class="c-tabbar__item"
         v-for="(item, index) in tabList"
         :key="item.id"
         :class="{ 'is-active': currentIndex === index }"
+        hover-class="c-tabbar__item--hover"
+        :hover-stay-time="80"
         @click="handleTabClick(item, index)"
       >
         <!-- 图标区域 -->
-        <view class="icon-wrapper">
+        <view class="c-tabbar__icon">
           <!-- Fluent Color 多色图标 —— 始终同一图标，CSS 控制激活/未激活 -->
           <view
             v-if="item.unoIcon"
-            class="tab-icon"
+            class="c-tabbar__icon-img"
             :class="[item.unoIcon, { 'is-active': currentIndex === index }]"
           ></view>
           <!-- 降级：wd-icon -->
@@ -45,7 +44,7 @@
 
         <!-- 文字标签 -->
         <text
-          class="tab-label"
+          class="c-tabbar__label"
           :class="{ 'is-active': currentIndex === index }"
         >
           {{ item.text }}
@@ -73,6 +72,6 @@
   defineExpose({ setBadge, setCurrentIndex })
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
   @import './index.scss';
 </style>

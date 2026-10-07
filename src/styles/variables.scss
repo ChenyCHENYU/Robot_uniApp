@@ -3,9 +3,13 @@
  *
  * 基于 CSS Custom Properties
  * 命名约定：--r-{类别}-{语义}-{变体}
+ *
+ * 同时挂载到 :root（H5）与 page（小程序/App），
+ * 小程序 WXSS 不识别 :root，缺 page 声明会导致 token 全部失效。
  */
 
-:root {
+:root,
+page {
   // ============ 色板 ============
   --r-color-primary: #007aff;
   --r-color-primary-light: #409eff;

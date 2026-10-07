@@ -1,8 +1,6 @@
 /**
- * @Author: ChenYu ycyplus@gmail.com
- * @Date: 2025-01-09
  * @Description: C_Tabbar — glass 玻璃拟态胶囊 / flat 扁平简约 双模式
- * Copyright (c) 2025 by CHENY, All Rights Reserved 😎.
+ * 类名统一 c-tabbar__ 前缀 + scoped，避免污染业务页面
  */
 
 // ─────────────────────────────────────────────
@@ -20,14 +18,14 @@
   }
 }
 
-.tabbar-container {
+.c-tabbar__container {
   display: flex;
   align-items: center;
   justify-content: space-around;
   height: 56px;
 }
 
-.tab-item {
+.c-tabbar__item {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -41,7 +39,12 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-.icon-wrapper {
+// 点击反馈（hover-class，小程序端 :active 伪类无效）
+.c-tabbar__item--hover {
+  transform: scale(0.9);
+}
+
+.c-tabbar__icon {
   position: relative;
   display: flex;
   align-items: center;
@@ -49,7 +52,7 @@
 }
 
 // Fluent Color 图标
-.tab-icon {
+.c-tabbar__icon-img {
   width: 26px;
   height: 26px;
   display: inline-block;
@@ -65,14 +68,14 @@
   }
 }
 
-.tab-label {
+.c-tabbar__label {
   text-align: center;
   line-height: 1;
   white-space: nowrap;
 }
 
 // ─────────────────────────────────────────────
-// 🔷 GLASS MODE — iOS 拟态毛玻璃胶囊
+// GLASS MODE — iOS 拟态毛玻璃胶囊
 // ─────────────────────────────────────────────
 .c-tabbar.mode-glass {
   &.is-fixed {
@@ -89,7 +92,6 @@
   overflow: hidden;
 
   // ── 毛玻璃 ──
-  // 微妙的蓝紫色渐变底色，确保在浅色背景下也能看到玻璃质感
   background:
     linear-gradient(
       135deg,
@@ -108,7 +110,7 @@
   // ── 玻璃边框：上边亮线模拟光折射 ──
   border: 0.5px solid rgba(255, 255, 255, 0.65);
 
-  // ── 阴影层次：内白光 + 外扩散 + 主题色光晕 ──
+  // ── 阴影层次 ──
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.95),
     inset 0 -0.5px 0 rgba(0, 0, 0, 0.03),
@@ -116,54 +118,50 @@
     0 8px 32px rgba(102, 126, 234, 0.12),
     0 2px 60px rgba(118, 75, 162, 0.06);
 
-  .tabbar-container {
+  .c-tabbar__container {
     height: 58px;
     padding: 0 4px;
   }
 
-  .tab-item {
+  .c-tabbar__item {
     transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
     border-radius: 16px;
-
-    &:active {
-      transform: scale(0.82);
-    }
   }
 
-  .tab-label {
+  .c-tabbar__label {
     font-size: 10px;
-    color: #8e8e93;
+    color: var(--r-text-secondary, #8e8e93);
     font-weight: 500;
     letter-spacing: 0.1px;
     transition: color 0.25s ease, font-weight 0.25s ease;
 
     &.is-active {
-      color: #667eea;
+      color: var(--r-color-primary, #007aff);
       font-weight: 700;
     }
   }
 }
 
 // ─────────────────────────────────────────────
-// 🔹 FLAT MODE — 扁平简约
+// FLAT MODE — 扁平简约
 // ─────────────────────────────────────────────
 .c-tabbar.mode-flat {
-  background: #ffffff;
+  background: var(--r-bg-card, #ffffff);
   border-top: 1px solid rgba(0, 0, 0, 0.06);
   box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.03);
 
-  .tabbar-container {
+  .c-tabbar__container {
     height: 52px;
   }
 
-  .tab-label {
+  .c-tabbar__label {
     font-size: 10px;
-    color: #999;
+    color: var(--r-text-placeholder, #999);
     font-weight: 400;
     margin-top: 2px;
 
     &.is-active {
-      color: #667eea;
+      color: var(--r-color-primary, #007aff);
       font-weight: 600;
     }
   }

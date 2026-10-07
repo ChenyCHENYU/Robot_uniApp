@@ -1,8 +1,11 @@
 /// <reference types="@dcloudio/types" />
 /// <reference types="vite/client" />
 
-/** 全局声明：自动导入的 Vue / uni-app API */
-declare const uni: (typeof import('@dcloudio/types'))['uni']
+// uni 全局类型由 @dcloudio/types 提供（上面 reference 已覆盖）
+
+/** vite.config.js define 注入的全局常量 */
+declare const __ENV__: string
+declare const __VERSION__: string
 
 /** Vue SFC 模块声明 */
 declare module '*.vue' {

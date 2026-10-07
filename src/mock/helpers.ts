@@ -2,7 +2,10 @@
  * Mock 数据工具层
  * 仅在开发环境 (import.meta.env.DEV) 下启用
  * 通过拦截 uni.request / uni.uploadFile 返回模拟数据
+ *
+ * 响应协议与业务层对齐：code === 0 表示成功（见 constants/business.ts）
  */
+import { RESPONSE_CODE } from '@/constants/business'
 
 export interface MockResponse<T = any> {
   code: number
@@ -10,9 +13,9 @@ export interface MockResponse<T = any> {
   data: T
 }
 
-/** 构造模拟成功响应 */
+/** 构造模拟成功响应（与 http.ts 成功判定协议一致：code 0） */
 export function success<T>(data: T, message = 'ok'): MockResponse<T> {
-  return { code: 200, message, data }
+  return { code: RESPONSE_CODE.SUCCESS, message, data }
 }
 
 /** 构造模拟失败响应 */

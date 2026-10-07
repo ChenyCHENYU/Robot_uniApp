@@ -54,11 +54,18 @@
 </template>
 
 <script setup lang="ts">
+  import type { PropType } from 'vue'
+
+  interface StepItem {
+    title: string
+    description?: string
+    [key: string]: any
+  }
   import { defaultProps } from './data'
 
   const props = defineProps({
     /** 步骤数据 [{ title, description }] */
-    steps: { type: Array, required: true },
+    steps: { type: Array as PropType<StepItem[]>, required: true },
     /** 当前步骤索引（从 0 开始） */
     current: { type: Number, default: defaultProps.current },
     /** 方向 horizontal / vertical */

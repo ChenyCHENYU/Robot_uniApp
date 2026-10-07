@@ -139,7 +139,7 @@
           >
             <C_Icon
               type="svg"
-              name="/static/icons/icon-test.svg"
+              name="/static/images/logo.png"
               :size="32"
             />
             <C_Icon
@@ -178,7 +178,7 @@
           >
             <C_Icon
               type="image"
-              name="/static/images/test-1.png"
+              name="/static/images/default-avatar.png"
               :size="32"
             />
             <C_Icon
