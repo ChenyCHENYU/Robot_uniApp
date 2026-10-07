@@ -32,11 +32,13 @@ export const generateKeys = (
   extraKey: string,
   randomOrder: boolean
 ): KeyItem[] => {
-  const base = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-  const numbers = randomOrder ? shuffle(base) : base
+  // 标准顺序：1-9 主区域 + 0 键位；随机模式对 0-9 整体洗牌后同布局放置
+  const base = randomOrder
+    ? shuffle([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+    : [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]
 
   // 前 9 个占据主区域
-  const keys: KeyItem[] = numbers
+  const keys: KeyItem[] = base
     .slice(0, 9)
     .map(n => ({ text: String(n), type: 'number' as const }))
 
@@ -49,8 +51,8 @@ export const generateKeys = (
     keys.push({ text: '', type: 'empty' })
   }
 
-  // 第 10 个数字占据 0 键位置（randomOrder 时同样随机）
-  keys.push({ text: String(numbers[9]), type: 'number' })
+  // 第 10 个数字占据 0 键位置
+  keys.push({ text: String(base[9]), type: 'number' })
 
   // 退格
   keys.push({ text: 'delete', type: 'delete' })

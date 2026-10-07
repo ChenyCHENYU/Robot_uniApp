@@ -167,22 +167,22 @@
     {
       label: '导出报告',
       icon: '📋',
-      bg: 'linear-gradient(135deg, #667eea, #764ba2)',
+      bg: 'var(--r-gradient-primary)',
     },
     {
       label: '用户分析',
       icon: '👤',
-      bg: 'linear-gradient(135deg, #f093fb, #f5576c)',
+      bg: 'var(--r-gradient-danger)',
     },
     {
       label: '系统日志',
       icon: '📝',
-      bg: 'linear-gradient(135deg, #4facfe, #00f2fe)',
+      bg: 'var(--r-gradient-info)',
     },
     {
       label: '性能监控',
       icon: '⚡',
-      bg: 'linear-gradient(135deg, #43e97b, #38f9d7)',
+      bg: 'var(--r-gradient-success)',
     },
   ])
 

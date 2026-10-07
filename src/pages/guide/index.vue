@@ -107,28 +107,28 @@
       icon: '🚀',
       title: '跨平台开发',
       desc: '一套代码，同时运行在 H5、小程序、App 多个平台，大幅降低开发成本',
-      gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      gradient: 'var(--r-gradient-primary)',
       ringColor: 'rgba(102, 126, 234, 0.3)',
     },
     {
       icon: '🧩',
       title: '丰富组件',
       desc: '内置33+高质量UI组件，覆盖表单、列表、导航等常见场景，开箱即用',
-      gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+      gradient: 'var(--r-gradient-danger)',
       ringColor: 'rgba(240, 147, 251, 0.3)',
     },
     {
       icon: '⚡',
       title: '极致性能',
       desc: '虚拟滚动、图片懒加载、骨架屏预渲染，为用户带来流畅的使用体验',
-      gradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+      gradient: 'var(--r-gradient-info)',
       ringColor: 'rgba(79, 172, 254, 0.3)',
     },
     {
       icon: '🛡️',
       title: '企业级架构',
       desc: '完善的权限管理、状态管理、请求拦截，满足企业级应用开发需求',
-      gradient: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+      gradient: 'var(--r-gradient-success)',
       ringColor: 'rgba(67, 233, 123, 0.3)',
     },
   ])
@@ -257,7 +257,7 @@
 
       &.active {
         width: 48rpx;
-        background: linear-gradient(135deg, #667eea, #764ba2);
+        background: var(--r-gradient-primary);
       }
     }
   }
@@ -291,7 +291,7 @@
       align-items: center;
       gap: 8rpx;
       padding: 20rpx 48rpx;
-      background: linear-gradient(135deg, #667eea, #764ba2);
+      background: var(--r-gradient-primary);
       border-radius: 48rpx;
 
       .next-text {
@@ -307,7 +307,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: linear-gradient(135deg, #667eea, #764ba2);
+      background: var(--r-gradient-primary);
       border-radius: 48rpx;
 
       .start-text {

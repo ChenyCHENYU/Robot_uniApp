@@ -42,7 +42,7 @@
             <view class="item-left">
               <view
                 class="item-icon"
-                style="background: linear-gradient(135deg, #667eea, #764ba2)"
+                style="background: var(--r-gradient-primary)"
               >
                 <wd-icon
                   name="user"
@@ -68,7 +68,7 @@
             <view class="item-left">
               <view
                 class="item-icon"
-                style="background: linear-gradient(135deg, #43e97b, #38f9d7)"
+                style="background: var(--r-gradient-success)"
               >
                 <wd-icon
                   name="edit-outline"
@@ -94,7 +94,7 @@
             <view class="item-left">
               <view
                 class="item-icon"
-                style="background: linear-gradient(135deg, #4facfe, #00f2fe)"
+                style="background: var(--r-gradient-info)"
               >
                 <wd-icon
                   name="chat"
@@ -127,7 +127,7 @@
             <view class="item-left">
               <view
                 class="item-icon"
-                style="background: linear-gradient(135deg, #fa709a, #fee140)"
+                style="background: var(--r-gradient-warm)"
               >
                 <wd-icon
                   name="warning"
@@ -149,7 +149,7 @@
             <view class="item-left">
               <view
                 class="item-icon"
-                style="background: linear-gradient(135deg, #a8edea, #fed6e3)"
+                style="background: var(--r-gradient-mint)"
               >
                 <wd-icon
                   name="check"
@@ -177,7 +177,7 @@
             <view class="item-left">
               <view
                 class="item-icon"
-                style="background: linear-gradient(135deg, #f093fb, #f5576c)"
+                style="background: var(--r-gradient-danger)"
               >
                 <wd-icon
                   name="notification"
@@ -250,7 +250,7 @@
             <view class="item-left">
               <view
                 class="item-icon"
-                style="background: linear-gradient(135deg, #667eea, #764ba2)"
+                style="background: var(--r-gradient-primary)"
               >
                 <wd-icon
                   name="brightness"

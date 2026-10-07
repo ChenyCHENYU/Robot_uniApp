@@ -45,7 +45,7 @@
       <view class="stats-section">
         <view
           class="stat-item"
-          v-for="stat in userStats"
+          v-for="stat in userStatsRef"
           :key="stat.label"
         >
           <text class="stat-value">{{ stat.value }}</text>
@@ -65,6 +65,8 @@
             v-for="item in group.items"
             :key="item.id"
             class="menu-item"
+            hover-class="menu-item--hover"
+            :hover-stay-time="80"
             @click="handleMenuClick(item)"
           >
             <view class="menu-left">
@@ -133,28 +135,13 @@
   import { useUserStore } from '@/stores/modules/user'
   import { useMessageStore } from '@/stores/modules/message'
   import C_LogoutTransition from '@/components/global/C_LogoutTransition/index.vue'
+  import { userStats, createMenuGroups } from './data'
   import { APP_VERSION } from '@/constants'
 
   const appVersion = APP_VERSION
 
   const userStore = useUserStore()
   const messageStore = useMessageStore()
-
-  interface ProfileMenuItem {
-    id: string
-    label: string
-    icon: string
-    iconBg: string
-    path?: string
-    badge?: number
-    extra?: string
-    [key: string]: any
-  }
-
-  interface MenuGroup {
-    title: string
-    items: ProfileMenuItem[]
-  }
 
   const userAvatar = computed(
     () => userStore.avatar || '/static/images/default-avatar.png'
@@ -167,92 +154,15 @@
   })
   const userId = computed(() => userStore.userInfo?.id || '100001')
 
-  const userStats = ref([
-    { value: '33', label: '组件' },
-    { value: '8', label: 'Composables' },
-    { value: '12', label: '常量' },
-    { value: '5', label: '样式' },
-  ])
 
-  const menuGroups = ref<MenuGroup[]>([
-    {
-      title: '个人服务',
-      items: [
-        {
-          id: 'settings',
-          label: '个人设置',
-          icon: 'setting',
-          iconBg: 'linear-gradient(135deg, #667eea, #764ba2)',
-          path: '/pages/settings/index',
-        },
-        {
-          id: 'notification',
-          label: '消息通知',
-          icon: 'notification',
-          iconBg: 'linear-gradient(135deg, #fa709a, #fee140)',
-          badge: messageStore.totalUnread,
-          path: '/pages/message/index',
-        },
-        {
-          id: 'privacy',
-          label: '隐私管理',
-          icon: 'shield',
-          iconBg: 'linear-gradient(135deg, #43e97b, #38f9d7)',
-        },
-      ],
-    },
-    {
-      title: '开发工具',
-      items: [
-        {
-          id: 'docs',
-          label: '开发文档',
-          icon: 'books',
-          iconBg: 'linear-gradient(135deg, #f093fb, #f5576c)',
-          path: '/pages/webview/index?url=https%3A%2F%2Funiapp.dcloud.net.cn&title=开发文档',
-        },
-        {
-          id: 'templates',
-          label: '业务模板',
-          icon: 'list',
-          iconBg: 'linear-gradient(135deg, #4facfe, #00f2fe)',
-          path: '/pages/demo/index',
-        },
-        {
-          id: 'changelog',
-          label: '更新日志',
-          icon: 'calendar',
-          iconBg: 'linear-gradient(135deg, #a8edea, #fed6e3)',
-          extra: `v${APP_VERSION}`,
-        },
-      ],
-    },
-    {
-      title: '其他',
-      items: [
-        {
-          id: 'feedback',
-          label: '意见反馈',
-          icon: 'edit-outline',
-          iconBg: 'linear-gradient(135deg, #ffecd2, #fcb69f)',
-        },
-        {
-          id: 'about',
-          label: '关于应用',
-          icon: 'info-circle',
-          iconBg: 'linear-gradient(135deg, #c3cfe2, #f5f7fa)',
-          path: '/pages/about/index',
-        },
-        {
-          id: 'cache',
-          label: '清除缓存',
-          icon: 'delete',
-          iconBg: 'linear-gradient(135deg, #e0c3fc, #8ec5fc)',
-          extra: '12.5MB',
-        },
-      ],
-    },
-  ])
+  const menuGroups = computed(() =>
+    createMenuGroups({
+      unread: () => messageStore.totalUnread,
+      version: APP_VERSION,
+    })
+  )
+
+  const userStatsRef = userStats
 
   const goToSettings = () => {
     uni.navigateTo({ url: '/pages/settings/index' })
@@ -521,6 +431,10 @@
       overflow: hidden;
       box-shadow: var(--r-glass-shadow);
       border: 1rpx solid var(--r-divider);
+    }
+
+    .menu-item--hover {
+      background: var(--r-bg-hover);
     }
 
     .menu-item {

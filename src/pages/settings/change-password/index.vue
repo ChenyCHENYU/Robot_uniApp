@@ -465,7 +465,7 @@
       align-items: center;
       justify-content: center;
       height: 88rpx;
-      background: linear-gradient(135deg, #667eea, #764ba2);
+      background: var(--r-gradient-primary);
       border-radius: 44rpx;
       box-shadow: 0 8rpx 24rpx rgba(102, 126, 234, 0.3);
       transition: all 0.3s ease;

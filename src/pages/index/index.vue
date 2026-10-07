@@ -70,9 +70,11 @@
         <text class="section-heading">快捷操作</text>
         <view class="actions-grid">
           <view
-            v-for="action in quickActions"
+            v-for="action in quickActionsRef"
             :key="action.label"
             class="glass-action"
+            hover-class="glass-action--hover"
+            :hover-stay-time="80"
             @click="handleQuickAction(action)"
           >
             <view
@@ -175,6 +177,7 @@
   import { useUserStore } from '@/stores/modules/user'
   import { useDashboardData } from '@/composables/useDashboardData'
   import { APP_VERSION } from '@/constants'
+  import { initialTodoList, quickActions, type TodoItem } from './data'
 
   const messageStore = useMessageStore()
   const userStore = useUserStore()
@@ -199,101 +202,15 @@
   const { activities, activitiesLoading, kpiCards, loadStats, loadActivities } =
     useDashboardData()
 
-  // ==================== 待办（本地演示数据） ====================
+  // ==================== 待办（本地演示数据，见 data.ts） ====================
 
-  interface TodoItem {
-    id: number
-    title: string
-    time: string
-    done: boolean
-    priority: string
-  }
-
-  const todoList = ref<TodoItem[]>([
-    {
-      id: 1,
-      title: '完成首页Dashboard布局',
-      time: '今天 10:00',
-      done: true,
-      priority: 'high',
-    },
-    {
-      id: 2,
-      title: 'Q1产品规划评审',
-      time: '今天 14:00',
-      done: false,
-      priority: 'high',
-    },
-    {
-      id: 3,
-      title: '组件库文档更新',
-      time: '今天 16:00',
-      done: false,
-      priority: 'medium',
-    },
-    {
-      id: 4,
-      title: '优化H5响应式布局',
-      time: '明天 09:00',
-      done: false,
-      priority: 'low',
-    },
-  ])
+  const todoList = ref<TodoItem[]>([...initialTodoList])
 
   const todoCount = computed(() => todoList.value.filter(i => !i.done).length)
 
-  // ==================== 快捷入口（静态导航配置） ====================
+  // ==================== 快捷入口（静态导航配置，见 data.ts） ====================
 
-  const quickActions = ref([
-    {
-      label: '扫一扫',
-      icon: '📷',
-      bg: 'linear-gradient(135deg, #667eea, #764ba2)',
-      url: '/pages/scan/index',
-    },
-    {
-      label: '审批中心',
-      icon: '✅',
-      bg: 'linear-gradient(135deg, #43e97b, #38f9d7)',
-      url: '/pages/approval/index',
-    },
-    {
-      label: '数据看板',
-      icon: '📊',
-      bg: 'linear-gradient(135deg, #f093fb, #f5576c)',
-      url: '/pages/dashboard/index',
-    },
-    {
-      label: '表单模板',
-      icon: '📝',
-      bg: 'linear-gradient(135deg, #4facfe, #00f2fe)',
-      url: '/pages/form-template/index',
-    },
-    {
-      label: 'CRUD列表',
-      icon: '📋',
-      bg: 'linear-gradient(135deg, #fa709a, #fee140)',
-      url: '/pages/crud-list/index',
-    },
-    {
-      label: '搜索',
-      icon: '🔍',
-      bg: 'linear-gradient(135deg, #a8edea, #fed6e3)',
-      url: '/pages/search-result/index',
-    },
-    {
-      label: '详情展示',
-      icon: '📖',
-      bg: 'linear-gradient(135deg, #fccb90, #d57eeb)',
-      url: '/pages/detail/index',
-    },
-    {
-      label: '关于',
-      icon: 'ℹ️',
-      bg: 'linear-gradient(135deg, #96e6a1, #d4fc79)',
-      url: '/pages/about/index',
-    },
-  ])
+  const quickActionsRef = quickActions
 
   // 进入页面刷新服务端数据
   onShow(() => {
@@ -511,6 +428,11 @@
     gap: 16rpx;
   }
 
+  .glass-action--hover {
+    transform: scale(0.94);
+    opacity: 0.85;
+  }
+
   .glass-action {
     @include glass-surface;
     border-radius: 20rpx;
@@ -577,7 +499,7 @@
       transition: all 0.25s ease;
 
       &.done {
-        background: linear-gradient(135deg, #43e97b, #38f9d7);
+        background: var(--r-gradient-success);
         border-color: transparent;
         box-shadow: 0 2rpx 8rpx rgba(67, 233, 123, 0.3);
       }

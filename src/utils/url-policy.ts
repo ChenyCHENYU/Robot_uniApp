@@ -13,12 +13,13 @@
 export const WEBVIEW_ALLOWED_HOSTS: string[] = [
   'github.com',
   'www.github.com',
+  'uniapp.dcloud.net.cn',
   // 项目接入时替换为业务域名，例如：
   // 'www.your-company.com',
 ]
 
 /** 判断主机名是否命中白名单条目（支持 *.example.com 通配） */
-function matchHost(host: string, pattern: string): boolean {
+export function matchHost(host: string, pattern: string): boolean {
   if (pattern.startsWith('*.')) {
     const base = pattern.slice(2)
     return host === base || host.endsWith(`.${base}`)

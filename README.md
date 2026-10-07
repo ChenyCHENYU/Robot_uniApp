@@ -61,7 +61,8 @@ pnpm dev:app        # App 开发（需 HBuilderX）
 | `pnpm build` / `build:wx` / `build:app` | 生产构建 |
 | `pnpm build:test` / `build:staging` | 测试/预发布构建 |
 | `pnpm type-check` | vue-tsc 全量类型检查 |
-| `pnpm test` | 契约测试（守卫/协议/Mock 同步/平台隔离） |
+| `pnpm test` | 契约测试（守卫/协议/Mock 同步/平台隔离）+ 单元测试 |
+| `pnpm test:unit` | vitest 单元测试（tests/，纯逻辑层） |
 | `pnpm check:budget` | 构建产物包体预算门禁 |
 | `pnpm check:quality` | type-check + lint + test 一键全检 |
 | `pnpm lint` | oxlint + ESLint 检查并修复 |
@@ -169,6 +170,8 @@ pnpm build:wx     # 微信小程序构建（主包约 1MB，含分包优化/按�
 ```
 
 - 提交：husky + lint-staged（本地 `pnpm exec`，无需联网）+ commitlint
+- CI：GitHub Actions（lint → type-check → test → 双端构建 → 包体预算），见 `.github/workflows/ci.yml`
+- 变更记录：[CHANGELOG.md](./CHANGELOG.md)
 - 生产构建自动移除 `console`/`debugger`
 - 已知限制：wot-design-uni@1.14.0 内部存在一个上游类型错误（`useUpload.ts`），为通过 `type-check` 暂未启用其 `global.d.ts` 全局组件模板类型；升级新版后可恢复
 

@@ -222,13 +222,13 @@
       name: 'UI设计稿.sketch',
       ext: 'SKT',
       size: '18.7 MB',
-      iconBg: 'linear-gradient(135deg, #4facfe, #00f2fe)',
+      iconBg: 'var(--r-gradient-info)',
     },
     {
       name: '技术方案.docx',
       ext: 'DOC',
       size: '1.1 MB',
-      iconBg: 'linear-gradient(135deg, #667eea, #764ba2)',
+      iconBg: 'var(--r-gradient-primary)',
     },
   ])
 
@@ -281,7 +281,7 @@
     position: relative;
     padding: 0 32rpx 40rpx;
     padding-top: calc(var(--status-bar-height, 0px) + 8rpx);
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--r-gradient-primary);
 
     .cover-nav {
       display: flex;
@@ -538,7 +538,7 @@
         background: rgba(102, 126, 234, 0.1);
       }
       &.primary {
-        background: linear-gradient(135deg, #667eea, #764ba2);
+        background: var(--r-gradient-primary);
       }
 
       .bar-btn-text {

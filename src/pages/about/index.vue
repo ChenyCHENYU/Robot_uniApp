@@ -103,25 +103,25 @@
       icon: '🚀',
       title: 'UniApp 3.0',
       desc: '基于 Vue 3 的跨端开发框架',
-      iconBg: 'linear-gradient(135deg, #667eea, #764ba2)',
+      iconBg: 'var(--r-gradient-primary)',
     },
     {
       icon: '⚡',
       title: 'Vue 3.5 + TypeScript 5.7',
       desc: 'Composition API + 完整类型推导',
-      iconBg: 'linear-gradient(135deg, #43e97b, #38f9d7)',
+      iconBg: 'var(--r-gradient-success)',
     },
     {
       icon: '🧩',
       title: '33+ 自研组件',
       desc: 'C_Layout / C_Form / C_Modal 等',
-      iconBg: 'linear-gradient(135deg, #f093fb, #f5576c)',
+      iconBg: 'var(--r-gradient-danger)',
     },
     {
       icon: '📦',
       title: 'Vite 5 + UnoCSS',
       desc: '极速构建 + 原子化 CSS',
-      iconBg: 'linear-gradient(135deg, #4facfe, #00f2fe)',
+      iconBg: 'var(--r-gradient-info)',
     },
   ])
 
@@ -192,7 +192,7 @@
         width: 140rpx;
         height: 140rpx;
         border-radius: 36rpx;
-        background: linear-gradient(135deg, #667eea, #764ba2);
+        background: var(--r-gradient-primary);
         display: flex;
         align-items: center;
         justify-content: center;

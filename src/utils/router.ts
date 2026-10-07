@@ -58,12 +58,13 @@ function getCurrentUserState() {
   }
 }
 
-/** 权限检查（纯函数） */
+/** 权限检查（纯函数；入参允许携带查询串，内部按页面路径判定） */
 export function checkPermission(pagePath: string): CheckResult {
+  const path = getPagePath(pagePath)
   const userState = getCurrentUserState()
 
   // 白名单直接通过
-  if (WHITE_LIST.includes(pagePath)) {
+  if (WHITE_LIST.includes(path)) {
     return { pass: true }
   }
 
@@ -78,7 +79,7 @@ export function checkPermission(pagePath: string): CheckResult {
   }
 
   // 特定权限检查
-  const required = PERMISSION_PAGES[pagePath]
+  const required = PERMISSION_PAGES[path]
   if (required && required.length > 0) {
     const hasPermission = required.some(
       item =>

@@ -110,25 +110,7 @@ declare global {
 // for type re-export
 declare global {
   // @ts-ignore
-  export type {
-    Component,
-    Slot,
-    Slots,
-    ComponentPublicInstance,
-    ComputedRef,
-    DirectiveBinding,
-    ExtractDefaultPropTypes,
-    ExtractPropTypes,
-    ExtractPublicPropTypes,
-    InjectionKey,
-    PropType,
-    Ref,
-    ShallowRef,
-    MaybeRef,
-    MaybeRefOrGetter,
-    VNode,
-    WritableComputedRef,
-  } from 'vue'
+  export type { Component, Slot, Slots, ComponentPublicInstance, ComputedRef, DirectiveBinding, ExtractDefaultPropTypes, ExtractPropTypes, ExtractPublicPropTypes, InjectionKey, PropType, Ref, ShallowRef, MaybeRef, MaybeRefOrGetter, VNode, WritableComputedRef } from 'vue'
   import('vue')
   // @ts-ignore
   export type { KpiCard } from './composables/useDashboardData'
@@ -149,199 +131,105 @@ import { UnwrapRef } from 'vue'
 declare module 'vue' {
   interface GlobalComponents {}
   interface ComponentCustomProperties {
-    readonly EffectScope: UnwrapRef<(typeof import('vue'))['EffectScope']>
-    readonly WS_STATUS: UnwrapRef<
-      (typeof import('./composables/useWebSocket'))['WS_STATUS']
-    >
-    readonly acceptHMRUpdate: UnwrapRef<
-      (typeof import('pinia'))['acceptHMRUpdate']
-    >
-    readonly computed: UnwrapRef<(typeof import('vue'))['computed']>
-    readonly createApp: UnwrapRef<(typeof import('vue'))['createApp']>
-    readonly createPinia: UnwrapRef<(typeof import('pinia'))['createPinia']>
-    readonly customRef: UnwrapRef<(typeof import('vue'))['customRef']>
-    readonly defineAsyncComponent: UnwrapRef<
-      (typeof import('vue'))['defineAsyncComponent']
-    >
-    readonly defineComponent: UnwrapRef<
-      (typeof import('vue'))['defineComponent']
-    >
-    readonly defineStore: UnwrapRef<(typeof import('pinia'))['defineStore']>
-    readonly effectScope: UnwrapRef<(typeof import('vue'))['effectScope']>
-    readonly getActivePinia: UnwrapRef<
-      (typeof import('pinia'))['getActivePinia']
-    >
-    readonly getCurrentInstance: UnwrapRef<
-      (typeof import('vue'))['getCurrentInstance']
-    >
-    readonly getCurrentScope: UnwrapRef<
-      (typeof import('vue'))['getCurrentScope']
-    >
-    readonly getCurrentWatcher: UnwrapRef<
-      (typeof import('vue'))['getCurrentWatcher']
-    >
-    readonly h: UnwrapRef<(typeof import('vue'))['h']>
-    readonly initTheme: UnwrapRef<
-      (typeof import('./composables/useTheme'))['initTheme']
-    >
-    readonly inject: UnwrapRef<(typeof import('vue'))['inject']>
-    readonly isProxy: UnwrapRef<(typeof import('vue'))['isProxy']>
-    readonly isReactive: UnwrapRef<(typeof import('vue'))['isReactive']>
-    readonly isReadonly: UnwrapRef<(typeof import('vue'))['isReadonly']>
-    readonly isRef: UnwrapRef<(typeof import('vue'))['isRef']>
-    readonly isShallow: UnwrapRef<(typeof import('vue'))['isShallow']>
-    readonly mapActions: UnwrapRef<(typeof import('pinia'))['mapActions']>
-    readonly mapGetters: UnwrapRef<(typeof import('pinia'))['mapGetters']>
-    readonly mapState: UnwrapRef<(typeof import('pinia'))['mapState']>
-    readonly mapStores: UnwrapRef<(typeof import('pinia'))['mapStores']>
-    readonly mapWritableState: UnwrapRef<
-      (typeof import('pinia'))['mapWritableState']
-    >
-    readonly markRaw: UnwrapRef<(typeof import('vue'))['markRaw']>
-    readonly nextTick: UnwrapRef<(typeof import('vue'))['nextTick']>
-    readonly onActivated: UnwrapRef<(typeof import('vue'))['onActivated']>
-    readonly onBeforeMount: UnwrapRef<(typeof import('vue'))['onBeforeMount']>
-    readonly onBeforeUnmount: UnwrapRef<
-      (typeof import('vue'))['onBeforeUnmount']
-    >
-    readonly onBeforeUpdate: UnwrapRef<(typeof import('vue'))['onBeforeUpdate']>
-    readonly onDeactivated: UnwrapRef<(typeof import('vue'))['onDeactivated']>
-    readonly onErrorCaptured: UnwrapRef<
-      (typeof import('vue'))['onErrorCaptured']
-    >
-    readonly onHide: UnwrapRef<(typeof import('@dcloudio/uni-app'))['onHide']>
-    readonly onLaunch: UnwrapRef<
-      (typeof import('@dcloudio/uni-app'))['onLaunch']
-    >
-    readonly onLoad: UnwrapRef<(typeof import('@dcloudio/uni-app'))['onLoad']>
-    readonly onMounted: UnwrapRef<(typeof import('vue'))['onMounted']>
-    readonly onPageScroll: UnwrapRef<
-      (typeof import('@dcloudio/uni-app'))['onPageScroll']
-    >
-    readonly onPullDownRefresh: UnwrapRef<
-      (typeof import('@dcloudio/uni-app'))['onPullDownRefresh']
-    >
-    readonly onReachBottom: UnwrapRef<
-      (typeof import('@dcloudio/uni-app'))['onReachBottom']
-    >
-    readonly onReady: UnwrapRef<(typeof import('@dcloudio/uni-app'))['onReady']>
-    readonly onRenderTracked: UnwrapRef<
-      (typeof import('vue'))['onRenderTracked']
-    >
-    readonly onRenderTriggered: UnwrapRef<
-      (typeof import('vue'))['onRenderTriggered']
-    >
-    readonly onScopeDispose: UnwrapRef<(typeof import('vue'))['onScopeDispose']>
-    readonly onServerPrefetch: UnwrapRef<
-      (typeof import('vue'))['onServerPrefetch']
-    >
-    readonly onShareAppMessage: UnwrapRef<
-      (typeof import('@dcloudio/uni-app'))['onShareAppMessage']
-    >
-    readonly onShareTimeline: UnwrapRef<
-      (typeof import('@dcloudio/uni-app'))['onShareTimeline']
-    >
-    readonly onShow: UnwrapRef<(typeof import('@dcloudio/uni-app'))['onShow']>
-    readonly onTabItemTap: UnwrapRef<
-      (typeof import('@dcloudio/uni-app'))['onTabItemTap']
-    >
-    readonly onUnload: UnwrapRef<
-      (typeof import('@dcloudio/uni-app'))['onUnload']
-    >
-    readonly onUnmounted: UnwrapRef<(typeof import('vue'))['onUnmounted']>
-    readonly onUpdated: UnwrapRef<(typeof import('vue'))['onUpdated']>
-    readonly onWatcherCleanup: UnwrapRef<
-      (typeof import('vue'))['onWatcherCleanup']
-    >
-    readonly provide: UnwrapRef<(typeof import('vue'))['provide']>
-    readonly reactive: UnwrapRef<(typeof import('vue'))['reactive']>
-    readonly readonly: UnwrapRef<(typeof import('vue'))['readonly']>
-    readonly ref: UnwrapRef<(typeof import('vue'))['ref']>
-    readonly resolveComponent: UnwrapRef<
-      (typeof import('vue'))['resolveComponent']
-    >
-    readonly setActivePinia: UnwrapRef<
-      (typeof import('pinia'))['setActivePinia']
-    >
-    readonly setMapStoreSuffix: UnwrapRef<
-      (typeof import('pinia'))['setMapStoreSuffix']
-    >
-    readonly shallowReactive: UnwrapRef<
-      (typeof import('vue'))['shallowReactive']
-    >
-    readonly shallowReadonly: UnwrapRef<
-      (typeof import('vue'))['shallowReadonly']
-    >
-    readonly shallowRef: UnwrapRef<(typeof import('vue'))['shallowRef']>
-    readonly storeToRefs: UnwrapRef<(typeof import('pinia'))['storeToRefs']>
-    readonly toRaw: UnwrapRef<(typeof import('vue'))['toRaw']>
-    readonly toRef: UnwrapRef<(typeof import('vue'))['toRef']>
-    readonly toRefs: UnwrapRef<(typeof import('vue'))['toRefs']>
-    readonly toValue: UnwrapRef<(typeof import('vue'))['toValue']>
-    readonly triggerRef: UnwrapRef<(typeof import('vue'))['triggerRef']>
-    readonly unref: UnwrapRef<(typeof import('vue'))['unref']>
-    readonly useAppStore: UnwrapRef<
-      (typeof import('./stores/modules/app'))['useAppStore']
-    >
-    readonly useAttrs: UnwrapRef<(typeof import('vue'))['useAttrs']>
-    readonly useCountdown: UnwrapRef<
-      (typeof import('./composables/useCountdown'))['useCountdown']
-    >
-    readonly useCssModule: UnwrapRef<(typeof import('vue'))['useCssModule']>
-    readonly useCssVars: UnwrapRef<(typeof import('vue'))['useCssVars']>
-    readonly useDashboardData: UnwrapRef<
-      (typeof import('./composables/useDashboardData'))['useDashboardData']
-    >
-    readonly useId: UnwrapRef<(typeof import('vue'))['useId']>
-    readonly useLoading: UnwrapRef<
-      (typeof import('./composables/useLoading'))['useLoading']
-    >
-    readonly useMessageStore: UnwrapRef<
-      (typeof import('./stores/modules/message'))['useMessageStore']
-    >
-    readonly useModal: UnwrapRef<
-      (typeof import('./composables/useModal'))['useModal']
-    >
-    readonly useModel: UnwrapRef<(typeof import('vue'))['useModel']>
-    readonly useNetwork: UnwrapRef<
-      (typeof import('./composables/useNetwork'))['useNetwork']
-    >
-    readonly useNotificationStore: UnwrapRef<
-      (typeof import('./stores/modules/notification'))['useNotificationStore']
-    >
-    readonly usePageSkeleton: UnwrapRef<
-      (typeof import('./composables/usePageSkeleton'))['usePageSkeleton']
-    >
-    readonly usePagination: UnwrapRef<
-      (typeof import('./composables/usePagination'))['usePagination']
-    >
-    readonly useSettingsStore: UnwrapRef<
-      (typeof import('./stores/modules/settings'))['useSettingsStore']
-    >
-    readonly useShare: UnwrapRef<
-      (typeof import('./composables/useShare'))['useShare']
-    >
-    readonly useSlots: UnwrapRef<(typeof import('vue'))['useSlots']>
-    readonly useTemplateRef: UnwrapRef<(typeof import('vue'))['useTemplateRef']>
-    readonly useTheme: UnwrapRef<
-      (typeof import('./composables/useTheme'))['useTheme']
-    >
-    readonly useUpload: UnwrapRef<
-      (typeof import('./composables/useUpload'))['useUpload']
-    >
-    readonly useUserStore: UnwrapRef<
-      (typeof import('./stores/modules/user'))['useUserStore']
-    >
-    readonly useWebSocket: UnwrapRef<
-      (typeof import('./composables/useWebSocket'))['useWebSocket']
-    >
-    readonly watch: UnwrapRef<(typeof import('vue'))['watch']>
-    readonly watchEffect: UnwrapRef<(typeof import('vue'))['watchEffect']>
-    readonly watchPostEffect: UnwrapRef<
-      (typeof import('vue'))['watchPostEffect']
-    >
-    readonly watchSyncEffect: UnwrapRef<
-      (typeof import('vue'))['watchSyncEffect']
-    >
+    readonly EffectScope: UnwrapRef<typeof import('vue')['EffectScope']>
+    readonly WS_STATUS: UnwrapRef<typeof import('./composables/useWebSocket')['WS_STATUS']>
+    readonly acceptHMRUpdate: UnwrapRef<typeof import('pinia')['acceptHMRUpdate']>
+    readonly computed: UnwrapRef<typeof import('vue')['computed']>
+    readonly createApp: UnwrapRef<typeof import('vue')['createApp']>
+    readonly createPinia: UnwrapRef<typeof import('pinia')['createPinia']>
+    readonly customRef: UnwrapRef<typeof import('vue')['customRef']>
+    readonly defineAsyncComponent: UnwrapRef<typeof import('vue')['defineAsyncComponent']>
+    readonly defineComponent: UnwrapRef<typeof import('vue')['defineComponent']>
+    readonly defineStore: UnwrapRef<typeof import('pinia')['defineStore']>
+    readonly effectScope: UnwrapRef<typeof import('vue')['effectScope']>
+    readonly getActivePinia: UnwrapRef<typeof import('pinia')['getActivePinia']>
+    readonly getCurrentInstance: UnwrapRef<typeof import('vue')['getCurrentInstance']>
+    readonly getCurrentScope: UnwrapRef<typeof import('vue')['getCurrentScope']>
+    readonly getCurrentWatcher: UnwrapRef<typeof import('vue')['getCurrentWatcher']>
+    readonly h: UnwrapRef<typeof import('vue')['h']>
+    readonly initTheme: UnwrapRef<typeof import('./composables/useTheme')['initTheme']>
+    readonly inject: UnwrapRef<typeof import('vue')['inject']>
+    readonly isProxy: UnwrapRef<typeof import('vue')['isProxy']>
+    readonly isReactive: UnwrapRef<typeof import('vue')['isReactive']>
+    readonly isReadonly: UnwrapRef<typeof import('vue')['isReadonly']>
+    readonly isRef: UnwrapRef<typeof import('vue')['isRef']>
+    readonly isShallow: UnwrapRef<typeof import('vue')['isShallow']>
+    readonly mapActions: UnwrapRef<typeof import('pinia')['mapActions']>
+    readonly mapGetters: UnwrapRef<typeof import('pinia')['mapGetters']>
+    readonly mapState: UnwrapRef<typeof import('pinia')['mapState']>
+    readonly mapStores: UnwrapRef<typeof import('pinia')['mapStores']>
+    readonly mapWritableState: UnwrapRef<typeof import('pinia')['mapWritableState']>
+    readonly markRaw: UnwrapRef<typeof import('vue')['markRaw']>
+    readonly nextTick: UnwrapRef<typeof import('vue')['nextTick']>
+    readonly onActivated: UnwrapRef<typeof import('vue')['onActivated']>
+    readonly onBeforeMount: UnwrapRef<typeof import('vue')['onBeforeMount']>
+    readonly onBeforeUnmount: UnwrapRef<typeof import('vue')['onBeforeUnmount']>
+    readonly onBeforeUpdate: UnwrapRef<typeof import('vue')['onBeforeUpdate']>
+    readonly onDeactivated: UnwrapRef<typeof import('vue')['onDeactivated']>
+    readonly onErrorCaptured: UnwrapRef<typeof import('vue')['onErrorCaptured']>
+    readonly onHide: UnwrapRef<typeof import('@dcloudio/uni-app')['onHide']>
+    readonly onLaunch: UnwrapRef<typeof import('@dcloudio/uni-app')['onLaunch']>
+    readonly onLoad: UnwrapRef<typeof import('@dcloudio/uni-app')['onLoad']>
+    readonly onMounted: UnwrapRef<typeof import('vue')['onMounted']>
+    readonly onPageScroll: UnwrapRef<typeof import('@dcloudio/uni-app')['onPageScroll']>
+    readonly onPullDownRefresh: UnwrapRef<typeof import('@dcloudio/uni-app')['onPullDownRefresh']>
+    readonly onReachBottom: UnwrapRef<typeof import('@dcloudio/uni-app')['onReachBottom']>
+    readonly onReady: UnwrapRef<typeof import('@dcloudio/uni-app')['onReady']>
+    readonly onRenderTracked: UnwrapRef<typeof import('vue')['onRenderTracked']>
+    readonly onRenderTriggered: UnwrapRef<typeof import('vue')['onRenderTriggered']>
+    readonly onScopeDispose: UnwrapRef<typeof import('vue')['onScopeDispose']>
+    readonly onServerPrefetch: UnwrapRef<typeof import('vue')['onServerPrefetch']>
+    readonly onShareAppMessage: UnwrapRef<typeof import('@dcloudio/uni-app')['onShareAppMessage']>
+    readonly onShareTimeline: UnwrapRef<typeof import('@dcloudio/uni-app')['onShareTimeline']>
+    readonly onShow: UnwrapRef<typeof import('@dcloudio/uni-app')['onShow']>
+    readonly onTabItemTap: UnwrapRef<typeof import('@dcloudio/uni-app')['onTabItemTap']>
+    readonly onUnload: UnwrapRef<typeof import('@dcloudio/uni-app')['onUnload']>
+    readonly onUnmounted: UnwrapRef<typeof import('vue')['onUnmounted']>
+    readonly onUpdated: UnwrapRef<typeof import('vue')['onUpdated']>
+    readonly onWatcherCleanup: UnwrapRef<typeof import('vue')['onWatcherCleanup']>
+    readonly provide: UnwrapRef<typeof import('vue')['provide']>
+    readonly reactive: UnwrapRef<typeof import('vue')['reactive']>
+    readonly readonly: UnwrapRef<typeof import('vue')['readonly']>
+    readonly ref: UnwrapRef<typeof import('vue')['ref']>
+    readonly resolveComponent: UnwrapRef<typeof import('vue')['resolveComponent']>
+    readonly setActivePinia: UnwrapRef<typeof import('pinia')['setActivePinia']>
+    readonly setMapStoreSuffix: UnwrapRef<typeof import('pinia')['setMapStoreSuffix']>
+    readonly shallowReactive: UnwrapRef<typeof import('vue')['shallowReactive']>
+    readonly shallowReadonly: UnwrapRef<typeof import('vue')['shallowReadonly']>
+    readonly shallowRef: UnwrapRef<typeof import('vue')['shallowRef']>
+    readonly storeToRefs: UnwrapRef<typeof import('pinia')['storeToRefs']>
+    readonly toRaw: UnwrapRef<typeof import('vue')['toRaw']>
+    readonly toRef: UnwrapRef<typeof import('vue')['toRef']>
+    readonly toRefs: UnwrapRef<typeof import('vue')['toRefs']>
+    readonly toValue: UnwrapRef<typeof import('vue')['toValue']>
+    readonly triggerRef: UnwrapRef<typeof import('vue')['triggerRef']>
+    readonly unref: UnwrapRef<typeof import('vue')['unref']>
+    readonly useAppStore: UnwrapRef<typeof import('./stores/modules/app')['useAppStore']>
+    readonly useAttrs: UnwrapRef<typeof import('vue')['useAttrs']>
+    readonly useCountdown: UnwrapRef<typeof import('./composables/useCountdown')['useCountdown']>
+    readonly useCssModule: UnwrapRef<typeof import('vue')['useCssModule']>
+    readonly useCssVars: UnwrapRef<typeof import('vue')['useCssVars']>
+    readonly useDashboardData: UnwrapRef<typeof import('./composables/useDashboardData')['useDashboardData']>
+    readonly useId: UnwrapRef<typeof import('vue')['useId']>
+    readonly useLoading: UnwrapRef<typeof import('./composables/useLoading')['useLoading']>
+    readonly useMessageStore: UnwrapRef<typeof import('./stores/modules/message')['useMessageStore']>
+    readonly useModal: UnwrapRef<typeof import('./composables/useModal')['useModal']>
+    readonly useModel: UnwrapRef<typeof import('vue')['useModel']>
+    readonly useNetwork: UnwrapRef<typeof import('./composables/useNetwork')['useNetwork']>
+    readonly useNotificationStore: UnwrapRef<typeof import('./stores/modules/notification')['useNotificationStore']>
+    readonly usePageSkeleton: UnwrapRef<typeof import('./composables/usePageSkeleton')['usePageSkeleton']>
+    readonly usePagination: UnwrapRef<typeof import('./composables/usePagination')['usePagination']>
+    readonly useSettingsStore: UnwrapRef<typeof import('./stores/modules/settings')['useSettingsStore']>
+    readonly useShare: UnwrapRef<typeof import('./composables/useShare')['useShare']>
+    readonly useSlots: UnwrapRef<typeof import('vue')['useSlots']>
+    readonly useTemplateRef: UnwrapRef<typeof import('vue')['useTemplateRef']>
+    readonly useTheme: UnwrapRef<typeof import('./composables/useTheme')['useTheme']>
+    readonly useUpload: UnwrapRef<typeof import('./composables/useUpload')['useUpload']>
+    readonly useUserStore: UnwrapRef<typeof import('./stores/modules/user')['useUserStore']>
+    readonly useWebSocket: UnwrapRef<typeof import('./composables/useWebSocket')['useWebSocket']>
+    readonly watch: UnwrapRef<typeof import('vue')['watch']>
+    readonly watchEffect: UnwrapRef<typeof import('vue')['watchEffect']>
+    readonly watchPostEffect: UnwrapRef<typeof import('vue')['watchPostEffect']>
+    readonly watchSyncEffect: UnwrapRef<typeof import('vue')['watchSyncEffect']>
   }
 }

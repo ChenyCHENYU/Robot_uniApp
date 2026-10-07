@@ -461,7 +461,7 @@
       }
 
       &.primary {
-        background: linear-gradient(135deg, #667eea, #764ba2);
+        background: var(--r-gradient-primary);
       }
 
       .btn-text {

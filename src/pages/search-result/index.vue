@@ -189,7 +189,7 @@
       desc: '复杂表单提交模板页面',
       extra: '业务模板',
       icon: '📝',
-      iconBg: 'linear-gradient(135deg, #667eea, #764ba2)',
+      iconBg: 'var(--r-gradient-primary)',
       type: 'page',
     },
     {
@@ -198,7 +198,7 @@
       desc: '数据分析可视化看板',
       extra: '业务模板',
       icon: '📊',
-      iconBg: 'linear-gradient(135deg, #f093fb, #f5576c)',
+      iconBg: 'var(--r-gradient-danger)',
       type: 'page',
     },
     {
@@ -207,7 +207,7 @@
       desc: '支持多种表单控件和校验',
       extra: '组件',
       icon: '🧩',
-      iconBg: 'linear-gradient(135deg, #4facfe, #00f2fe)',
+      iconBg: 'var(--r-gradient-info)',
       type: 'component',
     },
     {
@@ -216,7 +216,7 @@
       desc: '高性能列表，支持虚拟滚动',
       extra: '组件',
       icon: '📋',
-      iconBg: 'linear-gradient(135deg, #43e97b, #38f9d7)',
+      iconBg: 'var(--r-gradient-success)',
       type: 'component',
     },
     {
@@ -225,7 +225,7 @@
       desc: '框架使用指南和API文档',
       extra: '文档',
       icon: '📖',
-      iconBg: 'linear-gradient(135deg, #fa709a, #fee140)',
+      iconBg: 'var(--r-gradient-warm)',
       type: 'doc',
     },
   ])

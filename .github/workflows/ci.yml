@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  quality:
+    name: 质量门禁（lint / type-check / test）
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: 安装依赖
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint（oxlint + eslint）
+        run: pnpm lint:check
+
+      - name: 类型检查（vue-tsc）
+        run: pnpm type-check
+
+      - name: 契约测试
+        run: pnpm test
+
+      - name: 单元测试（vitest）
+        run: pnpm test:unit
+
+  build:
+    name: 双端构建 + 包体预算
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: 安装依赖
+        run: pnpm install --frozen-lockfile
+
+      - name: 构建 H5
+        run: pnpm build:h5
+
+      - name: 构建微信小程序
+        run: pnpm build:wx
+
+      - name: 包体预算门禁
+        run: pnpm check:budget

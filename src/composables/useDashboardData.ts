@@ -34,8 +34,8 @@ function buildKpiCards(s: DashboardStats): KpiCard[] {
       icon: '👥',
       trend: s.trends.activeUsers,
       progress: Math.min(99, Math.round((s.activeUsers / 20000) * 100)),
-      barColor: 'linear-gradient(90deg,#667eea,#764ba2)',
-      bg: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      barColor: 'var(--r-gradient-primary)',
+      bg: 'var(--r-gradient-primary)',
     },
     {
       label: '今日访问',
@@ -43,8 +43,8 @@ function buildKpiCards(s: DashboardStats): KpiCard[] {
       icon: '📊',
       trend: s.trends.todayVisits,
       progress: Math.min(99, Math.round((s.todayVisits / 6000) * 100)),
-      barColor: 'linear-gradient(90deg,#f093fb,#f5576c)',
-      bg: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+      barColor: 'var(--r-gradient-danger)',
+      bg: 'var(--r-gradient-danger)',
     },
     {
       label: '待处理',
@@ -52,8 +52,8 @@ function buildKpiCards(s: DashboardStats): KpiCard[] {
       icon: '📋',
       trend: s.trends.pendingTasks,
       progress: Math.min(99, s.pendingTasks),
-      barColor: 'linear-gradient(90deg,#4facfe,#00f2fe)',
-      bg: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+      barColor: 'var(--r-gradient-info)',
+      bg: 'var(--r-gradient-info)',
     },
     {
       label: '完成率',
@@ -61,8 +61,8 @@ function buildKpiCards(s: DashboardStats): KpiCard[] {
       icon: '🎯',
       trend: s.trends.completionRate,
       progress: s.completionRate,
-      barColor: 'linear-gradient(90deg,#43e97b,#38f9d7)',
-      bg: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+      barColor: 'var(--r-gradient-success)',
+      bg: 'var(--r-gradient-success)',
     },
   ]
 }

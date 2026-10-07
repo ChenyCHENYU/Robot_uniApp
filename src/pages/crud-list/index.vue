@@ -94,6 +94,12 @@
         </view>
       </view>
 
+      <!-- 首刷骨架屏 -->
+      <C_Skeleton
+        v-if="loading && dataList.length === 0"
+        :rows="4"
+      />
+
       <!-- 数据列表 -->
       <view class="data-list">
         <view
@@ -472,7 +478,7 @@
       align-items: center;
       gap: 6rpx;
       padding: 12rpx 28rpx;
-      background: linear-gradient(135deg, #667eea, #764ba2);
+      background: var(--r-gradient-primary);
       border-radius: 24rpx;
 
       .add-text {
@@ -483,7 +489,12 @@
   }
 
   .data-list {
-    .data-card {
+    .data-card--hover {
+    transform: scale(0.985);
+    opacity: 0.9;
+  }
+
+  .data-card {
       padding: 28rpx;
       background: var(--r-bg-card);
       border-radius: 20rpx;

@@ -259,7 +259,7 @@
       desc: '标题组件',
       category: 'basic',
       icon: 'star',
-      gradient: 'linear-gradient(135deg, #667eea, #764ba2)',
+      gradient: 'var(--r-gradient-primary)',
       path: '/pages/demo/20-title/index',
     },
     {

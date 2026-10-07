@@ -472,7 +472,7 @@
           background: rgba(102, 126, 234, 0.1);
         }
         &.primary {
-          background: linear-gradient(135deg, #667eea, #764ba2);
+          background: var(--r-gradient-primary);
         }
 
         .btn-text {

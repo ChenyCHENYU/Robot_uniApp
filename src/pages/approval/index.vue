@@ -178,12 +178,12 @@
     pending: {
       label: '审批中',
       icon: 'time',
-      bg: 'linear-gradient(135deg, #4facfe, #00f2fe)',
+      bg: 'var(--r-gradient-info)',
     },
     approved: {
       label: '已通过',
       icon: 'check',
-      bg: 'linear-gradient(135deg, #43e97b, #38f9d7)',
+      bg: 'var(--r-gradient-success)',
     },
     rejected: {
       label: '已驳回',
@@ -550,7 +550,7 @@
       }
 
       &.approve {
-        background: linear-gradient(135deg, #43e97b, #38f9d7);
+        background: var(--r-gradient-success);
       }
 
       .btn-text {
