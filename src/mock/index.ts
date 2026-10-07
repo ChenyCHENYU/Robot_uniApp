@@ -11,6 +11,8 @@ import { messageMocks } from './modules/message'
 import { approvalMocks } from './modules/approval'
 import { dashboardMocks } from './modules/dashboard'
 import { crudMocks } from './modules/crud'
+import { uploadMocks } from './modules/upload'
+import { logger } from '@/utils/logger'
 
 /** 合并所有模块的 mock 路由 */
 const mockRoutes: Record<string, (options: any) => MockResponse> = {
@@ -19,6 +21,7 @@ const mockRoutes: Record<string, (options: any) => MockResponse> = {
   ...approvalMocks,
   ...dashboardMocks,
   ...crudMocks,
+  ...uploadMocks,
 }
 
 /** 从 baseURL 中提取路径前缀（如 '/api'），避免依赖 URL 构造器（小程序端不存在） */
@@ -63,7 +66,7 @@ function getMockKey(options: UniApp.RequestOptions): string {
 export function setupMock() {
   if (!import.meta.env.DEV) return
 
-  console.log('[Mock] 🎭 开发环境 Mock 拦截器已启用')
+  logger.log('[Mock] 🎭 开发环境 Mock 拦截器已启用')
 
   uni.addInterceptor('request', {
     /** 拦截请求并匹配 mock 路由 */
@@ -83,7 +86,7 @@ export function setupMock() {
           url: options.url,
         })
 
-        console.log(`[Mock] ✅ ${key}`, mockData)
+        logger.log(`[Mock] ✅ ${key}`, mockData)
 
         // 通过 success 回调返回数据，阻止真实请求
         if (typeof options.success === 'function') {
@@ -112,5 +115,5 @@ export function setupMock() {
   })
 
   // 暴露 mock 路由数便于调试
-  console.log(`[Mock] 已注册 ${Object.keys(mockRoutes).length} 个路由`)
+  logger.log(`[Mock] 已注册 ${Object.keys(mockRoutes).length} 个路由`)
 }

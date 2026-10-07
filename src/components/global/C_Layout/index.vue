@@ -33,6 +33,9 @@
       @change="handleTabChange"
     />
 
+    <!-- 环境角标（非生产环境显示） -->
+    <C_EnvironmentBadge />
+
     <!-- 全局Loading -->
     <view
       v-if="globalLoading"
@@ -61,6 +64,7 @@
   import http from '@/utils/http'
   import C_Header from '../C_Header/index.vue'
   import C_Tabbar from '../C_Tabbar/index.vue'
+  import C_EnvironmentBadge from '../C_EnvironmentBadge/index.vue'
 
   const props = defineProps(layoutProps)
   const emit = defineEmits(layoutEmits)

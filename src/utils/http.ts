@@ -13,6 +13,10 @@
 import config from '@/config/env'
 import { RESPONSE_CODE } from '@/constants/business'
 import { useUserStore } from '@/stores'
+import {
+  getRequestContextEpoch,
+  onRequestContextChange,
+} from '@/services/request-context'
 
 /** 统一的请求错误对象 */
 export interface HttpError {
@@ -46,9 +50,9 @@ function httpError(code: number, message: string, retryable = false): HttpError 
   return { code, message, retryable }
 }
 
-/** 生成请求唯一标识 */
+/** 生成请求唯一标识（含身份代次：登出/切号后不复用旧请求） */
 function genRequestKey(method: string, url: string, data: any): string {
-  return `${method}:${url}:${JSON.stringify(data || {})}`
+  return `${getRequestContextEpoch()}:${method}:${url}:${JSON.stringify(data || {})}`
 }
 
 class Http {
@@ -68,6 +72,12 @@ class Http {
     this.pendingMap = new Map()
     // 页面级请求任务（用于取消）
     this.pageTasksMap = new Map()
+    // 身份代次变化：清空去重缓存并中止全部在途任务，防止旧响应回写新上下文
+    onRequestContextChange(() => {
+      this.pendingMap.clear()
+      const routes = [...this.pageTasksMap.keys()]
+      routes.forEach(route => this.cancelPageRequests(route))
+    })
   }
 
   // ==================== Loading ====================

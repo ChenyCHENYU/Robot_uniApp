@@ -1,6 +1,8 @@
 import { defineStore } from 'pinia'
 import { login, getUserInfo, logout } from '@/api'
+import { advanceRequestContext } from '@/services/request-context'
 import type { LoginCredentials, UserInfo } from '@/types/store'
+import { logger } from '@/utils/logger'
 
 export const useUserStore = defineStore('user', {
   state: () => ({
@@ -30,13 +32,14 @@ export const useUserStore = defineStore('user', {
     async login(credentials: LoginCredentials) {
       try {
         const result = await login(credentials)
+        advanceRequestContext()
         this.token = result.token
         this.loginTime = new Date().toISOString()
         // 登录成功后拉取用户信息（失败不阻断登录流程）
         try {
           await this.fetchUserInfo()
         } catch (error) {
-          console.warn('登录后获取用户信息失败:', error)
+          logger.warn('登录后获取用户信息失败:', error)
         }
         return result
       } catch (error) {
@@ -59,7 +62,7 @@ export const useUserStore = defineStore('user', {
       try {
         await logout()
       } catch (error) {
-        console.warn('登出接口调用失败:', error)
+        logger.warn('登出接口调用失败:', error)
       } finally {
         this.clearUserInfo()
         uni.reLaunch({ url: '/pages/login/index' })
@@ -68,6 +71,7 @@ export const useUserStore = defineStore('user', {
 
     /** 清空登录态（不发请求、不跳转，由调用方决定后续行为） */
     clearUserInfo() {
+      advanceRequestContext()
       this.token = ''
       this.userInfo = null
       this.permissions = []

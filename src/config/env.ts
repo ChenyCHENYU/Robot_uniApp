@@ -150,6 +150,8 @@ const config: EnvConfig = {
     enablePush: readBool('VITE_FEATURE_PUSH', false),
     enableShare: readBool('VITE_FEATURE_SHARE', true),
     enableAnalytics: readBool('VITE_FEATURE_ANALYTICS', false),
+    /** 简繁转换（opencc-js 字典约 1.1MB 懒加载 chunk，按需开启） */
+    enableTraditionalChinese: readBool('VITE_FEATURE_TW', false),
   },
 }
 

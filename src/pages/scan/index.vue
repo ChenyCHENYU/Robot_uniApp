@@ -116,6 +116,7 @@
 
 <script setup lang="ts">
   import { ref, onMounted } from 'vue'
+  import { platform, PlatformError } from '@/platform'
 
   const flashOn = ref(false)
   const scanResult = ref('')
@@ -137,39 +138,36 @@
     })
   }
 
-  const handleAlbum = () => {
-    // 相册二维码识别依赖扫码 API 的相册能力
-    uni.scanCode({
-      onlyFromCamera: false,
-      scanType: ['qrCode'],
-      success: res => {
-        scanResult.value = res.result
-      },
-      fail: () => {
-        uni.showToast({ title: '未识别到二维码', icon: 'none' })
-      },
-    })
+  /** 相册选图后识别二维码（platform 能力层） */
+  const handleAlbum = async () => {
+    try {
+      const photo = await platform.takePhoto('album')
+      const scan = await platform.scanCode('album')
+      void photo
+      scanResult.value = scan.result
+    } catch (error) {
+      const err = error as PlatformError
+      uni.showToast({ title: err?.message || '未识别到二维码', icon: 'none' })
+    }
   }
 
   const handleMyCode = () => {
     uni.showToast({ title: '我的二维码', icon: 'none' })
   }
 
-  // App / 小程序：进入页面后自动唤起扫码
-  const startScan = () => {
-    uni.scanCode({
-      success: res => {
-        scanResult.value = res.result
-      },
-      fail: err => {
-        const msg = err?.errMsg || ''
-        if (msg.includes('auth') || msg.includes('deny')) {
-          uni.showToast({ title: '相机权限被拒绝，请在设置中开启', icon: 'none' })
-        } else if (!msg.includes('cancel')) {
-          uni.showToast({ title: '扫码失败，请重试', icon: 'none' })
-        }
-      },
-    })
+  // 进入页面后自动唤起扫码（platform 能力层，错误已归一化）
+  const startScan = async () => {
+    try {
+      const scan = await platform.scanCode('camera')
+      scanResult.value = scan.result
+    } catch (error) {
+      const err = error as PlatformError
+      if (err?.code === 'permission_denied') {
+        uni.showToast({ title: '相机权限被拒绝，请在设置中开启', icon: 'none' })
+      } else if (err?.code !== 'user_cancel') {
+        uni.showToast({ title: '扫码失败，请重试', icon: 'none' })
+      }
+    }
   }
 
   // #ifdef APP-PLUS || MP

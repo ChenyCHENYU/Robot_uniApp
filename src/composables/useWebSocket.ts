@@ -10,10 +10,11 @@
  * @example
  * const { connect, send, close, status, lastMessage } = useWebSocket({
  *   url: 'wss://api.example.com/ws',
- *   onMessage: (data) => console.log(data),
+ *   onMessage: (data) => logger.log(data),
  * })
  */
 import { ref, onUnmounted } from 'vue'
+import { logger } from '@/utils/logger'
 
 /** 连接状态枚举 */
 export const WS_STATUS = {
@@ -86,7 +87,7 @@ export function useWebSocket(options: WebSocketOptions = {}) {
   function connect(customUrl?: string) {
     const wsUrl = customUrl || url
     if (!wsUrl) {
-      console.warn('[WebSocket] 未提供连接地址')
+      logger.warn('[WebSocket] 未提供连接地址')
       return
     }
 

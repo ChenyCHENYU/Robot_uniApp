@@ -148,6 +148,15 @@ export default [
     ignores: ['**/*.d.ts', '**/auto-imports.d.ts'],
   },
 
+  //MARK: Node 脚本（scripts/）宽松规则
+  {
+    files: ['scripts/**/*.mjs', 'scripts/**/*.cjs'],
+    rules: {
+      'jsdoc/require-jsdoc': 'off',
+      '@typescript-eslint/no-require-imports': 'off',
+    },
+  },
+
   //MARK: JSDoc 白名单覆盖规则
   {
     files: [

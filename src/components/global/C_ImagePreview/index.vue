@@ -68,6 +68,7 @@
 <script setup lang="ts">
   import { ref, watch } from 'vue'
   import { defaultProps } from './data'
+  import { logger } from '@/utils/logger'
 
   const props = defineProps({
     /** 是否显示 */
@@ -156,7 +157,7 @@
 
   /** 图片加载失败 */
   function onImageError(idx) {
-    console.warn(`[C_ImagePreview] 图片加载失败: index=${idx}`)
+    logger.warn(`[C_ImagePreview] 图片加载失败: index=${idx}`)
   }
 </script>
 

@@ -16,7 +16,7 @@
     "// 生产构建": "",
     "build": "uni build --mode production -p h5",
     "build:h5": "uni build --mode production -p h5",
-    "build:wx": "uni build --mode production -p mp-weixin",
+    "build:wx": "uni build --mode production -p mp-weixin && node scripts/postbuild-mp-weixin.cjs",
     "build:app": "uni build --mode production -p app",
     "build:app-android": "uni build --mode production -p app-android",
     "build:app-ios": "uni build --mode production -p app-ios",
@@ -30,7 +30,10 @@
     "// 其它": "",
     "push": "git push origin",
     "prepare": "husky",
-    "cz": "git-cz"
+    "cz": "git-cz",
+    "test": "node scripts/verify-router-guard.mjs && node scripts/verify-http-protocol.mjs && node scripts/verify-mock-routes.mjs",
+    "check:budget": "node scripts/check-bundle-budget.mjs",
+    "check:quality": "pnpm type-check && pnpm lint:check && pnpm test"
   },
   "dependencies": {
     "@dcloudio/uni-app": "3.0.0-4070620250821001",
@@ -42,7 +45,9 @@
     "pinia": "^2.3.1",
     "pinia-plugin-persistedstate": "^3.2.3",
     "vue": "^3.5.30",
-    "wot-design-uni": "^1.14.0"
+    "wot-design-uni": "^1.14.0",
+    "@noble/hashes": "1.8.0",
+    "opencc-js": "^1.3.1"
   },
   "devDependencies": {
     "@commitlint/cli": "^20.5.0",

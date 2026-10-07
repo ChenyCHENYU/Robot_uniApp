@@ -1,5 +1,6 @@
 // stores/modules/app.js
 import { defineStore } from 'pinia'
+import { logger } from '@/utils/logger'
 
 export const useAppStore = defineStore('app', {
   state: () => ({
@@ -32,7 +33,7 @@ export const useAppStore = defineStore('app', {
         this.statusBarHeight = systemInfo.statusBarHeight || 0
         this.getNetworkType()
       } catch (error) {
-        console.error('获取系统信息失败:', error)
+        logger.error('获取系统信息失败:', error)
       }
     },
 

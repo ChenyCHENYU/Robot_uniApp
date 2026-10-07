@@ -6,6 +6,7 @@
  */
 import { ref, reactive } from 'vue'
 import { PAGINATION } from '@/constants'
+import { logger } from '@/utils/logger'
 
 export function usePagination(
   fetchFn: (params: Record<string, any>) => Promise<any>,
@@ -52,7 +53,7 @@ export function usePagination(
         pagination.page++
       }
     } catch (error) {
-      console.error('[usePagination] loadMore failed:', error)
+      logger.error('[usePagination] loadMore failed:', error)
       throw error
     } finally {
       loading.value = false

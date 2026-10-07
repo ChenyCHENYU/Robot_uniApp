@@ -21,7 +21,13 @@
 
 - H5 / 小程序 / App 共用一套业务代码，静态演示页隔离在独立分包
 - 请求层内置去重、指数退避重试（仅网络错误/5xx）、页面级取消、401 统一处理与登录回跳
+- 身份代次（request-context）：登出/切号自动中止在途请求并隔离去重缓存
 - 开发环境通过 `uni.addInterceptor` 拦截请求返回 Mock 数据（与 HTTP 层同协议：`code === 0` 为成功）
+- 分级日志（`VITE_LOG_LEVEL`）与全局错误脱敏收集（token/openid 自动打码，可注册上报钩子）
+- 平台能力抽象层（`src/platform`）：扫码/定位/拍照统一接口 + H5/小程序/App 实现 + 降级链
+- 断点续传上传（App/MP 分片+重试+持久化 job）、App 热更新服务（manifest + sha256 校验）
+- 简繁转换（`VITE_FEATURE_TW` 开关，opencc 字典懒加载，默认零包体成本）
+- 契约测试（`pnpm test`）：路由守卫/HTTP 协议/API↔Mock 同步三项门禁；包体预算门禁（`pnpm check:budget`）
 - 路由守卫采用「默认需登录 + 白名单放行」，并支持按页面配置角色/权限
 - 34 个自研 `C_*` 组件（easycom 自动注册）+ wot-design-uni 按需引入
 - 类型检查（vue-tsc）、oxlint + ESLint、commitlint + husky 全链路质量保障
@@ -55,6 +61,9 @@ pnpm dev:app        # App 开发（需 HBuilderX）
 | `pnpm build` / `build:wx` / `build:app` | 生产构建 |
 | `pnpm build:test` / `build:staging` | 测试/预发布构建 |
 | `pnpm type-check` | vue-tsc 全量类型检查 |
+| `pnpm test` | 契约测试（守卫/协议/Mock 同步） |
+| `pnpm check:budget` | 构建产物包体预算门禁 |
+| `pnpm check:quality` | type-check + lint + test 一键全检 |
 | `pnpm lint` | oxlint + ESLint 检查并修复 |
 | `pnpm cz` | 交互式规范化提交 |
 | `pnpm push` | 推送当前分支到 origin |
@@ -115,6 +124,7 @@ pnpm dev:app        # App 开发（需 HBuilderX）
 - `src/config/env.ts` 负责读取并导出类型化配置；`VITE_ENV` 决定环境（development/test/staging/production）
 - H5 开发用相对路径 `/api` 走 vite proxy；小程序/App 自动回退到 `VITE_API_PROXY_TARGET` 绝对地址
 - H5 可用 `?env=xxx` 临时切换环境（**仅开发构建**，生产被摇树移除）
+- 功能开关：`VITE_FEATURE_TW`（简繁转换，默认关）等见 `env/.env`
 
 ### WebView 安全（`src/utils/url-policy.ts`）
 

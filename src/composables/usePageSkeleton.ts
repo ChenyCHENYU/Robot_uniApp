@@ -13,6 +13,7 @@
  * })
  */
 import { ref } from 'vue'
+import { logger } from '@/utils/logger'
 
 export function usePageSkeleton(initialLoading = true) {
   const loading = ref(initialLoading)
@@ -32,7 +33,7 @@ export function usePageSkeleton(initialLoading = true) {
       const result = await fn()
       return result
     } catch (e) {
-      console.warn('[usePageSkeleton] 数据加载失败:', e)
+      logger.warn('[usePageSkeleton] 数据加载失败:', e)
       return undefined
     } finally {
       loading.value = false

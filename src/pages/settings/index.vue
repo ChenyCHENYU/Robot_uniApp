@@ -243,7 +243,10 @@
       <view class="settings-group">
         <text class="group-title">外观与显示</text>
         <view class="group-card">
-          <view class="setting-item">
+          <view
+            class="setting-item"
+            @click="cycleFontSize"
+          >
             <view class="item-left">
               <view
                 class="item-icon"
@@ -266,7 +269,10 @@
               />
             </view>
           </view>
-          <view class="setting-item">
+          <view
+            class="setting-item"
+            @click="handleLanguageSelect"
+          >
             <view class="item-left">
               <view
                 class="item-icon"
@@ -307,6 +313,7 @@
   import { useUserStore } from '@/stores/modules/user'
   import { useSettingsStore } from '@/stores/modules/settings'
   import { updateUser } from '@/api'
+  import { setLanguage, t, traditionalChineseEnabled } from '@/composables/locale'
 
   const userStore = useUserStore()
   const settingsStore = useSettingsStore()
@@ -328,6 +335,29 @@
   // 外观（来自 settingsStore）
   const fontSizeLabel = computed(() => settingsStore.fontSizeLabel)
   const languageLabel = computed(() => settingsStore.languageLabel)
+
+  // 字号循环：小 → 标准 → 大 → 特大
+  const cycleFontSize = () => {
+    const sizes = [12, 14, 16, 18]
+    const next = sizes[(sizes.indexOf(settingsStore.fontSize) + 1) % sizes.length]
+    settingsStore.setFontSize(next)
+    uni.showToast({ title: `字号：${settingsStore.fontSizeLabel}`, icon: 'none' })
+  }
+
+  // 语言切换（简/繁，opencc-js 实时转换；繁体需 VITE_FEATURE_TW=true）
+  const handleLanguageSelect = () => {
+    if (!traditionalChineseEnabled) {
+      uni.showToast({ title: '繁体转换未启用（VITE_FEATURE_TW）', icon: 'none' })
+      return
+    }
+    uni.showActionSheet({
+      itemList: ['简体中文', '繁體中文'],
+      success: async ({ tapIndex }) => {
+        await setLanguage(tapIndex === 1 ? 'zh-TW' : 'zh-CN')
+        uni.showToast({ title: t('语言已切换'), icon: 'none' })
+      },
+    })
+  }
 
   // 事件处理
   const handleChangeAvatar = () => {

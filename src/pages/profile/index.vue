@@ -123,6 +123,8 @@
         <text class="copyright-text">© 2025 CHENY. All Rights Reserved.</text>
       </view>
     </view>
+    <!-- 登出过渡 -->
+    <C_LogoutTransition :visible="logoutting" />
   </C_Layout>
 </template>
 
@@ -130,6 +132,7 @@
   import { ref, computed } from 'vue'
   import { useUserStore } from '@/stores/modules/user'
   import { useMessageStore } from '@/stores/modules/message'
+  import C_LogoutTransition from '@/components/global/C_LogoutTransition/index.vue'
   import { APP_VERSION } from '@/constants'
 
   const appVersion = APP_VERSION
@@ -315,20 +318,20 @@
     actions[item.id]?.()
   }
 
+  const logoutting = ref(false)
+
   const handleLogout = () => {
     uni.showModal({
       title: '提示',
       content: '确定要退出登录吗？',
       success: ({ confirm }) => {
         if (!confirm) return
-        uni.showLoading({ title: '退出中...' })
+        logoutting.value = true
         userStore
           .logout()
           .catch(() => {})
           .finally(() => {
-            // 先关 loading 再弹 toast，避免部分平台 hideLoading 吞掉 toast
-            uni.hideLoading()
-            uni.showToast({ title: '已退出登录', icon: 'success' })
+            logoutting.value = false
           })
       },
     })

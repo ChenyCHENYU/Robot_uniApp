@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 
 type ThemeMode = 'light' | 'dark' | 'system'
-type Language = 'zh-CN' | 'en'
+type Language = 'zh-CN' | 'zh-TW'
 
 /** 通知/安全偏好（持久化） */
 export interface Preferences {

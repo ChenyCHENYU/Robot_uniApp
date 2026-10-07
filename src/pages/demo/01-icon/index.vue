@@ -357,9 +357,10 @@
 </template>
 
 <script setup lang="ts">
+  import { logger } from '@/utils/logger'
   // 图标点击事件处理
   const handleIconClick = () => {
-    console.log('图标被点击了！')
+    logger.log('图标被点击了！')
     // 这里可以添加更多交互逻辑
   }
 </script>
