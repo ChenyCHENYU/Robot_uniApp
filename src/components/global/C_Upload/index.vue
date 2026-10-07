@@ -146,7 +146,9 @@
   }
 
   const onPreview = index => {
-    const urls = props.modelValue.map((f: UploadItem) => f.url || (f as unknown as string))
+    const urls = props.modelValue.map(
+      (f: UploadItem) => f.url || (f as unknown as string)
+    )
     uni.previewImage({ urls, current: index })
     emit('preview', props.modelValue[index], index)
   }

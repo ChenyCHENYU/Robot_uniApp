@@ -8,50 +8,50 @@
       :theme="wotTheme"
       :theme-vars="wotThemeVars"
     >
-    <!-- Header区域 -->
-    <C_Header
-      v-if="showHeader"
-      ref="headerRef"
-      v-bind="headerConfig"
-      :notification-count="realNotificationCount"
-      @user-click="emit('userClick', $event)"
-      @notification-click="handleNotificationClick"
-      @settings-click="handleSettingsClick"
-      @status-click="emit('statusClick', $event)"
-      @back-click="handleBackClick"
-    />
-
-    <!-- 页面内容区域 -->
-    <view
-      class="c-layout__content"
-      :style="contentStyles"
-    >
-      <slot />
-    </view>
-
-    <!-- Tabbar区域 -->
-    <C_Tabbar
-      v-if="showTabbar"
-      ref="tabbarRef"
-      v-model="currentTabIndex"
-      v-bind="tabbarConfig"
-      @change="handleTabChange"
-    />
-
-    <!-- 环境角标（非生产环境显示） -->
-    <C_EnvironmentBadge />
-
-    <!-- 全局Loading -->
-    <view
-      v-if="globalLoading"
-      class="c-layout__loading"
-    >
-      <wd-loading
-        :size="60"
-        color="var(--r-color-primary, #007AFF)"
+      <!-- Header区域 -->
+      <C_Header
+        v-if="showHeader"
+        ref="headerRef"
+        v-bind="headerConfig"
+        :notification-count="realNotificationCount"
+        @user-click="emit('userClick', $event)"
+        @notification-click="handleNotificationClick"
+        @settings-click="handleSettingsClick"
+        @status-click="emit('statusClick', $event)"
+        @back-click="handleBackClick"
       />
-      <text class="c-layout__loading-text">加载中...</text>
-    </view>
+
+      <!-- 页面内容区域 -->
+      <view
+        class="c-layout__content"
+        :style="contentStyles"
+      >
+        <slot />
+      </view>
+
+      <!-- Tabbar区域 -->
+      <C_Tabbar
+        v-if="showTabbar"
+        ref="tabbarRef"
+        v-model="currentTabIndex"
+        v-bind="tabbarConfig"
+        @change="handleTabChange"
+      />
+
+      <!-- 环境角标（非生产环境显示） -->
+      <C_EnvironmentBadge />
+
+      <!-- 全局Loading -->
+      <view
+        v-if="globalLoading"
+        class="c-layout__loading"
+      >
+        <wd-loading
+          :size="60"
+          color="var(--r-color-primary, #007AFF)"
+        />
+        <text class="c-layout__loading-text">加载中...</text>
+      </view>
     </wd-config-provider>
   </view>
 </template>

@@ -36,11 +36,14 @@ export const useSettingsStore = defineStore('settings', {
   getters: {
     isDark: state => state.theme === 'dark',
     fontSizeLabel: state =>
-      ({ 12: '小', 14: '标准', 16: '大', 18: '特大' } as Record<
-        number,
-        string
-      >)[state.fontSize] || '标准',
-    languageLabel: state => (state.language === 'zh-CN' ? '简体中文' : 'English'),
+      (
+        ({ 12: '小', 14: '标准', 16: '大', 18: '特大' }) as Record<
+          number,
+          string
+        >
+      )[state.fontSize] || '标准',
+    languageLabel: state =>
+      state.language === 'zh-CN' ? '简体中文' : 'English',
   },
 
   actions: {

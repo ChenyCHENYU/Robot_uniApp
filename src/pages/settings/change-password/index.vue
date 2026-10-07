@@ -285,7 +285,9 @@
       uni.showToast({ title: '密码修改成功', icon: 'success' })
       setTimeout(() => {
         // 修改密码后回到设置页（真实场景建议强制重新登录）
-        uni.navigateBack({ fail: () => uni.reLaunch({ url: '/pages/settings/index' }) })
+        uni.navigateBack({
+          fail: () => uni.reLaunch({ url: '/pages/settings/index' }),
+        })
       }, 1500)
     } catch (error) {
       const err = error as { message?: string }

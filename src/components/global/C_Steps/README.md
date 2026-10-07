@@ -5,6 +5,7 @@
 用于展示流程进度，支持水平/垂直方向。
 
 **特性：**
+
 - 水平 / 垂直两种布局
 - 自动标记已完成/当前/待进行状态
 - 已完成步骤显示勾选图标
@@ -15,7 +16,10 @@
 ## 快速开始
 
 ```vue
-<C_Steps :steps="[{ title: '提交' }, { title: '审核' }, { title: '完成' }]" :current="1" />
+<C_Steps
+  :steps="[{ title: '提交' }, { title: '审核' }, { title: '完成' }]"
+  :current="1"
+/>
 ```
 
 ---
@@ -24,20 +28,18 @@
 
 ### Props
 
-| 属性          | 类型   | 默认值       | 说明                 |
-| ------------- | ------ | ------------ | -------------------- |
-| steps         | Array  | 必填         | 步骤数据             |
-| current       | Number | `0`          | 当前步骤索引         |
-| direction     | String | `horizontal` | 方向                 |
-| activeColor   | String | `#007aff`    | 激活态颜色           |
-| inactiveColor | String | `#c0c4cc`    | 非激活态颜色         |
+| 属性          | 类型   | 默认值       | 说明         |
+| ------------- | ------ | ------------ | ------------ |
+| steps         | Array  | 必填         | 步骤数据     |
+| current       | Number | `0`          | 当前步骤索引 |
+| direction     | String | `horizontal` | 方向         |
+| activeColor   | String | `#007aff`    | 激活态颜色   |
+| inactiveColor | String | `#c0c4cc`    | 非激活态颜色 |
 
 ### steps 数据结构
 
 ```js
-[
-  { title: '步骤标题', description: '步骤描述（可选）' }
-]
+;[{ title: '步骤标题', description: '步骤描述（可选）' }]
 ```
 
 ---

@@ -5,6 +5,7 @@
 从底部弹出的操作选项面板。
 
 **特性：**
+
 - v-model:visible 双向绑定
 - 支持图标、描述、危险操作、禁用
 - 底部安全区域适配
@@ -16,10 +17,7 @@
 ```vue
 <C_ActionSheet
   v-model:visible="show"
-  :actions="[
-    { name: '编辑' },
-    { name: '删除', danger: true },
-  ]"
+  :actions="[{ name: '编辑' }, { name: '删除', danger: true }]"
   @select="onSelect"
 />
 ```
@@ -42,22 +40,24 @@
 ### actions 数据结构
 
 ```js
-[{
-  name: '操作名称',       // 必填
-  icon: 'edit',           // 可选: wot-design-uni 图标名
-  description: '操作说明', // 可选
-  danger: false,          // 可选: 危险操作（红色）
-  disabled: false,        // 可选: 禁用
-}]
+;[
+  {
+    name: '操作名称', // 必填
+    icon: 'edit', // 可选: wot-design-uni 图标名
+    description: '操作说明', // 可选
+    danger: false, // 可选: 危险操作（红色）
+    disabled: false, // 可选: 禁用
+  },
+]
 ```
 
 ### Events
 
-| 事件名         | 参数         | 说明       |
-| -------------- | ------------ | ---------- |
-| update:visible | Boolean      | 显隐变化   |
-| select         | item, index  | 选择操作项 |
-| cancel         | -            | 点击取消   |
+| 事件名         | 参数        | 说明       |
+| -------------- | ----------- | ---------- |
+| update:visible | Boolean     | 显隐变化   |
+| select         | item, index | 选择操作项 |
+| cancel         | -           | 点击取消   |
 
 ---
 

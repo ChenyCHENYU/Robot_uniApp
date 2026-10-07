@@ -75,7 +75,9 @@ export function useDashboardData() {
   const activitiesLoading = ref(false)
 
   /** KPI 卡片（未加载时为空数组，配合页面 loading 态） */
-  const kpiCards = computed(() => (stats.value ? buildKpiCards(stats.value) : []))
+  const kpiCards = computed(() =>
+    stats.value ? buildKpiCards(stats.value) : []
+  )
 
   /** 图表数据（归一化为 label/value/percent） */
   const chartData = computed(() => {

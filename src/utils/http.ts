@@ -152,7 +152,10 @@ class Http {
   // ==================== 核心请求 ====================
 
   /** 统一请求（去重 + 重试 + 错误处理） */
-  async request<T = any>(url: string, options: RequestOptions = {}): Promise<T> {
+  async request<T = any>(
+    url: string,
+    options: RequestOptions = {}
+  ): Promise<T> {
     const ctx = normalizeContext(url, options)
     const requestKey = genRequestKey(ctx)
 
@@ -209,7 +212,9 @@ class Http {
   }
 
   /** 发送底层请求 */
-  private _send(ctx: ExecContext): Promise<UniApp.RequestSuccessCallbackResult> {
+  private _send(
+    ctx: ExecContext
+  ): Promise<UniApp.RequestSuccessCallbackResult> {
     const userStore = useUserStore()
     const header: Record<string, string> = {
       'Content-Type': 'application/json',
@@ -265,7 +270,10 @@ class Http {
   }
 
   /** 统一错误处理 */
-  private async _handleError(error: HttpError, silent: boolean): Promise<never> {
+  private async _handleError(
+    error: HttpError,
+    silent: boolean
+  ): Promise<never> {
     // 401 → 清登录态 → 保存来源页 → 跳转登录（并发去重）
     if (error.code === RESPONSE_CODE.UNAUTHORIZED) {
       if (!this.handling401) {
@@ -317,23 +325,54 @@ class Http {
   // ==================== 便捷方法 ====================
 
   /** GET 请求 */
-  get<T = any>(url: string, params?: any, options: RequestOptions = {}): Promise<T> {
+  get<T = any>(
+    url: string,
+    params?: any,
+    options: RequestOptions = {}
+  ): Promise<T> {
     return this.request<T>(url, { method: 'GET', data: params, ...options })
   }
 
   /** POST 请求 */
-  post<T = any>(url: string, data?: any, options: RequestOptions = {}): Promise<T> {
-    return this.request<T>(url, { method: 'POST', data, dedupe: false, ...options })
+  post<T = any>(
+    url: string,
+    data?: any,
+    options: RequestOptions = {}
+  ): Promise<T> {
+    return this.request<T>(url, {
+      method: 'POST',
+      data,
+      dedupe: false,
+      ...options,
+    })
   }
 
   /** PUT 请求 */
-  put<T = any>(url: string, data?: any, options: RequestOptions = {}): Promise<T> {
-    return this.request<T>(url, { method: 'PUT', data, dedupe: false, ...options })
+  put<T = any>(
+    url: string,
+    data?: any,
+    options: RequestOptions = {}
+  ): Promise<T> {
+    return this.request<T>(url, {
+      method: 'PUT',
+      data,
+      dedupe: false,
+      ...options,
+    })
   }
 
   /** DELETE 请求 */
-  delete<T = any>(url: string, params?: any, options: RequestOptions = {}): Promise<T> {
-    return this.request<T>(url, { method: 'DELETE', data: params, dedupe: false, ...options })
+  delete<T = any>(
+    url: string,
+    params?: any,
+    options: RequestOptions = {}
+  ): Promise<T> {
+    return this.request<T>(url, {
+      method: 'DELETE',
+      data: params,
+      dedupe: false,
+      ...options,
+    })
   }
 
   /**
@@ -366,7 +405,10 @@ class Http {
         success: async res => {
           // HTTP 状态码校验
           if (res.statusCode !== 200) {
-            const error = httpError(res.statusCode, getStatusMessage(res.statusCode))
+            const error = httpError(
+              res.statusCode,
+              getStatusMessage(res.statusCode)
+            )
             await this._handleError(error, silent).catch(() => {})
             reject(error)
             return

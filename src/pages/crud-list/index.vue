@@ -109,7 +109,8 @@
               :class="item.status === 0 ? 'pending' : 'done'"
             >
               <text class="status-text">{{
-                CRUD_STATUS_TEXT[item.status] || CRUD_STATUS_TEXT[CRUD_STATUS.PENDING]
+                CRUD_STATUS_TEXT[item.status] ||
+                CRUD_STATUS_TEXT[CRUD_STATUS.PENDING]
               }}</text>
             </view>
           </view>
@@ -207,7 +208,9 @@
     if (sortBy.value === 'name') {
       list.sort((a, b) => (a.title || '').localeCompare(b.title || ''))
     } else {
-      list.sort((a, b) => (b.createTime || '').localeCompare(a.createTime || ''))
+      list.sort((a, b) =>
+        (b.createTime || '').localeCompare(a.createTime || '')
+      )
     }
     return list
   })
@@ -325,7 +328,9 @@
   }
 
   const handleDetail = (item: CrudItem) => {
-    uni.navigateTo({ url: `/pages/detail/index?id=${encodeURIComponent(item.id)}` })
+    uni.navigateTo({
+      url: `/pages/detail/index?id=${encodeURIComponent(item.id)}`,
+    })
   }
 
   const handleEdit = async (item: CrudItem) => {

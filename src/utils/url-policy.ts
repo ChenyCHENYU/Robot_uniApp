@@ -36,7 +36,10 @@ export function isUrlAllowed(url: string): boolean {
   // 仅允许 https（App 离线包等场景如需 http，请显式放开并自行评估风险）
   if (!/^https:\/\//i.test(url)) return false
 
-  const host = url.replace(/^https:\/\//i, '').split('/')[0].split(':')[0]
+  const host = url
+    .replace(/^https:\/\//i, '')
+    .split('/')[0]
+    .split(':')[0]
   if (!host) return false
 
   return WEBVIEW_ALLOWED_HOSTS.some(pattern => matchHost(host, pattern))

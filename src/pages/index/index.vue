@@ -9,7 +9,8 @@
       <!-- 问候语 -->
       <view class="greeting">
         <text class="greeting-text"
-          >{{ greeting }}，<text class="greeting-name">{{ displayName }}</text> 👋</text
+          >{{ greeting }}，<text class="greeting-name">{{ displayName }}</text>
+          👋</text
         >
         <text class="greeting-sub">今日有 {{ todoCount }} 项待办</text>
       </view>
@@ -195,13 +196,8 @@
 
   // ==================== KPI 与动态（useDashboardData 共享实现） ====================
 
-  const {
-    activities,
-    activitiesLoading,
-    kpiCards,
-    loadStats,
-    loadActivities,
-  } = useDashboardData()
+  const { activities, activitiesLoading, kpiCards, loadStats, loadActivities } =
+    useDashboardData()
 
   // ==================== 待办（本地演示数据） ====================
 

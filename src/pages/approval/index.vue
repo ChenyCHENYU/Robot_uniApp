@@ -9,141 +9,143 @@
         v-if="!detail"
         class="approval-loading"
       >
-        <text class="loading-text">{{ loading ? '加载中...' : '审批单不存在' }}</text>
+        <text class="loading-text">{{
+          loading ? '加载中...' : '审批单不存在'
+        }}</text>
       </view>
 
       <template v-if="detail">
-      <!-- 审批头部 -->
-      <view
-        class="approval-header"
-        :style="{ background: statusConfig[detail.status].bg }"
-      >
-        <view class="header-content">
-          <view class="status-icon-wrap">
-            <wd-icon
-              :name="statusConfig[detail.status].icon"
-              size="32px"
-              color="#fff"
-            />
-          </view>
-          <text class="approval-status">{{
-            statusConfig[detail.status].label
-          }}</text>
-          <text class="approval-title">{{ detail.title }}</text>
-        </view>
-      </view>
-
-      <!-- 审批信息 -->
-      <view class="info-card">
+        <!-- 审批头部 -->
         <view
-          class="info-row"
-          v-for="field in infoFields"
-          :key="field.label"
+          class="approval-header"
+          :style="{ background: statusConfig[detail.status].bg }"
         >
-          <text class="info-label">{{ field.label }}</text>
-          <text class="info-value">{{ field.value }}</text>
-        </view>
-      </view>
-
-      <!-- 审批内容 -->
-      <view class="content-card">
-        <text class="card-title">审批内容</text>
-        <text class="content-text">{{ detail.content }}</text>
-        <view
-          v-if="detail.amount"
-          class="amount-row"
-        >
-          <text class="amount-label">申请金额</text>
-          <text class="amount-value">¥{{ detail.amount }}</text>
-        </view>
-      </view>
-
-      <!-- 审批流程 -->
-      <view class="flow-card">
-        <text class="card-title">审批流程</text>
-        <view class="flow-list">
-          <view
-            v-for="(node, index) in flowNodes"
-            :key="index"
-            class="flow-node"
-          >
-            <view class="node-indicator">
-              <view
-                class="node-dot"
-                :class="node.status"
-              >
-                <wd-icon
-                  v-if="node.status === 'approved'"
-                  name="check"
-                  size="12px"
-                  color="#fff"
-                />
-                <wd-icon
-                  v-else-if="node.status === 'rejected'"
-                  name="close"
-                  size="12px"
-                  color="#fff"
-                />
-              </view>
-              <view
-                v-if="index < flowNodes.length - 1"
-                class="node-line"
-                :class="node.status"
-              ></view>
+          <view class="header-content">
+            <view class="status-icon-wrap">
+              <wd-icon
+                :name="statusConfig[detail.status].icon"
+                size="32px"
+                color="#fff"
+              />
             </view>
-            <view class="node-content">
-              <view class="node-header">
-                <text class="node-title">{{ node.title }}</text>
-                <text
-                  class="node-status-text"
+            <text class="approval-status">{{
+              statusConfig[detail.status].label
+            }}</text>
+            <text class="approval-title">{{ detail.title }}</text>
+          </view>
+        </view>
+
+        <!-- 审批信息 -->
+        <view class="info-card">
+          <view
+            class="info-row"
+            v-for="field in infoFields"
+            :key="field.label"
+          >
+            <text class="info-label">{{ field.label }}</text>
+            <text class="info-value">{{ field.value }}</text>
+          </view>
+        </view>
+
+        <!-- 审批内容 -->
+        <view class="content-card">
+          <text class="card-title">审批内容</text>
+          <text class="content-text">{{ detail.content }}</text>
+          <view
+            v-if="detail.amount"
+            class="amount-row"
+          >
+            <text class="amount-label">申请金额</text>
+            <text class="amount-value">¥{{ detail.amount }}</text>
+          </view>
+        </view>
+
+        <!-- 审批流程 -->
+        <view class="flow-card">
+          <text class="card-title">审批流程</text>
+          <view class="flow-list">
+            <view
+              v-for="(node, index) in flowNodes"
+              :key="index"
+              class="flow-node"
+            >
+              <view class="node-indicator">
+                <view
+                  class="node-dot"
                   :class="node.status"
-                  >{{ nodeStatusMap[node.status] }}</text
+                >
+                  <wd-icon
+                    v-if="node.status === 'approved'"
+                    name="check"
+                    size="12px"
+                    color="#fff"
+                  />
+                  <wd-icon
+                    v-else-if="node.status === 'rejected'"
+                    name="close"
+                    size="12px"
+                    color="#fff"
+                  />
+                </view>
+                <view
+                  v-if="index < flowNodes.length - 1"
+                  class="node-line"
+                  :class="node.status"
+                ></view>
+              </view>
+              <view class="node-content">
+                <view class="node-header">
+                  <text class="node-title">{{ node.title }}</text>
+                  <text
+                    class="node-status-text"
+                    :class="node.status"
+                    >{{ nodeStatusMap[node.status] }}</text
+                  >
+                </view>
+                <text class="node-user">{{ node.user }}</text>
+                <text
+                  v-if="node.time"
+                  class="node-time"
+                  >{{ node.time }}</text
+                >
+                <text
+                  v-if="node.remark"
+                  class="node-remark"
+                  >{{ node.remark }}</text
                 >
               </view>
-              <text class="node-user">{{ node.user }}</text>
-              <text
-                v-if="node.time"
-                class="node-time"
-                >{{ node.time }}</text
-              >
-              <text
-                v-if="node.remark"
-                class="node-remark"
-                >{{ node.remark }}</text
-              >
             </view>
           </view>
         </view>
-      </view>
 
-      <!-- 操作按钮（待我审批时显示） -->
-      <view
-        v-if="detail.status === 'pending'"
-        class="action-bar"
-      >
+        <!-- 操作按钮（待我审批时显示） -->
         <view
-          class="action-btn reject"
-          @click="handleReject"
+          v-if="detail.status === 'pending'"
+          class="action-bar"
         >
-          <wd-icon
-            name="close"
-            size="18px"
-            color="#f56c6c"
-          />
-          <text class="btn-text reject">驳回</text>
+          <view
+            class="action-btn reject"
+            @click="handleReject"
+          >
+            <wd-icon
+              name="close"
+              size="18px"
+              color="#f56c6c"
+            />
+            <text class="btn-text reject">驳回</text>
+          </view>
+          <view
+            class="action-btn approve"
+            @click="handleApprove"
+          >
+            <wd-icon
+              name="check"
+              size="18px"
+              color="#fff"
+            />
+            <text class="btn-text approve">通过</text>
+          </view>
         </view>
-        <view
-          class="action-btn approve"
-          @click="handleApprove"
-        >
-          <wd-icon
-            name="check"
-            size="18px"
-            color="#fff"
-          />
-          <text class="btn-text approve">通过</text>
-        </view>
-      </view>
       </template>
     </view>
   </C_Layout>
@@ -152,11 +154,7 @@
 <script setup lang="ts">
   import { ref, computed } from 'vue'
   import { onLoad, onPullDownRefresh } from '@dcloudio/uni-app'
-  import {
-    getApprovalDetail,
-    approveItem,
-    type ApprovalItem,
-  } from '@/api'
+  import { getApprovalDetail, approveItem, type ApprovalItem } from '@/api'
 
   interface FlowNode {
     title: string

@@ -143,7 +143,10 @@ const config: EnvConfig = {
   APP_VERSION: readStr('VITE_APP_VERSION', '1.0.0'),
 
   DEBUG: readBool('VITE_DEBUG', currentEnv === 'development'),
-  LOG_LEVEL: readStr('VITE_LOG_LEVEL', currentEnv === 'production' ? 'error' : 'debug') as LogLevel,
+  LOG_LEVEL: readStr(
+    'VITE_LOG_LEVEL',
+    currentEnv === 'production' ? 'error' : 'debug'
+  ) as LogLevel,
   ENABLE_VCONSOLE: readBool('VITE_ENABLE_VCONSOLE', false),
 
   FEATURES: {

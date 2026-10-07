@@ -17,30 +17,38 @@
 
 ```vue
 <script setup>
-import { ref } from "vue";
+  import { ref } from 'vue'
 
-const formRef = ref();
-const form = ref({ name: "", phone: "" });
-const rules = {
-  name: [{ required: true, message: "请输入姓名" }],
-  phone: [
-    { required: true, message: "请输入手机号" },
-    { pattern: /^1\d{10}$/, message: "手机号格式错误" },
-  ],
-};
-
-const onSubmit = () => {
-  if (formRef.value.validate()) {
-    // 提交
+  const formRef = ref()
+  const form = ref({ name: '', phone: '' })
+  const rules = {
+    name: [{ required: true, message: '请输入姓名' }],
+    phone: [
+      { required: true, message: '请输入手机号' },
+      { pattern: /^1\d{10}$/, message: '手机号格式错误' },
+    ],
   }
-};
+
+  const onSubmit = () => {
+    if (formRef.value.validate()) {
+      // 提交
+    }
+  }
 </script>
 
 <template>
-  <C_Form ref="formRef" :model="form" :rules="rules">
+  <C_Form
+    ref="formRef"
+    :model="form"
+    :rules="rules"
+  >
     <!-- 表单内容 -->
     <template #footer>
-      <wd-button block @click="onSubmit">提交</wd-button>
+      <wd-button
+        block
+        @click="onSubmit"
+        >提交</wd-button
+      >
     </template>
   </C_Form>
 </template>

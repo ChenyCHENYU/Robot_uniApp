@@ -145,7 +145,10 @@ export function useLoginData() {
       provider: 'weixin',
       success: res => {
         // TODO: 将 res.code 发送到后端换取 token（code2Session）
-        uni.showToast({ title: `已获取微信凭证 ${res.code ? '成功' : '失败'}` , icon: 'none' })
+        uni.showToast({
+          title: `已获取微信凭证 ${res.code ? '成功' : '失败'}`,
+          icon: 'none',
+        })
       },
       fail: () => {
         uni.showToast({ title: '微信登录已取消', icon: 'none' })

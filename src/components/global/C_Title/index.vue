@@ -137,7 +137,8 @@
     level: {
       type: [Number, String],
       default: 2,
-      validator: (value: string | number) => [1, 2, 3, 4, 5, 6].includes(Number(value)),
+      validator: (value: string | number) =>
+        [1, 2, 3, 4, 5, 6].includes(Number(value)),
     },
     // 标题类型/主题
     type: {
@@ -158,7 +159,8 @@
     size: {
       type: String,
       default: 'medium',
-      validator: (value: string) => ['small', 'medium', 'large'].includes(value),
+      validator: (value: string) =>
+        ['small', 'medium', 'large'].includes(value),
     },
     // 左侧图标
     leftIcon: {

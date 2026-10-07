@@ -7,72 +7,72 @@
     :class="themeClass"
   >
     <wd-config-provider :theme="wotTheme">
-    <!-- 顶部导航栏 -->
-    <view class="nav-bar">
-      <view class="nav-left">
-        <view
-          class="nav-btn"
-          @click="goBack"
-        >
-          <wd-icon
-            name="arrow-left"
-            size="20px"
-            color="var(--r-text-primary)"
-          />
+      <!-- 顶部导航栏 -->
+      <view class="nav-bar">
+        <view class="nav-left">
+          <view
+            class="nav-btn"
+            @click="goBack"
+          >
+            <wd-icon
+              name="arrow-left"
+              size="20px"
+              color="var(--r-text-primary)"
+            />
+          </view>
+        </view>
+        <view class="nav-title-wrap">
+          <text class="nav-title">{{ pageTitle || host || '网页浏览' }}</text>
+          <view
+            v-if="loading"
+            class="loading-indicator"
+          >
+            <wd-loading
+              :size="12"
+              color="var(--r-color-primary)"
+            />
+          </view>
+        </view>
+        <view class="nav-right">
+          <view
+            class="nav-btn"
+            @click="handleRefresh"
+          >
+            <wd-icon
+              name="refresh"
+              size="18px"
+              color="var(--r-text-primary)"
+            />
+          </view>
+          <view
+            class="nav-btn"
+            @click="handleMore"
+          >
+            <wd-icon
+              name="more"
+              size="18px"
+              color="var(--r-text-primary)"
+            />
+          </view>
         </view>
       </view>
-      <view class="nav-title-wrap">
-        <text class="nav-title">{{ pageTitle || host || '网页浏览' }}</text>
-        <view
-          v-if="loading"
-          class="loading-indicator"
-        >
-          <wd-loading
-            :size="12"
-            color="var(--r-color-primary)"
-          />
-        </view>
-      </view>
-      <view class="nav-right">
-        <view
-          class="nav-btn"
-          @click="handleRefresh"
-        >
-          <wd-icon
-            name="refresh"
-            size="18px"
-            color="var(--r-text-primary)"
-          />
-        </view>
-        <view
-          class="nav-btn"
-          @click="handleMore"
-        >
-          <wd-icon
-            name="more"
-            size="18px"
-            color="var(--r-text-primary)"
-          />
-        </view>
-      </view>
-    </view>
 
-    <!-- 进度条（真实加载态，@load 后隐藏；5s 兜底超时） -->
-    <view
-      v-if="loading"
-      class="progress-bar"
-    >
-      <view class="progress-fill"></view>
-    </view>
+      <!-- 进度条（真实加载态，@load 后隐藏；5s 兜底超时） -->
+      <view
+        v-if="loading"
+        class="progress-bar"
+      >
+        <view class="progress-fill"></view>
+      </view>
 
-    <!-- WebView（仅加载白名单内地址） -->
-    <web-view
-      v-if="url"
-      :src="url"
-      @load="onLoadComplete"
-      @error="onLoadError"
-      @message="onMessage"
-    ></web-view>
+      <!-- WebView（仅加载白名单内地址） -->
+      <web-view
+        v-if="url"
+        :src="url"
+        @load="onLoadComplete"
+        @error="onLoadError"
+        @message="onMessage"
+      ></web-view>
     </wd-config-provider>
   </view>
 </template>
@@ -115,7 +115,13 @@
       // 安全校验：强制 https + 域名白名单
       if (!isUrlAllowed(target)) {
         uni.showToast({ title: '不允许打开该链接', icon: 'none' })
-        setTimeout(() => uni.navigateBack({ fail: () => uni.reLaunch({ url: '/pages/index/index' }) }), 600)
+        setTimeout(
+          () =>
+            uni.navigateBack({
+              fail: () => uni.reLaunch({ url: '/pages/index/index' }),
+            }),
+          600
+        )
         return
       }
       url.value = target

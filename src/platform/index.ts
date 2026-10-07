@@ -12,7 +12,12 @@ import {
 } from './types'
 
 export { PlatformError, normalizeUniError }
-export type { PlatformCapabilities, ScanResult, LocationResult, PhotoResult } from './types'
+export type {
+  PlatformCapabilities,
+  ScanResult,
+  LocationResult,
+  PhotoResult,
+} from './types'
 
 /** uni 原生能力实现（小程序/App） */
 /** uni 原生能力实现（小程序/App） */
@@ -87,7 +92,9 @@ const h5Capabilities: PlatformCapabilities = {
   getLocation() {
     return new Promise((resolve, reject) => {
       if (typeof navigator === 'undefined' || !navigator.geolocation) {
-        reject(new PlatformError('capability_unsupported', '当前环境不支持定位'))
+        reject(
+          new PlatformError('capability_unsupported', '当前环境不支持定位')
+        )
         return
       }
       navigator.geolocation.getCurrentPosition(
@@ -101,7 +108,9 @@ const h5Capabilities: PlatformCapabilities = {
           if (err.code === err.PERMISSION_DENIED) {
             reject(new PlatformError('permission_denied', '定位权限被拒绝'))
           } else {
-            reject(new PlatformError('platform_error', err.message || '定位失败'))
+            reject(
+              new PlatformError('platform_error', err.message || '定位失败')
+            )
           }
         },
         { enableHighAccuracy: true, timeout: 10000 }

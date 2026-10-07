@@ -115,9 +115,11 @@ function getFileSize(filePath: string): Promise<number> {
       plus.io.resolveLocalFileSystemURL(
         filePath,
         entry => {
-          ;(entry as unknown as { file: (cb: (f: { size: number }) => void) => void }).file(
-            file => resolve(file.size)
-          )
+          ;(
+            entry as unknown as {
+              file: (cb: (f: { size: number }) => void) => void
+            }
+          ).file(file => resolve(file.size))
         },
         err => reject(new Error(`读取文件失败: ${JSON.stringify(err)}`))
       )
@@ -229,7 +231,10 @@ function notifyProgress(job: ResumableUploadJob) {
     jobId: job.id,
     uploadedBytes: job.uploadedBytes,
     totalBytes: job.fileSize,
-    percent: job.fileSize > 0 ? Math.floor((job.uploadedBytes / job.fileSize) * 100) : 0,
+    percent:
+      job.fileSize > 0
+        ? Math.floor((job.uploadedBytes / job.fileSize) * 100)
+        : 0,
   }
   progressListeners.forEach(fn => {
     try {
@@ -251,7 +256,9 @@ function persistJob(job: ResumableUploadJob) {
 }
 
 /** 创建上传 job（自动入队，需调用 startJob 开始传输） */
-export function createUploadJob(options: CreateJobOptions): Promise<ResumableUploadJob> {
+export function createUploadJob(
+  options: CreateJobOptions
+): Promise<ResumableUploadJob> {
   return (async () => {
     const fileSize =
       options.fileSize && options.fileSize > 0

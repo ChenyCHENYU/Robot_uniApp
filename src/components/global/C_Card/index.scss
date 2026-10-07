@@ -3,10 +3,18 @@
   border-radius: var(--r-radius-lg);
   overflow: hidden;
 
-  &--shadow-sm { box-shadow: var(--r-shadow-sm); }
-  &--shadow-md { box-shadow: var(--r-shadow-md); }
-  &--shadow-lg { box-shadow: var(--r-shadow-lg); }
-  &--shadow-none { box-shadow: none; }
+  &--shadow-sm {
+    box-shadow: var(--r-shadow-sm);
+  }
+  &--shadow-md {
+    box-shadow: var(--r-shadow-md);
+  }
+  &--shadow-lg {
+    box-shadow: var(--r-shadow-lg);
+  }
+  &--shadow-none {
+    box-shadow: none;
+  }
 
   &--clickable:active {
     opacity: 0.85;

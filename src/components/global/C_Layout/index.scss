@@ -73,7 +73,9 @@ $tabbar-height: 110rpx;
     .c-layout__content {
       padding-bottom: $tabbar-height;
       background-color: $content-bg;
-      padding-bottom: calc(#{$tabbar-height} + constant(safe-area-inset-bottom));
+      padding-bottom: calc(
+        #{$tabbar-height} + constant(safe-area-inset-bottom)
+      );
       padding-bottom: calc(#{$tabbar-height} + env(safe-area-inset-bottom));
     }
   }

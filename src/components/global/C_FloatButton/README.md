@@ -5,6 +5,7 @@
 固定在页面底部角落的快捷操作按钮。
 
 **特性：**
+
 - 左下 / 右下定位
 - 可拖拽（可选）
 - 安全区域适配
@@ -24,15 +25,15 @@
 
 ### Props
 
-| 属性      | 类型    | 默认值         | 说明             |
-| --------- | ------- | -------------- | ---------------- |
-| icon      | String  | `add`          | 图标名           |
-| position  | String  | `right-bottom` | 位置             |
-| bottom    | Number  | `160`          | 距底部 (rpx)     |
-| right     | Number  | `32`           | 距右侧 (rpx)    |
-| left      | Number  | `32`           | 距左侧 (rpx)    |
-| size      | Number  | `112`          | 按钮尺寸 (rpx)  |
-| draggable | Boolean | `false`        | 是否可拖拽       |
+| 属性      | 类型    | 默认值         | 说明           |
+| --------- | ------- | -------------- | -------------- |
+| icon      | String  | `add`          | 图标名         |
+| position  | String  | `right-bottom` | 位置           |
+| bottom    | Number  | `160`          | 距底部 (rpx)   |
+| right     | Number  | `32`           | 距右侧 (rpx)   |
+| left      | Number  | `32`           | 距左侧 (rpx)   |
+| size      | Number  | `112`          | 按钮尺寸 (rpx) |
+| draggable | Boolean | `false`        | 是否可拖拽     |
 
 ### Events
 
@@ -42,9 +43,9 @@
 
 ### Slots
 
-| 名称    | 说明             |
-| ------- | ---------------- |
-| default | 自定义按钮内容   |
+| 名称    | 说明           |
+| ------- | -------------- |
+| default | 自定义按钮内容 |
 
 ---
 

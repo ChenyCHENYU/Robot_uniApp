@@ -98,11 +98,13 @@ export function useTheme() {
   /** 当前模式文案 */
   const themeModeLabel = computed(
     () =>
-      ({
-        light: '浅色',
-        dark: '深色',
-        system: '跟随系统',
-      } as Record<ThemeMode, string>)[themeMode.value]
+      (
+        ({
+          light: '浅色',
+          dark: '深色',
+          system: '跟随系统',
+        }) as Record<ThemeMode, string>
+      )[themeMode.value]
   )
 
   return {

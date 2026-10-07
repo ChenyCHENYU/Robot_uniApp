@@ -476,9 +476,7 @@
   "preloadRule": {
     "pages/index/index": {
       "network": "wifi",
-      "packages": [
-        "pages/demo"
-      ]
+      "packages": ["pages/demo"]
     }
   }
 }

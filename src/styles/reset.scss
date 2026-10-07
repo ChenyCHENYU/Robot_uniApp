@@ -17,8 +17,9 @@ uni-tabbar,
   display: none !important;
 }
 page {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-    'Helvetica Neue', Arial, sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
+    Arial, sans-serif;
   font-size: var(--r-font-size-base);
   color: var(--r-text-primary);
   background-color: var(--r-bg-page);
@@ -36,47 +37,47 @@ uni-page-body {
   max-width: var(--r-h5-max-width);
   margin: 0 auto;
   background: var(--r-bg-page);
-    min-height: 100vh;
-    position: relative;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.08);
-    overflow-x: hidden;
-  }
+  min-height: 100vh;
+  position: relative;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.08);
+  overflow-x: hidden;
+}
 
-  // 约束所有 fixed 定位的内容面板在页面最大宽度内
-    // overlay/mask 类遮罩保持全屏，仅限制面板宽度
-  .c-action-sheet__panel,
-  .c-number-keyboard__panel,
-  .c-notify,
-  .c-float-button,
-    .global-loading,
-    .bottom-bar,
-    .action-bar {
-    width: 100%;
-    max-width: var(--r-h5-max-width) !important;
-    left: 50% !important;
-    right: auto !important;
-    transform: translateX(-50%);
-  }
+// 约束所有 fixed 定位的内容面板在页面最大宽度内
+// overlay/mask 类遮罩保持全屏，仅限制面板宽度
+.c-action-sheet__panel,
+.c-number-keyboard__panel,
+.c-notify,
+.c-float-button,
+.global-loading,
+.bottom-bar,
+.action-bar {
+  width: 100%;
+  max-width: var(--r-h5-max-width) !important;
+  left: 50% !important;
+  right: auto !important;
+  transform: translateX(-50%);
+}
 
-    // Tabbar 使用 margin 居中（不用 transform，以兼容胶囊 + backdrop-filter）
-    .c-tabbar {
-      max-width: var(--r-h5-max-width);
-      left: 0;
-      right: 0;
-      margin-left: auto;
-      margin-right: auto;
-    }
-  // 弹窗 overlay 遮罩约束宽度以避免扩散到外部背景
-  .c-modal__overlay,
-  .c-action-sheet__overlay,
-  .c-image-preview,
-  .c-calendar__mask,
-  .c-cascader__mask,
-  .c-number-keyboard__overlay {
-    max-width: var(--r-h5-max-width) !important;
-    left: 50% !important;
-    right: auto !important;
-    transform: translateX(-50%);
+// Tabbar 使用 margin 居中（不用 transform，以兼容胶囊 + backdrop-filter）
+.c-tabbar {
+  max-width: var(--r-h5-max-width);
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+}
+// 弹窗 overlay 遮罩约束宽度以避免扩散到外部背景
+.c-modal__overlay,
+.c-action-sheet__overlay,
+.c-image-preview,
+.c-calendar__mask,
+.c-cascader__mask,
+.c-number-keyboard__overlay {
+  max-width: var(--r-h5-max-width) !important;
+  left: 50% !important;
+  right: auto !important;
+  transform: translateX(-50%);
 }
 
 /* #endif */

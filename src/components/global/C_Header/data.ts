@@ -50,7 +50,9 @@ export function useHeaderData(props, emit) {
   const avatarError = ref(false)
 
   // 计算属性
-  const userInfo = computed(() => userStore.userInfo as Partial<UserInfo> | null || {})
+  const userInfo = computed(
+    () => (userStore.userInfo as Partial<UserInfo> | null) || {}
+  )
 
   const safeAreaTop = computed(() => {
     try {

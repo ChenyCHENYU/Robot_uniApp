@@ -45,7 +45,11 @@ export function setUserStore(store: UserLikeStore) {
 /** 获取当前用户状态 */
 function getCurrentUserState() {
   if (!userStoreInstance) {
-    return { isLoggedIn: false, permissions: [] as string[], roles: [] as string[] }
+    return {
+      isLoggedIn: false,
+      permissions: [] as string[],
+      roles: [] as string[],
+    }
   }
   return {
     isLoggedIn: userStoreInstance.isLoggedIn,
@@ -193,7 +197,8 @@ export const router = {
     if (queryString) {
       queryString.split('&').forEach(param => {
         const [key, value] = param.split('=')
-        if (key) params[decodeURIComponent(key)] = decodeURIComponent(value || '')
+        if (key)
+          params[decodeURIComponent(key)] = decodeURIComponent(value || '')
       })
     }
     return { path, params }

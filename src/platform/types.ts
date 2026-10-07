@@ -66,7 +66,10 @@ export function normalizeUniError(
 ): PlatformError {
   const msg = String(err?.errMsg || '')
   if (msg.includes('auth') || msg.includes('deny')) {
-    return new PlatformError('permission_denied', '权限被拒绝，请在系统设置中开启')
+    return new PlatformError(
+      'permission_denied',
+      '权限被拒绝，请在系统设置中开启'
+    )
   }
   if (msg.includes('cancel')) {
     return new PlatformError('user_cancel', '用户取消操作')

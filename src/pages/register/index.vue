@@ -259,7 +259,10 @@
   const validateForm = (): boolean => {
     if (mode.value === 'account') {
       if (!/^[a-zA-Z0-9_]{3,20}$/.test(form.username)) {
-        uni.showToast({ title: '用户名需 3-20 位字母/数字/下划线', icon: 'none' })
+        uni.showToast({
+          title: '用户名需 3-20 位字母/数字/下划线',
+          icon: 'none',
+        })
         return false
       }
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {

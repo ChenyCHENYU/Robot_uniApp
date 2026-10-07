@@ -36,10 +36,28 @@ function buildFlowNodes(item: (typeof mockApprovals)[number]) {
     { title: '归档', user: '系统', status: 'waiting' },
   ]
   if (item.status === 'approved') {
-    base[2] = { title: '总监审批', user: '王总监', status: 'approved', time: item.createTime, remark: '同意' }
-    base[3] = { title: '归档', user: '系统', status: 'approved', time: item.createTime, remark: '已归档' }
+    base[2] = {
+      title: '总监审批',
+      user: '王总监',
+      status: 'approved',
+      time: item.createTime,
+      remark: '同意',
+    }
+    base[3] = {
+      title: '归档',
+      user: '系统',
+      status: 'approved',
+      time: item.createTime,
+      remark: '已归档',
+    }
   } else if (item.status === 'rejected') {
-    base[2] = { title: '总监审批', user: '王总监', status: 'rejected', time: item.createTime, remark: '驳回：材料不完整' }
+    base[2] = {
+      title: '总监审批',
+      user: '王总监',
+      status: 'rejected',
+      time: item.createTime,
+      remark: '驳回：材料不完整',
+    }
     base[3] = { title: '归档', user: '系统', status: 'waiting' }
   }
   return base

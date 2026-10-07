@@ -340,7 +340,11 @@
   import { useUserStore } from '@/stores/modules/user'
   import { useSettingsStore } from '@/stores/modules/settings'
   import { updateUser } from '@/api'
-  import { setLanguage, t, traditionalChineseEnabled } from '@/composables/locale'
+  import {
+    setLanguage,
+    t,
+    traditionalChineseEnabled,
+  } from '@/composables/locale'
   import { maskPhone } from '@/utils/format'
   import { useTheme } from '@/composables/useTheme'
 
@@ -371,7 +375,10 @@
       itemList: ['跟随系统', '浅色', '深色'],
       success: ({ tapIndex }) => {
         setThemeMode((['system', 'light', 'dark'] as const)[tapIndex])
-        uni.showToast({ title: `已切换：${themeModeLabel.value}`, icon: 'none' })
+        uni.showToast({
+          title: `已切换：${themeModeLabel.value}`,
+          icon: 'none',
+        })
       },
     })
   }
@@ -379,15 +386,22 @@
   // 字号循环：小 → 标准 → 大 → 特大
   const cycleFontSize = () => {
     const sizes = [12, 14, 16, 18]
-    const next = sizes[(sizes.indexOf(settingsStore.fontSize) + 1) % sizes.length]
+    const next =
+      sizes[(sizes.indexOf(settingsStore.fontSize) + 1) % sizes.length]
     settingsStore.setFontSize(next)
-    uni.showToast({ title: `字号：${settingsStore.fontSizeLabel}`, icon: 'none' })
+    uni.showToast({
+      title: `字号：${settingsStore.fontSizeLabel}`,
+      icon: 'none',
+    })
   }
 
   // 语言切换（简/繁，opencc-js 实时转换；繁体需 VITE_FEATURE_TW=true）
   const handleLanguageSelect = () => {
     if (!traditionalChineseEnabled) {
-      uni.showToast({ title: '繁体转换未启用（VITE_FEATURE_TW）', icon: 'none' })
+      uni.showToast({
+        title: '繁体转换未启用（VITE_FEATURE_TW）',
+        icon: 'none',
+      })
       return
     }
     uni.showActionSheet({
@@ -414,7 +428,8 @@
           userStore.userInfo = {
             id: '',
             username: '',
-            nickname: userStore.nickname === '未设置昵称' ? '' : userStore.nickname,
+            nickname:
+              userStore.nickname === '未设置昵称' ? '' : userStore.nickname,
             avatar: tempPath,
           }
         }

@@ -9,148 +9,150 @@
         v-if="!detail"
         class="detail-loading"
       >
-        <text class="loading-text">{{ loading ? '加载中...' : '数据不存在' }}</text>
+        <text class="loading-text">{{
+          loading ? '加载中...' : '数据不存在'
+        }}</text>
       </view>
 
       <template v-if="detail">
-      <!-- 顶部封面 + 导航栏合一 -->
-      <view class="detail-cover">
-        <view class="cover-nav">
-          <view
-            class="nav-back"
-            @click="handleBack"
-          >
-            <wd-icon
-              name="arrow-left"
-              size="20px"
-              color="#fff"
-            />
-          </view>
-          <text class="nav-title">详情</text>
-          <view class="nav-placeholder"></view>
-        </view>
-        <view class="cover-gradient"></view>
-        <view class="cover-content">
-          <view
-            class="status-badge"
-            :class="detail.status === 0 ? 'pending' : 'done'"
-          >
-            <text class="status-text">{{ statusText }}</text>
-          </view>
-          <text class="detail-title">{{ detail.title }}</text>
-          <text class="detail-subtitle">数据项 · 通用详情模板</text>
-        </view>
-      </view>
-
-      <!-- 基础信息卡片 -->
-      <view class="info-card">
-        <view class="card-title-row">
-          <text class="card-title">基本信息</text>
-        </view>
-        <view class="info-grid">
-          <view
-            v-for="field in basicFields"
-            :key="field.label"
-            class="info-item"
-          >
-            <text class="info-label">{{ field.label }}</text>
-            <text class="info-value">{{ field.value }}</text>
-          </view>
-        </view>
-      </view>
-
-      <!-- 描述内容 -->
-      <view class="content-card">
-        <view class="card-title-row">
-          <text class="card-title">详细描述</text>
-        </view>
-        <text class="content-text">{{ detail.description }}</text>
-      </view>
-
-      <!-- 附件列表 -->
-      <view class="attach-card">
-        <view class="card-title-row">
-          <text class="card-title">附件资料</text>
-          <text class="card-extra">{{ attachments.length }} 个文件</text>
-        </view>
-        <view class="attach-list">
-          <view
-            v-for="file in attachments"
-            :key="file.name"
-            class="attach-item"
-          >
+        <!-- 顶部封面 + 导航栏合一 -->
+        <view class="detail-cover">
+          <view class="cover-nav">
             <view
-              class="file-icon"
-              :style="{ background: file.iconBg }"
+              class="nav-back"
+              @click="handleBack"
             >
-              <text class="file-type">{{ file.ext }}</text>
+              <wd-icon
+                name="arrow-left"
+                size="20px"
+                color="#fff"
+              />
             </view>
-            <view class="file-info">
-              <text class="file-name">{{ file.name }}</text>
-              <text class="file-size">{{ file.size }}</text>
+            <text class="nav-title">详情</text>
+            <view class="nav-placeholder"></view>
+          </view>
+          <view class="cover-gradient"></view>
+          <view class="cover-content">
+            <view
+              class="status-badge"
+              :class="detail.status === 0 ? 'pending' : 'done'"
+            >
+              <text class="status-text">{{ statusText }}</text>
             </view>
+            <text class="detail-title">{{ detail.title }}</text>
+            <text class="detail-subtitle">数据项 · 通用详情模板</text>
+          </view>
+        </view>
+
+        <!-- 基础信息卡片 -->
+        <view class="info-card">
+          <view class="card-title-row">
+            <text class="card-title">基本信息</text>
+          </view>
+          <view class="info-grid">
+            <view
+              v-for="field in basicFields"
+              :key="field.label"
+              class="info-item"
+            >
+              <text class="info-label">{{ field.label }}</text>
+              <text class="info-value">{{ field.value }}</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 描述内容 -->
+        <view class="content-card">
+          <view class="card-title-row">
+            <text class="card-title">详细描述</text>
+          </view>
+          <text class="content-text">{{ detail.description }}</text>
+        </view>
+
+        <!-- 附件列表 -->
+        <view class="attach-card">
+          <view class="card-title-row">
+            <text class="card-title">附件资料</text>
+            <text class="card-extra">{{ attachments.length }} 个文件</text>
+          </view>
+          <view class="attach-list">
+            <view
+              v-for="file in attachments"
+              :key="file.name"
+              class="attach-item"
+            >
+              <view
+                class="file-icon"
+                :style="{ background: file.iconBg }"
+              >
+                <text class="file-type">{{ file.ext }}</text>
+              </view>
+              <view class="file-info">
+                <text class="file-name">{{ file.name }}</text>
+                <text class="file-size">{{ file.size }}</text>
+              </view>
+              <wd-icon
+                name="download"
+                size="18px"
+                color="#667eea"
+              />
+            </view>
+          </view>
+        </view>
+
+        <!-- 时间线 -->
+        <view class="timeline-card">
+          <view class="card-title-row">
+            <text class="card-title">操作记录</text>
+          </view>
+          <view class="timeline-list">
+            <view
+              v-for="(log, index) in logs"
+              :key="index"
+              class="timeline-item"
+            >
+              <view
+                class="timeline-dot"
+                :class="{ first: index === 0 }"
+              ></view>
+              <view
+                v-if="index < logs.length - 1"
+                class="timeline-line"
+              ></view>
+              <view class="timeline-content">
+                <text class="timeline-action">{{ log.action }}</text>
+                <text class="timeline-user">{{ log.user }}</text>
+                <text class="timeline-time">{{ log.time }}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 底部操作 -->
+        <view class="bottom-bar">
+          <view
+            class="bar-btn secondary"
+            @click="handleShare"
+          >
             <wd-icon
-              name="download"
+              name="share"
               size="18px"
               color="#667eea"
             />
+            <text class="bar-btn-text">分享</text>
           </view>
-        </view>
-      </view>
-
-      <!-- 时间线 -->
-      <view class="timeline-card">
-        <view class="card-title-row">
-          <text class="card-title">操作记录</text>
-        </view>
-        <view class="timeline-list">
           <view
-            v-for="(log, index) in logs"
-            :key="index"
-            class="timeline-item"
+            class="bar-btn primary"
+            @click="handleEdit"
           >
-            <view
-              class="timeline-dot"
-              :class="{ first: index === 0 }"
-            ></view>
-            <view
-              v-if="index < logs.length - 1"
-              class="timeline-line"
-            ></view>
-            <view class="timeline-content">
-              <text class="timeline-action">{{ log.action }}</text>
-              <text class="timeline-user">{{ log.user }}</text>
-              <text class="timeline-time">{{ log.time }}</text>
-            </view>
+            <wd-icon
+              name="edit-outline"
+              size="18px"
+              color="#fff"
+            />
+            <text class="bar-btn-text white">编辑</text>
           </view>
         </view>
-      </view>
-
-      <!-- 底部操作 -->
-      <view class="bottom-bar">
-        <view
-          class="bar-btn secondary"
-          @click="handleShare"
-        >
-          <wd-icon
-            name="share"
-            size="18px"
-            color="#667eea"
-          />
-          <text class="bar-btn-text">分享</text>
-        </view>
-        <view
-          class="bar-btn primary"
-          @click="handleEdit"
-        >
-          <wd-icon
-            name="edit-outline"
-            size="18px"
-            color="#fff"
-          />
-          <text class="bar-btn-text white">编辑</text>
-        </view>
-      </view>
       </template>
     </view>
   </C_Layout>
@@ -255,8 +257,7 @@
   }
 
   const handleShare = () => uni.showToast({ title: '分享功能', icon: 'none' })
-  const handleEdit = () =>
-    uni.navigateTo({ url: '/pages/form-template/index' })
+  const handleEdit = () => uni.navigateTo({ url: '/pages/form-template/index' })
 </script>
 
 <style lang="scss" scoped>

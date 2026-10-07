@@ -53,9 +53,9 @@
     }
   }
 
-    &__unoicon {
-      font-size: 40rpx;
-    }
+  &__unoicon {
+    font-size: 40rpx;
+  }
   &__desc {
     font-size: var(--r-font-size-xs);
     color: var(--r-text-secondary);
@@ -81,6 +81,10 @@
 }
 
 @keyframes sheet-up {
-  from { transform: translateY(100%); }
-  to { transform: translateY(0); }
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
 }

@@ -17,9 +17,10 @@
 
 ```vue
 <script setup>
-import { usePagination } from "@/composables";
+  import { usePagination } from '@/composables'
 
-const { list, loading, finished, loadMore, refresh } = usePagination(fetchList);
+  const { list, loading, finished, loadMore, refresh } =
+    usePagination(fetchList)
 </script>
 
 <template>
@@ -28,9 +29,12 @@ const { list, loading, finished, loadMore, refresh } = usePagination(fetchList);
     :finished="finished"
     :show-empty="!loading && list.length === 0"
     @load="loadMore"
-    @refresh="(done) => refresh().then(done)"
+    @refresh="done => refresh().then(done)"
   >
-    <view v-for="item in list" :key="item.id">
+    <view
+      v-for="item in list"
+      :key="item.id"
+    >
       {{ item.name }}
     </view>
   </C_List>

@@ -5,6 +5,7 @@
 用于标记/分类的状态标签。
 
 **特性：**
+
 - 5 种预设颜色（primary/success/warning/error/info）
 - 朴素/实心两种模式
 - 可关闭、自定义颜色

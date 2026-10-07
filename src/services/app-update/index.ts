@@ -62,10 +62,7 @@ const CHUNK_SIZE = 1024 * 1024
 /** 断言 App 运行时可用 */
 function requirePlus(): void {
   // #ifndef APP-PLUS
-  throw new AppUpdateError(
-    'platform_unsupported',
-    '热更新仅支持 App 端'
-  )
+  throw new AppUpdateError('platform_unsupported', '热更新仅支持 App 端')
   // #endif
 }
 
@@ -82,7 +79,9 @@ function getManifestUrl(): string {
 }
 
 /** 拉取远端 manifest（走 uni.request，失败抛错） */
-export function fetchUpdateManifest(manifestUrl?: string): Promise<AppUpdateManifest> {
+export function fetchUpdateManifest(
+  manifestUrl?: string
+): Promise<AppUpdateManifest> {
   const url = manifestUrl || getManifestUrl()
   return new Promise((resolve, reject) => {
     uni.request({
@@ -91,7 +90,12 @@ export function fetchUpdateManifest(manifestUrl?: string): Promise<AppUpdateMani
       timeout: 15000,
       success: res => {
         if (res.statusCode !== 200) {
-          reject(new AppUpdateError('manifest_http', `manifest 请求失败: ${res.statusCode}`))
+          reject(
+            new AppUpdateError(
+              'manifest_http',
+              `manifest 请求失败: ${res.statusCode}`
+            )
+          )
           return
         }
         const data = res.data as AppUpdateManifest
@@ -102,13 +106,21 @@ export function fetchUpdateManifest(manifestUrl?: string): Promise<AppUpdateMani
         resolve(data)
       },
       fail: err =>
-        reject(new AppUpdateError('manifest_network', err.errMsg || 'manifest 网络失败')),
+        reject(
+          new AppUpdateError(
+            'manifest_network',
+            err.errMsg || 'manifest 网络失败'
+          )
+        ),
     })
   })
 }
 
 /** 当前 App 运行版本信息 */
-export function getAppRuntimeVersion(): { versionCode: number; versionName: string } {
+export function getAppRuntimeVersion(): {
+  versionCode: number
+  versionName: string
+} {
   requirePlus()
   const plusRuntime = (plus as any).runtime
   return {
@@ -158,12 +170,14 @@ function hashLocalFile(filePath: string): Promise<string> {
               offset += CHUNK_SIZE
               readNext()
             },
-            fail: err => reject(new AppUpdateError('hash_read', err.errMsg || '读取失败')),
+            fail: err =>
+              reject(new AppUpdateError('hash_read', err.errMsg || '读取失败')),
           })
         }
         readNext()
       },
-      fail: err => reject(new AppUpdateError('hash_stat', err.errMsg || 'stat 失败')),
+      fail: err =>
+        reject(new AppUpdateError('hash_stat', err.errMsg || 'stat 失败')),
     })
   })
 }
@@ -179,7 +193,9 @@ export function downloadUpdatePackage(
       timeout: 120000,
       success: async res => {
         if (res.statusCode !== 200) {
-          reject(new AppUpdateError('download_http', `下载失败: ${res.statusCode}`))
+          reject(
+            new AppUpdateError('download_http', `下载失败: ${res.statusCode}`)
+          )
           return
         }
         // sha256 完整性校验
@@ -187,7 +203,12 @@ export function downloadUpdatePackage(
           try {
             const actual = await hashLocalFile(res.tempFilePath)
             if (actual.toLowerCase() !== manifest.sha256.toLowerCase()) {
-              reject(new AppUpdateError('hash_mismatch', '安装包校验失败（sha256 不匹配）'))
+              reject(
+                new AppUpdateError(
+                  'hash_mismatch',
+                  '安装包校验失败（sha256 不匹配）'
+                )
+              )
               return
             }
           } catch (error) {
@@ -200,7 +221,9 @@ export function downloadUpdatePackage(
         resolve(res.tempFilePath)
       },
       fail: err =>
-        reject(new AppUpdateError('download_network', err.errMsg || '下载失败')),
+        reject(
+          new AppUpdateError('download_network', err.errMsg || '下载失败')
+        ),
     })
     if (onProgress && task) {
       task.onProgressUpdate(res => {

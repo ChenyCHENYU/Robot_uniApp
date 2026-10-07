@@ -85,7 +85,12 @@
     longPress: { type: Boolean, default: defaultProps.longPress },
   })
 
-  const emit = defineEmits(['update:visible', 'update:current', 'change', 'save'])
+  const emit = defineEmits([
+    'update:visible',
+    'update:current',
+    'change',
+    'save',
+  ])
 
   const currentIndex = ref(props.current)
 

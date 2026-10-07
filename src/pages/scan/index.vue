@@ -7,114 +7,114 @@
     :class="themeClass"
   >
     <wd-config-provider :theme="wotTheme">
-    <!-- 扫描视图 -->
-    <view class="scan-view">
-      <!-- 顶部导航 -->
-      <view class="scan-nav">
-        <view
-          class="nav-btn"
-          @click="goBack"
-        >
-          <wd-icon
-            name="arrow-left"
-            size="22px"
-            color="#fff"
-          />
-        </view>
-        <text class="nav-title">扫一扫</text>
-        <view
-          class="nav-btn"
-          @click="toggleFlash"
-        >
-          <wd-icon
-            :name="flashOn ? 'fill-camera' : 'camera'"
-            size="22px"
-            color="#fff"
-          />
-        </view>
-      </view>
-
-      <!-- 扫描区域 -->
-      <view class="scan-area">
-        <view class="scan-frame">
-          <view class="corner corner-tl"></view>
-          <view class="corner corner-tr"></view>
-          <view class="corner corner-bl"></view>
-          <view class="corner corner-br"></view>
-          <view class="scan-line"></view>
-        </view>
-        <text class="scan-tip">将二维码/条形码放入框内，即可自动扫描</text>
-      </view>
-
-      <!-- 底部操作 -->
-      <view class="scan-actions">
-        <view
-          class="action-item"
-          @click="handleAlbum"
-        >
-          <view class="action-icon">
+      <!-- 扫描视图 -->
+      <view class="scan-view">
+        <!-- 顶部导航 -->
+        <view class="scan-nav">
+          <view
+            class="nav-btn"
+            @click="goBack"
+          >
             <wd-icon
-              name="picture"
-              size="24px"
+              name="arrow-left"
+              size="22px"
               color="#fff"
             />
           </view>
-          <text class="action-text">相册</text>
-        </view>
-        <view
-          class="action-item"
-          @click="handleMyCode"
-        >
-          <view class="action-icon">
+          <text class="nav-title">扫一扫</text>
+          <view
+            class="nav-btn"
+            @click="toggleFlash"
+          >
             <wd-icon
-              name="qrcode"
-              size="24px"
+              :name="flashOn ? 'fill-camera' : 'camera'"
+              size="22px"
               color="#fff"
             />
           </view>
-          <text class="action-text">我的码</text>
+        </view>
+
+        <!-- 扫描区域 -->
+        <view class="scan-area">
+          <view class="scan-frame">
+            <view class="corner corner-tl"></view>
+            <view class="corner corner-tr"></view>
+            <view class="corner corner-bl"></view>
+            <view class="corner corner-br"></view>
+            <view class="scan-line"></view>
+          </view>
+          <text class="scan-tip">将二维码/条形码放入框内，即可自动扫描</text>
+        </view>
+
+        <!-- 底部操作 -->
+        <view class="scan-actions">
+          <view
+            class="action-item"
+            @click="handleAlbum"
+          >
+            <view class="action-icon">
+              <wd-icon
+                name="picture"
+                size="24px"
+                color="#fff"
+              />
+            </view>
+            <text class="action-text">相册</text>
+          </view>
+          <view
+            class="action-item"
+            @click="handleMyCode"
+          >
+            <view class="action-icon">
+              <wd-icon
+                name="qrcode"
+                size="24px"
+                color="#fff"
+              />
+            </view>
+            <text class="action-text">我的码</text>
+          </view>
         </view>
       </view>
-    </view>
 
-    <!-- 扫描结果弹出 -->
-    <view
-      v-if="scanResult"
-      class="result-overlay"
-      @click="scanResult = ''"
-    >
+      <!-- 扫描结果弹出 -->
       <view
-        class="result-card"
-        @click.stop
+        v-if="scanResult"
+        class="result-overlay"
+        @click="scanResult = ''"
       >
-        <view class="result-header">
-          <wd-icon
-            name="check-circle"
-            size="48px"
-            color="#43e97b"
-          />
-          <text class="result-title">扫描成功</text>
-        </view>
-        <view class="result-content">
-          <text class="result-label">扫描内容</text>
-          <text class="result-text">{{ scanResult }}</text>
-        </view>
-        <view class="result-actions">
-          <view
-            class="result-btn secondary"
-            @click="handleCopy"
-          >
-            <text class="btn-text">复制</text>
+        <view
+          class="result-card"
+          @click.stop
+        >
+          <view class="result-header">
+            <wd-icon
+              name="check-circle"
+              size="48px"
+              color="#43e97b"
+            />
+            <text class="result-title">扫描成功</text>
           </view>
-          <view
-            class="result-btn primary"
-            @click="handleOpen"
-          >
-            <text class="btn-text white">打开</text>
+          <view class="result-content">
+            <text class="result-label">扫描内容</text>
+            <text class="result-text">{{ scanResult }}</text>
+          </view>
+          <view class="result-actions">
+            <view
+              class="result-btn secondary"
+              @click="handleCopy"
+            >
+              <text class="btn-text">复制</text>
+            </view>
+            <view
+              class="result-btn primary"
+              @click="handleOpen"
+            >
+              <text class="btn-text white">打开</text>
+            </view>
           </view>
         </view>
       </view>
-    </view>
     </wd-config-provider>
   </view>
 </template>

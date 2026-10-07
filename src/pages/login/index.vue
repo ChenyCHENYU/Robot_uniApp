@@ -204,7 +204,9 @@
           v-if="isDev"
           class="demo-hint"
         >
-          <text class="demo-hint-text">演示账号：admin / admin123（仅开发环境）</text>
+          <text class="demo-hint-text"
+            >演示账号：admin / admin123（仅开发环境）</text
+          >
         </view>
 
         <!-- 分割线 -->
