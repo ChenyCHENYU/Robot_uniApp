@@ -151,7 +151,7 @@
 
 <script setup lang="ts">
   import { ref, computed } from 'vue'
-  import { onLoad } from '@dcloudio/uni-app'
+  import { onLoad, onPullDownRefresh } from '@dcloudio/uni-app'
   import {
     getApprovalDetail,
     approveItem,
@@ -261,6 +261,14 @@
       acting.value = false
     }
   }
+
+  // 下拉刷新详情
+  onPullDownRefresh(async () => {
+    if (detail.value?.id) {
+      await loadDetail(detail.value.id).catch(() => {})
+    }
+    uni.stopPullDownRefresh()
+  })
 
   const handleApprove = () => {
     uni.showModal({

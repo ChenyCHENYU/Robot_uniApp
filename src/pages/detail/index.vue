@@ -158,7 +158,7 @@
 
 <script setup lang="ts">
   import { ref, computed } from 'vue'
-  import { onLoad } from '@dcloudio/uni-app'
+  import { onLoad, onPullDownRefresh } from '@dcloudio/uni-app'
   import { getCrudDetail, type CrudItem } from '@/api'
   import { useUserStore } from '@/stores/modules/user'
 
@@ -240,6 +240,14 @@
     { action: '修改了截止时间', user: '管理员', time: '2025-01-12 09:00' },
     { action: '创建了项目', user: 'ChenY', time: '2025-01-10 16:45' },
   ])
+
+  // 下拉刷新详情
+  onPullDownRefresh(async () => {
+    if (detail.value?.id) {
+      await loadDetail(String(detail.value.id)).catch(() => {})
+    }
+    uni.stopPullDownRefresh()
+  })
 
   const handleBack = () => {
     const pages = getCurrentPages()

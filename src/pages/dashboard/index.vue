@@ -124,7 +124,7 @@
 
 <script setup lang="ts">
   import { ref, computed } from 'vue'
-  import { onLoad } from '@dcloudio/uni-app'
+  import { onLoad, onPullDownRefresh } from '@dcloudio/uni-app'
   import {
     getDashboardStats,
     getDashboardChart,
@@ -234,6 +234,12 @@
 
   onLoad(() => {
     loadData()
+  })
+
+  // 下拉刷新
+  onPullDownRefresh(async () => {
+    await loadData().catch(() => {})
+    uni.stopPullDownRefresh()
   })
 
   const handlePeriodChange = (p: { value: string }) => {
