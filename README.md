@@ -27,7 +27,7 @@
 - 平台能力抽象层（`src/platform`）：扫码/定位/拍照统一接口 + H5/小程序/App 实现 + 降级链
 - 断点续传上传（App/MP 分片+重试+持久化 job）、App 热更新服务（manifest + sha256 校验）
 - 简繁转换（`VITE_FEATURE_TW` 开关，opencc 字典懒加载，默认零包体成本）
-- 契约测试（`pnpm test`）：路由守卫/HTTP 协议/API↔Mock 同步三项门禁；包体预算门禁（`pnpm check:budget`）
+- 契约测试（`pnpm test`）：路由守卫/HTTP 协议/API↔Mock 同步/平台 API 隔离四项门禁；包体预算门禁（`pnpm check:budget`）
 - 路由守卫采用「默认需登录 + 白名单放行」，并支持按页面配置角色/权限
 - 34 个自研 `C_*` 组件（easycom 自动注册）+ wot-design-uni 按需引入
 - 类型检查（vue-tsc）、oxlint + ESLint、commitlint + husky 全链路质量保障
@@ -61,7 +61,7 @@ pnpm dev:app        # App 开发（需 HBuilderX）
 | `pnpm build` / `build:wx` / `build:app` | 生产构建 |
 | `pnpm build:test` / `build:staging` | 测试/预发布构建 |
 | `pnpm type-check` | vue-tsc 全量类型检查 |
-| `pnpm test` | 契约测试（守卫/协议/Mock 同步） |
+| `pnpm test` | 契约测试（守卫/协议/Mock 同步/平台隔离） |
 | `pnpm check:budget` | 构建产物包体预算门禁 |
 | `pnpm check:quality` | type-check + lint + test 一键全检 |
 | `pnpm lint` | oxlint + ESLint 检查并修复 |
@@ -89,7 +89,7 @@ pnpm dev:app        # App 开发（需 HBuilderX）
 │   ├── stores/               # Pinia + 持久化（uni storage 适配器）
 │   ├── styles/               # 设计 token（:root + page 双挂载）/ reset / mixins
 │   ├── types/                # UserInfo / LoginResult / PageResult 等共享类型
-│   ├── utils/                # http / router(守卫) / url-policy / error-handler / v_verify
+│   ├── utils/                # http(+helpers/types) / router(守卫) / url-policy / logger / format / error-handler
 │   └── main.ts               # 入口：错误处理 → Pinia → 守卫依赖注入 → Mock 挂载
 ├── uno.config.js             # UnoCSS（图标集显式声明，避免环境性加载失败）
 └── vite.config.js            # envDir=env / AutoImport / 生产 drop console

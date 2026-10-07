@@ -3,12 +3,13 @@
  *
  * 核心能力：
  * - 请求取消（页面级自动取消，配合 C_Layout 的 onUnload）
- * - 请求去重（相同请求自动合并）
+ * - 请求去重（相同请求自动合并；key 挂身份代次，登出/切号自动隔离）
  * - 失败重试（仅网络层错误/5xx，可配置次数 + 指数退避）
  * - 登录回跳（401 时保存来源页，登录成功后由 router 消费）
  * - upload 统一拦截链
  *
  * 响应协议：code === 0（RESPONSE_CODE.SUCCESS）为成功，业务码在 body 中。
+ * 协议判定/状态文案见 http-helpers.ts；类型见 http-types.ts。
  */
 import config from '@/config/env'
 import { RESPONSE_CODE } from '@/constants/business'
@@ -17,42 +18,58 @@ import {
   getRequestContextEpoch,
   onRequestContextChange,
 } from '@/services/request-context'
+import {
+  httpError,
+  getStatusMessage,
+  isBusinessSuccess,
+  extractBusinessData,
+  parseResponseBody,
+  isCancelledError,
+} from './http-helpers'
+import type { HttpError, RequestOptions } from './http-types'
 
-/** 统一的请求错误对象 */
-export interface HttpError {
-  code: number
-  message: string
-  /** 是否可重试（仅网络层失败/5xx） */
-  retryable?: boolean
+export type { HttpError, RequestOptions }
+
+/** 请求执行上下文（拆分自 request 以收敛复杂度） */
+interface ExecContext {
+  url: string
+  method: string
+  data: Record<string, any>
+  silent: boolean
+  retry: number
+  retryDelay: number
+  cancelable: boolean
+  rest: Record<string, any>
 }
 
-/** 请求配置 */
-export interface RequestOptions {
-  method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'HEAD' | 'OPTIONS'
-  data?: Record<string, any>
-  /** 静默模式：不弹 loading、不弹错误 toast */
-  silent?: boolean
-  /** 是否去重（相同 method+url+data 的在飞请求自动合并） */
-  dedupe?: boolean
-  /** 重试次数（仅 GET 默认 2；仅网络错误/5xx 会重试） */
-  retry?: number
-  /** 重试基础延迟(ms)，指数退避 */
-  retryDelay?: number
-  /** 是否注册到页面任务（页面卸载时自动取消） */
-  cancelable?: boolean
-  /** 自定义请求头 */
-  header?: Record<string, string>
-  [key: string]: any
-}
+/** 解析请求配置 */
+function normalizeContext(url: string, options: RequestOptions): ExecContext {
+  const {
+    method = 'GET',
+    data = {},
+    silent = false,
+    dedupe: _dedupe = true,
+    retry,
+    retryDelay = 1000,
+    cancelable = true,
+    ...rest
+  } = options
 
-/** 构造请求错误 */
-function httpError(code: number, message: string, retryable = false): HttpError {
-  return { code, message, retryable }
+  return {
+    url: url.startsWith('http') ? url : http.baseURL + url,
+    method,
+    data,
+    silent,
+    retry: retry ?? (method === 'GET' ? 2 : 0),
+    retryDelay,
+    cancelable,
+    rest,
+  }
 }
 
 /** 生成请求唯一标识（含身份代次：登出/切号后不复用旧请求） */
-function genRequestKey(method: string, url: string, data: any): string {
-  return `${getRequestContextEpoch()}:${method}:${url}:${JSON.stringify(data || {})}`
+function genRequestKey(ctx: ExecContext): string {
+  return `${getRequestContextEpoch()}:${ctx.method}:${ctx.url}:${JSON.stringify(ctx.data || {})}`
 }
 
 class Http {
@@ -99,23 +116,6 @@ class Http {
     }
   }
 
-  // ==================== 去重 ====================
-
-  /** 若存在相同请求，返回其 Promise；否则返回 null */
-  getPending(key: string) {
-    return this.pendingMap.get(key) || null
-  }
-
-  /** 注册请求 */
-  setPending(key: string, promise: Promise<any>) {
-    this.pendingMap.set(key, promise)
-  }
-
-  /** 移除已完成请求 */
-  removePending(key: string) {
-    this.pendingMap.delete(key)
-  }
-
   // ==================== 页面级取消 ====================
 
   /** 注册请求任务到指定页面 */
@@ -151,95 +151,69 @@ class Http {
 
   // ==================== 核心请求 ====================
 
-  /** 统一请求 */
+  /** 统一请求（去重 + 重试 + 错误处理） */
   async request<T = any>(url: string, options: RequestOptions = {}): Promise<T> {
-    const {
-      method = 'GET',
-      data = {},
-      silent = false,
-      dedupe = true,
-      retry = method === 'GET' ? 2 : 0,
-      retryDelay = 1000,
-      cancelable = true,
-      ...rest
-    } = options
+    const ctx = normalizeContext(url, options)
+    const requestKey = genRequestKey(ctx)
 
-    const fullURL = url.startsWith('http') ? url : this.baseURL + url
-    const requestKey = genRequestKey(method, fullURL, data)
-
-    // 1. 去重：若有相同请求在飞行中，直接复用
-    if (dedupe) {
-      const existing = this.getPending(requestKey)
-      if (existing) return existing
+    // 去重：相同在飞请求直接复用
+    if (options.dedupe !== false) {
+      const existing = this.pendingMap.get(requestKey)
+      if (existing) return existing as Promise<T>
     }
 
-    // 2. 构建请求 Promise
-    const requestPromise = this._executeWithRetry(
-      { url: fullURL, method, data, silent, cancelable, ...rest },
-      retry,
-      retryDelay
-    )
+    const requestPromise = this._execute(ctx)
 
-    // 3. 注册去重；catch 兜底避免共享 Promise 的 unhandledrejection
-    if (dedupe) {
-      this.setPending(requestKey, requestPromise)
+    // 注册去重；catch 兜底避免共享 Promise 的 unhandledrejection
+    if (options.dedupe !== false) {
+      this.pendingMap.set(requestKey, requestPromise)
       requestPromise
         .catch(() => {})
-        .finally(() => this.removePending(requestKey))
+        .finally(() => this.pendingMap.delete(requestKey))
     }
 
     return requestPromise
   }
 
-  /** 带重试的请求执行 */
-  private async _executeWithRetry(
-    reqConfig: RequestOptions,
-    retryCount: number,
-    retryDelay: number
-  ) {
-    const { silent = false } = reqConfig
-
-    if (!silent) this.showLoading()
-
+  /** 执行（loading + 重试 + 统一错误处理） */
+  private async _execute(ctx: ExecContext): Promise<any> {
+    if (!ctx.silent) this.showLoading()
     try {
-      return await this._doRequest(reqConfig, retryCount, retryDelay)
+      return await this._doRequest(ctx, ctx.retry, ctx.retryDelay)
     } catch (error: any) {
-      return this._handleError(error, silent)
+      return this._handleError(error as HttpError, ctx.silent)
     } finally {
-      if (!silent) this.hideLoading()
+      if (!ctx.silent) this.hideLoading()
     }
   }
 
   /** 递归重试请求（仅 retryable 错误：网络失败/5xx） */
   private async _doRequest(
-    reqConfig: RequestOptions,
+    ctx: ExecContext,
     retriesLeft: number,
     retryDelay: number
   ): Promise<any> {
     try {
-      const response = await this._send(reqConfig)
+      const response = await this._send(ctx)
       return this._handleResponse(response)
     } catch (error: any) {
       if (!error?.retryable || retriesLeft <= 0) throw error
 
       // 指数退避
-      const delay = retryDelay * Math.pow(2, reqConfig._retryAttempt || 0)
+      const delay = retryDelay * Math.pow(2, ctx.rest._retryAttempt || 0)
       await new Promise(r => setTimeout(r, delay))
 
-      reqConfig._retryAttempt = (reqConfig._retryAttempt || 0) + 1
-      return this._doRequest(reqConfig, retriesLeft - 1, retryDelay)
+      ctx.rest._retryAttempt = (ctx.rest._retryAttempt || 0) + 1
+      return this._doRequest(ctx, retriesLeft - 1, retryDelay)
     }
   }
 
   /** 发送底层请求 */
-  private _send(reqConfig: RequestOptions): Promise<UniApp.RequestSuccessCallbackResult> {
-    const { url, method, data, cancelable, header: customHeader } = reqConfig
-
-    // Token 注入
+  private _send(ctx: ExecContext): Promise<UniApp.RequestSuccessCallbackResult> {
     const userStore = useUserStore()
     const header: Record<string, string> = {
       'Content-Type': 'application/json',
-      ...customHeader,
+      ...(ctx.rest.header as Record<string, string> | undefined),
     }
     if (userStore.token) {
       header.Authorization = `Bearer ${userStore.token}`
@@ -247,9 +221,9 @@ class Http {
 
     return new Promise((resolve, reject) => {
       const requestTask = uni.request({
-        url,
-        method,
-        data,
+        url: ctx.url,
+        method: ctx.method as any,
+        data: ctx.data,
         timeout: this.timeout,
         header,
         success: resolve,
@@ -264,7 +238,7 @@ class Http {
       })
 
       // 注册到页面任务
-      if (cancelable && requestTask) {
+      if (ctx.cancelable && requestTask) {
         const pageRoute = this._getCurrentPageRoute()
         if (pageRoute) {
           this.addPageTask(pageRoute, requestTask)
@@ -273,32 +247,21 @@ class Http {
     })
   }
 
-  /** 处理响应 */
+  /** 处理响应（协议判定） */
   private _handleResponse(response: UniApp.RequestSuccessCallbackResult) {
-    const { statusCode, data: rawData } = response
-
-    // 解析响应体（服务端可能返回 HTML 错误页等非 JSON 内容）
-    let data: Record<string, any>
-    if (typeof rawData === 'string') {
-      try {
-        data = JSON.parse(rawData)
-      } catch {
-        throw httpError(-2, '响应格式错误')
-      }
-    } else {
-      data = rawData as Record<string, any>
-    }
+    const { statusCode } = response
+    const data = parseResponseBody(response.data)
 
     if (statusCode === 200) {
-      if (data.code === RESPONSE_CODE.SUCCESS || data.success === true) {
-        return data.data !== undefined ? data.data : data
+      if (isBusinessSuccess(data)) {
+        return extractBusinessData(data)
       }
       // 业务错误：不重试
       throw httpError(data.code ?? -3, data.message || '请求失败')
     }
 
     // 5xx 网关/服务端故障：可重试；4xx 客户端错误：不重试
-    throw httpError(statusCode, this._getStatusMessage(statusCode), statusCode >= 500)
+    throw httpError(statusCode, getStatusMessage(statusCode), statusCode >= 500)
   }
 
   /** 统一错误处理 */
@@ -327,7 +290,7 @@ class Http {
     }
 
     // 请求取消不提示
-    if (error.code === -1 && error.message === '请求已取消') {
+    if (isCancelledError(error)) {
       return Promise.reject(error)
     }
 
@@ -342,29 +305,13 @@ class Http {
   private _getCurrentPageRoute(withQuery = false): string {
     const pages = getCurrentPages()
     if (!pages.length) return ''
-    const page = pages[pages.length - 1]
+    const page = pages[pages.length - 1] as any
     const route = `/${page.route}`
-    if (!withQuery || !(page as any).options) return route
-    const query = Object.entries((page as any).options as Record<string, string>)
+    if (!withQuery || !page.options) return route
+    const query = Object.entries(page.options as Record<string, string>)
       .map(([k, v]) => `${k}=${encodeURIComponent(v)}`)
       .join('&')
     return query ? `${route}?${query}` : route
-  }
-
-  /** HTTP 状态码映射 */
-  private _getStatusMessage(code: number): string {
-    const messages: Record<number, string> = {
-      400: '请求参数错误',
-      401: '未授权，请重新登录',
-      403: '权限不足',
-      404: '请求的资源不存在',
-      408: '请求超时',
-      500: '服务器内部错误',
-      502: '网关错误',
-      503: '服务不可用',
-      504: '网关超时',
-    }
-    return messages[code] || `网络错误(${code})`
   }
 
   // ==================== 便捷方法 ====================
@@ -419,23 +366,20 @@ class Http {
         success: async res => {
           // HTTP 状态码校验
           if (res.statusCode !== 200) {
-            const error = httpError(
-              res.statusCode,
-              this._getStatusMessage(res.statusCode)
-            )
+            const error = httpError(res.statusCode, getStatusMessage(res.statusCode))
             await this._handleError(error, silent).catch(() => {})
             reject(error)
             return
           }
           try {
-            const data = JSON.parse(res.data)
-            if (data.code === RESPONSE_CODE.SUCCESS || data.success === true) {
-              resolve((data.data !== undefined ? data.data : data) as T)
+            const data = parseResponseBody(res.data)
+            if (isBusinessSuccess(data)) {
+              resolve(extractBusinessData(data) as T)
             } else {
               reject(httpError(data.code ?? -3, data.message || '上传失败'))
             }
-          } catch {
-            reject(httpError(-2, '响应格式错误'))
+          } catch (error) {
+            reject(error)
           }
         },
         fail: err => reject(httpError(-1, err.errMsg || '上传失败', true)),
@@ -454,4 +398,5 @@ class Http {
   }
 }
 
-export default new Http()
+const http = new Http()
+export default http

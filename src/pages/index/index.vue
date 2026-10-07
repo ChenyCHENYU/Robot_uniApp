@@ -172,12 +172,7 @@
   import { onShow } from '@dcloudio/uni-app'
   import { useMessageStore } from '@/stores/modules/message'
   import { useUserStore } from '@/stores/modules/user'
-  import {
-    getDashboardStats,
-    getDashboardActivities,
-    type DashboardStats,
-    type DashboardActivity,
-  } from '@/api'
+  import { useDashboardData } from '@/composables/useDashboardData'
   import { APP_VERSION } from '@/constants'
 
   const messageStore = useMessageStore()
@@ -198,63 +193,15 @@
     return '晚上好'
   })
 
-  // ==================== KPI（来自 /dashboard/stats） ====================
+  // ==================== KPI 与动态（useDashboardData 共享实现） ====================
 
-  const stats = ref<DashboardStats | null>(null)
-  const statsLoading = ref(true)
-
-  const formatNumber = (n: number) =>
-    n >= 1000 ? n.toLocaleString('en-US') : String(n)
-
-  const kpiCards = computed(() => {
-    if (!stats.value) return []
-    const s = stats.value
-    return [
-      {
-        label: '活跃用户',
-        value: formatNumber(s.activeUsers),
-        icon: '👥',
-        trend: s.trends.activeUsers,
-        progress: Math.min(99, Math.round((s.activeUsers / 20000) * 100)),
-        barColor: 'linear-gradient(90deg,#667eea,#764ba2)',
-      },
-      {
-        label: '今日访问',
-        value: formatNumber(s.todayVisits),
-        icon: '📊',
-        trend: s.trends.todayVisits,
-        progress: Math.min(99, Math.round((s.todayVisits / 6000) * 100)),
-        barColor: 'linear-gradient(90deg,#f093fb,#f5576c)',
-      },
-      {
-        label: '待处理',
-        value: String(s.pendingTasks),
-        icon: '📋',
-        trend: s.trends.pendingTasks,
-        progress: Math.min(99, s.pendingTasks),
-        barColor: 'linear-gradient(90deg,#4facfe,#00f2fe)',
-      },
-      {
-        label: '完成率',
-        value: `${s.completionRate}%`,
-        icon: '🎯',
-        trend: s.trends.completionRate,
-        progress: s.completionRate,
-        barColor: 'linear-gradient(90deg,#43e97b,#38f9d7)',
-      },
-    ]
-  })
-
-  const loadStats = async () => {
-    statsLoading.value = true
-    try {
-      stats.value = await getDashboardStats()
-    } catch {
-      // 静默接口失败保留空态，不打扰用户
-    } finally {
-      statsLoading.value = false
-    }
-  }
+  const {
+    activities,
+    activitiesLoading,
+    kpiCards,
+    loadStats,
+    loadActivities,
+  } = useDashboardData()
 
   // ==================== 待办（本地演示数据） ====================
 
@@ -351,23 +298,6 @@
       url: '/pages/about/index',
     },
   ])
-
-  // ==================== 动态（来自 /dashboard/activities） ====================
-
-  const activities = ref<DashboardActivity[]>([])
-  const activitiesLoading = ref(false)
-
-  const loadActivities = async () => {
-    activitiesLoading.value = true
-    try {
-      const res = await getDashboardActivities({ page: 1, pageSize: 5 })
-      activities.value = res.list || []
-    } catch {
-      // 保留现有数据
-    } finally {
-      activitiesLoading.value = false
-    }
-  }
 
   // 进入页面刷新服务端数据
   onShow(() => {

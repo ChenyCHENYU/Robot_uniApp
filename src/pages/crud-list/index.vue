@@ -109,7 +109,7 @@
               :class="item.status === 0 ? 'pending' : 'done'"
             >
               <text class="status-text">{{
-                item.status === 0 ? statusMap.pending : statusMap.done
+                CRUD_STATUS_TEXT[item.status] || CRUD_STATUS_TEXT[CRUD_STATUS.PENDING]
               }}</text>
             </view>
           </view>
@@ -178,17 +178,13 @@
     deleteCrudItem,
     type CrudItem,
   } from '@/api'
+  import { CRUD_STATUS_TEXT, CRUD_STATUS } from '@/constants/status'
 
   const keyword = ref('')
   const showFilter = ref(false)
   /** '' 全部 | 0 待处理 | 1 已完成 */
   const filterStatus = ref<number | ''>('')
   const sortBy = ref('time')
-
-  const statusMap: Record<string, string> = {
-    pending: '待处理',
-    done: '已完成',
-  }
 
   const statusOptions = [
     { label: '全部', value: '' as const },

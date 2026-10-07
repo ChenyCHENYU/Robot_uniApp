@@ -23,10 +23,16 @@ if (!successMatch || successMatch[1] !== '0') {
   errors.push(`RESPONSE_CODE.SUCCESS 应为 0，实际：${successMatch?.[1] ?? '未定义'}`)
 }
 
-// 2. http.ts 引用常量
+// 2. 成功判定引用常量（http.ts 或其 helpers 模块）
 const http = read('src/utils/http.ts')
-if (!http.includes('data.code === RESPONSE_CODE.SUCCESS')) {
-  errors.push('http.ts 成功判定必须引用 RESPONSE_CODE.SUCCESS')
+const httpHelpers = read('src/utils/http-helpers.ts')
+const protocolInHttp = http.includes('data.code === RESPONSE_CODE.SUCCESS')
+const protocolInHelpers = httpHelpers.includes(
+  'data.code === RESPONSE_CODE.SUCCESS'
+)
+const httpUsesHelper = http.includes('isBusinessSuccess')
+if (!(protocolInHttp || (protocolInHelpers && httpUsesHelper))) {
+  errors.push('HTTP 成功判定必须引用 RESPONSE_CODE.SUCCESS（直接或经 http-helpers）')
 }
 
 // 3. mock helpers 对齐

@@ -31,7 +31,7 @@
     "push": "git push origin",
     "prepare": "husky",
     "cz": "git-cz",
-    "test": "node scripts/verify-router-guard.mjs && node scripts/verify-http-protocol.mjs && node scripts/verify-mock-routes.mjs",
+    "test": "node scripts/verify-router-guard.mjs && node scripts/verify-http-protocol.mjs && node scripts/verify-mock-routes.mjs && node scripts/verify-platform-isolation.mjs",
     "check:budget": "node scripts/check-bundle-budget.mjs",
     "check:quality": "pnpm type-check && pnpm lint:check && pnpm test"
   },

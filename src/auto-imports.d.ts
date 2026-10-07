@@ -83,6 +83,7 @@ declare global {
   const useCountdown: typeof import('./composables/useCountdown').useCountdown
   const useCssModule: typeof import('vue').useCssModule
   const useCssVars: typeof import('vue').useCssVars
+  const useDashboardData: typeof import('./composables/useDashboardData').useDashboardData
   const useId: typeof import('vue').useId
   const useLoading: typeof import('./composables/useLoading').useLoading
   const useMessageStore: typeof import('./stores/modules/message').useMessageStore
@@ -109,6 +110,9 @@ declare global {
   // @ts-ignore
   export type { Component, Slot, Slots, ComponentPublicInstance, ComputedRef, DirectiveBinding, ExtractDefaultPropTypes, ExtractPropTypes, ExtractPublicPropTypes, InjectionKey, PropType, Ref, ShallowRef, MaybeRef, MaybeRefOrGetter, VNode, WritableComputedRef } from 'vue'
   import('vue')
+  // @ts-ignore
+  export type { KpiCard } from './composables/useDashboardData'
+  import('./composables/useDashboardData')
   // @ts-ignore
   export type { MessageItem } from './stores/modules/message'
   import('./stores/modules/message')
@@ -199,6 +203,7 @@ declare module 'vue' {
     readonly useCountdown: UnwrapRef<typeof import('./composables/useCountdown')['useCountdown']>
     readonly useCssModule: UnwrapRef<typeof import('vue')['useCssModule']>
     readonly useCssVars: UnwrapRef<typeof import('vue')['useCssVars']>
+    readonly useDashboardData: UnwrapRef<typeof import('./composables/useDashboardData')['useDashboardData']>
     readonly useId: UnwrapRef<typeof import('vue')['useId']>
     readonly useLoading: UnwrapRef<typeof import('./composables/useLoading')['useLoading']>
     readonly useMessageStore: UnwrapRef<typeof import('./stores/modules/message')['useMessageStore']>

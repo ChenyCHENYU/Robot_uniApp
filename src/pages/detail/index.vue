@@ -161,19 +161,15 @@
   import { onLoad, onPullDownRefresh } from '@dcloudio/uni-app'
   import { getCrudDetail, type CrudItem } from '@/api'
   import { useUserStore } from '@/stores/modules/user'
+  import { CRUD_STATUS_TEXT, CRUD_STATUS } from '@/constants/status'
 
   const userStore = useUserStore()
-
-  const statusMap: Record<number, string> = {
-    0: '待处理',
-    1: '已完成',
-  }
 
   const detail = ref<CrudItem | null>(null)
   const loading = ref(true)
 
   const statusText = computed(
-    () => statusMap[detail.value?.status ?? 0] || '待处理'
+    () => CRUD_STATUS_TEXT[detail.value?.status ?? CRUD_STATUS.PENDING]
   )
 
   const basicFields = computed(() => {

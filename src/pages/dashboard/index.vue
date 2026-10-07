@@ -123,14 +123,9 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, computed } from 'vue'
+  import { ref } from 'vue'
   import { onLoad, onPullDownRefresh } from '@dcloudio/uni-app'
-  import {
-    getDashboardStats,
-    getDashboardChart,
-    type DashboardStats,
-    type DashboardChart,
-  } from '@/api'
+  import { useDashboardData } from '@/composables/useDashboardData'
 
   const today = new Date().toLocaleDateString('zh-CN', {
     month: 'long',
@@ -145,91 +140,12 @@
     { label: '月', value: 'month' },
   ]
 
-  // ==================== KPI（来自 /dashboard/stats） ====================
+  // ==================== 看板数据（useDashboardData 共享实现） ====================
 
-  const stats = ref<DashboardStats | null>(null)
-  const loading = ref(true)
-
-  const formatNumber = (n: number) =>
-    n >= 1000 ? n.toLocaleString('en-US') : String(n)
-
-  const kpiCards = computed(() => {
-    if (!stats.value) return []
-    const s = stats.value
-    return [
-      {
-        label: '活跃用户',
-        value: formatNumber(s.activeUsers),
-        icon: '👥',
-        trend: s.trends.activeUsers,
-        bg: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      },
-      {
-        label: '今日访问',
-        value: formatNumber(s.todayVisits),
-        icon: '📊',
-        trend: s.trends.todayVisits,
-        bg: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-      },
-      {
-        label: '待处理',
-        value: String(s.pendingTasks),
-        icon: '📋',
-        trend: s.trends.pendingTasks,
-        bg: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
-      },
-      {
-        label: '完成率',
-        value: `${s.completionRate}%`,
-        icon: '🎯',
-        trend: s.trends.completionRate,
-        bg: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
-      },
-    ]
-  })
-
-  // ==================== 图表（来自 /dashboard/chart，period 驱动） ====================
-
-  const chart = ref<DashboardChart | null>(null)
-
-  const chartData = computed(() => {
-    if (!chart.value) return []
-    const max = Math.max(...chart.value.visits, 1)
-    return chart.value.labels.map((label, i) => ({
-      label,
-      value: chart.value!.visits[i],
-      percent: Math.round((chart.value!.visits[i] / max) * 100),
-    }))
-  })
-
-  const rankList = computed(() => {
-    if (!chart.value) return []
-    const max = Math.max(...chart.value.visits, 1)
-    // 按访问量倒序取前5作为页面热度榜
-    return chart.value.labels
-      .map((label, i) => ({
-        name: label,
-        value: formatNumber(chart.value!.visits[i]),
-        percent: Math.round((chart.value!.visits[i] / max) * 100),
-      }))
-      .sort((a, b) => b.percent - a.percent)
-      .slice(0, 5)
-  })
+  const { kpiCards, chartData, rankList, loadOverview } = useDashboardData()
 
   const loadData = async () => {
-    loading.value = true
-    try {
-      const [s, c] = await Promise.all([
-        getDashboardStats(),
-        getDashboardChart({ range: period.value }),
-      ])
-      stats.value = s
-      chart.value = c
-    } catch {
-      // 错误提示由 http 层处理
-    } finally {
-      loading.value = false
-    }
+    await loadOverview(period.value)
   }
 
   onLoad(() => {

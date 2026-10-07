@@ -1,3 +1,5 @@
+/* eslint-disable no-await-in-loop -- 分片必须顺序推进（断点语义） */
+
 /**
  * 断点续传上传服务（通用核心版）
  *
@@ -166,7 +168,6 @@ function readFileChunk(
           fileEntry.file(file => {
             const slice = file.slice(start, end)
             const reader = new plus.io.FileReader()
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const plusFile = slice as any
             reader.onloadend = evt => {
               const target = evt.target as unknown as { result?: string } | null
@@ -306,6 +307,23 @@ async function uploadChunkWithRetry(
   throw lastError instanceof Error ? lastError : new Error('分片上传失败')
 }
 
+/** 确保 job 已完成 init（断点恢复的 job 跳过） */
+async function ensureUploadId(job: ResumableUploadJob) {
+  if (job.uploadId) return
+  const initRes = await initResumableUpload(
+    {
+      fileName: job.fileName,
+      fileSize: job.fileSize,
+      chunkSize: job.chunkSize,
+      mimeType: job.mimeType,
+    },
+    { silent: true }
+  )
+  job.uploadId = initRes?.uploadId
+  if (!job.uploadId) throw new Error('初始化上传失败：缺少 uploadId')
+  persistJob(job)
+}
+
 /** 启动/继续一个 job（从 uploadedBytes 断点继续） */
 export async function startUploadJob(jobId: string): Promise<unknown> {
   const jobs = loadJobs()
@@ -318,21 +336,7 @@ export async function startUploadJob(jobId: string): Promise<unknown> {
   persistJob(job)
 
   try {
-    // 1. init（已初始化过的断点 job 跳过）
-    if (!job.uploadId) {
-      const initRes = await initResumableUpload(
-        {
-          fileName: job.fileName,
-          fileSize: job.fileSize,
-          chunkSize: job.chunkSize,
-          mimeType: job.mimeType,
-        },
-        { silent: true }
-      )
-      job.uploadId = initRes?.uploadId
-      if (!job.uploadId) throw new Error('初始化上传失败：缺少 uploadId')
-      persistJob(job)
-    }
+    await ensureUploadId(job)
 
     // 2. 顺序上传分片
     while (job.uploadedBytes < job.fileSize && job.status === 'uploading') {

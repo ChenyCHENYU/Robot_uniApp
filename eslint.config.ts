@@ -154,6 +154,7 @@ export default [
     rules: {
       'jsdoc/require-jsdoc': 'off',
       '@typescript-eslint/no-require-imports': 'off',
+      complexity: 'off',
     },
   },
 

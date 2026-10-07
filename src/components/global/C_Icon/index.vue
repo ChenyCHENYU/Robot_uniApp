@@ -109,7 +109,6 @@
   // });
 
   // 构建 wot-design-uni 图标的完整属性对象
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const wotProps = computed((): any => {
     if (!hasValidName.value) return {}
 

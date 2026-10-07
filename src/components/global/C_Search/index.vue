@@ -67,7 +67,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, onMounted } from 'vue'
+  import { onBeforeUnmount,onMounted,ref } from 'vue'
   import {
     defaultProps,
     getSearchHistory,
@@ -127,6 +127,13 @@
     clearSearchHistory()
     historyList.value = []
   }
+  // 组件卸载清理防抖定时器
+  onBeforeUnmount(() => {
+    if (debounceTimer) {
+      clearTimeout(debounceTimer)
+      debounceTimer = null
+    }
+  })
 </script>
 
 <style lang="scss" scoped>

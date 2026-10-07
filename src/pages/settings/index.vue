@@ -314,6 +314,7 @@
   import { useSettingsStore } from '@/stores/modules/settings'
   import { updateUser } from '@/api'
   import { setLanguage, t, traditionalChineseEnabled } from '@/composables/locale'
+  import { maskPhone } from '@/utils/format'
 
   const userStore = useUserStore()
   const settingsStore = useSettingsStore()
@@ -327,10 +328,9 @@
   )
   const nickname = ref(userStore.userInfo?.nickname || '未设置昵称')
   const bio = ref(userStore.userInfo?.email || '')
-  const maskedPhone = computed(() => {
-    const phone = userStore.userInfo?.phone || ''
-    return phone ? phone.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2') : '未绑定'
-  })
+  const maskedPhone = computed(() =>
+    userStore.userInfo?.phone ? maskPhone(userStore.userInfo.phone) : '未绑定'
+  )
 
   // 外观（来自 settingsStore）
   const fontSizeLabel = computed(() => settingsStore.fontSizeLabel)
