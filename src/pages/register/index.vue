@@ -232,6 +232,7 @@
 
 <script setup lang="ts">
   import { ref, reactive, onUnmounted } from 'vue'
+  import { register } from '@/api'
 
   const mode = ref<'account' | 'phone'>('account')
   const loading = ref(false)
@@ -303,19 +304,28 @@
     uni.showToast({ title: '验证码已发送', icon: 'none' })
   }
 
-  const handleRegister = () => {
+  const handleRegister = async () => {
     if (!agreed.value) {
       uni.showToast({ title: '请先同意用户协议', icon: 'none' })
       return
     }
     if (!validateForm()) return
     loading.value = true
-    // TODO: 对接真实注册接口（api.post('/auth/register')）
-    setTimeout(() => {
-      loading.value = false
+    try {
+      await register({
+        username: mode.value === 'account' ? form.username : form.phone,
+        password: form.password,
+        email: form.email || undefined,
+        phone: form.phone || undefined,
+      })
       uni.showToast({ title: '注册成功', icon: 'success' })
       setTimeout(() => goLogin(), 1500)
-    }, 2000)
+    } catch (error) {
+      const err = error as { message?: string }
+      uni.showToast({ title: err?.message || '注册失败，请重试', icon: 'none' })
+    } finally {
+      loading.value = false
+    }
   }
 
   /** 返回登录：有页面栈走返回，否则直达登录页 */

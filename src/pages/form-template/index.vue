@@ -171,6 +171,7 @@
 
 <script setup lang="ts">
   import { ref, reactive } from 'vue'
+  import { submitForm } from '@/api'
 
   const submitting = ref(false)
   const showDeptPicker = ref(false)
@@ -246,16 +247,25 @@
     })
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!form.name || !form.phone || !form.gender || !form.department) {
       uni.showToast({ title: '请填写必填项', icon: 'none' })
       return
     }
+    if (!/^1\d{10}$/.test(form.phone)) {
+      uni.showToast({ title: '请输入正确的手机号', icon: 'none' })
+      return
+    }
     submitting.value = true
-    setTimeout(() => {
-      submitting.value = false
+    try {
+      await submitForm({ ...form })
       uni.showToast({ title: '提交成功', icon: 'success' })
-    }, 2000)
+      handleReset()
+    } catch {
+      // 错误提示由 http 层处理
+    } finally {
+      submitting.value = false
+    }
   }
 </script>
 

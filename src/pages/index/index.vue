@@ -23,6 +23,13 @@
       >
         <view class="kpi-track">
           <view
+            v-if="kpiCards.length === 0"
+            class="kpi-card kpi-card--loading"
+          >
+            <text class="kpi-emoji">⏳</text>
+            <text class="kpi-loading-text">加载中...</text>
+          </view>
+          <view
             v-for="kpi in kpiCards"
             :key="kpi.label"
             class="kpi-card"
@@ -128,6 +135,14 @@
         <text class="section-heading">最近动态</text>
         <view class="glass-card">
           <view
+            v-if="activities.length === 0"
+            class="activity-empty"
+          >
+            <text class="activity-text">{{
+              activitiesLoading ? '加载中...' : '暂无动态'
+            }}</text>
+          </view>
+          <view
             v-for="item in activities"
             :key="item.id"
             class="activity-row"
@@ -154,8 +169,15 @@
 
 <script setup lang="ts">
   import { ref, computed } from 'vue'
+  import { onShow } from '@dcloudio/uni-app'
   import { useMessageStore } from '@/stores/modules/message'
   import { useUserStore } from '@/stores/modules/user'
+  import {
+    getDashboardStats,
+    getDashboardActivities,
+    type DashboardStats,
+    type DashboardActivity,
+  } from '@/api'
   import { APP_VERSION } from '@/constants'
 
   const messageStore = useMessageStore()
@@ -176,40 +198,65 @@
     return '晚上好'
   })
 
-  const kpiCards = ref([
-    {
-      label: '活跃用户',
-      value: '12,486',
-      icon: '👥',
-      trend: 12.5,
-      progress: 78,
-      barColor: 'linear-gradient(90deg,#667eea,#764ba2)',
-    },
-    {
-      label: '今日访问',
-      value: '3,829',
-      icon: '📊',
-      trend: 8.3,
-      progress: 62,
-      barColor: 'linear-gradient(90deg,#f093fb,#f5576c)',
-    },
-    {
-      label: '待处理',
-      value: '26',
-      icon: '📋',
-      trend: -4.2,
-      progress: 26,
-      barColor: 'linear-gradient(90deg,#4facfe,#00f2fe)',
-    },
-    {
-      label: '完成率',
-      value: '94.6%',
-      icon: '🎯',
-      trend: 2.1,
-      progress: 94.6,
-      barColor: 'linear-gradient(90deg,#43e97b,#38f9d7)',
-    },
-  ])
+  // ==================== KPI（来自 /dashboard/stats） ====================
+
+  const stats = ref<DashboardStats | null>(null)
+  const statsLoading = ref(true)
+
+  const formatNumber = (n: number) =>
+    n >= 1000 ? n.toLocaleString('en-US') : String(n)
+
+  const kpiCards = computed(() => {
+    if (!stats.value) return []
+    const s = stats.value
+    return [
+      {
+        label: '活跃用户',
+        value: formatNumber(s.activeUsers),
+        icon: '👥',
+        trend: s.trends.activeUsers,
+        progress: Math.min(99, Math.round((s.activeUsers / 20000) * 100)),
+        barColor: 'linear-gradient(90deg,#667eea,#764ba2)',
+      },
+      {
+        label: '今日访问',
+        value: formatNumber(s.todayVisits),
+        icon: '📊',
+        trend: s.trends.todayVisits,
+        progress: Math.min(99, Math.round((s.todayVisits / 6000) * 100)),
+        barColor: 'linear-gradient(90deg,#f093fb,#f5576c)',
+      },
+      {
+        label: '待处理',
+        value: String(s.pendingTasks),
+        icon: '📋',
+        trend: s.trends.pendingTasks,
+        progress: Math.min(99, s.pendingTasks),
+        barColor: 'linear-gradient(90deg,#4facfe,#00f2fe)',
+      },
+      {
+        label: '完成率',
+        value: `${s.completionRate}%`,
+        icon: '🎯',
+        trend: s.trends.completionRate,
+        progress: s.completionRate,
+        barColor: 'linear-gradient(90deg,#43e97b,#38f9d7)',
+      },
+    ]
+  })
+
+  const loadStats = async () => {
+    statsLoading.value = true
+    try {
+      stats.value = await getDashboardStats()
+    } catch {
+      // 静默接口失败保留空态，不打扰用户
+    } finally {
+      statsLoading.value = false
+    }
+  }
+
+  // ==================== 待办（本地演示数据） ====================
 
   interface TodoItem {
     id: number
@@ -251,6 +298,8 @@
   ])
 
   const todoCount = computed(() => todoList.value.filter(i => !i.done).length)
+
+  // ==================== 快捷入口（静态导航配置） ====================
 
   const quickActions = ref([
     {
@@ -303,18 +352,28 @@
     },
   ])
 
-  const activities = ref([
-    {
-      id: 1,
-      text: '系统已升级至 v1.0.0 版本',
-      time: '10分钟前',
-      color: '#667eea',
-    },
-    { id: 2, text: '新增11个业务模板页面', time: '30分钟前', color: '#43e97b' },
-    { id: 3, text: 'H5响应式适配优化完成', time: '1小时前', color: '#4facfe' },
-    { id: 4, text: '虚拟滚动组件已上线', time: '2小时前', color: '#f093fb' },
-    { id: 5, text: '骨架屏预渲染方案集成', time: '3小时前', color: '#fa709a' },
-  ])
+  // ==================== 动态（来自 /dashboard/activities） ====================
+
+  const activities = ref<DashboardActivity[]>([])
+  const activitiesLoading = ref(false)
+
+  const loadActivities = async () => {
+    activitiesLoading.value = true
+    try {
+      const res = await getDashboardActivities({ page: 1, pageSize: 5 })
+      activities.value = res.list || []
+    } catch {
+      // 保留现有数据
+    } finally {
+      activitiesLoading.value = false
+    }
+  }
+
+  // 进入页面刷新服务端数据
+  onShow(() => {
+    loadStats()
+    loadActivities()
+  })
 
   const toggleTodo = (todo: TodoItem) => {
     todo.done = !todo.done
@@ -394,6 +453,17 @@
     display: inline-flex;
     gap: 16rpx;
     padding: 0 24rpx 8rpx;
+  }
+
+  .kpi-card--loading {
+    flex-direction: column;
+    gap: 8rpx;
+    min-width: 160rpx;
+  }
+
+  .kpi-loading-text {
+    font-size: 22rpx;
+    color: var(--r-text-secondary);
   }
 
   .kpi-card {
@@ -630,6 +700,11 @@
   }
 
   /* ── 动态 ── */
+  .activity-empty {
+    padding: 32rpx 0;
+    text-align: center;
+  }
+
   .activity-row {
     display: flex;
     align-items: flex-start;

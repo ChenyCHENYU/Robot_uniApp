@@ -42,7 +42,7 @@ export default defineConfig(async ({ mode }) => {
             ],
           },
         ],
-        dirs: ['src/composables', 'src/stores/modules'],
+        dirs: ['src/composables/use*.ts', 'src/stores/modules/*.ts'],
         dts: 'src/auto-imports.d.ts',
         vueTemplate: true,
       }),

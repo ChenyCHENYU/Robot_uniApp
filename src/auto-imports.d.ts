@@ -112,6 +112,9 @@ declare global {
   // @ts-ignore
   export type { MessageItem } from './stores/modules/message'
   import('./stores/modules/message')
+  // @ts-ignore
+  export type { Preferences } from './stores/modules/settings'
+  import('./stores/modules/settings')
 }
 
 // for vue template auto import

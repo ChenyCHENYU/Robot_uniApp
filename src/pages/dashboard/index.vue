@@ -16,7 +16,7 @@
             :key="p.value"
             class="period-tab"
             :class="{ active: period === p.value }"
-            @click="period = p.value"
+            @click="handlePeriodChange(p)"
           >
             <text class="tab-text">{{ p.label }}</text>
           </view>
@@ -123,7 +123,14 @@
 </template>
 
 <script setup lang="ts">
-  import { ref } from 'vue'
+  import { ref, computed } from 'vue'
+  import { onLoad } from '@dcloudio/uni-app'
+  import {
+    getDashboardStats,
+    getDashboardChart,
+    type DashboardStats,
+    type DashboardChart,
+  } from '@/api'
 
   const today = new Date().toLocaleDateString('zh-CN', {
     month: 'long',
@@ -138,54 +145,101 @@
     { label: '月', value: 'month' },
   ]
 
-  const kpiCards = ref([
-    {
-      label: '活跃用户',
-      value: '12,486',
-      icon: '👥',
-      trend: 12.5,
-      bg: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-    },
-    {
-      label: '总访问量',
-      value: '86,429',
-      icon: '📊',
-      trend: 8.3,
-      bg: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-    },
-    {
-      label: '新增用户',
-      value: '1,253',
-      icon: '🆕',
-      trend: -2.1,
-      bg: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
-    },
-    {
-      label: '转化率',
-      value: '23.8%',
-      icon: '🎯',
-      trend: 5.7,
-      bg: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
-    },
-  ])
+  // ==================== KPI（来自 /dashboard/stats） ====================
 
-  const chartData = ref([
-    { label: '周一', value: 320, percent: 64 },
-    { label: '周二', value: 450, percent: 90 },
-    { label: '周三', value: 380, percent: 76 },
-    { label: '周四', value: 500, percent: 100 },
-    { label: '周五', value: 420, percent: 84 },
-    { label: '周六', value: 280, percent: 56 },
-    { label: '周日', value: 350, percent: 70 },
-  ])
+  const stats = ref<DashboardStats | null>(null)
+  const loading = ref(true)
 
-  const rankList = ref([
-    { name: '首页', value: '23,486', percent: 100 },
-    { name: '消息中心', value: '18,232', percent: 78 },
-    { name: '个人中心', value: '15,108', percent: 64 },
-    { name: '组件库', value: '12,467', percent: 53 },
-    { name: '设置页', value: '8,921', percent: 38 },
-  ])
+  const formatNumber = (n: number) =>
+    n >= 1000 ? n.toLocaleString('en-US') : String(n)
+
+  const kpiCards = computed(() => {
+    if (!stats.value) return []
+    const s = stats.value
+    return [
+      {
+        label: '活跃用户',
+        value: formatNumber(s.activeUsers),
+        icon: '👥',
+        trend: s.trends.activeUsers,
+        bg: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      },
+      {
+        label: '今日访问',
+        value: formatNumber(s.todayVisits),
+        icon: '📊',
+        trend: s.trends.todayVisits,
+        bg: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+      },
+      {
+        label: '待处理',
+        value: String(s.pendingTasks),
+        icon: '📋',
+        trend: s.trends.pendingTasks,
+        bg: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+      },
+      {
+        label: '完成率',
+        value: `${s.completionRate}%`,
+        icon: '🎯',
+        trend: s.trends.completionRate,
+        bg: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+      },
+    ]
+  })
+
+  // ==================== 图表（来自 /dashboard/chart，period 驱动） ====================
+
+  const chart = ref<DashboardChart | null>(null)
+
+  const chartData = computed(() => {
+    if (!chart.value) return []
+    const max = Math.max(...chart.value.visits, 1)
+    return chart.value.labels.map((label, i) => ({
+      label,
+      value: chart.value!.visits[i],
+      percent: Math.round((chart.value!.visits[i] / max) * 100),
+    }))
+  })
+
+  const rankList = computed(() => {
+    if (!chart.value) return []
+    const max = Math.max(...chart.value.visits, 1)
+    // 按访问量倒序取前5作为页面热度榜
+    return chart.value.labels
+      .map((label, i) => ({
+        name: label,
+        value: formatNumber(chart.value!.visits[i]),
+        percent: Math.round((chart.value!.visits[i] / max) * 100),
+      }))
+      .sort((a, b) => b.percent - a.percent)
+      .slice(0, 5)
+  })
+
+  const loadData = async () => {
+    loading.value = true
+    try {
+      const [s, c] = await Promise.all([
+        getDashboardStats(),
+        getDashboardChart({ range: period.value }),
+      ])
+      stats.value = s
+      chart.value = c
+    } catch {
+      // 错误提示由 http 层处理
+    } finally {
+      loading.value = false
+    }
+  }
+
+  onLoad(() => {
+    loadData()
+  })
+
+  const handlePeriodChange = (p: { value: string }) => {
+    period.value = p.value
+    loadData()
+  }
 
   const quickActions = ref([
     {

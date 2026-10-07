@@ -1,7 +1,21 @@
 import { api } from '../factory'
+import type { PageResult } from '@/types/store'
 
-export const getApprovalList = api.get('/approval/list')
-export const getApprovalDetail = (id: string) =>
-  api.get('/approval/detail')({ id })
-export const approveItem = api.post('/approval/action')
-export const getApprovalCount = api.get('/approval/count', { silent: true })
+export interface ApprovalItem {
+  id: string
+  title: string
+  applicant: string
+  status: 'pending' | 'approved' | 'rejected'
+  amount?: string
+  createTime: string
+  remark?: string
+  [key: string]: any
+}
+
+export const getApprovalList = api.get<PageResult<ApprovalItem>>('/approval/list')
+export const getApprovalDetail = api.get<ApprovalItem>('/approval/detail')
+export const approveItem = api.post<null>('/approval/action')
+export const getApprovalCount = api.get<{ pending: number }>(
+  '/approval/count',
+  { silent: true }
+)

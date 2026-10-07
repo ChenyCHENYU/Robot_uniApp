@@ -161,7 +161,7 @@
             </view>
             <view class="item-right">
               <wd-switch
-                v-model="biometricEnabled"
+                v-model="preferences.biometric"
                 size="20px"
               />
             </view>
@@ -189,7 +189,7 @@
             </view>
             <view class="item-right">
               <wd-switch
-                v-model="pushEnabled"
+                v-model="preferences.push"
                 size="20px"
               />
             </view>
@@ -210,7 +210,7 @@
             </view>
             <view class="item-right">
               <wd-switch
-                v-model="systemNotifyEnabled"
+                v-model="preferences.systemNotify"
                 size="20px"
               />
             </view>
@@ -231,7 +231,7 @@
             </view>
             <view class="item-right">
               <wd-switch
-                v-model="soundEnabled"
+                v-model="preferences.sound"
                 size="20px"
               />
             </view>
@@ -303,32 +303,31 @@
 
 <script setup lang="ts">
   import { ref, computed } from 'vue'
+  import { storeToRefs } from 'pinia'
   import { useUserStore } from '@/stores/modules/user'
+  import { useSettingsStore } from '@/stores/modules/settings'
+  import { updateUser } from '@/api'
 
   const userStore = useUserStore()
+  const settingsStore = useSettingsStore()
+
+  // 偏好设置（持久化到 settings-store）
+  const { preferences } = storeToRefs(settingsStore)
 
   // 用户信息
   const userAvatar = computed(
     () => userStore.avatar || '/static/images/default-avatar.png'
   )
-  const nickname = ref(userStore.userInfo?.nickname || 'CHENY')
-  const bio = ref('')
+  const nickname = ref(userStore.userInfo?.nickname || '未设置昵称')
+  const bio = ref(userStore.userInfo?.email || '')
   const maskedPhone = computed(() => {
-    const phone = userStore.userInfo?.phone || '13800138000'
-    return phone.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2')
+    const phone = userStore.userInfo?.phone || ''
+    return phone ? phone.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2') : '未绑定'
   })
 
-  // 安全设置
-  const biometricEnabled = ref(false)
-
-  // 通知偏好
-  const pushEnabled = ref(true)
-  const systemNotifyEnabled = ref(true)
-  const soundEnabled = ref(true)
-
-  // 外观
-  const fontSizeLabel = ref('标准')
-  const languageLabel = ref('简体中文')
+  // 外观（来自 settingsStore）
+  const fontSizeLabel = computed(() => settingsStore.fontSizeLabel)
+  const languageLabel = computed(() => settingsStore.languageLabel)
 
   // 事件处理
   const handleChangeAvatar = () => {
@@ -361,10 +360,19 @@
       editable: true,
       placeholderText: '请输入新昵称',
       content: nickname.value,
-      success: ({ confirm, content }) => {
-        if (confirm && content?.trim()) {
-          nickname.value = content.trim()
+      success: async ({ confirm, content }) => {
+        const next = content?.trim()
+        if (!confirm || !next) return
+        try {
+          // 同步到服务端与本地 store
+          await updateUser({ nickname: next })
+          nickname.value = next
+          if (userStore.userInfo) {
+            userStore.userInfo.nickname = next
+          }
           uni.showToast({ title: '昵称已更新', icon: 'success' })
+        } catch {
+          // http 层已提示
         }
       },
     })

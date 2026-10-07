@@ -1,4 +1,4 @@
-import { success, randomId, type MockResponse } from '../helpers'
+import { success, fail, randomId, type MockResponse } from '../helpers'
 
 const mockItems = Array.from({ length: 42 }, (_, i) => ({
   id: `item_${String(i + 1).padStart(3, '0')}`,
@@ -52,5 +52,12 @@ export const crudMocks: Record<string, (options: any) => MockResponse> = {
     const idx = mockItems.findIndex(i => i.id === options.data?.id)
     if (idx > -1) mockItems.splice(idx, 1)
     return success(null, '删除成功')
+  },
+
+  // 表单模板提交
+  'POST /form/submit': options => {
+    const data = options.data || {}
+    if (!data.name || !data.phone) return fail('姓名与手机号为必填项')
+    return success({ id: randomId() }, '提交成功')
   },
 }

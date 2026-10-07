@@ -41,6 +41,18 @@ export const userMocks: Record<string, (options: any) => MockResponse> = {
     return fail('用户名或密码错误')
   },
 
+  // 注册（演示：用户名不重复即可通过）
+  'POST /auth/register': options => {
+    const { username, password } = options.data || {}
+    if (!username || String(username).length < 3) {
+      return fail('用户名至少 3 位')
+    }
+    if (!password || String(password).length < 6) {
+      return fail('密码至少 6 位')
+    }
+    return success(null, '注册成功')
+  },
+
   // 短信验证码登录（演示：任意合法手机号 + 4-6 位验证码通过）
   'POST /auth/sms-login': options => {
     const { phone, code } = options.data || {}

@@ -4,6 +4,15 @@
 <template>
   <C_Layout>
     <view class="approval-page">
+      <!-- 加载/空态 -->
+      <view
+        v-if="!detail"
+        class="approval-loading"
+      >
+        <text class="loading-text">{{ loading ? '加载中...' : '审批单不存在' }}</text>
+      </view>
+
+      <template v-if="detail">
       <!-- 审批头部 -->
       <view
         class="approval-header"
@@ -135,12 +144,19 @@
           <text class="btn-text approve">通过</text>
         </view>
       </view>
+      </template>
     </view>
   </C_Layout>
 </template>
 
 <script setup lang="ts">
-  import { ref } from 'vue'
+  import { ref, computed } from 'vue'
+  import { onLoad } from '@dcloudio/uni-app'
+  import {
+    getApprovalDetail,
+    approveItem,
+    type ApprovalItem,
+  } from '@/api'
 
   interface FlowNode {
     title: string
@@ -148,6 +164,13 @@
     status: string
     time?: string
     remark?: string
+  }
+
+  interface ApprovalDetail extends ApprovalItem {
+    content?: string
+    department?: string
+    type?: string
+    flowNodes?: FlowNode[]
   }
 
   const statusConfig: Record<
@@ -178,49 +201,73 @@
     waiting: '等待中',
   }
 
-  const detail = ref({
-    title: '差旅费报销申请',
-    status: 'pending',
-    content:
-      '因参加2025年Q1技术峰会，产生差旅费用，包含往返交通费、住宿费和餐饮费，请审批。',
-    amount: '3,860.00',
+  const detail = ref<ApprovalDetail | null>(null)
+  const loading = ref(true)
+  const acting = ref(false)
+
+  const flowNodes = computed<FlowNode[]>(() => detail.value?.flowNodes || [])
+
+  const infoFields = computed(() => {
+    const d = detail.value
+    if (!d) return []
+    return [
+      { label: '申请人', value: d.applicant || '-' },
+      { label: '申请部门', value: d.department || '-' },
+      { label: '申请时间', value: d.createTime || '-' },
+      { label: '审批编号', value: d.id || '-' },
+      { label: '审批类型', value: d.type ? `${d.type}审批` : '-' },
+    ]
   })
 
-  const infoFields = ref([
-    { label: '申请人', value: 'ChenY' },
-    { label: '申请部门', value: '技术部' },
-    { label: '申请时间', value: '2025-01-15 09:30' },
-    { label: '审批编号', value: 'AP-2025-0042' },
-    { label: '审批类型', value: '费用报销' },
-  ])
+  const loadDetail = async (id: string) => {
+    loading.value = true
+    try {
+      const res = await getApprovalDetail({ id })
+      if (!res) {
+        uni.showToast({ title: '审批单不存在', icon: 'none' })
+        return
+      }
+      detail.value = res
+    } catch {
+      // http 层已提示
+    } finally {
+      loading.value = false
+    }
+  }
 
-  const flowNodes = ref<FlowNode[]>([
-    {
-      title: '提交申请',
-      user: 'ChenY',
-      status: 'approved',
-      time: '01-15 09:30',
-      remark: '提交审批申请',
-    },
-    {
-      title: '部门主管审批',
-      user: '李经理',
-      status: 'approved',
-      time: '01-15 14:20',
-      remark: '费用合理，同意报销',
-    },
-    { title: '财务审核', user: '王会计', status: 'pending' },
-    { title: '总经理审批', user: '张总', status: 'waiting' },
-  ])
+  onLoad(query => {
+    if (query?.id) {
+      loadDetail(String(query.id))
+    } else {
+      // 兼容直接打开（无 id）：默认取第一条演示数据
+      loadDetail('ap_001')
+    }
+  })
+
+  /** 审批操作（通过/驳回），成功后刷新详情 */
+  const doAction = async (action: 'approve' | 'reject') => {
+    if (!detail.value || acting.value) return
+    acting.value = true
+    try {
+      await approveItem({ id: detail.value.id, action })
+      uni.showToast({
+        title: action === 'approve' ? '审批通过' : '已驳回',
+        icon: action === 'approve' ? 'success' : 'none',
+      })
+      await loadDetail(detail.value.id)
+    } catch {
+      // http 层已提示
+    } finally {
+      acting.value = false
+    }
+  }
 
   const handleApprove = () => {
     uni.showModal({
       title: '确认通过',
       content: '确定通过该审批？',
       success: res => {
-        if (res.confirm) {
-          uni.showToast({ title: '审批通过', icon: 'success' })
-        }
+        if (res.confirm) doAction('approve')
       },
     })
   }
@@ -230,9 +277,7 @@
       title: '确认驳回',
       content: '确定驳回该审批？',
       success: res => {
-        if (res.confirm) {
-          uni.showToast({ title: '已驳回', icon: 'none' })
-        }
+        if (res.confirm) doAction('reject')
       },
     })
   }
@@ -243,6 +288,16 @@
     background: var(--r-bg-page);
     min-height: 100vh;
     padding-bottom: 160rpx;
+  }
+
+  .approval-loading {
+    padding: 200rpx 0;
+    text-align: center;
+
+    .loading-text {
+      font-size: 26rpx;
+      color: var(--r-text-secondary);
+    }
   }
 
   .approval-header {

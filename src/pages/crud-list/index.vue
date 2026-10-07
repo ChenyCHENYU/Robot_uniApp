@@ -52,7 +52,7 @@
               :key="s.value"
               class="filter-tag"
               :class="{ active: filterStatus === s.value }"
-              @click="filterStatus = filterStatus === s.value ? '' : s.value"
+              @click="handleFilterSelect(s.value)"
             >
               <text class="tag-text">{{ s.label }}</text>
             </view>
@@ -77,7 +77,7 @@
       <!-- 操作栏 -->
       <view class="action-bar">
         <view class="action-left">
-          <text class="total-text">共 {{ filteredList.length }} 条</text>
+          <text class="total-text">共 {{ total }} 条</text>
         </view>
         <view class="action-right">
           <view
@@ -97,7 +97,7 @@
       <!-- 数据列表 -->
       <view class="data-list">
         <view
-          v-for="item in filteredList"
+          v-for="item in sortedList"
           :key="item.id"
           class="data-card"
           @click="handleDetail(item)"
@@ -106,9 +106,11 @@
             <text class="card-title">{{ item.title }}</text>
             <view
               class="status-badge"
-              :class="item.status"
+              :class="item.status === 0 ? 'pending' : 'done'"
             >
-              <text class="status-text">{{ statusMap[item.status] }}</text>
+              <text class="status-text">{{
+                item.status === 0 ? statusMap.pending : statusMap.done
+              }}</text>
             </view>
           </view>
           <text class="card-desc">{{ item.description }}</text>
@@ -142,7 +144,7 @@
 
       <!-- 空状态 -->
       <view
-        v-if="filteredList.length === 0"
+        v-if="dataList.length === 0 && !loading"
         class="empty-state"
       >
         <wd-icon
@@ -152,39 +154,46 @@
         />
         <text class="empty-text">暂无数据</text>
       </view>
+
+      <!-- 加载更多 -->
+      <view
+        v-if="dataList.length > 0"
+        class="load-more"
+      >
+        <text class="load-more-text">{{
+          loading ? '加载中...' : finished ? '没有更多了' : '上拉加载更多'
+        }}</text>
+      </view>
     </view>
   </C_Layout>
 </template>
 
 <script setup lang="ts">
   import { ref, computed } from 'vue'
+  import { onLoad, onPullDownRefresh, onReachBottom } from '@dcloudio/uni-app'
+  import {
+    getCrudList,
+    createCrudItem,
+    updateCrudItem,
+    deleteCrudItem,
+    type CrudItem,
+  } from '@/api'
 
   const keyword = ref('')
   const showFilter = ref(false)
-  const filterStatus = ref('')
+  /** '' 全部 | 0 待处理 | 1 已完成 */
+  const filterStatus = ref<number | ''>('')
   const sortBy = ref('time')
 
-  interface DataItem {
-    id: number
-    title: string
-    description: string
-    status: string
-    createTime: string
-  }
-
   const statusMap: Record<string, string> = {
-    active: '进行中',
-    done: '已完成',
     pending: '待处理',
-    closed: '已关闭',
+    done: '已完成',
   }
 
   const statusOptions = [
-    { label: '全部', value: '' },
-    { label: '进行中', value: 'active' },
-    { label: '已完成', value: 'done' },
-    { label: '待处理', value: 'pending' },
-    { label: '已关闭', value: 'closed' },
+    { label: '全部', value: '' as const },
+    { label: '待处理', value: 0 },
+    { label: '已完成', value: 1 },
   ]
 
   const sortOptions = [
@@ -196,90 +205,157 @@
     () => filterStatus.value !== '' || sortBy.value !== 'time'
   )
 
-  const dataList = ref<DataItem[]>([
-    {
-      id: 1,
-      title: '项目需求评审',
-      description: '完成产品需求文档评审，确认功能范围和优先级',
-      status: 'active',
-      createTime: '2025-01-15',
-    },
-    {
-      id: 2,
-      title: 'UI设计稿交付',
-      description: '移动端首页和详情页设计稿输出',
-      status: 'done',
-      createTime: '2025-01-14',
-    },
-    {
-      id: 3,
-      title: 'API接口联调',
-      description: '完成用户模块和数据模块的接口联调测试',
-      status: 'pending',
-      createTime: '2025-01-13',
-    },
-    {
-      id: 4,
-      title: '性能优化方案',
-      description: '首屏加载时间优化至1.5s以内',
-      status: 'active',
-      createTime: '2025-01-12',
-    },
-    {
-      id: 5,
-      title: '旧系统迁移',
-      description: 'v1.0数据迁移至新架构，保证数据完整性',
-      status: 'closed',
-      createTime: '2025-01-10',
-    },
-    {
-      id: 6,
-      title: '自动化测试用例',
-      description: '编写核心业务模块的E2E测试用例',
-      status: 'pending',
-      createTime: '2025-01-11',
-    },
-  ])
-
-  const filteredList = computed(() => {
-    let list = dataList.value
-    if (keyword.value) {
-      const kw = keyword.value.toLowerCase()
-      list = list.filter(
-        i =>
-          i.title.toLowerCase().includes(kw) ||
-          i.description.toLowerCase().includes(kw)
-      )
-    }
-    if (filterStatus.value) {
-      list = list.filter(i => i.status === filterStatus.value)
-    }
+  /** 客户端排序（当前页内） */
+  const sortedList = computed(() => {
+    const list = [...dataList.value]
     if (sortBy.value === 'name') {
-      list = [...list].sort((a, b) => a.title.localeCompare(b.title))
+      list.sort((a, b) => (a.title || '').localeCompare(b.title || ''))
     } else {
-      list = [...list].sort((a, b) => b.createTime.localeCompare(a.createTime))
+      list.sort((a, b) => (b.createTime || '').localeCompare(a.createTime || ''))
     }
     return list
   })
 
-  const handleSearch = () => {}
+  // ==================== 服务端数据（分页） ====================
+
+  const PAGE_SIZE = 10
+  const dataList = ref<CrudItem[]>([])
+  const total = ref(0)
+  const page = ref(1)
+  const loading = ref(false)
+  const finished = computed(() => dataList.value.length >= total.value)
+
+  /** 服务端状态码 → 页面语义 */
+  const normalizeItem = (item: CrudItem): CrudItem => ({
+    ...item,
+    status: item.status,
+  })
+
+  const loadList = async (refresh = false) => {
+    if (loading.value) return
+    loading.value = true
+    try {
+      const nextPage = refresh ? 1 : page.value + 1
+      const res = await getCrudList({
+        page: refresh ? 1 : nextPage,
+        pageSize: PAGE_SIZE,
+        keyword: keyword.value || undefined,
+        status: filterStatus.value === '' ? undefined : filterStatus.value,
+      })
+      const list = (res.list || []).map(normalizeItem)
+      dataList.value = refresh ? list : [...dataList.value, ...list]
+      total.value = res.total || 0
+      page.value = refresh ? 1 : nextPage
+    } catch {
+      // 错误提示由 http 层处理
+    } finally {
+      loading.value = false
+    }
+  }
+
+  onLoad(() => {
+    loadList(true)
+  })
+
+  onPullDownRefresh(async () => {
+    await loadList(true).catch(() => {})
+    uni.stopPullDownRefresh()
+  })
+
+  onReachBottom(() => {
+    if (!finished.value) loadList()
+  })
+
+  // ==================== 搜索与筛选 ====================
+
+  const handleSearch = () => {
+    loadList(true)
+  }
   const clearAndSearch = () => {
     keyword.value = ''
-    handleSearch()
+    loadList(true)
   }
-  const handleAdd = () => uni.showToast({ title: '新增数据', icon: 'none' })
-  const handleDetail = (item: DataItem) =>
-    uni.showToast({ title: `查看: ${item.title}`, icon: 'none' })
-  const handleEdit = (item: DataItem) =>
-    uni.showToast({ title: `编辑: ${item.title}`, icon: 'none' })
-  const handleDelete = (item: DataItem) => {
+
+  const handleFilterSelect = (value: number | '') => {
+    filterStatus.value = filterStatus.value === value ? '' : value
+    loadList(true)
+  }
+
+  // ==================== CRUD 操作 ====================
+
+  /** 弹窗输入式编辑（H5/小程序通用） */
+  const promptTitle = (
+    title: string,
+    initial: string
+  ): Promise<string | null> => {
+    return new Promise(resolve => {
+      // #ifdef MP-WEIXIN
+      uni.showModal({
+        title,
+        editable: true,
+        placeholderText: '请输入标题',
+        content: initial,
+        success: res => resolve(res.confirm ? String(res.content || '') : null),
+        fail: () => resolve(null),
+      })
+      // #endif
+      // #ifndef MP-WEIXIN
+      uni.showModal({
+        title,
+        content: initial ? `编辑为：${initial}` : '演示环境请输入有效标题',
+        editable: true,
+        placeholderText: '请输入标题',
+        success: res => resolve(res.confirm ? String(res.content || '') : null),
+        fail: () => resolve(null),
+      })
+      // #endif
+    })
+  }
+
+  const handleAdd = async () => {
+    const title = await promptTitle('新增数据', '')
+    if (!title || !title.trim()) return
+    try {
+      await createCrudItem({
+        title: title.trim(),
+        description: `${title.trim()} - 通过新增操作创建`,
+        status: 0,
+      })
+      uni.showToast({ title: '新增成功', icon: 'success' })
+      loadList(true)
+    } catch {
+      // http 层已提示
+    }
+  }
+
+  const handleDetail = (item: CrudItem) => {
+    uni.navigateTo({ url: `/pages/detail/index?id=${encodeURIComponent(item.id)}` })
+  }
+
+  const handleEdit = async (item: CrudItem) => {
+    const title = await promptTitle('编辑标题', item.title)
+    if (!title || !title.trim()) return
+    try {
+      await updateCrudItem({ id: item.id, title: title.trim() })
+      uni.showToast({ title: '保存成功', icon: 'success' })
+      loadList(true)
+    } catch {
+      // http 层已提示
+    }
+  }
+
+  const handleDelete = (item: CrudItem) => {
     uni.showModal({
       title: '确认删除',
       content: `确定删除「${item.title}」？`,
-      success: res => {
-        if (res.confirm) {
-          dataList.value = dataList.value.filter(i => i.id !== item.id)
+      success: async res => {
+        if (!res.confirm) return
+        try {
+          await deleteCrudItem({ id: item.id })
           uni.showToast({ title: '删除成功', icon: 'success' })
+          loadList(true)
+        } catch {
+          // http 层已提示
         }
       },
     })
@@ -493,6 +569,16 @@
           }
         }
       }
+    }
+  }
+
+  .load-more {
+    padding: 24rpx 0 40rpx;
+    text-align: center;
+
+    .load-more-text {
+      font-size: 24rpx;
+      color: var(--r-text-placeholder);
     }
   }
 

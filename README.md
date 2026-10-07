@@ -131,12 +131,14 @@ pnpm dev:app        # App 开发（需 HBuilderX）
 
 ## 📱 页面一览
 
-| 分类 | 页面 |
-| --- | --- |
-| 主包 | 登录（账号/短信）、首页主控台、消息中心、组件库、个人中心、设置、修改密码 |
-| 业务模板 | crud-list 列表 / form-template 表单 / approval 审批 / dashboard 看板 / detail 详情 / search-result 搜索 |
-| 功能 | scan 扫码（URL 确认）/ webview（白名单）/ guide 首次启动引导 / about / register |
-| 组件演示 | `pages/demo` 分包，33 个组件逐一演示 |
+| 分类 | 页面 | 数据来源 |
+| --- | --- | --- |
+| 主包 | 登录（账号/短信）、首页主控台、消息中心、组件库、个人中心、设置、修改密码 | 真实 API（登录/用户/消息） |
+| 业务模板 | crud-list 列表 / form-template 表单 / approval 审批 / dashboard 看板 / detail 详情 | 真实 API（crud/approval/dashboard/form） |
+| 功能 | scan 扫码（URL 确认）/ webview（白名单）/ guide 首次启动引导 / about / register | register 接真实 API |
+| 组件演示 | `pages/demo` 分包，33 个组件逐一演示 | 本地演示数据 |
+
+> 「真实 API」在开发环境由 `src/mock` 供应（同一 `code:0` 协议），接入真实后端只需替换 `env/` 中的 API 地址并核对返回结构。
 
 ---
 
@@ -151,17 +153,18 @@ pnpm build:wx     # 微信小程序构建（主包约 1MB，含分包优化/按�
 
 - 提交：husky + lint-staged（本地 `pnpm exec`，无需联网）+ commitlint
 - 生产构建自动移除 `console`/`debugger`
+- 已知限制：wot-design-uni@1.14.0 内部存在一个上游类型错误（`useUpload.ts`），为通过 `type-check` 暂未启用其 `global.d.ts` 全局组件模板类型；升级新版后可恢复
 
 ---
 
 ## 📄 接入指引（新项目 Checklist）
 
-1. 替换 `env/` 中的 API/WS/CDN 地址为真实后端
+1. 替换 `env/` 中的 API/WS/CDN 地址为真实后端（业务页已按 mock 契约请求，仅需后端对齐 `code:0` 协议与字段）
 2. 在 `src/utils/url-policy.ts` 配置 WebView 域名白名单
 3. 在 `src/manifest.json` 填入微信 `appid`（或使用 CI 注入），并按需调整 App 权限
-4. 对照 `src/api/modules/` 替换真实接口定义与返回类型
+4. 对照 `src/api/modules/` 替换真实接口定义与返回类型（各页已按类型消费）
 5. 按需调整 `src/utils/router.ts` 的 `WHITE_LIST` 与 `PERMISSION_PAGES`
-6. 首页/仪表盘等演示数据接入真实 API（参考消息中心 `fetchMessages` 的接法）
+6. 首页待办（todoList）、设置页附件等少量纯演示区块按需接入业务
 
 ---
 

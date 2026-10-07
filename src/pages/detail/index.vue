@@ -4,6 +4,15 @@
 <template>
   <C_Layout force-layout-type="none">
     <view class="detail-page">
+      <!-- 加载/空态 -->
+      <view
+        v-if="!detail"
+        class="detail-loading"
+      >
+        <text class="loading-text">{{ loading ? '加载中...' : '数据不存在' }}</text>
+      </view>
+
+      <template v-if="detail">
       <!-- 顶部封面 + 导航栏合一 -->
       <view class="detail-cover">
         <view class="cover-nav">
@@ -24,12 +33,12 @@
         <view class="cover-content">
           <view
             class="status-badge"
-            :class="detail.status"
+            :class="detail.status === 0 ? 'pending' : 'done'"
           >
-            <text class="status-text">{{ statusMap[detail.status] }}</text>
+            <text class="status-text">{{ statusText }}</text>
           </view>
           <text class="detail-title">{{ detail.title }}</text>
-          <text class="detail-subtitle">{{ detail.subtitle }}</text>
+          <text class="detail-subtitle">数据项 · 通用详情模板</text>
         </view>
       </view>
 
@@ -55,7 +64,7 @@
         <view class="card-title-row">
           <text class="card-title">详细描述</text>
         </view>
-        <text class="content-text">{{ detail.content }}</text>
+        <text class="content-text">{{ detail.description }}</text>
       </view>
 
       <!-- 附件列表 -->
@@ -142,36 +151,68 @@
           <text class="bar-btn-text white">编辑</text>
         </view>
       </view>
+      </template>
     </view>
   </C_Layout>
 </template>
 
 <script setup lang="ts">
-  import { ref } from 'vue'
+  import { ref, computed } from 'vue'
+  import { onLoad } from '@dcloudio/uni-app'
+  import { getCrudDetail, type CrudItem } from '@/api'
+  import { useUserStore } from '@/stores/modules/user'
 
-  const statusMap: Record<string, string> = {
-    active: '进行中',
-    done: '已完成',
-    pending: '待审核',
+  const userStore = useUserStore()
+
+  const statusMap: Record<number, string> = {
+    0: '待处理',
+    1: '已完成',
   }
 
-  const detail = ref({
-    title: '2025年Q1产品规划',
-    subtitle: '产品部 · 项目管理',
-    status: 'active',
-    content:
-      '本季度重点推进移动端跨平台框架的构建，完成核心组件库开发（33+组件），建立企业级应用模板体系，涵盖注册、CRUD、审批流、数据看板等常见业务场景。同时优化H5响应式适配、性能调优（虚拟滚动、懒加载），确保多端一致性体验。',
+  const detail = ref<CrudItem | null>(null)
+  const loading = ref(true)
+
+  const statusText = computed(
+    () => statusMap[detail.value?.status ?? 0] || '待处理'
+  )
+
+  const basicFields = computed(() => {
+    const d = detail.value
+    if (!d) return []
+    return [
+      { label: '编号', value: d.id || '-' },
+      { label: '状态', value: statusText.value },
+      { label: '负责人', value: userStore.nickname },
+      { label: '创建时间', value: d.createTime || '-' },
+      { label: '更新时间', value: d.updatedTime || d.createTime || '-' },
+    ]
   })
 
-  const basicFields = ref([
-    { label: '编号', value: 'PRJ-2025-001' },
-    { label: '优先级', value: '高' },
-    { label: '负责人', value: 'ChenY' },
-    { label: '创建时间', value: '2025-01-10' },
-    { label: '截止时间', value: '2025-03-31' },
-    { label: '进度', value: '65%' },
-  ])
+  const loadDetail = async (id: string) => {
+    loading.value = true
+    try {
+      const res = await getCrudDetail({ id })
+      if (!res) {
+        uni.showToast({ title: '数据不存在', icon: 'none' })
+        return
+      }
+      detail.value = res
+    } catch {
+      // http 层已提示
+    } finally {
+      loading.value = false
+    }
+  }
 
+  onLoad(query => {
+    if (query?.id) {
+      loadDetail(String(query.id))
+    } else {
+      loadDetail('item_001')
+    }
+  })
+
+  // 附件与日志为模板演示区块（接入后端后替换为真实数据）
   const attachments = ref([
     {
       name: '产品需求文档.pdf',
@@ -210,7 +251,8 @@
   }
 
   const handleShare = () => uni.showToast({ title: '分享功能', icon: 'none' })
-  const handleEdit = () => uni.showToast({ title: '编辑详情', icon: 'none' })
+  const handleEdit = () =>
+    uni.navigateTo({ url: '/pages/form-template/index' })
 </script>
 
 <style lang="scss" scoped>
@@ -218,6 +260,16 @@
     background: var(--r-bg-page);
     min-height: 100vh;
     padding-bottom: 140rpx;
+  }
+
+  .detail-loading {
+    padding-top: calc(var(--status-bar-height, 0px) + 200rpx);
+    text-align: center;
+
+    .loading-text {
+      font-size: 26rpx;
+      color: var(--r-text-secondary);
+    }
   }
 
   .detail-cover {
