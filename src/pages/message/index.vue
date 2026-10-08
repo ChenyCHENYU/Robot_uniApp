@@ -159,11 +159,12 @@
         >{{ busy ? '加载中…' : '加载更多消息' }}</button
       >
       <!-- 消息详情弹窗 -->
-      <wd-action-sheet
-        v-model="showDetail"
+      <C_ActionSheet
+        v-model:visible="showDetail"
+        title="消息操作"
         :actions="detailActions"
         cancel-text="取消"
-        @select="handleDetailAction"
+        @select="onDetailSelect"
       />
     </view>
   </C_Layout>
@@ -188,7 +189,7 @@
     handleClearRead,
     handleMessageClick,
     handleLongPress,
-    handleDetailAction,
+    onDetailSelect,
     handleSettingsClick,
     refreshing,
     handleRefresh,

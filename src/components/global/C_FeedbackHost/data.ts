@@ -1,6 +1,5 @@
 import {
   computed,
-  nextTick,
   onMounted,
   onUnmounted,
   ref,
@@ -9,6 +8,7 @@ import {
 } from 'vue'
 import { feedback } from '@/utils/feedback'
 import { useTheme } from '@/composables/useTheme'
+import { useDialogFocus } from '@/composables/useDialogFocus'
 
 const SYMBOLS: Record<string, string> = {
   success: '✓',
@@ -37,6 +37,11 @@ export function useFeedbackHost() {
   const { themeClass } = useTheme()
   const draft = ref('')
   const modalOptions = computed(() => state.modal?.options ?? {})
+  const sheetOptions = computed(() => state.sheet?.options)
+  const sheetItemStyle = computed(() => ({
+    color: String(sheetOptions.value?.itemColor ?? ''),
+  }))
+  const selectSheet = (index: number) => feedback.finishActionSheet(index)
   const modalIcon = computed(() => modalOptions.value.icon)
   const modalSymbol = computed(() => SYMBOLS[modalIcon.value ?? ''] ?? '')
   const toastError = computed(() =>
@@ -51,6 +56,10 @@ export function useFeedbackHost() {
   }))
   const confirm = () => feedback.finishModal(true, draft.value)
   const cancel = () => {
+    if (state.sheet) {
+      feedback.finishActionSheet()
+      return
+    }
     if (modalOptions.value.showCancel !== false) feedback.finishModal(false)
   }
   watch(
@@ -62,57 +71,20 @@ export function useFeedbackHost() {
   )
 
   // #ifdef H5
-  let previousFocus: HTMLElement | null = null
   const getPanel = () =>
-    document.querySelector<HTMLElement>('.robot-feedback__modal')
-  const focusModal = async () => {
-    if (!previousFocus) previousFocus = document.activeElement as HTMLElement
-    await nextTick()
-    const panel = getPanel()
-    const input = panel?.querySelector<HTMLTextAreaElement>('textarea')
-    ;(input ?? panel)?.focus()
-  }
-
-  watch(
-    () => state.modal?.id,
-    id => {
-      if (id) void focusModal()
-      else {
-        if (previousFocus?.isConnected) previousFocus.focus()
-        previousFocus = null
-      }
-    },
-    { immediate: true }
-  )
-
-  const trapFocus = (event: KeyboardEvent) => {
-    const buttons = Array.from(
-      getPanel()?.querySelectorAll<HTMLElement>(
-        '.robot-feedback__button, textarea'
-      ) ?? []
+    document.querySelector<HTMLElement>(
+      state.sheet ? '.robot-feedback__sheet' : '.robot-feedback__modal'
     )
-    if (!buttons.length) return
-    const first = buttons[0]
-    const last = buttons[buttons.length - 1]
-    const target = event.shiftKey ? last : first
-    const edge = event.shiftKey ? first : last
-    if (
-      document.activeElement === edge ||
-      !buttons.includes(document.activeElement as HTMLElement)
-    ) {
-      event.preventDefault()
-      target.focus()
-    }
-  }
+  const { onPanelKeydown } = useDialogFocus(
+    () => state.modal?.id ?? state.sheet?.id,
+    getPanel,
+    cancel
+  )
   const handleKeyboard = (event: KeyboardEvent) => {
-    if (!state.modal) return
-    if (event.key === 'Escape') {
-      event.preventDefault()
-      cancel()
-      return
-    }
+    if (!state.modal && !state.sheet) return
     if (
       event.key === 'Enter' &&
+      state.modal &&
       !modalOptions.value.editable &&
       event.target === getPanel()
     ) {
@@ -120,7 +92,7 @@ export function useFeedbackHost() {
       confirm()
       return
     }
-    if (event.key === 'Tab') trapFocus(event)
+    onPanelKeydown?.(event)
   }
   onMounted(() => document.addEventListener('keydown', handleKeyboard))
   onUnmounted(() => document.removeEventListener('keydown', handleKeyboard))
@@ -130,6 +102,9 @@ export function useFeedbackHost() {
     state,
     themeClass,
     modalOptions,
+    sheetOptions,
+    sheetItemStyle,
+    selectSheet,
     modalIcon,
     modalSymbol,
     draft,

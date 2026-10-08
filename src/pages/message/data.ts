@@ -3,6 +3,7 @@ import { onShow } from '@dcloudio/uni-app'
 import { useMessageStore, type MessageItem } from '@/stores/modules/message'
 import { router } from '@/utils/router'
 import { showStyledModal } from '@/utils/feedback'
+import type { ActionSheetItem } from '@/components/global/C_ActionSheet/data'
 
 /** 页面状态、加载与交互。 */
 export function useMessagePage() {
@@ -52,8 +53,13 @@ export function useMessagePage() {
   }
 
   const detailActions = [
-    { name: '标记为已读', value: 'read' },
-    { name: '删除该消息', value: 'delete', color: '#f5576c' },
+    { name: '标记为已读', value: 'read', icon: 'i-mdi-check' },
+    {
+      name: '删除该消息',
+      value: 'delete',
+      danger: true,
+      icon: 'i-mdi-delete-outline',
+    },
   ]
 
   const tabKeys = [
@@ -163,6 +169,12 @@ export function useMessagePage() {
     }
   }
 
+  // 共享菜单返回原选项，业务处理仍接收既有的 { item } 事件结构。
+  const onDetailSelect = (item: ActionSheetItem) => {
+    if (typeof item.value === 'string')
+      return handleDetailAction({ item: { value: item.value } })
+  }
+
   const handleSettingsClick = () => {
     uni.navigateTo({ url: '/pages/settings/index' })
   }
@@ -195,6 +207,7 @@ export function useMessagePage() {
     handleMessageClick,
     handleLongPress,
     handleDetailAction,
+    onDetailSelect,
     handleSettingsClick,
     refreshing,
     handleRefresh,

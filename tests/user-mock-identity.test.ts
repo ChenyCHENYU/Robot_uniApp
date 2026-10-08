@@ -2,6 +2,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { userMocks } from '@/mock/modules/user'
 import { setupMock } from '@/mock'
 import type { UserInfo } from '@/types/store'
+import config from '@/config/env'
+
+const initialMockEnabled = config.MOCK_ENABLED
 
 /** 通过真实开发 Mock 登录，获得携带明确账号的演示令牌。 */
 function signIn(username: string, password: string): string {
@@ -24,6 +27,7 @@ beforeEach(() => {
 })
 
 afterEach(() => {
+  config.MOCK_ENABLED = initialMockEnabled
   vi.useRealTimers()
   vi.restoreAllMocks()
   vi.unstubAllEnvs()
@@ -114,6 +118,7 @@ describe('开发 Mock 账号隔离', () => {
 
   it('开发拦截器把请求自身的 Authorization 传到用户 Mock', async () => {
     vi.stubEnv('DEV', true)
+    config.MOCK_ENABLED = true
     vi.useFakeTimers()
     const addInterceptor = vi.spyOn(uni, 'addInterceptor')
     const success = vi.fn()

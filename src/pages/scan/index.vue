@@ -41,20 +41,24 @@
           <text class="scan-tip">{{ scanTip }}</text>
           <button
             class="start-btn"
+            role="button"
             :disabled="!supported || scanning"
+            :aria-disabled="!supported || scanning"
             @click="startScan"
             >{{
               scanning
                 ? '正在识别…'
                 : supported
                   ? '开始扫码'
-                  : '请在小程序或 App 中使用'
+                  : '当前环境暂不支持扫码'
             }}</button
           >
           <button
-            v-if="supported"
+            v-if="albumSupported"
             class="album-btn"
+            role="button"
             :disabled="!supported || scanning"
+            :aria-disabled="!supported || scanning"
             @click="handleAlbum"
             ><C_Icon
               name="i-mdi-image-outline"
@@ -134,6 +138,7 @@
     scanResult,
     scanning,
     supported,
+    albumSupported,
     scanTip,
     goBack,
     startScan,

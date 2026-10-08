@@ -1,19 +1,16 @@
 import { ref, computed, watch } from 'vue'
-import { storeToRefs } from 'pinia'
 import { useUserStore } from '@/stores/modules/user'
 import { useSettingsStore } from '@/stores/modules/settings'
 import { updateUser, uploadAvatar } from '@/api'
 import { setLanguage, t, traditionalChineseEnabled } from '@/composables/locale'
 import { maskPhone } from '@/utils/format'
 import { useTheme } from '@/composables/useTheme'
+import { showStyledActionSheet } from '@/utils/feedback'
 
 /** 页面状态、加载与交互。 */
 export function useSettingsPage() {
   const userStore = useUserStore()
   const settingsStore = useSettingsStore()
-
-  // 偏好设置（持久化到 settings-store）
-  const { preferences } = storeToRefs(settingsStore)
 
   // 用户信息
   const avatarError = ref(false)
@@ -37,38 +34,33 @@ export function useSettingsPage() {
   )
 
   // 外观（来自 settingsStore）
-  const fontSizeLabel = computed(() => settingsStore.fontSizeLabel)
   const languageLabel = computed(() => settingsStore.languageLabel)
 
   // 外观模式（浅色/深色/跟随系统）
-  const { themeModeLabel, setThemeMode } = useTheme()
-  const handleThemeSelect = () => {
-    uni.showActionSheet({
-      itemList: ['跟随系统', '浅色', '深色'],
-      success: ({ tapIndex }) => {
-        setThemeMode((['system', 'light', 'dark'] as const)[tapIndex])
-        uni.showToast({
-          title: `已切换：${themeModeLabel.value}`,
-          icon: 'none',
-        })
-      },
-    })
-  }
-
-  // 字号循环：小 → 标准 → 大 → 特大
-  const cycleFontSize = () => {
-    const sizes = [12, 14, 16, 18]
-    const next =
-      sizes[(sizes.indexOf(settingsStore.fontSize) + 1) % sizes.length]
-    settingsStore.setFontSize(next)
-    uni.showToast({
-      title: `字号：${settingsStore.fontSizeLabel}`,
-      icon: 'none',
-    })
+  const { themeMode, themeModeLabel, setThemeMode } = useTheme()
+  const handleThemeSelect = async () => {
+    const modes = ['system', 'light', 'dark'] as const
+    try {
+      const { tapIndex } = await showStyledActionSheet({
+        title: '外观模式',
+        description: '选择适合当前环境的显示方式',
+        itemList: ['跟随系统', '浅色', '深色'],
+        itemDescriptions: [
+          '随设备外观自动切换',
+          '明亮清晰，适合日间使用',
+          '降低亮度，适合暗光环境',
+        ],
+        selectedIndex: modes.indexOf(themeMode.value),
+      })
+      setThemeMode(modes[tapIndex])
+      uni.showToast({ title: `已切换：${themeModeLabel.value}`, icon: 'none' })
+    } catch {
+      // 关闭菜单保持原设置，不产生额外提示。
+    }
   }
 
   // 语言切换（简/繁，opencc-js 实时转换；繁体需 VITE_FEATURE_TW=true）
-  const handleLanguageSelect = () => {
+  const handleLanguageSelect = async () => {
     if (!traditionalChineseEnabled) {
       uni.showToast({
         title: '当前应用仅提供简体中文',
@@ -76,13 +68,18 @@ export function useSettingsPage() {
       })
       return
     }
-    uni.showActionSheet({
-      itemList: ['简体中文', '繁體中文'],
-      success: async ({ tapIndex }) => {
-        await setLanguage(tapIndex === 1 ? 'zh-TW' : 'zh-CN')
-        uni.showToast({ title: t('语言已切换'), icon: 'none' })
-      },
-    })
+    let tapIndex: number
+    try {
+      ;({ tapIndex } = await showStyledActionSheet({
+        title: '显示语言',
+        itemList: ['简体中文', '繁體中文'],
+        selectedIndex: settingsStore.language === 'zh-TW' ? 1 : 0,
+      }))
+    } catch {
+      return
+    }
+    await setLanguage(tapIndex === 1 ? 'zh-TW' : 'zh-CN')
+    uni.showToast({ title: t('语言已切换'), icon: 'none' })
   }
 
   // 事件处理
@@ -167,7 +164,6 @@ export function useSettingsPage() {
   }
 
   return {
-    preferences,
     updatingAvatar,
     userAvatar,
     hasCustomAvatar,
@@ -176,11 +172,9 @@ export function useSettingsPage() {
     nickname,
     bio,
     maskedPhone,
-    fontSizeLabel,
     languageLabel,
     themeModeLabel,
     handleThemeSelect,
-    cycleFontSize,
     handleLanguageSelect,
     handleChangeAvatar,
     handleEditNickname,

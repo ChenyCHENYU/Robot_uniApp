@@ -64,7 +64,7 @@ function getMockKey(options: UniApp.RequestOptions): string {
 
 /** 安装 Mock 拦截器 */
 export function setupMock() {
-  if (!import.meta.env.DEV) return
+  if (!import.meta.env.DEV || !config.MOCK_ENABLED) return
 
   logger.log('[Mock] 🎭 开发环境 Mock 拦截器已启用')
 

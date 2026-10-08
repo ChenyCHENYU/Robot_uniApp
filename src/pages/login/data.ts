@@ -7,6 +7,7 @@ import { useUserStore } from '@/stores/modules/user'
 import { loginBySms } from '@/api'
 import { consumeRedirectUrl } from '@/utils/router'
 import type { HttpError } from '@/utils/http'
+import config from '@/config/env'
 import {
   required,
   length,
@@ -22,10 +23,10 @@ export function useLoginData() {
   const loading = ref(false)
   const rememberLogin = ref<string[]>([])
 
-  // 表单数据（模板演示预填，生产接入时移除）
+  // 演示开关关闭时不预填测试凭据，记住的用户名仍由本机偏好回填。
   const form = reactive({
-    username: 'CHENY',
-    password: '123456',
+    username: config.MOCK_ENABLED ? 'CHENY' : '',
+    password: config.MOCK_ENABLED ? '123456' : '',
   })
 
   // 表单验证规则
@@ -93,7 +94,7 @@ export function useLoginData() {
     uni.reLaunch({ url: target })
   }
 
-  // 登录处理（走 userStore.login → API → mock 拦截）
+  // 登录始终走 userStore/API，是否演示拦截由环境开关统一决定。
   const handleLogin = async () => {
     if (!validateWithToast(form, rules)) {
       return
@@ -195,7 +196,11 @@ export function useSmsLogin() {
       return
     }
     if (smsCountdown.value > 0) return
-    // TODO: 对接真实短信发送接口
+    if (!config.MOCK_ENABLED) {
+      uni.showToast({ title: '短信服务尚未接入，请使用账号登录', icon: 'none' })
+      return
+    }
+    // 仅演示模式模拟发送；真实短信接口尚未接入。
     smsCountdown.value = 60
     uni.showToast({ title: '验证码已发送（演示）', icon: 'none' })
   }

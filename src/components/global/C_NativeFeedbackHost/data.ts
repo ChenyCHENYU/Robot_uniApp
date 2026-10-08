@@ -1,5 +1,5 @@
 import { computed, getCurrentInstance, onMounted, onUnmounted } from 'vue'
-import { onShow, onHide } from '@dcloudio/uni-app'
+import { onShow, onHide, onBackPress } from '@dcloudio/uni-app'
 import {
   activeNativeFeedbackHost,
   claimNativeFeedbackHost,
@@ -13,13 +13,32 @@ export function useNativeFeedbackHost() {
   const id = getCurrentInstance()!.uid
   const claim = () => claimNativeFeedbackHost(id)
   const release = () => releaseNativeFeedbackHost(id)
+  // Android/PDA 实体返回键先关闭当前交互，保持与遮罩取消相同的结果契约。
+  onBackPress(() => {
+    if (activeNativeFeedbackHost.value !== id) return false
+    if (host.state.sheet) {
+      host.cancel()
+      return true
+    }
+    if (host.state.modal) {
+      host.cancel()
+      return true
+    }
+    return false
+  })
   onMounted(claim)
   onShow(claim)
   onHide(release)
   onUnmounted(release)
   const visible = computed(() => activeNativeFeedbackHost.value === id)
   const hasFeedback = computed(
-    () => !!(host.state.loading || host.state.modal || host.state.toast)
+    () =>
+      !!(
+        host.state.loading ||
+        host.state.modal ||
+        host.state.sheet ||
+        host.state.toast
+      )
   )
   return { ...host, visible, hasFeedback }
 }

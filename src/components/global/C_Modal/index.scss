@@ -6,6 +6,8 @@
     right: 0;
     bottom: 0;
     background: var(--r-bg-mask);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
     z-index: var(--r-z-modal);
     padding: 32rpx;
     box-sizing: border-box;
@@ -15,10 +17,14 @@
   }
 
   &__container {
-    background: var(--r-bg-card);
-    border-radius: var(--r-radius-xl);
+    background: var(--r-bg-elevated);
+    padding: var(--r-dialog-padding);
+    box-sizing: border-box;
+    border: 1rpx solid var(--r-border-color);
+    border-radius: var(--r-dialog-radius);
     box-shadow: var(--r-shadow-lg);
     overflow: hidden;
+    outline: none;
     max-width: 100%;
     max-height: 85%;
     display: flex;
@@ -28,34 +34,36 @@
 
   &__header {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
-    padding: 32rpx 32rpx 12rpx;
     gap: 16rpx;
   }
 
   &__title {
-    font-size: var(--r-font-size-xl);
-    font-weight: 600;
+    font-size: var(--r-dialog-title-size);
+    font-weight: 650;
+    line-height: 1.4;
     color: var(--r-text-primary);
+    overflow-wrap: anywhere;
   }
 
   &__close {
-    min-width: 64rpx;
-    min-height: 64rpx;
+    width: 80rpx;
+    height: 80rpx;
+    margin: -20rpx -12rpx -12rpx 0;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    background: var(--r-bg-grey);
+    background: transparent;
     border-radius: var(--r-radius-round);
   }
 
   &__body {
-    padding: 16rpx 32rpx 32rpx;
-    font-size: var(--r-font-size-md);
-    color: var(--r-text-regular);
-    line-height: 1.6;
+    padding: 20rpx 0 0;
+    font-size: 28rpx;
+    color: var(--r-text-secondary);
+    line-height: 1.75;
     min-height: 0;
     flex: 1;
     overflow-wrap: anywhere;
@@ -66,7 +74,7 @@
   &__footer {
     display: flex;
     flex-shrink: 0;
-    padding: 0 32rpx 32rpx;
+    margin-top: 32rpx;
     gap: 16rpx;
 
     &-btn {
@@ -74,10 +82,13 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      min-height: 88rpx;
-      padding: 16rpx;
+      min-height: var(--r-dialog-action-height);
+      padding: 18rpx 20rpx;
+      box-sizing: border-box;
       border-radius: var(--r-radius-md);
-      font-size: var(--r-font-size-md);
+      font-size: 26rpx;
+      font-weight: 500;
+      line-height: 1.5;
 
       &:active {
         opacity: 0.75;

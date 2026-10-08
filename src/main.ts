@@ -8,6 +8,7 @@ import App from './App.vue'
 import 'virtual:uno.css'
 import { installUniFeedback } from './utils/feedback'
 import { installNavigationFeedback } from './utils/navigation-feedback'
+import config from './config/env'
 // #ifdef H5
 import { installH5Feedback } from './utils/feedback-h5'
 // #endif
@@ -37,8 +38,8 @@ export function createApp() {
   initRouter()
   installNavigationFeedback(app)
 
-  // 开发环境挂载 Mock 拦截器（动态 import 确保生产构建不打包 mock）
-  if (import.meta.env.DEV) {
+  // 演示拦截由显式开关控制；DEV 常量确保任何构建产物都不包含 Mock。
+  if (import.meta.env.DEV && config.MOCK_ENABLED) {
     import('./mock').then(({ setupMock }) => setupMock())
   }
 

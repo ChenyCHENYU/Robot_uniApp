@@ -10,6 +10,8 @@ import { flattenOptions } from '@/components/global/C_Cascader/data'
 import { parseTime, formatTime } from '@/components/global/C_CountDown/data'
 import { normalizeIconName } from '@/components/global/C_Icon/data'
 import { defaultProps as rateDefaults } from '@/components/global/C_Rate/data'
+import { useActionSheet } from '@/components/global/C_ActionSheet/data'
+import { useModal } from '@/components/global/C_Modal/data'
 import {
   getSearchHistory,
   saveSearchHistory,
@@ -18,6 +20,45 @@ import {
 import { STORAGE_KEYS } from '@/constants'
 
 const scopes: EffectScope[] = []
+
+describe('共享浮层交互契约', () => {
+  it('操作面板返回原选项及序号，随后关闭面板', () => {
+    const emit = vi.fn()
+    const sheet = useActionSheet({ closeOnClickOverlay: true }, emit)
+    const item = { name: '删除消息', value: 'delete', danger: true }
+    sheet.onSelect(item, 1)
+    expect(emit.mock.calls).toEqual([
+      ['select', item, 1],
+      ['update:visible', false],
+    ])
+  })
+
+  it('禁用项不触发业务选择，取消与遮罩关闭不会伪造选择', () => {
+    const emit = vi.fn()
+    const sheet = useActionSheet({ closeOnClickOverlay: true }, emit)
+    sheet.onSelect({ name: '不可用', disabled: true }, 0)
+    expect(emit).not.toHaveBeenCalled()
+    sheet.onOverlayClick()
+    expect(emit.mock.calls).toEqual([['cancel'], ['update:visible', false]])
+    emit.mockClear()
+    useActionSheet({ closeOnClickOverlay: false }, emit).onOverlayClick()
+    expect(emit).not.toHaveBeenCalled()
+  })
+
+  it('确认弹窗由调用方决定关闭，异步提交可保留内容', () => {
+    const emit = vi.fn()
+    const modal = useModal({ closeOnClickOverlay: false }, emit)
+    modal.onConfirm()
+    expect(emit.mock.calls).toEqual([['confirm']])
+    modal.onOverlayClick()
+    expect(emit).toHaveBeenCalledOnce()
+    modal.onCancel()
+    expect(emit.mock.calls.slice(1)).toEqual([
+      ['update:visible', false],
+      ['cancel'],
+    ])
+  })
+})
 
 const createCalendar = (
   overrides: Partial<Parameters<typeof useCalendar>[0]> = {}

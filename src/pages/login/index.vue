@@ -231,13 +231,13 @@
           </view>
         </view>
 
-        <!-- 开发环境演示账号提示 -->
+        <!-- 仅实际开启演示拦截时显示账号提示 -->
         <view
-          v-if="isDev"
+          v-if="mockEnabled"
           class="demo-hint"
         >
           <text class="demo-hint-text"
-            >演示账号：CHENY / 123456（仅开发环境）</text
+            >演示账号：CHENY / 123456（本地演示模式）</text
           >
         </view>
 
@@ -285,8 +285,7 @@
   import C_NativeFeedbackHost from '@/components/global/C_NativeFeedbackHost/index.vue'
   // #endif
 
-  // 是否显示演示账号提示（仅开发环境）
-  const isDev = config.IS_DEV
+  const mockEnabled = config.MOCK_ENABLED
   const appVersion = config.APP_VERSION
 
   // 登录方式切换

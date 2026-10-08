@@ -1,53 +1,85 @@
 .c-action-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: var(--r-z-popup);
+  color: var(--r-text-primary);
+
   &__overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    position: absolute;
+    inset: 0;
     background: var(--r-bg-mask);
-    z-index: var(--r-z-popup);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
   }
 
   &__panel {
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: var(--r-bg-card);
-    border-radius: var(--r-radius-xl) var(--r-radius-xl) 0 0;
-    z-index: calc(var(--r-z-popup) + 1);
-    animation: sheet-up 0.25s ease;
-    max-height: 85%;
+    position: absolute;
+    left: 24rpx;
+    right: 24rpx;
+    bottom: calc(24rpx + env(safe-area-inset-bottom, 0px));
+    padding: var(--r-sheet-padding);
+    background: var(--r-bg-elevated);
+    border: 1rpx solid var(--r-border-color);
+    border-radius: var(--r-dialog-radius);
+    box-shadow: var(--r-shadow-lg);
+    max-height: calc(85% - env(safe-area-inset-bottom, 0px));
+    box-sizing: border-box;
+    outline: none;
+    display: flex;
+    flex-direction: column;
+    animation: sheet-up 0.22s var(--r-ease-base);
+  }
+
+  &__handle {
+    flex-shrink: 0;
+    width: 56rpx;
+    height: 6rpx;
+    margin: -4rpx auto 24rpx;
+    border-radius: var(--r-radius-round);
+    background: var(--r-divider-strong);
+  }
+
+  &__options {
+    min-height: 0;
     overflow-y: auto;
     overscroll-behavior: contain;
-    padding-bottom: env(safe-area-inset-bottom);
   }
 
   &__title {
-    text-align: center;
-    padding: 32rpx;
-    font-size: var(--r-font-size-md);
-    color: var(--r-text-secondary);
-    border-bottom: 1rpx solid var(--r-border-light);
+    flex-shrink: 0;
+    padding: 0 12rpx 20rpx;
+    font-size: 30rpx;
+    font-weight: 650;
+    line-height: 1.5;
+    color: var(--r-text-primary);
+    overflow-wrap: anywhere;
   }
 
   &__item {
     display: flex;
     align-items: center;
-    justify-content: center;
-    min-height: 104rpx;
-    padding: 20rpx 32rpx;
+    justify-content: flex-start;
+    width: 100%;
+    min-height: var(--r-sheet-item-height);
+    padding: 18rpx 20rpx;
     box-sizing: border-box;
-    font-size: var(--r-font-size-lg);
+    font-size: 28rpx;
+    font-weight: 500;
+    line-height: 1.5;
+    text-align: left;
     color: var(--r-text-primary);
-    border-bottom: 1rpx solid var(--r-border-light);
-    gap: 16rpx;
-    flex-wrap: wrap;
+    background: transparent;
+    border-radius: var(--r-radius-md);
+    gap: 20rpx;
     overflow-wrap: anywhere;
 
     &:active {
       background: var(--r-bg-hover);
+    }
+
+    &--selected {
+      background: var(--r-color-primary-soft);
+      color: var(--r-color-primary);
     }
 
     &--danger {
@@ -55,33 +87,44 @@
     }
 
     &--disabled {
-      color: var(--r-text-disabled);
-      pointer-events: none;
+      color: var(--r-text-secondary);
+      opacity: 0.45;
     }
   }
 
-  &__unoicon {
-    font-size: 40rpx;
+  &__item + &__item {
+    margin-top: 8rpx;
+  }
+  &__item-copy {
+    flex: 1;
+    min-width: 0;
+  }
+  &__item-label {
+    display: block;
   }
   &__desc {
-    font-size: var(--r-font-size-xs);
+    display: block;
+    margin-top: 4rpx;
+    font-size: 22rpx;
+    font-weight: 400;
+    line-height: 1.55;
     color: var(--r-text-secondary);
   }
 
-  &__gap {
-    height: 16rpx;
-    background: var(--r-bg-grey);
-  }
-
   &__cancel {
+    flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 104rpx;
-    padding: 20rpx 32rpx;
+    min-height: var(--r-dialog-action-height);
+    margin-top: 20rpx;
+    padding: 18rpx 20rpx;
     box-sizing: border-box;
-    font-size: var(--r-font-size-lg);
-    color: var(--r-text-primary);
+    font-size: 26rpx;
+    font-weight: 500;
+    color: var(--r-text-regular);
+    background: var(--r-bg-grey);
+    border-radius: var(--r-radius-md);
 
     &:active {
       background: var(--r-bg-hover);
@@ -91,9 +134,17 @@
 
 @keyframes sheet-up {
   from {
+    opacity: 0;
     transform: translateY(100%);
   }
   to {
+    opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .c-action-sheet__panel {
+    animation: none;
   }
 }

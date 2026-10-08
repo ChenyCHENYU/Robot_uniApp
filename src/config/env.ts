@@ -33,6 +33,8 @@ export interface EnvConfig {
   IS_TEST: boolean
   IS_STAGING: boolean
   IS_PROD: boolean
+  /** 仅开发服务器允许演示拦截；生产环境及所有构建产物强制关闭。 */
+  MOCK_ENABLED: boolean
   /** 接口基础地址（非 H5 端保证为绝对地址） */
   API_BASE_URL: string
   /** 接口版本前缀（如 'v1'），拼接到 API 路径 */
@@ -131,6 +133,10 @@ const config: EnvConfig = {
   IS_TEST: currentEnv === 'test',
   IS_STAGING: currentEnv === 'staging',
   IS_PROD: currentEnv === 'production',
+  MOCK_ENABLED:
+    import.meta.env.DEV &&
+    currentEnv !== 'production' &&
+    readBool('VITE_MOCK_ENABLED', currentEnv === 'development'),
 
   API_BASE_URL: resolveApiBaseUrl(),
   API_VERSION: readStr('VITE_API_VERSION', ''),

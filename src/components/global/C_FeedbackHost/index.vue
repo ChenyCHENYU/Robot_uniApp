@@ -122,6 +122,90 @@
       </div>
     </transition>
 
+    <transition name="feedback-sheet">
+      <div
+        v-if="state.sheet && sheetOptions"
+        class="robot-feedback__layer robot-feedback__sheet-layer"
+      >
+        <div
+          class="robot-feedback__backdrop"
+          @click="cancel"
+          @touchmove.prevent
+          @wheel.prevent
+        />
+        <section
+          class="robot-feedback__sheet"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="robot-feedback-sheet-title"
+          tabindex="-1"
+          @touchmove.stop
+          @wheel.stop
+        >
+          <div
+            class="robot-feedback__sheet-handle"
+            aria-hidden="true"
+          />
+          <h2
+            id="robot-feedback-sheet-title"
+            class="robot-feedback__sheet-title"
+            >{{
+              sheetOptions.title || sheetOptions.alertText || '选择操作'
+            }}</h2
+          >
+          <p
+            v-if="sheetOptions.description"
+            class="robot-feedback__sheet-description"
+            >{{ sheetOptions.description }}</p
+          >
+          <div class="robot-feedback__sheet-options">
+            <button
+              v-for="(item, index) in sheetOptions.itemList"
+              :key="index"
+              type="button"
+              role="button"
+              tabindex="0"
+              class="robot-feedback__sheet-item"
+              :class="{
+                'robot-feedback__sheet-item--selected':
+                  sheetOptions.selectedIndex === index,
+              }"
+              :aria-pressed="sheetOptions.selectedIndex === index"
+              :style="sheetItemStyle"
+              @click="selectSheet(index)"
+              @keydown.enter.prevent="selectSheet(index)"
+              @keydown.space.prevent="selectSheet(index)"
+            >
+              <span class="robot-feedback__sheet-copy"
+                ><span class="robot-feedback__sheet-label">{{ item }}</span>
+                <span
+                  v-if="sheetOptions.itemDescriptions?.[index]"
+                  class="robot-feedback__sheet-note"
+                  >{{ sheetOptions.itemDescriptions[index] }}</span
+                >
+              </span>
+              <span
+                v-if="sheetOptions.selectedIndex === index"
+                class="robot-feedback__sheet-check"
+                aria-hidden="true"
+                >✓</span
+              >
+            </button>
+          </div>
+          <button
+            type="button"
+            role="button"
+            tabindex="0"
+            class="robot-feedback__sheet-cancel"
+            @click="cancel"
+            @keydown.enter.prevent="cancel"
+            @keydown.space.prevent="cancel"
+            >取消</button
+          >
+        </section>
+      </div>
+    </transition>
+
     <transition name="feedback-toast">
       <div
         v-if="state.toast"
@@ -171,6 +255,9 @@
     state,
     themeClass,
     modalOptions,
+    sheetOptions,
+    sheetItemStyle,
+    selectSheet,
     modalIcon,
     modalSymbol,
     draft,

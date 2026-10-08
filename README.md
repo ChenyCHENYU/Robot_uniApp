@@ -19,21 +19,23 @@
 
 **Robot UniApp** 是基于 **Vue 3 + uni-app + TypeScript + UnoCSS + Pinia + wot-design-uni** 的跨平台移动应用模板，支持 H5 / 微信小程序 / App 多端开发。
 
-当前版本 **v1.7.1**：四个 Tab、普通页面打开与返回共用统一加载反馈，缓存页面也完整呈现入场动画；详细变更见 [CHANGELOG.md](./CHANGELOG.md)。
+当前固定版本 **v1.7.2**：统一操作菜单与弹窗设计，完善跨端能力注册、请求/上传状态和生产 Mock 隔离；保留全页面导航加载与墨黑几何 R 站点图标。以 Git 标签 `v1.7.2` 作为当前阶段基线，后续优化从此版本继续；详细变更见 [CHANGELOG.md](./CHANGELOG.md)。
+
+H5、微信小程序和 App 资源已完成构建验证；钉钉、PDA 与 Robot H5 宿主仍需真实 SDK、接口和设备联调，各平台的实际支持边界与验收见 [多端基础与后续接入](./docs/platform-readiness.md)。本仓库使用 uni-app 自身技术栈与质量检查，开发约定见 [AGENTS.md](./AGENTS.md)，未接入 PC 管理端 Kit。
 
 - H5 / 小程序 / App 共用一套业务代码，静态演示页隔离在独立分包
 - 首页工作台提供信息填报、数据管理、流程审批、扫一扫 4 个常用应用，以及个人资料与偏好设置入口；最近搜索读取本机历史，无记录时展示真实空状态
 - 请求层内置去重、指数退避重试（仅网络错误/5xx）、页面级取消、401 统一处理与登录回跳
 - 身份代次（request-context）：登出/切号自动中止在途请求并隔离去重缓存
-- 开发环境通过 `uni.addInterceptor` 拦截请求返回 Mock 数据（与 HTTP 层同协议：`code === 0` 为成功）
+- 开发演示由 `VITE_MOCK_ENABLED` 显式控制（与 HTTP 层同协议：`code === 0` 为成功）；测试/预发布默认真实联调，生产构建强制排除 Mock
 - 分级日志（`VITE_LOG_LEVEL`）与全局错误脱敏收集（token/openid 自动打码，可注册上报钩子）
-- 平台能力抽象层（`src/platform`）：扫码/定位/拍照统一接口 + H5/小程序/App 实现 + 降级链
-- 断点续传上传（App/MP 分片+重试+持久化 job）、App 热更新服务（manifest + sha256 校验）
+- 平台能力层（`src/platform`）：扫码/定位/拍照统一入口、实际能力查询、部分宿主注册/撤销、就绪超时与降级；钉钉/PDA 需注入真实实现
+- 断点续传状态机支持暂停/删除、账号与环境隔离；App 更新基础模块强制 SHA-256 校验；实际后端、文件持久保存和真机发布仍需接入验收
 - 简繁转换（`VITE_FEATURE_TW` 开关，opencc 字典懒加载，默认零包体成本）
-- 契约测试 5 项（版本同步/路由守卫/HTTP 协议/API↔Mock 同步/平台隔离）+ vitest 单测 230 例、23 个测试文件；包体预算门禁（`pnpm check:budget`）
+- 契约测试 5 项（版本同步/路由守卫/HTTP 协议/API↔Mock 同步/平台隔离）+ Vitest 行为测试；H5/微信/App 资源构建与包体预算门禁（`pnpm check:budget`）
 - 路由守卫采用「默认需登录 + 白名单放行」，并支持按页面配置角色/权限
 - 33 个公开 `C_*` 组件演示，按基础/布局/表单/展示/反馈独立分类，支持搜索；`C_Icon` 使用实际 SVG 图标资源，wot-design-uni 按需引入
-- 统一 Toast、可输入 Modal 与加载反馈，保留回调/Promise、弹窗队列及加载所有权，覆盖启动、页面导航与行内加载
+- 统一 Toast、可输入 Modal、操作菜单与加载反馈，保留回调/Promise、共享交互队列及加载所有权，覆盖启动、页面导航与行内加载
 - 类型检查（vue-tsc）、oxlint + ESLint、commitlint + husky 全链路质量保障
 
 <table>
@@ -44,6 +46,11 @@
 </table>
 
 > 截图来自 v1.7.0，使用开发演示账号 CHENY，最近搜索为空，工作台不展示组件统计或演示待办。
+
+<p align="center">
+  <img src="./docs/images/appearance-menu.png" width="300" alt="v1.7.2 统一外观操作菜单，包含选中状态、模式说明与取消按钮"><br>
+  v1.7.2 操作菜单预览
+</p>
 
 ---
 
@@ -58,18 +65,20 @@
 
 ```bash
 pnpm install        # 安装依赖（pnpm-workspace.yaml 已声明允许构建的依赖）
-pnpm dev            # H5 开发（端口 1999，自动加载 Mock）
+pnpm dev            # H5 开发（端口 1999，默认演示，可关闭 Mock）
 pnpm dev:wx         # 微信小程序开发（需微信开发者工具）
 pnpm dev:app        # App 开发（需 HBuilderX）
 ```
 
 > 开发环境演示账号：`CHENY / 123456`（仅 Mock，登录页有提示；`admin / admin123` 亦可）。短信登录任意合法手机号 + 4-6 位验证码。
 
+> 演示模式仅在 development 默认开启；`dev:test`、`dev:staging` 默认连接环境配置的后端。用 `VITE_MOCK_ENABLED=false` 关闭演示后登录不预填密码，也不提示短信已发送。测试环境如需演示可显式设为 `true`，生产构建仍不会打包 Mock。
+
 ### 常用命令
 
 | 命令                                    | 说明                                               |
 | --------------------------------------- | -------------------------------------------------- |
-| `pnpm dev` / `dev:wx` / `dev:app`       | 各端开发模式（Mock 自动启用）                      |
+| `pnpm dev` / `dev:wx` / `dev:app`       | 各端开发模式（默认演示，可关闭 Mock）              |
 | `pnpm dev:test` / `dev:staging`         | 测试/预发布环境 dev server                         |
 | `pnpm build` / `build:wx` / `build:app` | 生产构建                                           |
 | `pnpm build:test` / `build:staging`     | 测试/预发布构建                                    |
@@ -99,7 +108,7 @@ pnpm dev:app        # App 开发（需 HBuilderX）
 │   ├── config/env.ts         # 读取 VITE_* 并导出类型化运行时配置
 │   ├── constants/            # RESPONSE_CODE / 业务枚举 / 正则
 │   ├── directives/           # v-auth / v-role 权限指令（仅 H5，小程序用 v-if 方案）
-│   ├── mock/                 # Mock 拦截器（DEV 自动挂载，code:0 协议）
+│   ├── mock/                 # Mock 拦截器（DEV + 显式开关，code:0 协议）
 │   ├── pages/                # 主包 7 页 + 12 个分包 45 页，共 52 页
 │   ├── stores/               # Pinia + 持久化（uni storage 适配器）
 │   ├── styles/               # 设计 token（:root + page 双挂载）/ reset / mixins
@@ -110,7 +119,7 @@ pnpm dev:app        # App 开发（需 HBuilderX）
 └── vite.config.js            # envDir=env / AutoImport / 生产 drop console
 ```
 
-页面按 `index.vue`（模板与解构）、`data.ts`（状态与业务逻辑）、`index.scss`（样式）、`api.md`（接口契约）组织。组件目录与首页工作台各有独立职责，新增页面沿用现有约定。
+页面沿用现有 `index.vue`（模板与解构）、`data.ts`（状态与业务逻辑）、`index.scss`（样式）、`api.md`（接口契约）组织。组件目录与首页工作台各有独立职责，展示组件按职责和实际复杂度拆分。
 
 `components/global` 当前共 39 个目录：33 个公开演示组件，另有环境标识、退出过渡、虚拟状态栏及 `C_FeedbackHost`、`C_NativeFeedbackHost`、`C_LoadingIndicator` 6 个内部设施；内部设施不计入组件目录的 33 项。
 
@@ -133,19 +142,20 @@ pnpm dev:app        # App 开发（需 HBuilderX）
 
 ### Mock（`src/mock/`）
 
-- 仅 `import.meta.env.DEV` 生效，`main.ts` 动态挂载（生产构建不打包）
+- 必须同时满足 `import.meta.env.DEV` 与 `config.MOCK_ENABLED`；`main.ts` 动态挂载，Mock 安装入口也验证开关（生产构建不打包）
 - 拦截 `uni.request`，按 `METHOD /path` 匹配（自动剥离 baseURL 前缀）
 - 与业务层同一成功协议（`success()` 返回 `code: 0`）
 - DEV Mock 用于交互演示与契约验证；生产构建请求 `env/` 配置的后端，演示账号与 Mock 数据不作为生产服务
 
 ### 统一反馈（`src/utils/feedback.ts`）
 
-- 启动时接管 `uni.showToast/showModal/showLoading/hideLoading/hideToast`，保留 success/complete 回调及 Promise 调用方式；可输入弹窗返回 `content`，弹窗按队列展示
+- 启动时接管 `uni.showToast/showModal/showActionSheet/showLoading/hideLoading/hideToast`，保留回调与 Promise；输入弹窗返回 `content`，菜单返回 `tapIndex`，两者共用队列。菜单取消触发 fail/complete，Promise 调用方需处理取消
 - H5 使用持久化 `C_FeedbackHost`；小程序/App 由当前页面的 `C_NativeFeedbackHost` 展示，避免缓存页面重复弹出
 - 手动、HTTP、导航、组件与启动加载分别维护 owner，合并展示一层加载；结束自己的加载不会关闭其他任务，全局与按钮/列表行内加载共用 `C_LoadingIndicator`
 - 四个 Tab 及 navigateTo/redirectTo/reLaunch/navigateBack 共用导航反馈；重复点击当前 Tab 不触发加载，首次页面由 onReady、缓存页面由 onShow 确认准备，两者均等待视图绘制与导航 API 成功，并保留 220ms 入场时间
 - 页面 onShow 的实际路径变化补齐浏览器历史、系统返回的加载反馈；同一路径回到前台不触发，导航失败或异常超时自动释放自己的加载，保留 SDK 回调、Promise 与登录/权限守卫
 - 反馈、工作台与业务页共用设计 token，视觉参考 RobotH5 与 wl-mbase，并保留当前 uni-app 页面及接口约定
+- 主题/语言、网页及图片操作菜单使用统一反馈层；消息/部门选择使用同一设计的 `C_ActionSheet`，与 Modal、日历、级联选择、数字键盘共享浮层令牌
 
 ### 环境配置
 
@@ -170,6 +180,7 @@ pnpm dev:app        # App 开发（需 HBuilderX）
   包裹，`:theme` 随应用主题联动；`themeVars` 将品牌 token（colorTheme/语义色/文字色）
   注入组件库，业务 token 与组件库 token 单向统一
 - 主题模式：浅色 / 深色 / 跟随系统（`uni.onThemeChange` 实时跟随），设置页可切换，选择持久化
+- H5 站点图标使用自绘的 [SVG Robot 字标](./src/static/favicon.svg)：墨黑底、暖白几何 R 与负形双眼，由 `index.html` 接入，资源地址跟随部署 base
 - 组件内请使用 `var(--r-color-primary)` 等 token，避免硬编码色值（破坏暗色）
 - 应用级网络状态由 app store 管理：合并 Uni 网络事件与 H5 online/offline 事件，连接状态切换时去重提示，卸载时清理监听
 
@@ -184,7 +195,7 @@ pnpm dev:app        # App 开发（需 HBuilderX）
 | 功能         | scan 扫码（URL 确认）/ webview（白名单）/ guide 首次启动引导 / about / register / search-result 搜索 | 注册接业务 API；其余使用设备能力、配置或本地数据                       |
 | 组件演示     | `pages/demo` 独立分包，1 个目录页 + 33 个组件演示页                                                  | 本地演示数据                                                           |
 
-> `pages.json` 共登记 52 页（主包 7 页，12 个分包合计 45 页）。业务 API 在开发环境由 `src/mock` 供应（同一 `code:0` 协议）；生产接入需配置 `env/` 地址并核对接口字段、认证与权限。
+> `pages.json` 共登记 52 页（主包 7 页，12 个分包合计 45 页）。开启演示 Mock 时业务 API 由 `src/mock` 供应（同一 `code:0` 协议）；正式联调需配置 `env/` 地址并核对接口字段、认证与权限。
 
 ---
 
@@ -193,15 +204,17 @@ pnpm dev:app        # App 开发（需 HBuilderX）
 ```bash
 pnpm type-check   # vue-tsc --noEmit（0 错误）
 pnpm lint:check   # oxlint + eslint（只检查）
-pnpm test         # 5 项契约测试 + 230 例单测（23 个测试文件）
+pnpm test         # 5 项契约测试 + 308 例单测（26 个测试文件）
 pnpm build:h5     # H5 生产构建
 pnpm build:wx     # 微信小程序生产构建 + WXSS 后处理与校验
+pnpm build:app    # App 资源构建（安装包和真机另行验收）
+pnpm check:budget # H5/微信小程序包体预算
 ```
 
-- v1.7.0 微信生产构建覆盖 52 个登记页面，WXSS 后处理校验 101 个样式文件，包含扩展名还原、引用核对及不支持样式清理
-- H5 开发页面已完成交互与亮/暗主题验收；微信小程序/App 真机键盘、安全区与 WebView 原生层遮挡仍待设备验收
+- v1.7.2 微信生产构建覆盖 52 个登记页面，WXSS 后处理校验 94 个样式文件，包含扩展名还原、引用核对及不支持样式清理
+- H5 浏览器 21 项交互与布局检查通过，覆盖菜单选择/取消、混合弹窗队列、选择回填、键盘焦点、四个 Tab、亮/暗主题、小屏/桌面与扫码适配器注册/撤销；微信小程序/App 真机仍待设备验收
 - 提交：husky + lint-staged（本地 `pnpm exec`，无需联网）+ commitlint
-- CI：GitHub Actions（lint → type-check → test → 双端构建 → 包体预算），见 `.github/workflows/ci.yml`
+- CI：GitHub Actions（lint → type-check → test → H5/微信/App 资源构建 → 包体预算），见 `.github/workflows/ci.yml`
 - 变更记录：[CHANGELOG.md](./CHANGELOG.md)
 - 生产构建自动移除 `console`/`debugger`
 - 已知限制：wot-design-uni@1.14.0 内部存在一个上游类型错误（`useUpload.ts`），为通过 `type-check` 暂未启用其 `global.d.ts` 全局组件模板类型；升级新版后可恢复

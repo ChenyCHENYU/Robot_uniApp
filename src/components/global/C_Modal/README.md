@@ -31,18 +31,18 @@
 
 ### Props
 
-| 属性                | 类型    | 默认值 | 说明         |
-| ------------------- | ------- | ------ | ------------ |
-| visible (v-model)   | Boolean | false  | 是否显示     |
-| title               | String  | `提示` | 标题         |
-| content             | String  | -      | 纯文本内容   |
-| showClose           | Boolean | true   | 显示关闭按钮 |
-| showCancel          | Boolean | true   | 显示取消按钮 |
-| showConfirm         | Boolean | true   | 显示确认按钮 |
-| confirmText         | String  | `确定` | 确认按钮文案 |
-| cancelText          | String  | `取消` | 取消按钮文案 |
-| closeOnClickOverlay | Boolean | true   | 遮罩关闭     |
-| width               | String  | `80%`  | 弹窗宽度     |
+| 属性                | 类型    | 默认值   | 说明                           |
+| ------------------- | ------- | -------- | ------------------------------ |
+| visible (v-model)   | Boolean | false    | 是否显示                       |
+| title               | String  | `提示`   | 标题                           |
+| content             | String  | -        | 纯文本内容                     |
+| showClose           | Boolean | true     | 显示关闭按钮                   |
+| showCancel          | Boolean | true     | 显示取消按钮                   |
+| showConfirm         | Boolean | true     | 显示确认按钮                   |
+| confirmText         | String  | `确定`   | 确认按钮文案                   |
+| cancelText          | String  | `取消`   | 取消按钮文案                   |
+| closeOnClickOverlay | Boolean | true     | 遮罩关闭                       |
+| width               | String  | `640rpx` | 弹窗宽度（不超过遮罩可用宽度） |
 
 ### Events
 
@@ -79,3 +79,5 @@
 
 - `confirm` 事件触发后不会自动关闭弹窗，需在回调中手动设置 `visible = false`
 - 使用 `v-model:visible` 实现双向绑定
+- 与统一反馈弹窗共用浮层密度、表面、边框和按钮令牌，支持亮色 / 暗色主题与减少动画偏好。
+- H5 打开后自动聚焦输入控件或弹窗；Tab 限制在弹窗可用控件内，按钮支持 Enter / Space，Esc 关闭，关闭后恢复原焦点。

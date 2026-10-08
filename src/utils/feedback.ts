@@ -13,6 +13,14 @@ export interface StyledModalOptions extends UniApp.ShowModalOptions {
   fields?: Array<{ label: string; value: string }>
 }
 
+/** 操作菜单沿用 uni 的结果契约，补充标题、说明和当前选中项。 */
+export interface StyledActionSheetOptions
+  extends UniApp.ShowActionSheetOptions {
+  description?: string
+  selectedIndex?: number
+  itemDescriptions?: string[]
+}
+
 interface FeedbackToast {
   id: number
   title: string
@@ -32,14 +40,27 @@ interface FeedbackModal {
   options: StyledModalOptions
 }
 
+interface FeedbackActionSheet {
+  id: number
+  options: StyledActionSheetOptions
+}
+
 interface ModalRequest extends FeedbackModal {
+  kind: 'modal'
   resolve: (result: UniApp.ShowModalRes) => void
+}
+
+interface ActionSheetRequest extends FeedbackActionSheet {
+  kind: 'sheet'
+  resolve: (result: UniApp.ShowActionSheetRes) => void
+  reject: (error: { errMsg: string }) => void
 }
 
 export interface FeedbackState {
   toast: FeedbackToast | null
   loading: FeedbackLoading | null
   modal: FeedbackModal | null
+  sheet: FeedbackActionSheet | null
 }
 
 type CompletionOptions = Pick<UniApp.ShowLoadingOptions, 'success' | 'complete'>
@@ -55,17 +76,30 @@ function notifySuccess(options: CompletionOptions, name: string) {
   return result
 }
 
+/** 不允许过期或越界序号结束当前菜单。 */
+function isValidSheetIndex(index: number, count: number) {
+  return Number.isInteger(index) && index >= 0 && index < count
+}
+
 /** 单例控制器也可独立创建，用于验证队列、计时器和 loading 所有权。 */
 export function createFeedbackController() {
   const state = shallowReactive<FeedbackState>({
     toast: null,
     loading: null,
     modal: null,
+    sheet: null,
   })
   let sequence = 0
   let toastTimer: ReturnType<typeof setTimeout> | undefined
   const loadingOwners = new Map<string, FeedbackLoading>()
-  const modalQueue: ModalRequest[] = []
+  const interactionQueue: Array<ModalRequest | ActionSheetRequest> = []
+
+  // 确认弹窗和操作菜单共用 FIFO，避免两类交互同时覆盖页面。
+  const syncInteraction = () => {
+    const next = interactionQueue[0]
+    state.modal = next?.kind === 'modal' ? next : null
+    state.sheet = next?.kind === 'sheet' ? next : null
+  }
 
   const hideToast = (options: CompletionOptions = {}) => {
     clearTimeout(toastTimer)
@@ -122,14 +156,19 @@ export function createFeedbackController() {
 
   const showModal = (options: StyledModalOptions) =>
     new Promise<UniApp.ShowModalRes>(resolve => {
-      const request = { id: ++sequence, options: { ...options }, resolve }
-      modalQueue.push(request)
-      if (!state.modal) state.modal = request
+      interactionQueue.push({
+        kind: 'modal',
+        id: ++sequence,
+        options: { ...options },
+        resolve,
+      })
+      syncInteraction()
     })
 
   const finishModal = (confirm: boolean, content = '') => {
-    const request = modalQueue.shift()
-    if (!request) return
+    const request = interactionQueue[0]
+    if (request?.kind !== 'modal') return
+    interactionQueue.shift()
     const result: UniApp.ShowModalRes & { errMsg: string } = {
       errMsg: 'showModal:ok',
       confirm,
@@ -137,7 +176,64 @@ export function createFeedbackController() {
     }
     if (confirm && request.options.editable) result.content = content
     // 先释放当前队列位置，回调中打开的弹窗仍按 FIFO 排序。
-    state.modal = modalQueue[0] ?? null
+    syncInteraction()
+    request.resolve(result)
+    try {
+      request.options.success?.(result)
+    } finally {
+      request.options.complete?.(result)
+    }
+  }
+
+  const showActionSheet = (options: StyledActionSheetOptions) =>
+    new Promise<UniApp.ShowActionSheetRes>((resolve, reject) => {
+      if (!Array.isArray(options.itemList) || !options.itemList.length) {
+        const error = {
+          errMsg: 'showActionSheet:fail itemList cannot be empty',
+        }
+        reject(error)
+        try {
+          options.fail?.(error)
+        } finally {
+          options.complete?.(error)
+        }
+        return
+      }
+      interactionQueue.push({
+        kind: 'sheet',
+        id: ++sequence,
+        options: {
+          ...options,
+          itemList: options.itemList.map(String),
+          itemDescriptions: options.itemDescriptions?.slice(),
+        },
+        resolve,
+        reject,
+      })
+      syncInteraction()
+    })
+
+  const finishActionSheet = (tapIndex?: number) => {
+    const request = interactionQueue[0]
+    if (request?.kind !== 'sheet') return
+    if (
+      tapIndex !== undefined &&
+      !isValidSheetIndex(tapIndex, request.options.itemList.length)
+    )
+      return
+    interactionQueue.shift()
+    syncInteraction()
+    if (tapIndex === undefined) {
+      const error = { errMsg: 'showActionSheet:fail cancel' }
+      request.reject(error)
+      try {
+        request.options.fail?.(error)
+      } finally {
+        request.options.complete?.(error)
+      }
+      return
+    }
+    const result = { errMsg: 'showActionSheet:ok', tapIndex }
     request.resolve(result)
     try {
       request.options.success?.(result)
@@ -154,6 +250,8 @@ export function createFeedbackController() {
     hideLoading,
     showModal,
     finishModal,
+    showActionSheet,
+    finishActionSheet,
   }
 }
 
@@ -174,7 +272,11 @@ function withUniReturn<T>(
   options: CompletionOptions & { fail?: unknown },
   result: T
 ) {
-  if (options.success || options.fail || options.complete) return
+  if (options.success || options.fail || options.complete) {
+    // 回调模式的取消由 fail/complete 消费，避免产生未处理的 Promise 拒绝。
+    if (result instanceof Promise) void result.catch(() => {})
+    return
+  }
   return Promise.resolve(result)
 }
 
@@ -198,6 +300,35 @@ export function installUniFeedback(api: typeof uni = uni) {
     )) as typeof api.hideLoading
   api.showModal = ((options: UniApp.ShowModalOptions) =>
     withUniReturn(options, feedback.showModal(options))) as typeof api.showModal
+  api.showActionSheet = ((options: UniApp.ShowActionSheetOptions) =>
+    withUniReturn(
+      options,
+      feedback.showActionSheet(options)
+    )) as typeof api.showActionSheet
+}
+
+/** 业务选择菜单使用同一反馈层；未安装时保留 uni 原生降级。 */
+export function showStyledActionSheet(options: StyledActionSheetOptions) {
+  if (installed) return feedback.showActionSheet(options)
+  const {
+    description: _description,
+    selectedIndex: _selected,
+    itemDescriptions: _items,
+    ...native
+  } = options
+  return new Promise<UniApp.ShowActionSheetRes>((resolve, reject) => {
+    uni.showActionSheet({
+      ...native,
+      success: result => {
+        resolve(result)
+        options.success?.(result)
+      },
+      fail: error => {
+        reject(error)
+        options.fail?.(error)
+      },
+    })
+  })
 }
 
 /** HTTP 使用独立所有者，手动 hideLoading 不会提前隐藏并发请求。 */

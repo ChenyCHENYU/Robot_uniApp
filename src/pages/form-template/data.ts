@@ -1,6 +1,7 @@
-import { ref, reactive } from 'vue'
+import { ref, reactive, computed } from 'vue'
 import { submitForm, type FormPayload } from '@/api'
 import { required, mobile, email, quickValidate } from '@/utils/v_verify'
+import type { ActionSheetItem } from '@/components/global/C_ActionSheet/data'
 
 export const formRules = {
   name: [required('姓名')],
@@ -35,6 +36,9 @@ export function useFormTemplatePage() {
   const deptActions = ['技术部', '产品部', '设计部', '市场部', '运营部'].map(
     name => ({ name })
   )
+  const selectedDeptIndex = computed(() =>
+    deptActions.findIndex(item => item.name === form.department)
+  )
   const skillTags = [
     'Vue',
     'React',
@@ -59,6 +63,10 @@ export function useFormTemplatePage() {
     form.department = item.name
     showDeptPicker.value = false
     validateField('department')
+  }
+  // 保留部门验证与原事件契约，菜单取消不覆盖用户已填写的部门。
+  const onDeptSheetSelect = (item: ActionSheetItem) => {
+    if (item.name) onDeptSelect({ item: { name: item.name } })
   }
   const selectGender = (value: string) => {
     form.gender = value
@@ -120,10 +128,12 @@ export function useFormTemplatePage() {
     errors,
     genderOptions,
     deptActions,
+    selectedDeptIndex,
     skillTags,
     validateField,
     toggleSkill,
     onDeptSelect,
+    onDeptSheetSelect,
     selectGender,
     handleDateChange,
     handleReset,

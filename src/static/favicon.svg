@@ -1,0 +1,35 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="64"
+  height="64"
+  viewBox="0 0 64 64"
+  fill="none"
+>
+  <title>Robot UniApp</title>
+  <desc>墨黑底、暖白切角 R 字标，负形双眼以低饱和青色点亮。</desc>
+  <rect
+    x="2"
+    y="2"
+    width="60"
+    height="60"
+    rx="15"
+    fill="#15171C"
+  />
+  <rect
+    x="2.5"
+    y="2.5"
+    width="59"
+    height="59"
+    rx="14.5"
+    stroke="#3A3E47"
+  />
+  <path
+    fill-rule="evenodd"
+    d="M17 13h20l11 11v9l-10 8 11 11H37L26 41v11h-9V13Zm9 9v12h11l4-4v-4l-4-4H26Z"
+    fill="#F0EEE8"
+  />
+  <path
+    d="M28 26h4v4h-4zM36 26h4v4h-4z"
+    fill="#82CFC3"
+  />
+</svg>

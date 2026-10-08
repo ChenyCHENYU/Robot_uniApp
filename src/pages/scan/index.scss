@@ -161,9 +161,15 @@
 }
 .result-card {
   width: 100%;
-  background: var(--r-bg-card);
-  border-radius: 36rpx;
-  padding: 34rpx;
+  max-width: 640rpx;
+  max-height: 85%;
+  overflow-y: auto;
+  background: var(--r-bg-elevated);
+  border: 1rpx solid var(--r-border-color);
+  border-radius: var(--r-dialog-radius);
+  padding: var(--r-dialog-padding);
+  box-sizing: border-box;
+  box-shadow: var(--r-shadow-lg);
 }
 .result-header {
   display: flex;
@@ -182,7 +188,7 @@
 }
 .result-title {
   color: var(--r-text-primary);
-  font-size: 36rpx;
+  font-size: var(--r-dialog-title-size);
   font-weight: 600;
 }
 .result-caption {
@@ -215,14 +221,15 @@
 .result-btn {
   flex: 1;
   border-radius: 20rpx;
-  padding: 20rpx 8rpx;
-  font-size: 25rpx;
+  min-height: var(--r-dialog-action-height);
+  padding: 16rpx 8rpx;
+  font-size: 26rpx;
   line-height: 1.5;
   background: var(--r-color-primary-soft);
   color: var(--r-color-primary);
 }
 .result-btn.primary {
-  background: var(--r-color-primary);
+  background: var(--r-color-primary-solid);
   color: var(--r-on-primary);
 }
 .close-result {

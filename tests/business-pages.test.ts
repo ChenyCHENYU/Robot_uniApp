@@ -108,6 +108,12 @@ describe('人员填报真实交互与失败保留', () => {
     expect(page.errors.department).toBe('')
     expect(page.showDeptPicker.value).toBe(false)
     expect(page.form.joinDate).toBe('2022-04-03')
+    page.showDeptPicker.value = true
+    page.onDeptSheetSelect({ name: '产品部' })
+    expect(page.form.department).toBe('产品部')
+    expect(page.selectedDeptIndex.value).toBe(1)
+    expect(page.errors.department).toBe('')
+    expect(page.showDeptPicker.value).toBe(false)
   })
 
   it('非法邮箱不提交，逐字段显示错误', async () => {

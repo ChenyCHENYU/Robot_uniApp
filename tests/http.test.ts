@@ -49,6 +49,7 @@ describe('http 层行为', () => {
     setActivePinia(createPinia())
     vi.clearAllMocks()
     uni.clearStorageSync()
+    vi.stubGlobal('getCurrentPages', () => [])
   })
 
   afterEach(() => {
@@ -312,4 +313,114 @@ describe('http 层行为', () => {
     expect(uni.showToast).not.toHaveBeenCalled()
     expect(http.loadingCount).toBe(0)
   })
+
+  it.each(['success', 'fail'] as const)(
+    '请求 %s 后立即释放来源页面的任务引用',
+    async outcome => {
+      vi.stubGlobal('getCurrentPages', () => [{ route: 'pages/source/index' }])
+      let options: any
+      requestImpl = value => {
+        options = value
+      }
+      const pending = http.get('/release-' + outcome, undefined, {
+        retry: 0,
+        silent: true,
+      })
+      expect(http.pageTasksMap.get('/pages/source/index')?.size).toBe(1)
+      const assertion =
+        outcome === 'success'
+          ? expect(pending).resolves.toBe('done')
+          : expect(pending).rejects.toMatchObject({ code: -1 })
+      if (outcome === 'success')
+        options.success({ statusCode: 200, data: { code: 0, data: 'done' } })
+      else options.fail({ errMsg: 'request:fail timeout' })
+      await assertion
+      expect(http.pageTasksMap.has('/pages/source/index')).toBe(false)
+    }
+  )
+
+  it('请求重试始终登记在来源页面，不挂到当前新页面', async () => {
+    vi.useFakeTimers()
+    let route = 'pages/source/index'
+    vi.stubGlobal('getCurrentPages', () => [{ route }])
+    const requests: any[] = []
+    requestImpl = options => {
+      requests.push(options)
+    }
+    const pending = http.get('/retry-source-page', undefined, {
+      retry: 1,
+      retryDelay: 10,
+      silent: true,
+    })
+    requests[0].fail({ errMsg: 'request:fail timeout' })
+    await vi.advanceTimersByTimeAsync(0)
+    route = 'pages/new/index'
+    await vi.advanceTimersByTimeAsync(10)
+    expect(requests).toHaveLength(2)
+    expect(http.pageTasksMap.get('/pages/source/index')?.size).toBe(1)
+    expect(http.pageTasksMap.has('/pages/new/index')).toBe(false)
+    requests[1].success({ statusCode: 200, data: { code: 0, data: 'retried' } })
+    await expect(pending).resolves.toBe('retried')
+    expect(http.pageTasksMap.has('/pages/source/index')).toBe(false)
+  })
+
+  it('来源页在网络退避阶段卸载，也取消尚未发出的重试', async () => {
+    vi.useFakeTimers()
+    let route = 'pages/source/index'
+    vi.stubGlobal('getCurrentPages', () => [{ route }])
+    const requests: any[] = []
+    requestImpl = options => {
+      requests.push(options)
+    }
+    const pending = http.get('/unload-during-backoff', undefined, {
+      retry: 1,
+      retryDelay: 10,
+      silent: true,
+    })
+    const cancelled = expect(pending).rejects.toMatchObject({
+      code: -1,
+      message: '请求已取消',
+    })
+    requests[0].fail({ errMsg: 'request:fail timeout' })
+    await vi.advanceTimersByTimeAsync(0)
+    expect(http.pageTasksMap.has('/pages/source/index')).toBe(false)
+    route = 'pages/new/index'
+    http.cancelPageRequests('/pages/source/index')
+    await vi.advanceTimersByTimeAsync(10)
+    await cancelled
+    expect(requests).toHaveLength(1)
+    expect(uni.showToast).not.toHaveBeenCalled()
+  })
+
+  it.each([
+    { statusCode: 200, data: '{"code":401,"message":"上传会话过期"}' },
+    { statusCode: 401, data: '{}' },
+  ])(
+    '上传业务401和HTTP401共用清会话、来源回跳处理：$statusCode',
+    async response => {
+      vi.stubGlobal('getCurrentPages', () => [
+        { route: 'pages/form-template/index', options: { id: 'record 1' } },
+      ])
+      const user = useUserStore()
+      user.token = 'expired_upload_token'
+      let options: any
+      uni.uploadFile = vi.fn((value: any) => {
+        options = value
+        return { onProgressUpdate: () => {} }
+      }) as typeof uni.uploadFile
+      const pending = http.upload('/upload-current-account', '/file.png')
+      const rejected = expect(pending).rejects.toMatchObject({ code: 401 })
+      await options.success(response)
+      options.complete()
+      await rejected
+      expect(user.token).toBe('')
+      expect(uni.reLaunch).toHaveBeenCalledWith(
+        expect.objectContaining({ url: '/pages/login/index' })
+      )
+      expect(uni.getStorageSync('REDIRECT_URL')).toBe(
+        '/pages/form-template/index?id=record%201'
+      )
+      expect(http.loadingCount).toBe(0)
+    }
+  )
 })

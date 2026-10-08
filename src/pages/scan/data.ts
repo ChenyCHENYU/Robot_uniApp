@@ -1,21 +1,27 @@
 import { ref, computed } from 'vue'
-import { onLoad } from '@dcloudio/uni-app'
+import { onLoad, onShow } from '@dcloudio/uni-app'
 import { useTheme } from '@/composables/useTheme'
-import { platform, PlatformError } from '@/platform'
+import {
+  platform,
+  PlatformError,
+  getPlatformCapabilityStatus,
+} from '@/platform'
 
-/** 扫码使用平台能力层，H5 明确降级。 */
+/** 依据实际注册能力启用扫码，H5 宿主可接入钉钉或设备扫描器。 */
 export function useScanPage() {
   const { themeClass, wotTheme } = useTheme()
   const scanResult = ref('')
   const scanning = ref(false)
-  const supported = ref(true)
-  // #ifdef H5
-  supported.value = false
-  // #endif
+  const capabilityStatus = ref(getPlatformCapabilityStatus())
+  const supported = computed(() => capabilityStatus.value.scanCode)
+  const albumSupported = computed(() => capabilityStatus.value.scanFromAlbum)
+  const refreshCapabilities = () => {
+    capabilityStatus.value = getPlatformCapabilityStatus()
+  }
   const scanTip = computed(() =>
     supported.value
       ? '支持二维码与条形码，点击下方按钮开始识别'
-      : '网页环境暂不支持扫码，请使用小程序或 App'
+      : '当前环境尚未接入扫码，可在小程序、App 或已配置的设备中使用'
   )
   const goBack = () => {
     if (getCurrentPages().length > 1) uni.navigateBack()
@@ -30,7 +36,7 @@ export function useScanPage() {
       error instanceof PlatformError &&
       error.code === 'capability_unsupported'
     )
-      title = '当前环境不支持扫码，请使用小程序或 App'
+      title = '当前环境暂不支持此扫码方式'
     uni.showToast({ title, icon: 'none' })
   }
   const runScan = async (source: 'camera' | 'album') => {
@@ -68,16 +74,17 @@ export function useScanPage() {
     })
   }
   onLoad(() => {
-    // #ifndef H5
-    void startScan()
-    // #endif
+    refreshCapabilities()
+    if (supported.value) void startScan()
   })
+  onShow(refreshCapabilities)
   return {
     themeClass,
     wotTheme,
     scanResult,
     scanning,
     supported,
+    albumSupported,
     scanTip,
     goBack,
     startScan,

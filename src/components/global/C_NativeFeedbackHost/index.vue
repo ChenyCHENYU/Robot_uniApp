@@ -98,6 +98,68 @@
       </view>
     </view>
     <view
+      v-if="state.sheet && sheetOptions"
+      class="robot-feedback__layer robot-feedback__sheet-layer"
+    >
+      <view
+        class="robot-feedback__backdrop"
+        @click="cancel"
+        @touchmove.stop.prevent
+      />
+      <view
+        class="robot-feedback__sheet"
+        role="dialog"
+        aria-modal="true"
+        :aria-label="sheetOptions.title || sheetOptions.alertText || '选择操作'"
+        @touchmove.stop
+      >
+        <view class="robot-feedback__sheet-handle" />
+        <text class="robot-feedback__sheet-title">{{
+          sheetOptions.title || sheetOptions.alertText || '选择操作'
+        }}</text>
+        <text
+          v-if="sheetOptions.description"
+          class="robot-feedback__sheet-description"
+          >{{ sheetOptions.description }}</text
+        >
+        <scroll-view
+          scroll-y
+          class="robot-feedback__sheet-options"
+        >
+          <button
+            v-for="(item, index) in sheetOptions.itemList"
+            :key="index"
+            class="robot-feedback__sheet-item"
+            :class="{
+              'robot-feedback__sheet-item--selected':
+                sheetOptions.selectedIndex === index,
+            }"
+            :style="sheetItemStyle"
+            @click="selectSheet(index)"
+          >
+            <view class="robot-feedback__sheet-copy"
+              ><text class="robot-feedback__sheet-label">{{ item }}</text>
+              <text
+                v-if="sheetOptions.itemDescriptions?.[index]"
+                class="robot-feedback__sheet-note"
+                >{{ sheetOptions.itemDescriptions[index] }}</text
+              >
+            </view>
+            <text
+              v-if="sheetOptions.selectedIndex === index"
+              class="robot-feedback__sheet-check"
+              >✓</text
+            >
+          </button>
+        </scroll-view>
+        <button
+          class="robot-feedback__sheet-cancel"
+          @click="cancel"
+          >取消</button
+        >
+      </view>
+    </view>
+    <view
       v-if="state.toast"
       class="robot-feedback__layer robot-feedback__toast-layer"
       :class="`robot-feedback__toast-layer--${state.toast.position}`"
@@ -143,6 +205,9 @@
     hasFeedback,
     themeClass,
     modalOptions,
+    sheetOptions,
+    sheetItemStyle,
+    selectSheet,
     modalIcon,
     modalSymbol,
     draft,

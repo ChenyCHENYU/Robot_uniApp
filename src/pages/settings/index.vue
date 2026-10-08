@@ -169,7 +169,7 @@
         </view>
       </view>
 
-      <!-- 通知偏好 -->
+      <!-- 通知通道尚未接入，不提供无实际效果的开关。 -->
       <view class="settings-group">
         <text class="group-title">通知偏好</text>
         <view class="group-card">
@@ -185,10 +185,7 @@
               <text class="item-label">推送通知</text>
             </view>
             <view class="item-right">
-              <wd-switch
-                v-model="preferences.push"
-                size="20px"
-              />
+              <text class="item-value">暂未启用</text>
             </view>
           </view>
           <view class="setting-item">
@@ -203,10 +200,7 @@
               <text class="item-label">系统消息</text>
             </view>
             <view class="item-right">
-              <wd-switch
-                v-model="preferences.systemNotify"
-                size="20px"
-              />
+              <text class="item-value">暂未启用</text>
             </view>
           </view>
           <view class="setting-item">
@@ -221,10 +215,7 @@
               <text class="item-label">声音提醒</text>
             </view>
             <view class="item-right">
-              <wd-switch
-                v-model="preferences.sound"
-                size="20px"
-              />
+              <text class="item-value">暂未启用</text>
             </view>
           </view>
         </view>
@@ -258,10 +249,7 @@
             </view>
           </view>
 
-          <view
-            class="setting-item"
-            @click="cycleFontSize"
-          >
+          <view class="setting-item">
             <view class="item-left">
               <view class="item-icon">
                 <wd-icon
@@ -273,12 +261,7 @@
               <text class="item-label">字体大小</text>
             </view>
             <view class="item-right">
-              <text class="item-value">{{ fontSizeLabel }}</text>
-              <wd-icon
-                name="arrow-right"
-                size="14px"
-                color="#ccc"
-              />
+              <text class="item-value">标准</text>
             </view>
           </view>
           <view
@@ -314,7 +297,6 @@
   import { useSettingsPage } from './data'
 
   const {
-    preferences,
     updatingAvatar,
     userAvatar,
     hasCustomAvatar,
@@ -323,11 +305,9 @@
     nickname,
     bio,
     maskedPhone,
-    fontSizeLabel,
     languageLabel,
     themeModeLabel,
     handleThemeSelect,
-    cycleFontSize,
     handleLanguageSelect,
     handleChangeAvatar,
     handleEditNickname,

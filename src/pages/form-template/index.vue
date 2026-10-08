@@ -188,10 +188,12 @@
     </view>
 
     <!-- 部门选择器 -->
-    <wd-action-sheet
-      v-model="showDeptPicker"
+    <C_ActionSheet
+      v-model:visible="showDeptPicker"
+      title="选择部门"
       :actions="deptActions"
-      @select="onDeptSelect"
+      :selected-index="selectedDeptIndex"
+      @select="onDeptSheetSelect"
     />
   </C_Layout>
 </template>
@@ -207,10 +209,11 @@
     errors,
     genderOptions,
     deptActions,
+    selectedDeptIndex,
     skillTags,
     validateField,
     toggleSkill,
-    onDeptSelect,
+    onDeptSheetSelect,
     selectGender,
     handleDateChange,
     handleReset,

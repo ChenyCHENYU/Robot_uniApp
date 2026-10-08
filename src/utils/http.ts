@@ -34,6 +34,8 @@ export type { HttpError, RequestOptions }
 /** 请求执行上下文（拆分自 request 以收敛复杂度） */
 interface ExecContext {
   contextEpoch: number
+  pageRoute: string
+  cancelled: boolean
   url: string
   method: string
   data: Record<string, any>
@@ -45,7 +47,11 @@ interface ExecContext {
 }
 
 /** 解析请求配置 */
-function normalizeContext(url: string, options: RequestOptions): ExecContext {
+function normalizeContext(
+  url: string,
+  options: RequestOptions,
+  pageRoute: string
+): ExecContext {
   const {
     method = 'GET',
     data = {},
@@ -59,6 +65,8 @@ function normalizeContext(url: string, options: RequestOptions): ExecContext {
 
   return {
     contextEpoch: getRequestContextEpoch(),
+    pageRoute,
+    cancelled: false,
     url: url.startsWith('http') ? url : http.baseURL + url,
     method,
     data,
@@ -82,12 +90,19 @@ function assertRequestContext(contextEpoch: number) {
   }
 }
 
+/** 页面卸载也取消退避中的请求，来源页在请求创建时固定。 */
+function assertExecutionContext(ctx: ExecContext) {
+  if (ctx.cancelled) throw httpError(-1, '请求已取消')
+  assertRequestContext(ctx.contextEpoch)
+}
+
 class Http {
   baseURL: string
   timeout: number
   loadingCount: number
   pendingMap: Map<string, Promise<any>>
   pageTasksMap: Map<string, Set<UniApp.RequestTask>>
+  private pageContextsMap = new Map<string, Set<ExecContext>>()
   /** 401 处理中标志（防止并发 401 触发多次清登录 + 多次跳转） */
   private handling401 = false
 
@@ -102,7 +117,10 @@ class Http {
     // 身份代次变化：清空去重缓存并中止全部在途任务，防止旧响应回写新上下文
     onRequestContextChange(() => {
       this.pendingMap.clear()
-      const routes = [...this.pageTasksMap.keys()]
+      const routes = new Set([
+        ...this.pageTasksMap.keys(),
+        ...this.pageContextsMap.keys(),
+      ])
       routes.forEach(route => this.cancelPageRequests(route))
     })
   }
@@ -139,6 +157,10 @@ class Http {
 
   /** 取消指定页面的所有请求（应在页面 onUnload 时调用） */
   cancelPageRequests(pageRoute: string) {
+    this.pageContextsMap.get(pageRoute)?.forEach(ctx => {
+      ctx.cancelled = true
+    })
+    this.pageContextsMap.delete(pageRoute)
     const tasks = this.pageTasksMap.get(pageRoute)
     if (tasks) {
       tasks.forEach(task => {
@@ -166,7 +188,7 @@ class Http {
     url: string,
     options: RequestOptions = {}
   ): Promise<T> {
-    const ctx = normalizeContext(url, options)
+    const ctx = normalizeContext(url, options, this._getCurrentPageRoute())
     const requestKey = genRequestKey(ctx)
 
     // 去重：相同在飞请求直接复用
@@ -190,14 +212,23 @@ class Http {
 
   /** 执行（loading + 重试 + 统一错误处理） */
   private async _execute(ctx: ExecContext): Promise<any> {
+    if (ctx.cancelable && ctx.pageRoute) {
+      if (!this.pageContextsMap.has(ctx.pageRoute)) {
+        this.pageContextsMap.set(ctx.pageRoute, new Set())
+      }
+      this.pageContextsMap.get(ctx.pageRoute)!.add(ctx)
+    }
     if (!ctx.silent) this.showLoading()
     try {
       return await this._doRequest(ctx, ctx.retry, ctx.retryDelay)
     } catch (error: any) {
-      assertRequestContext(ctx.contextEpoch)
+      assertExecutionContext(ctx)
       return this._handleError(error as HttpError, ctx.silent)
     } finally {
       if (!ctx.silent) this.hideLoading()
+      const contexts = this.pageContextsMap.get(ctx.pageRoute)
+      contexts?.delete(ctx)
+      if (contexts?.size === 0) this.pageContextsMap.delete(ctx.pageRoute)
     }
   }
 
@@ -209,16 +240,16 @@ class Http {
   ): Promise<any> {
     try {
       const response = await this._send(ctx)
-      assertRequestContext(ctx.contextEpoch)
+      assertExecutionContext(ctx)
       return this._handleResponse(response)
     } catch (error: any) {
-      assertRequestContext(ctx.contextEpoch)
+      assertExecutionContext(ctx)
       if (!error?.retryable || retriesLeft <= 0) throw error
 
       // 指数退避
       const delay = retryDelay * Math.pow(2, ctx.rest._retryAttempt || 0)
       await new Promise(r => setTimeout(r, delay))
-      assertRequestContext(ctx.contextEpoch)
+      assertExecutionContext(ctx)
 
       ctx.rest._retryAttempt = (ctx.rest._retryAttempt || 0) + 1
       return this._doRequest(ctx, retriesLeft - 1, retryDelay)
@@ -229,7 +260,7 @@ class Http {
   private _send(
     ctx: ExecContext
   ): Promise<UniApp.RequestSuccessCallbackResult> {
-    assertRequestContext(ctx.contextEpoch)
+    assertExecutionContext(ctx)
     const userStore = useUserStore()
     const header: Record<string, string> = {
       'Content-Type': 'application/json',
@@ -240,14 +271,24 @@ class Http {
     }
 
     return new Promise((resolve, reject) => {
-      const requestTask = uni.request({
+      let requestTask: UniApp.RequestTask | undefined = undefined
+      let settled = false
+      const releaseTask = () => {
+        settled = true
+        if (requestTask) this.removePageTask(ctx.pageRoute, requestTask)
+      }
+      requestTask = uni.request({
         url: ctx.url,
         method: ctx.method as any,
         data: ctx.data,
         timeout: this.timeout,
         header,
-        success: resolve,
+        success: response => {
+          releaseTask()
+          resolve(response)
+        },
         fail: err => {
+          releaseTask()
           if (err.errMsg && err.errMsg.includes('abort')) {
             reject(httpError(-1, '请求已取消'))
           } else {
@@ -255,20 +296,20 @@ class Http {
             reject(httpError(-1, err.errMsg || '网络连接失败', true))
           }
         },
+        complete: releaseTask,
       })
 
       // 注册到页面任务
-      if (ctx.cancelable && requestTask) {
-        const pageRoute = this._getCurrentPageRoute()
-        if (pageRoute) {
-          this.addPageTask(pageRoute, requestTask)
-        }
+      if (ctx.cancelable && ctx.pageRoute && requestTask && !settled) {
+        this.addPageTask(ctx.pageRoute, requestTask)
       }
     })
   }
 
   /** 处理响应（协议判定） */
-  private _handleResponse(response: UniApp.RequestSuccessCallbackResult) {
+  private _handleResponse(
+    response: Pick<UniApp.RequestSuccessCallbackResult, 'statusCode' | 'data'>
+  ) {
     const { statusCode } = response
     const data = parseResponseBody(response.data)
 
@@ -425,24 +466,10 @@ class Http {
             reject(error)
             return
           }
-          // HTTP 状态码校验
-          if (res.statusCode !== 200) {
-            const error = httpError(
-              res.statusCode,
-              getStatusMessage(res.statusCode)
-            )
-            await this._handleError(error, silent).catch(() => {})
-            reject(error)
-            return
-          }
           try {
-            const data = parseResponseBody(res.data)
-            if (isBusinessSuccess(data)) {
-              resolve(extractBusinessData(data) as T)
-            } else {
-              reject(httpError(data.code ?? -3, data.message || '上传失败'))
-            }
+            resolve(this._handleResponse(res) as T)
           } catch (error) {
+            await this._handleError(error as HttpError, silent).catch(() => {})
             reject(error)
           }
         },

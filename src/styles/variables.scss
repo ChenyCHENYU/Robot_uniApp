@@ -93,6 +93,14 @@ page {
   --r-radius-xl: 40rpx;
   --r-radius-round: 999rpx;
 
+  // ============ 浮层密度（确认弹窗与操作面板共用） ============
+  --r-dialog-radius: 32rpx;
+  --r-dialog-padding: 40rpx 32rpx 28rpx;
+  --r-dialog-title-size: 34rpx;
+  --r-dialog-action-height: 80rpx;
+  --r-sheet-padding: 28rpx;
+  --r-sheet-item-height: 96rpx;
+
   // ============ 阴影 ============
   --r-shadow-sm: 0 2rpx 6rpx rgba(0, 0, 0, 0.04);
   --r-shadow-md: 0 4rpx 16rpx rgba(0, 0, 0, 0.08);

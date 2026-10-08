@@ -6,7 +6,7 @@
  *
  * 约定：
  * - 每个能力返回 Promise，失败统一 reject PlatformError（带 code/message）
- * - 实现按条件编译挑选，未实现端抛 capability_unsupported
+ * - 按真实运行端/API 选择实现，未实现端抛 capability_unsupported
  */
 
 /** 平台能力错误 */
@@ -17,6 +17,7 @@ export class PlatformError extends Error {
       | 'capability_unsupported'
       | 'permission_denied'
       | 'user_cancel'
+      | 'bridge_timeout'
       | 'platform_error',
     message: string
   ) {
@@ -41,6 +42,8 @@ export interface LocationResult {
   longitude: number
   accuracy?: number
   address?: string
+  /** 实际返回的坐标系；能力层不隐式换算坐标。 */
+  coordinateSystem?: 'gcj02' | 'wgs84' | 'unknown'
 }
 
 /** 拍照/相册图片 */
@@ -59,20 +62,73 @@ export interface PlatformCapabilities {
   takePhoto(source?: 'camera' | 'album'): Promise<PhotoResult>
 }
 
-/** 将 uni.* 回调错误归一化为 PlatformError */
+/** 可用状态描述的是实现能力，宿主 UA 不构成支持声明。 */
+export interface PlatformCapabilitySupport {
+  scanCode: boolean
+  scanFromAlbum: boolean
+  getLocation: boolean
+  takePhoto: boolean
+}
+
+export type PlatformReadiness = 'idle' | 'pending' | 'ready' | 'failed'
+
+export interface PlatformCapabilityStatus extends PlatformCapabilitySupport {
+  provider: string
+  readiness: PlatformReadiness
+}
+
+/** 宿主仅覆盖已接入的能力，其余能力保持原来的实现。 */
+export interface PlatformAdapter {
+  provider: string
+  capabilities: Partial<PlatformCapabilities>
+  /** 扫描器默认只支持相机；相册识别必须由宿主显式声明。 */
+  capabilitiesSupport?: Partial<PlatformCapabilitySupport>
+  ready?: () => Promise<void>
+  /** 就绪超时，默认 8 秒。失败不会静默改用其他权限或宿主。 */
+  readyTimeoutMs?: number
+}
+
+/** 第三方回调对象集中在能力边界解析，业务不依赖 SDK 字段名称。 */
+function readCapabilityError(
+  err: unknown,
+  fallback: string
+): { message: string; code: string } {
+  const value =
+    err && typeof err === 'object' ? (err as Record<string, unknown>) : {}
+  const fields = [value.errMsg, value.errorMessage, value.message, err]
+  const msg = fields.find(field => typeof field === 'string' && field.trim())
+  const message = typeof msg === 'string' ? msg.trim() : fallback
+  const code = String(value.code ?? value.errCode ?? value.errorCode ?? '')
+  return { message, code }
+}
+
+/** 从 uni/宿主 SDK 的不同错误对象中提取说明，避免把取消当权限错误。 */
 export function normalizeUniError(
-  err: { errMsg?: string } | undefined,
+  err: unknown,
   fallback: string
 ): PlatformError {
-  const msg = String(err?.errMsg || '')
-  if (msg.includes('auth') || msg.includes('deny')) {
+  if (err instanceof PlatformError) return err
+  const { message, code } = readCapabilityError(err, fallback)
+  const classification = `${message} ${code}`
+  if (/cancel|取消|用户.*关闭/i.test(classification)) {
+    return new PlatformError('user_cancel', '用户取消操作')
+  }
+  if (
+    /deny|denied|permission|authorize|auth.*(?:fail|reject)|权限|未授权/i.test(
+      classification
+    )
+  ) {
     return new PlatformError(
       'permission_denied',
       '权限被拒绝，请在系统设置中开启'
     )
   }
-  if (msg.includes('cancel')) {
-    return new PlatformError('user_cancel', '用户取消操作')
+  if (
+    /unsupported|not[\s_-]*support|not[\s_-]*implemented|不支持|方法不存在/i.test(
+      classification
+    )
+  ) {
+    return new PlatformError('capability_unsupported', message)
   }
-  return new PlatformError('platform_error', msg || fallback)
+  return new PlatformError('platform_error', message)
 }

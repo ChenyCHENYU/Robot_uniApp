@@ -2,7 +2,7 @@
   <C_Layout title="组件库">
     <view class="catalog">
       <view class="catalog__hero">
-        <text class="catalog__eyebrow">ROBOT UNIAPP</text>
+        <text class="page-eyebrow">ROBOT UNIAPP</text>
         <text class="catalog__title">组件探索</text>
         <text class="catalog__description"
           >从基础展示到复杂交互，找到适合你的组件。</text

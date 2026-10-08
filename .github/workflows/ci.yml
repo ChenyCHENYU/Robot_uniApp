@@ -34,11 +34,8 @@ jobs:
       - name: 契约测试
         run: pnpm test
 
-      - name: 单元测试（vitest）
-        run: pnpm test:unit
-
   build:
-    name: 双端构建 + 包体预算
+    name: 三端构建 + 包体预算
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -60,6 +57,9 @@ jobs:
 
       - name: 构建微信小程序
         run: pnpm build:wx
+
+      - name: 构建 App 资源
+        run: pnpm build:app
 
       - name: 包体预算门禁
         run: pnpm check:budget

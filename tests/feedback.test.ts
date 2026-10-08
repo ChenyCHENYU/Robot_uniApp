@@ -186,3 +186,132 @@ describe('应用反馈状态和异步结果', () => {
     feedback.hideToast()
   })
 })
+
+describe('统一操作菜单', () => {
+  it('选择返回原始 tapIndex，success/complete 各执行一次', async () => {
+    const controller = createFeedbackController()
+    const success = vi.fn()
+    const complete = vi.fn()
+    const pending = controller.showActionSheet({
+      title: '外观模式',
+      itemList: ['跟随系统', '浅色', '深色'],
+      selectedIndex: 2,
+      success,
+      complete,
+    })
+    expect(controller.state.sheet?.options.selectedIndex).toBe(2)
+    controller.finishActionSheet(1)
+    await expect(pending).resolves.toEqual({
+      errMsg: 'showActionSheet:ok',
+      tapIndex: 1,
+    })
+    expect(success).toHaveBeenCalledTimes(1)
+    expect(complete).toHaveBeenCalledTimes(1)
+    expect(controller.state.sheet).toBeNull()
+  })
+
+  it('取消以 fail cancel 拒绝，不能调用 success', async () => {
+    const controller = createFeedbackController()
+    const success = vi.fn()
+    const fail = vi.fn()
+    const complete = vi.fn()
+    const pending = controller.showActionSheet({
+      itemList: ['复制链接'],
+      success,
+      fail,
+      complete,
+    })
+    const assertion = expect(pending).rejects.toEqual({
+      errMsg: 'showActionSheet:fail cancel',
+    })
+    controller.finishActionSheet()
+    await assertion
+    expect(success).not.toHaveBeenCalled()
+    expect(fail).toHaveBeenCalledTimes(1)
+    expect(complete).toHaveBeenCalledWith({
+      errMsg: 'showActionSheet:fail cancel',
+    })
+  })
+
+  it('混合弹窗/菜单按一个 FIFO 展示，取消回调中的新请求不插队', async () => {
+    const controller = createFeedbackController()
+    const first = controller.showModal({ title: '确认' })
+    const second = controller.showActionSheet({
+      itemList: ['选择'],
+      fail: () => void controller.showActionSheet({ itemList: ['第四条'] }),
+    })
+    const assertion = expect(second).rejects.toMatchObject({
+      errMsg: 'showActionSheet:fail cancel',
+    })
+    const third = controller.showModal({ title: '第三条' })
+    expect(controller.state.sheet).toBeNull()
+    controller.finishActionSheet(0)
+    expect(controller.state.modal?.options.title).toBe('确认')
+    controller.finishModal(true)
+    await first
+    expect(controller.state.modal).toBeNull()
+    expect(controller.state.sheet?.options.itemList).toEqual(['选择'])
+    controller.finishActionSheet()
+    await assertion
+    expect(controller.state.modal?.options.title).toBe('第三条')
+    controller.finishModal(false)
+    await third
+    expect(controller.state.sheet?.options.itemList).toEqual(['第四条'])
+    controller.finishActionSheet(0)
+    expect(controller.state.sheet).toBeNull()
+  })
+
+  it('越界选择不关闭菜单，入队后不受调用方修改数组影响', async () => {
+    const controller = createFeedbackController()
+    const items = ['拍照', '相册']
+    const pending = controller.showActionSheet({ itemList: items })
+    items.pop()
+    controller.finishActionSheet(-1)
+    controller.finishActionSheet(2)
+    controller.finishActionSheet(0.5)
+    expect(controller.state.sheet?.options.itemList).toEqual(['拍照', '相册'])
+    controller.finishActionSheet(1)
+    await expect(pending).resolves.toMatchObject({ tapIndex: 1 })
+  })
+
+  it('空菜单立即 fail/complete，不阻塞后续弹窗', async () => {
+    const controller = createFeedbackController()
+    const fail = vi.fn()
+    const complete = vi.fn()
+    await expect(
+      controller.showActionSheet({ itemList: [], fail, complete })
+    ).rejects.toMatchObject({ errMsg: expect.stringContaining('itemList') })
+    expect(fail).toHaveBeenCalledTimes(1)
+    expect(complete).toHaveBeenCalledTimes(1)
+    const pending = controller.showModal({ title: '下一条' })
+    controller.finishModal(true)
+    await expect(pending).resolves.toMatchObject({ confirm: true })
+  })
+
+  it('uni 菜单保留回调/Promise 约定，回调模式取消不产生未处理拒绝', async () => {
+    installUniFeedback()
+    const api = uni as unknown as {
+      showActionSheet(
+        options: UniApp.ShowActionSheetOptions
+      ): Promise<UniApp.ShowActionSheetRes> | undefined
+    }
+    const fail = vi.fn()
+    const complete = vi.fn()
+    expect(
+      api.showActionSheet({ itemList: ['复制链接'], fail, complete })
+    ).toBeUndefined()
+    feedback.finishActionSheet()
+    await Promise.resolve()
+    expect(fail).toHaveBeenCalledWith({ errMsg: 'showActionSheet:fail cancel' })
+    expect(complete).toHaveBeenCalledTimes(1)
+    const pending = api.showActionSheet({ itemList: ['第一项', '第二项'] })
+    feedback.finishActionSheet(1)
+    await expect(pending).resolves.toMatchObject({ tapIndex: 1 })
+    const cancelled = api.showActionSheet({ itemList: ['选择'] })
+    const assertion = expect(cancelled).rejects.toMatchObject({
+      errMsg: 'showActionSheet:fail cancel',
+    })
+    feedback.finishActionSheet()
+    await assertion
+  })
+})

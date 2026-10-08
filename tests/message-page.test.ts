@@ -43,10 +43,21 @@ const message: MessageItem = {
 beforeEach(() => {
   vi.clearAllMocks()
   mocks.store.markRead.mockResolvedValue(undefined)
+  mocks.store.deleteMessage.mockResolvedValue(undefined)
   mocks.modal.mockResolvedValue({ confirm: true, cancel: false })
 })
 
 describe('消息详情入口', () => {
+  it('共享菜单保留长按消息的删除操作与接口 id', async () => {
+    const page = useMessagePage()
+    page.handleLongPress(message)
+    expect(page.showDetail.value).toBe(true)
+    const deletion = page.detailActions.find(item => item.value === 'delete')!
+    expect(deletion.danger).toBe(true)
+    await page.onDetailSelect(deletion)
+    expect(mocks.store.deleteMessage).toHaveBeenCalledWith(message.id)
+    expect(page.showDetail.value).toBe(false)
+  })
   it('通过统一弹窗保留消息正文和接口时间，并请求标记已读', () => {
     useMessagePage().handleMessageClick(message)
     expect(mocks.store.markRead).toHaveBeenCalledWith(message.id)
