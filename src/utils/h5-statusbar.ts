@@ -22,6 +22,18 @@ const CSS = `
     pointer-events: none;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
+  /* 灵动岛式听筒（居中胶囊，时间/电量分列两侧） */
+  #robot-h5-statusbar::before {
+    content: '';
+    position: absolute;
+    top: 11px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 92px;
+    height: 22px;
+    border-radius: 999px;
+    background: var(--r-frame-border, #1d1d1f);
+  }
   #robot-h5-statusbar .sb-time {
     font-size: 14px;
     font-weight: 600;

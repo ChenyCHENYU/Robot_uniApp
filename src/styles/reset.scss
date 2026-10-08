@@ -37,7 +37,7 @@ uni-page-body {
   background: var(--r-bg-page);
 }
 
-// H5 桌面端（≥600px）：手机外框形态 —— 机身边框 + 圆角 + 悬浮阴影 + 外层背景
+// H5 桌面端（≥600px）：手机外框形态 —— 固定 390:844 比例，高度随视口封顶
 @media screen and (min-width: 600px) {
   html,
   page {
@@ -46,10 +46,12 @@ uni-page-body {
   }
 
   uni-page-body {
-    width: 400px;
-    max-width: 400px;
-    margin: 32px auto 48px;
-    min-height: calc(100vh - 80px);
+    // 由高度 + 宽高比推出宽度（390:844 ≈ 主流手机比例），杜绝细长变形
+    height: min(844px, calc(100dvh - 64px));
+    aspect-ratio: 390 / 844;
+    width: auto;
+    max-width: calc(100vw - 48px);
+    margin: 32px auto;
     background: var(--r-bg-page);
     position: relative;
     border: 6px solid var(--r-frame-border, #1d1d1f);
@@ -57,22 +59,28 @@ uni-page-body {
     box-shadow:
       0 0 0 2px rgba(255, 255, 255, 0.06),
       0 24px 80px rgba(0, 0, 0, 0.35);
-    overflow: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
+    // 成为 fixed 后代的包含块：tabbar/遮罩/角标全部锁定在机身内
+    transform: translateZ(0);
   }
 
-  // 机身顶部听筒点缀（伪元素画在页面容器上）
-  uni-page-body::before {
-    content: '';
-    position: absolute;
-    top: 14px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 96px;
-    height: 22px;
-    background: var(--r-frame-border, #1d1d1f);
-    border-radius: 999px;
-    z-index: 9999;
-    pointer-events: none;
+  // 全高页面（100vh/100dvh）在机身内改为撑满机身高度，避免溢出变形
+  .c-layout,
+  .guide-page,
+  .login-page,
+  .register-page,
+  .webview-page,
+  .scan-page,
+  .detail-page,
+  .approval-page {
+    height: auto;
+    min-height: 100%;
+  }
+
+  // 环境角标避开虚拟状态栏
+  .c-env-badge {
+    top: 52px;
   }
 }
 
