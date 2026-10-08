@@ -38,6 +38,10 @@
     flex: 5;
   }
 
+  &--right &__line:first-child {
+    flex: 5;
+  }
+
   // 右侧文字时，右线短
   &__text--right ~ .c-divider__line {
     flex: 1;

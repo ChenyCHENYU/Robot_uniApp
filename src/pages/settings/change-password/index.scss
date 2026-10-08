@@ -1,0 +1,132 @@
+.change-password-page {
+  padding: 32rpx;
+}
+.security-tip {
+  display: flex;
+  align-items: center;
+  gap: 18rpx;
+  padding: 28rpx;
+  background: var(--r-color-warning-soft);
+  border-radius: 24rpx;
+  margin-bottom: 30rpx;
+}
+.tip-text {
+  font-size: 25rpx;
+  color: var(--r-color-warning);
+  line-height: 1.6;
+}
+.form-card {
+  padding: 8rpx 28rpx;
+  background: var(--r-bg-card);
+  border: 1rpx solid var(--r-border-light);
+  border-radius: 32rpx;
+}
+.form-item {
+  padding: 28rpx 0;
+}
+.form-label {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-bottom: 18rpx;
+}
+.label-text {
+  font-size: 27rpx;
+  color: var(--r-text-primary);
+  font-weight: 500;
+}
+.form-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 0 16rpx 0 22rpx;
+  background: var(--r-bg-grey);
+  border-radius: 16rpx;
+  min-height: 86rpx;
+}
+.form-input {
+  min-width: 0;
+  flex: 1;
+  font-size: 27rpx;
+  color: var(--r-text-primary);
+}
+.eye-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64rpx;
+  height: 80rpx;
+  flex-shrink: 0;
+}
+.form-divider {
+  height: 1rpx;
+  background: var(--r-border-light);
+}
+.strength-bar {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  margin-top: 16rpx;
+}
+.strength-segments {
+  display: flex;
+  gap: 8rpx;
+  flex: 1;
+}
+.segment {
+  flex: 1;
+  height: 8rpx;
+  background: var(--r-bg-grey);
+  border-radius: 4rpx;
+}
+.strength-text {
+  min-width: 36rpx;
+  font-size: 21rpx;
+}
+.form-error {
+  display: block;
+  font-size: 23rpx;
+  color: var(--r-color-error);
+  margin-top: 14rpx;
+}
+.rules-section {
+  padding: 28rpx 8rpx;
+}
+.rules-title {
+  font-size: 25rpx;
+  color: var(--r-text-secondary);
+  display: block;
+  margin-bottom: 16rpx;
+}
+.rules-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14rpx;
+}
+.rule-item {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  font-size: 23rpx;
+  color: var(--r-text-secondary);
+}
+.fulfilled {
+  color: var(--r-color-success);
+}
+.submit-section {
+  padding: 10rpx 0 24rpx;
+}
+.submit-btn {
+  background: var(--r-color-primary);
+  color: var(--r-on-primary);
+  border-radius: 24rpx;
+  min-height: 94rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 29rpx;
+  font-weight: 600;
+}
+.submit-btn.disabled {
+  opacity: 0.45;
+}

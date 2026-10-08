@@ -220,10 +220,10 @@
             :class="{ 'is-loading': loading }"
             @click="loginMode === 'account' ? handleLogin() : handleSmsLogin()"
           >
-            <wd-loading
+            <C_LoadingIndicator
               v-if="loading"
-              :size="20"
-              color="#ffffff"
+              size="small"
+              color="var(--r-on-primary, #ffffff)"
             />
             <text class="btn-text">{{
               loading ? '登录中...' : '立即登录'
@@ -270,6 +270,9 @@
     <view class="footer">
       <text class="copyright">© 2025 CHENY.智启未来 · v{{ appVersion }}</text>
     </view>
+    <!-- #ifndef H5 -->
+    <C_NativeFeedbackHost />
+    <!-- #endif -->
   </view>
 </template>
 
@@ -277,6 +280,10 @@
   import { ref, onUnmounted } from 'vue'
   import { useLoginData, useSmsLogin } from './data'
   import config from '@/config/env'
+  import C_LoadingIndicator from '@/components/global/C_LoadingIndicator/index.vue'
+  // #ifndef H5
+  import C_NativeFeedbackHost from '@/components/global/C_NativeFeedbackHost/index.vue'
+  // #endif
 
   // 是否显示演示账号提示（仅开发环境）
   const isDev = config.IS_DEV

@@ -13,6 +13,11 @@
         @touchstart="onTouchStart"
         @touchmove="onTouchMove"
         @touchend="onTouchEnd"
+        @touchcancel="onTouchEnd"
+        @mousedown="onMouseDown"
+        @mousemove="onMouseMove"
+        @mouseup="onMouseUp"
+        @mouseleave="onMouseUp"
       />
       <view
         v-if="isEmpty && placeholder"
@@ -63,8 +68,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, onMounted, getCurrentInstance } from 'vue'
-  import { defaultProps } from './data'
+  import { defaultProps, useSignature } from './data'
 
   const props = defineProps({
     /** 画笔颜色 */
@@ -85,114 +89,19 @@
 
   const emit = defineEmits(['confirm', 'clear'])
 
-  const instance = getCurrentInstance()
-  const canvasId = `signature-${Date.now()}`
-  const isEmpty = ref(true)
-
-  let ctx: UniApp.CanvasContext | null = null
-  let paths: { x: number; y: number }[][] = []
-  let currentPath: { x: number; y: number }[] = []
-
-  onMounted(() => {
-    ctx = uni.createCanvasContext(canvasId, instance?.proxy)
-    _initCanvas()
-  })
-
-  /** 初始化画布 */
-  function _initCanvas() {
-    if (!ctx) return
-    ctx.setFillStyle(props.bgColor)
-    ctx.fillRect(0, 0, 9999, 9999)
-    ctx.setStrokeStyle(props.penColor)
-    ctx.setLineWidth(props.lineWidth)
-    ctx.setLineCap('round')
-    ctx.setLineJoin('round')
-    ctx.draw()
-  }
-
-  /** 触摸开始 */
-  function onTouchStart(e) {
-    if (!ctx) return
-    const { x, y } = e.touches[0]
-    currentPath = [{ x, y }]
-    ctx.beginPath()
-    ctx.moveTo(x, y)
-  }
-
-  /** 触摸移动 */
-  function onTouchMove(e) {
-    if (!ctx) return
-    const { x, y } = e.touches[0]
-    currentPath.push({ x, y })
-    ctx.lineTo(x, y)
-    ctx.stroke()
-    ctx.draw(true)
-    ctx.moveTo(x, y)
-  }
-
-  /** 触摸结束 */
-  function onTouchEnd() {
-    if (currentPath.length > 1) {
-      paths.push([...currentPath])
-      isEmpty.value = false
-    }
-    currentPath = []
-  }
-
-  /** 清除画布 */
-  function clear() {
-    paths = []
-    currentPath = []
-    isEmpty.value = true
-    _initCanvas()
-    emit('clear')
-  }
-
-  /** 撤销上一笔 */
-  function undo() {
-    if (paths.length === 0) return
-    paths.pop()
-    _redraw()
-    if (paths.length === 0) isEmpty.value = true
-  }
-
-  /** 重绘所有笔画 */
-  function _redraw() {
-    _initCanvas()
-    // 需要等初始化 draw 完成后再绘制
-    setTimeout(() => {
-      if (!ctx) return
-      paths.forEach(path => {
-        ctx!.beginPath()
-        ctx!.moveTo(path[0].x, path[0].y)
-        path.forEach((point, i) => {
-          if (i > 0) ctx!.lineTo(point.x, point.y)
-        })
-        ctx!.stroke()
-      })
-      ctx!.draw(true)
-    }, 50)
-  }
-
-  /** 确认签名 → 导出图片 */
-  function confirm() {
-    if (isEmpty.value) {
-      uni.showToast({ title: '请先签名', icon: 'none' })
-      return
-    }
-
-    uni.canvasToTempFilePath({
-      canvasId,
-      fileType: props.exportType,
-      success: res => {
-        emit('confirm', res.tempFilePath)
-      },
-      fail: () => {
-        uni.showToast({ title: '导出失败', icon: 'none' })
-      },
-    })
-  }
-
+  const {
+    canvasId,
+    isEmpty,
+    clear,
+    undo,
+    confirm,
+    onTouchStart,
+    onTouchMove,
+    onTouchEnd,
+    onMouseDown,
+    onMouseMove,
+    onMouseUp,
+  } = useSignature(props, emit)
   defineExpose({ clear, undo, confirm })
 </script>
 

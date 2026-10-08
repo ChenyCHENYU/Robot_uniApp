@@ -4,6 +4,7 @@
     @touchstart="onTouchStart"
     @touchmove="onTouchMove"
     @touchend="onTouchEnd"
+    @touchcancel="onTouchEnd"
   >
     <!-- 左侧操作区 -->
     <view
@@ -79,7 +80,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, computed, type PropType } from 'vue'
+  import { ref, computed, getCurrentInstance, type PropType } from 'vue'
   import { defaultProps } from './data'
 
   interface SwipeActionItem {
@@ -109,9 +110,13 @@
 
   const emit = defineEmits(['action', 'open', 'close'])
 
+  const instance = getCurrentInstance()
   const offsetX = ref(0)
   const moving = ref(false)
   let startX = 0
+  let startY = 0
+  let horizontalGesture = false
+  let pxToRpx = 2
   let startOffsetX = 0
 
   const BTN_WIDTH = 160 // 每个按钮宽度(rpx)
@@ -122,14 +127,36 @@
   function onTouchStart(e) {
     if (props.disabled) return
     moving.value = true
-    startX = e.touches[0].clientX
+    const touch = e.touches[0]
+    if (!touch) return
+    startX = touch.clientX
+    startY = touch.clientY
+    horizontalGesture = false
+    pxToRpx = 750 / uni.getSystemInfoSync().windowWidth
+    // #ifdef H5
+    const element = instance?.proxy?.$el as HTMLElement | undefined
+    const buttonWidth = element
+      ?.querySelector('.c-swipe-action__btn')
+      ?.getBoundingClientRect().width
+    if (buttonWidth) pxToRpx = BTN_WIDTH / buttonWidth
+    // #endif
     startOffsetX = offsetX.value
   }
 
   /** 触摸移动 */
   function onTouchMove(e) {
     if (props.disabled || !moving.value) return
-    const deltaX = (e.touches[0].clientX - startX) * 2 // clientX 转 rpx 近似
+    const touch = e.touches[0]
+    if (!touch) return
+    const dx = touch.clientX - startX
+    const dy = touch.clientY - startY
+    if (!horizontalGesture && Math.abs(dy) > Math.abs(dx)) {
+      moving.value = false
+      return
+    }
+    if (Math.abs(dx) < 6 && !horizontalGesture) return
+    horizontalGesture = true
+    const deltaX = dx * pxToRpx
     let newOffset = startOffsetX + deltaX
 
     // 限制滑动范围
@@ -143,6 +170,7 @@
   function onTouchEnd() {
     if (props.disabled) return
     moving.value = false
+    if (!horizontalGesture) return
 
     // 判断是否超过阈值
     if (offsetX.value > props.threshold && leftWidth.value > 0) {
@@ -164,6 +192,7 @@
    * @param {string} position
    */
   function onAction(action, index, position) {
+    if (props.disabled) return
     emit('action', { action, index, position })
     // 点击后自动关闭
     offsetX.value = 0

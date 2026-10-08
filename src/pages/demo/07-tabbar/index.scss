@@ -1,1 +1,15 @@
-/* 07-tabbar 演示页样式 */
+.tabbar-sample__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  min-width: 72rpx;
+  min-height: 96rpx;
+  position: relative;
+  color: var(--r-text-secondary);
+}
+.tabbar-sample__item--active {
+  color: var(--r-color-primary);
+  font-weight: 600;
+}

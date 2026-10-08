@@ -13,7 +13,7 @@
             color="#e6a23c"
           />
         </view>
-        <text class="tip-text">为了账户安全，请定期修改密码</text>
+        <text class="tip-text">设置安全的新密码，保护你的账户</text>
       </view>
 
       <!-- 表单区域 -->
@@ -23,9 +23,9 @@
           <view class="form-item">
             <view class="form-label">
               <wd-icon
-                name="lock"
+                name="lock-on"
                 size="16px"
-                color="#667eea"
+                color="var(--r-color-primary)"
               />
               <text class="label-text">原密码</text>
             </view>
@@ -56,9 +56,9 @@
           <view class="form-item">
             <view class="form-label">
               <wd-icon
-                name="lock"
+                name="lock-on"
                 size="16px"
-                color="#409eff"
+                color="var(--r-color-primary)"
               />
               <text class="label-text">新密码</text>
             </view>
@@ -218,275 +218,23 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, reactive, computed } from 'vue'
-  import { changePassword } from '@/api'
+  import { useSettingsChangePasswordPage } from './data'
 
-  const formData = reactive({
-    oldPassword: '',
-    newPassword: '',
-    confirmPassword: '',
-  })
-
-  const showOldPwd = ref(false)
-  const showNewPwd = ref(false)
-  const showConfirmPwd = ref(false)
-  const submitting = ref(false)
-
-  const hasNumber = computed(() => /\d/.test(formData.newPassword))
-  const hasLetter = computed(() => /[a-zA-Z]/.test(formData.newPassword))
-
-  const passwordStrength = computed(() => {
-    const pwd = formData.newPassword
-    if (!pwd) return 0
-    let score = 0
-    if (pwd.length >= 6) score++
-    if (/\d/.test(pwd) && /[a-zA-Z]/.test(pwd)) score++
-    if (pwd.length >= 10 && /[^a-zA-Z0-9]/.test(pwd)) score++
-    return score
-  })
-
-  const strengthColor = computed(() => {
-    const colors = ['#f56c6c', '#e6a23c', '#67c23a']
-    return colors[passwordStrength.value - 1] || '#c0c4cc'
-  })
-
-  const strengthLabel = computed(() => {
-    const labels = ['弱', '中', '强']
-    return labels[passwordStrength.value - 1] || ''
-  })
-
-  const confirmError = computed(() => {
-    if (!formData.confirmPassword) return ''
-    if (formData.confirmPassword !== formData.newPassword)
-      return '两次密码不一致'
-    return ''
-  })
-
-  const canSubmit = computed(() => {
-    return (
-      formData.oldPassword.length > 0 &&
-      formData.newPassword.length >= 6 &&
-      hasNumber.value &&
-      hasLetter.value &&
-      formData.confirmPassword === formData.newPassword &&
-      !submitting.value
-    )
-  })
-
-  const handleSubmit = async () => {
-    if (!canSubmit.value) return
-
-    submitting.value = true
-    try {
-      await changePassword({
-        oldPassword: formData.oldPassword,
-        newPassword: formData.newPassword,
-      })
-      uni.showToast({ title: '密码修改成功', icon: 'success' })
-      setTimeout(() => {
-        // 修改密码后回到设置页（真实场景建议强制重新登录）
-        uni.navigateBack({
-          fail: () => uni.reLaunch({ url: '/pages/settings/index' }),
-        })
-      }, 1500)
-    } catch (error) {
-      const err = error as { message?: string }
-      uni.showToast({ title: err?.message || '修改失败，请重试', icon: 'none' })
-    } finally {
-      submitting.value = false
-    }
-  }
+  const {
+    formData,
+    showOldPwd,
+    showNewPwd,
+    showConfirmPwd,
+    submitting,
+    hasNumber,
+    hasLetter,
+    passwordStrength,
+    strengthColor,
+    strengthLabel,
+    confirmError,
+    canSubmit,
+    handleSubmit,
+  } = useSettingsChangePasswordPage()
 </script>
 
-<style lang="scss" scoped>
-  .change-password-page {
-    background: var(--r-bg-page, #f0f2f8);
-    min-height: 100vh;
-    padding-bottom: env(safe-area-inset-bottom);
-  }
-
-  .security-tip {
-    display: flex;
-    align-items: center;
-    gap: 16rpx;
-    margin: 24rpx 32rpx;
-    padding: 24rpx 28rpx;
-    background: rgba(230, 162, 60, 0.08);
-    border: 1rpx solid rgba(230, 162, 60, 0.15);
-    border-radius: 16rpx;
-
-    .tip-icon-wrap {
-      flex-shrink: 0;
-    }
-
-    .tip-text {
-      font-size: 24rpx;
-      color: #e6a23c;
-      line-height: 1.4;
-    }
-  }
-
-  .form-section {
-    margin: 0 32rpx;
-  }
-
-  .form-card {
-    background: var(--r-bg-card, #fff);
-    border-radius: 20rpx;
-    padding: 8rpx 28rpx;
-    box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
-    border: 1rpx solid var(--r-divider, #ebeef5);
-  }
-
-  .form-item {
-    padding: 28rpx 0;
-  }
-
-  .form-label {
-    display: flex;
-    align-items: center;
-    gap: 12rpx;
-    margin-bottom: 16rpx;
-
-    .label-text {
-      font-size: 26rpx;
-      font-weight: 500;
-      color: var(--r-text-primary, #303133);
-    }
-  }
-
-  .form-input-wrap {
-    display: flex;
-    align-items: center;
-    background: var(--r-bg-page, #f5f7fa);
-    border-radius: 12rpx;
-    padding: 0 24rpx;
-    height: 80rpx;
-    border: 1rpx solid transparent;
-    transition: all 0.3s ease;
-
-    &:focus-within {
-      border-color: var(--r-color-primary, #409eff);
-      background: var(--r-bg-card);
-    }
-
-    .form-input {
-      flex: 1;
-      height: 100%;
-      font-size: 28rpx;
-      color: var(--r-text-primary, #303133);
-    }
-
-    .eye-btn {
-      padding: 8rpx;
-      flex-shrink: 0;
-    }
-  }
-
-  .form-divider {
-    height: 1rpx;
-    background: var(--r-divider, #ebeef5);
-  }
-
-  .form-error {
-    display: block;
-    font-size: 22rpx;
-    color: #f56c6c;
-    margin-top: 8rpx;
-    padding-left: 4rpx;
-  }
-
-  .strength-bar {
-    display: flex;
-    align-items: center;
-    gap: 16rpx;
-    margin-top: 12rpx;
-
-    .strength-segments {
-      display: flex;
-      gap: 8rpx;
-      flex: 1;
-
-      .segment {
-        height: 6rpx;
-        flex: 1;
-        border-radius: 3rpx;
-        background: var(--r-divider-strong, #dcdfe6);
-        transition: all 0.3s ease;
-      }
-    }
-
-    .strength-text {
-      font-size: 22rpx;
-      font-weight: 500;
-      flex-shrink: 0;
-    }
-  }
-
-  .rules-section {
-    margin: 32rpx 32rpx 0;
-
-    .rules-title {
-      display: block;
-      font-size: 24rpx;
-      color: var(--r-text-secondary, #909399);
-      margin-bottom: 16rpx;
-      font-weight: 500;
-    }
-
-    .rules-list {
-      display: flex;
-      flex-direction: column;
-      gap: 12rpx;
-    }
-
-    .rule-item {
-      display: flex;
-      align-items: center;
-      gap: 10rpx;
-
-      .rule-text {
-        font-size: 24rpx;
-        color: var(--r-text-secondary, #c0c4cc);
-        transition: color 0.3s ease;
-      }
-
-      &.fulfilled .rule-text {
-        color: #67c23a;
-      }
-    }
-  }
-
-  .submit-section {
-    margin: 48rpx 32rpx 0;
-
-    .submit-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 88rpx;
-      background: var(--r-gradient-primary);
-      border-radius: 44rpx;
-      box-shadow: 0 8rpx 24rpx rgba(102, 126, 234, 0.3);
-      transition: all 0.3s ease;
-
-      &:active {
-        transform: scale(0.97);
-        box-shadow: 0 4rpx 12rpx rgba(102, 126, 234, 0.3);
-      }
-
-      &.disabled {
-        opacity: 0.5;
-        pointer-events: none;
-        box-shadow: none;
-      }
-
-      .submit-text {
-        font-size: 30rpx;
-        font-weight: 600;
-        color: #fff;
-        letter-spacing: 2rpx;
-      }
-    }
-  }
-</style>
+<style lang="scss" scoped src="./index.scss"></style>

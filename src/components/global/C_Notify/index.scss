@@ -6,7 +6,9 @@
   position: fixed;
   left: 0;
   width: 100%;
-  z-index: 9999;
+  z-index: var(--r-z-toast);
+  box-sizing: border-box;
+  overflow-wrap: anywhere;
   display: flex;
   align-items: center;
   justify-content: center;

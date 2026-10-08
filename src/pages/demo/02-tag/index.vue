@@ -1,34 +1,28 @@
 <template>
   <C_Layout>
-    <view class="max-w-4xl mx-auto p-5 bg-gray-50 min-h-screen">
-      <view class="text-center mb-8">
-        <C_Title
-          title="C_Tag 标签"
-          subtitle="语义化标记与状态展示"
-          type="primary"
-          :level="3"
-          size="large"
-          align="center"
-          left-icon="i-mdi-label"
-          :show-decoration="true"
-          :show-divider="true"
-        />
+    <view class="demo-page demo-tag">
+      <view class="demo-hero">
+        <view class="demo-hero__eyebrow"
+          ><text>{{ PAGE_META.category }}</text
+          ><text>{{ PAGE_META.component }}</text></view
+        >
+        <text class="demo-hero__title">{{ PAGE_META.title }}</text>
+        <text class="demo-hero__desc">{{ PAGE_META.summary }}</text>
       </view>
+      <view class="demo-tip"
+        ><C_Icon
+          name="i-mdi-gesture-tap"
+          :size="16"
+        /><text>{{ PAGE_META.instruction }}</text></view
+      >
 
-      <view class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <view class="demo-grid">
         <!-- 基础类型 -->
-        <view class="bg-white rounded-lg shadow-md p-6">
-          <C_Title
-            title="基础类型"
-            subtitle="五种语义色系"
-            :level="4"
-            type="primary"
-            align="center"
-            left-icon="i-mdi-palette"
-            :show-decoration="true"
-          />
+        <view class="demo-section">
+          <text class="section-title">基础类型</text>
+          <text class="section-desc">五种语义色系</text>
           <view
-            class="flex flex-wrap justify-center items-center gap-3 my-6 p-4 bg-gray-50 rounded-lg"
+            class="flex flex-wrap justify-center items-center gap-3 demo-preview"
           >
             <C_Tag
               text="主要"
@@ -54,18 +48,11 @@
         </view>
 
         <!-- 实心模式 -->
-        <view class="bg-white rounded-lg shadow-md p-6">
-          <C_Title
-            title="实心模式"
-            subtitle="填充色更醒目"
-            :level="4"
-            type="success"
-            align="center"
-            left-icon="i-mdi-format-color-fill"
-            :show-decoration="true"
-          />
+        <view class="demo-section">
+          <text class="section-title">实心模式</text>
+          <text class="section-desc">填充色更醒目</text>
           <view
-            class="flex flex-wrap justify-center items-center gap-3 my-6 p-4 bg-gray-50 rounded-lg"
+            class="flex flex-wrap justify-center items-center gap-3 demo-preview"
           >
             <C_Tag
               text="主要"
@@ -96,18 +83,11 @@
         </view>
 
         <!-- 圆角标签 -->
-        <view class="bg-white rounded-lg shadow-md p-6">
-          <C_Title
-            title="圆角胶囊"
-            subtitle="round 属性"
-            :level="4"
-            type="warning"
-            align="center"
-            left-icon="i-mdi-rounded-corner"
-            :show-decoration="true"
-          />
+        <view class="demo-section">
+          <text class="section-title">圆角胶囊</text>
+          <text class="section-desc">round 属性</text>
           <view
-            class="flex flex-wrap justify-center items-center gap-3 my-6 p-4 bg-gray-50 rounded-lg"
+            class="flex flex-wrap justify-center items-center gap-3 demo-preview"
           >
             <C_Tag
               text="朴素圆角"
@@ -135,18 +115,11 @@
         </view>
 
         <!-- 尺寸 -->
-        <view class="bg-white rounded-lg shadow-md p-6">
-          <C_Title
-            title="标签尺寸"
-            subtitle="small / default / large"
-            :level="4"
-            type="danger"
-            align="center"
-            left-icon="i-mdi-resize"
-            :show-decoration="true"
-          />
+        <view class="demo-section">
+          <text class="section-title">标签尺寸</text>
+          <text class="section-desc">small / default / large</text>
           <view
-            class="flex flex-wrap justify-center items-end gap-3 my-6 p-4 bg-gray-50 rounded-lg"
+            class="flex flex-wrap justify-center items-end gap-3 demo-preview"
           >
             <C_Tag
               text="小号"
@@ -167,18 +140,11 @@
         </view>
 
         <!-- 可关闭 -->
-        <view class="bg-white rounded-lg shadow-md p-6">
-          <C_Title
-            title="可关闭标签"
-            subtitle="点击 × 移除"
-            :level="4"
-            type="info"
-            align="center"
-            left-icon="i-mdi-close-circle"
-            :show-decoration="true"
-          />
+        <view class="demo-section">
+          <text class="section-title">可关闭标签</text>
+          <text class="section-desc">点击 × 移除</text>
           <view
-            class="flex flex-wrap justify-center items-center gap-3 my-6 p-4 bg-gray-50 rounded-lg min-h-12"
+            class="flex flex-wrap justify-center items-center gap-3 demo-preview min-h-12"
           >
             <C_Tag
               v-for="tag in closableTags"
@@ -190,7 +156,7 @@
             />
             <text
               v-if="!closableTags.length"
-              class="text-sm text-gray-400"
+              class="text-sm demo-muted"
               >已全部移除</text
             >
           </view>
@@ -198,28 +164,21 @@
             v-if="!closableTags.length"
             class="text-center mt-2"
           >
-            <text
-              class="text-xs text-blue-500"
+            <button
+              class="demo-button demo-button--quiet"
               @click="resetTags"
-              >重置</text
+              >重置</button
             >
           </view>
         </view>
 
         <!-- 业务场景 -->
-        <view class="bg-white rounded-lg shadow-md p-6">
-          <C_Title
-            title="业务场景"
-            subtitle="实际应用示例"
-            :level="4"
-            type="primary"
-            align="center"
-            left-icon="i-mdi-briefcase"
-            :show-decoration="true"
-          />
-          <view class="my-6 p-4 bg-gray-50 rounded-lg space-y-4">
+        <view class="demo-section">
+          <text class="section-title">业务场景</text>
+          <text class="section-desc">实际应用示例</text>
+          <view class="demo-preview space-y-4">
             <view class="flex items-center gap-2">
-              <text class="text-sm text-gray-600 w-16">订单：</text>
+              <text class="text-sm demo-regular w-16">订单：</text>
               <C_Tag
                 text="待付款"
                 type="warning"
@@ -237,7 +196,7 @@
               />
             </view>
             <view class="flex items-center gap-2">
-              <text class="text-sm text-gray-600 w-16">角色：</text>
+              <text class="text-sm demo-regular w-16">角色：</text>
               <C_Tag
                 text="管理员"
                 type="error"
@@ -263,30 +222,15 @@
           </view>
         </view>
       </view>
-
-      <view class="mt-8 text-center">
-        <C_Title
-          title="轻量灵活，场景丰富"
-          subtitle="五种类型 · 三种尺寸 · 圆角 · 可关闭"
-          :level="5"
-          type="info"
-          align="center"
-          :show-divider="true"
-          divider-position="top"
-        />
-      </view>
     </view>
   </C_Layout>
 </template>
 
 <script setup lang="ts">
-  import { ref } from 'vue'
-  const allTags = ['前端', '后端', 'UI设计', '产品']
-  const closableTags = ref([...allTags])
-  const removeTag = (tag: string) => {
-    closableTags.value = closableTags.value.filter(t => t !== tag)
-  }
-  const resetTags = () => {
-    closableTags.value = [...allTags]
-  }
+  import { PAGE_META, useDemo } from './data'
+  const { closableTags, removeTag, resetTags } = useDemo()
 </script>
+
+<style lang="scss" scoped>
+  @import './index.scss';
+</style>

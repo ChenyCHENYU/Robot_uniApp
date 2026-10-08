@@ -1,1 +1,10 @@
-/* 04-float-button 演示页样式 */
+.float-preview {
+  position: relative;
+  min-height: 320rpx;
+  padding: 0;
+  border: 1rpx solid var(--r-border-light);
+}
+.float-preview :deep(.c-float-button) {
+  position: absolute;
+  bottom: 24rpx !important;
+}

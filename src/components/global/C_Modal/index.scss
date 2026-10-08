@@ -6,7 +6,9 @@
     right: 0;
     bottom: 0;
     background: var(--r-bg-mask);
-    z-index: var(--r-z-overlay);
+    z-index: var(--r-z-modal);
+    padding: 32rpx;
+    box-sizing: border-box;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -15,26 +17,38 @@
   &__container {
     background: var(--r-bg-card);
     border-radius: var(--r-radius-xl);
+    box-shadow: var(--r-shadow-lg);
     overflow: hidden;
-    max-height: 80vh;
-    animation: modal-in 0.25s ease;
+    max-width: 100%;
+    max-height: 85%;
+    display: flex;
+    flex-direction: column;
+    animation: modal-in 0.2s var(--r-ease-base);
   }
 
   &__header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 32rpx 32rpx 16rpx;
+    padding: 32rpx 32rpx 12rpx;
+    gap: 16rpx;
   }
 
   &__title {
-    font-size: var(--r-font-size-lg);
+    font-size: var(--r-font-size-xl);
     font-weight: 600;
     color: var(--r-text-primary);
   }
 
   &__close {
-    padding: 8rpx;
+    min-width: 64rpx;
+    min-height: 64rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    background: var(--r-bg-grey);
+    border-radius: var(--r-radius-round);
   }
 
   &__body {
@@ -42,34 +56,42 @@
     font-size: var(--r-font-size-md);
     color: var(--r-text-regular);
     line-height: 1.6;
-    max-height: 60vh;
+    min-height: 0;
+    flex: 1;
+    overflow-wrap: anywhere;
     overflow-y: auto;
+    overscroll-behavior: contain;
   }
 
   &__footer {
     display: flex;
-    border-top: 1rpx solid var(--r-border-light);
+    flex-shrink: 0;
+    padding: 0 32rpx 32rpx;
+    gap: 16rpx;
 
     &-btn {
       flex: 1;
       display: flex;
       align-items: center;
       justify-content: center;
-      height: 96rpx;
-      font-size: var(--r-font-size-lg);
+      min-height: 88rpx;
+      padding: 16rpx;
+      border-radius: var(--r-radius-md);
+      font-size: var(--r-font-size-md);
 
       &:active {
-        background: var(--r-bg-hover);
+        opacity: 0.75;
       }
 
       &--cancel {
         color: var(--r-text-regular);
-        border-right: 1rpx solid var(--r-border-light);
+        background: var(--r-bg-grey);
       }
 
       &--confirm {
-        color: var(--r-color-primary);
-        font-weight: 500;
+        color: var(--r-on-primary);
+        background: var(--r-color-primary-solid);
+        font-weight: 600;
       }
     }
   }
@@ -78,10 +100,16 @@
 @keyframes modal-in {
   from {
     opacity: 0;
-    transform: scale(0.9);
+    transform: translateY(12rpx) scale(0.98);
   }
   to {
     opacity: 1;
     transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .c-modal__container {
+    animation: none;
   }
 }

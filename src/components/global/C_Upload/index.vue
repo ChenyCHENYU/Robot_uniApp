@@ -42,6 +42,7 @@
       <view
         v-if="deletable && !disabled"
         class="c-upload__delete"
+        aria-label="删除图片"
         @click.stop="onDelete(index)"
       >
         <wd-icon
@@ -62,7 +63,7 @@
       <wd-icon
         name="add"
         size="32px"
-        color="#c0c4cc"
+        color="var(--r-text-secondary)"
       />
       <text class="c-upload__add-text"
         >{{ modelValue.length }}/{{ maxCount }}</text
@@ -72,7 +73,7 @@
 </template>
 
 <script setup lang="ts">
-  import type { PropType } from 'vue'
+  import { ref, type PropType } from 'vue'
 
   interface UploadItem {
     url: string
@@ -107,19 +108,28 @@
     'oversize',
   ])
 
+  const choosing = ref(false)
+
   const onChoose = () => {
+    if (props.disabled || choosing.value) return
     const remaining = props.maxCount - props.modelValue.length
     if (remaining <= 0) return
 
+    choosing.value = true
     uni.chooseImage({
       count: remaining,
       sizeType: ['compressed'],
       sourceType: ['album', 'camera'],
       success: res => {
-        const tempFiles = (res.tempFiles as any[]) || []
+        const tempFiles =
+          typeof res.tempFiles === 'object'
+            ? (res.tempFiles as (UniApp.ChooseImageSuccessCallbackResultFile & {
+                name?: string
+              })[])
+            : []
         const validFiles: UploadItem[] = []
         for (const file of tempFiles) {
-          if (file.size > props.maxSize) {
+          if (props.maxSize > 0 && file.size > props.maxSize) {
             emit('oversize', file)
             continue
           }
@@ -131,13 +141,20 @@
             progress: 0,
           })
         }
-        emit('update:modelValue', [...props.modelValue, ...validFiles])
-        emit('choose', validFiles)
+        if (props.disabled) return
+        const available = Math.max(0, props.maxCount - props.modelValue.length)
+        const accepted = validFiles.slice(0, available)
+        emit('update:modelValue', [...props.modelValue, ...accepted])
+        emit('choose', accepted)
+      },
+      complete: () => {
+        choosing.value = false
       },
     })
   }
 
   const onDelete = index => {
+    if (props.disabled || !props.deletable) return
     const file = props.modelValue[index]
     const newList = [...props.modelValue]
     newList.splice(index, 1)

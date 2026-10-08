@@ -7,6 +7,6 @@ export const defaultProps = {
   max: 99,
   dot: false,
   showZero: false,
-  color: '#dd524d',
+  color: 'var(--r-color-error)',
   offset: [0, 0],
 }

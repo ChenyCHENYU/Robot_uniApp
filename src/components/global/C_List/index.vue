@@ -18,7 +18,7 @@
           <view
             v-for="item in visibleItems"
             :key="item._vid"
-            :style="{ height: itemHeight + 'px' }"
+            :style="{ height: safeItemHeight + 'px' }"
           >
             <slot
               name="item"
@@ -37,19 +37,21 @@
 
     <!-- 空状态 -->
     <C_Empty
-      v-if="showEmpty"
+      v-if="displayEmpty"
       :type="emptyType"
       :text="emptyText"
     />
 
     <!-- 加载中 -->
     <view
-      v-if="loading && !showEmpty"
+      v-if="loading"
       class="c-list__status"
+      role="status"
+      aria-live="polite"
     >
-      <wd-loading
+      <C_LoadingIndicator
         class="c-list__loading-icon"
-        :size="16"
+        size="small"
       />
       <text>{{ loadingText }}</text>
     </view>
@@ -65,7 +67,7 @@
 
     <!-- 全部加载完毕 -->
     <view
-      v-if="finished && !showEmpty && !error"
+      v-if="finished && !displayEmpty && !error && !loading"
       class="c-list__finished"
     >
       {{ finishedText }}
@@ -74,8 +76,17 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, computed, onMounted, getCurrentInstance } from 'vue'
+  import {
+    ref,
+    computed,
+    onMounted,
+    onBeforeUnmount,
+    nextTick,
+    watch,
+    getCurrentInstance,
+  } from 'vue'
   import { defaultProps } from './data'
+  import C_LoadingIndicator from '../C_LoadingIndicator/index.vue'
 
   const props = defineProps({
     /** 是否处于加载状态 */
@@ -119,38 +130,55 @@
   /** 容器实测可视高度（虚拟滚动窗口依据；回退 600px） */
   const viewportHeight = ref(600)
 
-  onMounted(() => {
+  /** 容器高度变化后重新计算虚拟窗口。 */
+  async function measureViewport() {
     if (!props.virtual) return
-    // 实测容器高度，替代硬编码 600px（iPad/横屏/折叠屏适配）
+    await nextTick()
+    // #ifdef H5
+    const element = instance?.proxy?.$el as HTMLElement | undefined
+    if (element?.offsetHeight) {
+      viewportHeight.value = element.offsetHeight
+      return
+    }
+    // #endif
     uni
       .createSelectorQuery()
       .in(instance?.proxy)
       .select('.c-list')
       .boundingClientRect(rect => {
         const height = (rect as { height?: number } | null)?.height
-        if (height && height > 0) {
-          viewportHeight.value = height
-        }
+        if (height && height > 0) viewportHeight.value = height
       })
       .exec()
+  }
+
+  onMounted(() => {
+    measureViewport()
+    uni.onWindowResize(measureViewport)
   })
+  onBeforeUnmount(() => uni.offWindowResize(measureViewport))
+  watch(() => props.virtual, measureViewport)
+  const displayEmpty = computed(
+    () => props.showEmpty && !props.loading && !props.error
+  )
+  const safeItemHeight = computed(() => Math.max(1, props.itemHeight))
 
   // 虚拟滚动计算
-  const totalHeight = computed(() => props.items.length * props.itemHeight)
+  const totalHeight = computed(() => props.items.length * safeItemHeight.value)
 
   const startIndex = computed(() => {
     const idx =
-      Math.floor(currentScrollTop.value / props.itemHeight) - props.buffer
-    return Math.max(0, idx)
+      Math.floor(currentScrollTop.value / safeItemHeight.value) - props.buffer
+    return Math.max(0, Math.min(idx, props.items.length - 1))
   })
 
   const endIndex = computed(() => {
-    const viewCount = Math.ceil(viewportHeight.value / props.itemHeight)
+    const viewCount = Math.ceil(viewportHeight.value / safeItemHeight.value)
     const idx = startIndex.value + viewCount + props.buffer * 2
     return Math.min(props.items.length, idx)
   })
 
-  const offsetY = computed(() => startIndex.value * props.itemHeight)
+  const offsetY = computed(() => startIndex.value * safeItemHeight.value)
 
   const visibleItems = computed(() =>
     props.items.slice(startIndex.value, endIndex.value).map((item, i) => ({
@@ -170,6 +198,7 @@
   }
 
   const onRefresh = () => {
+    if (refreshing.value) return
     refreshing.value = true
     emit('refresh', () => {
       refreshing.value = false

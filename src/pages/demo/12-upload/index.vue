@@ -1,77 +1,57 @@
 <template>
   <C_Layout>
-    <view class="max-w-4xl mx-auto p-5 bg-gray-50 min-h-screen">
-      <view class="text-center mb-8">
-        <C_Title
-          title="C_Upload 上传"
-          subtitle="图片与文件上传组件"
-          type="primary"
-          :level="3"
-          size="large"
-          align="center"
-          left-icon="i-mdi-cloud-upload"
-          :show-decoration="true"
-          :show-divider="true"
-        />
+    <view class="demo-page demo-upload">
+      <view class="demo-hero">
+        <view class="demo-hero__eyebrow"
+          ><text>{{ PAGE_META.category }}</text
+          ><text>{{ PAGE_META.component }}</text></view
+        >
+        <text class="demo-hero__title">{{ PAGE_META.title }}</text>
+        <text class="demo-hero__desc">{{ PAGE_META.summary }}</text>
       </view>
+      <view class="demo-tip"
+        ><C_Icon
+          name="i-mdi-gesture-tap"
+          :size="16"
+        /><text>{{ PAGE_META.instruction }}</text></view
+      >
 
-      <view class="grid grid-cols-1 gap-6">
+      <view class="demo-grid">
         <!-- 基础上传 -->
-        <view class="bg-white rounded-lg shadow-md p-6">
-          <C_Title
-            title="基础用法"
-            subtitle="点击选择图片上传"
-            :level="4"
-            type="primary"
-            align="center"
-            left-icon="i-mdi-image-plus"
-            :show-decoration="true"
-          />
-          <view class="my-6 p-4 bg-gray-50 rounded-lg">
+        <view class="demo-section">
+          <text class="section-title">基础用法</text>
+          <text class="section-desc">选择本地图片，可预览或删除</text>
+          <view class="demo-preview">
             <C_Upload
               v-model="fileList1"
               :maxCount="3"
             />
           </view>
-          <text class="text-xs text-gray-400 text-center block"
+          <text class="text-xs demo-muted text-center block"
             >已选 {{ fileList1.length }} / 3 张</text
           >
         </view>
 
         <!-- 限制数量 -->
-        <view class="bg-white rounded-lg shadow-md p-6">
-          <C_Title
-            title="数量限制"
-            subtitle="maxCount 控制上传数量"
-            :level="4"
-            type="success"
-            align="center"
-            left-icon="i-mdi-numeric"
-            :show-decoration="true"
-          />
-          <view class="my-6 p-4 bg-gray-50 rounded-lg">
+        <view class="demo-section">
+          <text class="section-title">数量限制</text>
+          <text class="section-desc">maxCount 控制上传数量</text>
+          <view class="demo-preview">
             <C_Upload
               v-model="fileList2"
               :maxCount="6"
             />
           </view>
-          <text class="text-xs text-gray-400 text-center block"
-            >最多 6 张图片</text
+          <text class="text-xs demo-muted text-center block"
+            >已选 {{ fileList2.length }} / 6 张</text
           >
         </view>
 
         <!-- 禁用状态 -->
-        <view class="bg-white rounded-lg shadow-md p-6">
-          <C_Title
-            title="禁用状态"
-            subtitle="disabled 属性"
-            :level="4"
-            type="warning"
-            align="center"
-            left-icon="i-mdi-block-helper"
-            :show-decoration="true"
-          />
-          <view class="my-6 p-4 bg-gray-50 rounded-lg">
+        <view class="demo-section">
+          <text class="section-title">禁用状态</text>
+          <text class="section-desc">disabled 属性</text>
+          <view class="demo-preview">
             <C_Upload
               v-model="disabledList"
               disabled
@@ -85,51 +65,44 @@
               >
             </view>
           </view>
-          <text class="text-xs text-gray-400 text-center block"
-            >禁用状态下不可上传/删除</text
+          <text class="text-xs demo-muted text-center block"
+            >禁用状态下不可新增或删除</text
           >
         </view>
 
         <!-- 功能特性 -->
-        <view class="bg-white rounded-lg shadow-md p-6">
-          <C_Title
-            title="核心能力"
-            :level="4"
-            type="info"
-            align="center"
-            left-icon="i-mdi-star-four-points"
-            :show-decoration="true"
-          />
-          <view class="my-6 p-4 bg-gray-50 rounded-lg grid grid-cols-1 gap-3">
-            <view class="flex items-center gap-3 p-3 bg-white rounded-lg">
+        <view class="demo-section">
+          <text class="section-title">核心能力</text>
+          <view class="demo-preview grid grid-cols-1 gap-3">
+            <view class="flex items-center gap-3 p-3 demo-surface rounded-lg">
               <text
                 class="i-mdi-image-size-select-large text-xl text-blue-500"
               ></text>
               <view>
-                <text class="text-sm font-medium text-gray-700 block"
+                <text class="text-sm font-medium demo-regular block"
                   >预览尺寸</text
                 >
-                <text class="text-xs text-gray-500"
+                <text class="text-xs demo-muted"
                   >previewSize 自定义缩略图大小</text
                 >
               </view>
             </view>
-            <view class="flex items-center gap-3 p-3 bg-white rounded-lg">
+            <view class="flex items-center gap-3 p-3 demo-surface rounded-lg">
               <text class="i-mdi-file-alert text-xl text-orange-500"></text>
               <view>
-                <text class="text-sm font-medium text-gray-700 block"
+                <text class="text-sm font-medium demo-regular block"
                   >大小限制</text
                 >
-                <text class="text-xs text-gray-500">maxSize 默认 10MB</text>
+                <text class="text-xs demo-muted">maxSize 默认 10MB</text>
               </view>
             </view>
-            <view class="flex items-center gap-3 p-3 bg-white rounded-lg">
+            <view class="flex items-center gap-3 p-3 demo-surface rounded-lg">
               <text class="i-mdi-delete text-xl text-red-500"></text>
               <view>
-                <text class="text-sm font-medium text-gray-700 block"
+                <text class="text-sm font-medium demo-regular block"
                   >可删除</text
                 >
-                <text class="text-xs text-gray-500"
+                <text class="text-xs demo-muted"
                   >deletable 控制删除按钮显示</text
                 >
               </view>
@@ -137,32 +110,15 @@
           </view>
         </view>
       </view>
-
-      <view class="mt-8 text-center">
-        <C_Title
-          title="便捷上传，预览直观"
-          subtitle="多图 · 大小限制 · 禁用 · 可删除"
-          :level="5"
-          type="info"
-          align="center"
-          :show-divider="true"
-          divider-position="top"
-        />
-      </view>
     </view>
   </C_Layout>
 </template>
 
 <script setup lang="ts">
-  import { ref } from 'vue'
-  const fileList1 = ref([])
-  const fileList2 = ref([])
-  const disabledList = ref([
-    {
-      url: 'https://picsum.photos/id/10/200/200',
-    },
-    {
-      url: 'https://picsum.photos/id/20/200/200',
-    },
-  ])
+  import { PAGE_META, useDemo } from './data'
+  const { fileList1, fileList2, disabledList } = useDemo()
 </script>
+
+<style lang="scss" scoped>
+  @import './index.scss';
+</style>

@@ -9,7 +9,7 @@
   >
     <!-- 头部 -->
     <view
-      v-if="title || $slots.header"
+      v-if="title || subtitle || $slots.header || $slots.extra"
       class="c-card__header"
     >
       <slot name="header">

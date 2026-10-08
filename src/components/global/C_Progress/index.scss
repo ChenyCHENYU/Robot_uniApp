@@ -25,7 +25,7 @@
 
   &__text {
     font-size: 24rpx;
-    color: var(--r-text-color-secondary, #666);
+    color: var(--r-text-secondary, #666);
     flex-shrink: 0;
     min-width: 72rpx;
     text-align: right;
@@ -48,6 +48,6 @@
   &__circle-text {
     font-size: 28rpx;
     font-weight: 600;
-    color: var(--r-text-color-primary, #1a1a1a);
+    color: var(--r-text-primary, #1a1a1a);
   }
 }

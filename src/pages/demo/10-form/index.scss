@@ -1,1 +1,32 @@
-/* 10-form 演示页样式 */
+.form-field {
+  margin-bottom: 28rpx;
+}
+.form-field__label {
+  display: block;
+  color: var(--r-text-primary);
+  font-size: 26rpx;
+  font-weight: 600;
+  margin-bottom: 14rpx;
+}
+.form-field__required,
+.form-field__error {
+  color: var(--r-color-error);
+}
+.form-field__error {
+  display: block;
+  margin-top: 10rpx;
+  font-size: 24rpx;
+}
+.form-field input,
+.form-field textarea {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 20rpx;
+  border: 1rpx solid var(--r-border-color);
+  border-radius: 16rpx;
+  background: var(--r-bg-card);
+  color: var(--r-text-primary);
+}
+.form-field input {
+  height: 84rpx;
+}

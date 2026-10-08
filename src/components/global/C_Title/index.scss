@@ -1,1 +1,90 @@
-/* C_Title — 组件使用 UnoCSS 原子类，此文件为结构占位 */
+.c-title {
+  --title-accent: var(--r-color-primary);
+  width: 100%;
+  min-width: 0;
+  color: var(--r-text-primary);
+
+  &--default,
+  &--info {
+    --title-accent: var(--r-text-secondary);
+  }
+  &--success {
+    --title-accent: var(--r-color-success);
+  }
+  &--warning {
+    --title-accent: var(--r-color-warning);
+  }
+  &--danger {
+    --title-accent: var(--r-color-error);
+  }
+
+  &__body {
+    display: flex;
+    align-items: center;
+    gap: 20rpx;
+    padding: 16rpx 0;
+  }
+  &__content {
+    flex: 1;
+    min-width: 0;
+  }
+  &__heading {
+    display: block;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+  }
+  &__subtitle {
+    display: block;
+    margin-top: 8rpx;
+    font-size: 26rpx;
+    line-height: 1.6;
+    color: var(--r-text-secondary);
+  }
+  &__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 64rpx;
+    height: 64rpx;
+    border-radius: var(--r-radius-md);
+    background: var(--r-bg-hover);
+  }
+  &__divider {
+    height: 1rpx;
+    width: 100%;
+    background: var(--r-border-color);
+  }
+  &__decoration {
+    width: 48rpx;
+    height: 6rpx;
+    border-radius: 6rpx;
+    margin-top: 4rpx;
+    background: var(--title-accent);
+  }
+  &--center {
+    text-align: center;
+    .c-title__decoration {
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+  &--right {
+    text-align: right;
+    .c-title__decoration {
+      margin-left: auto;
+    }
+  }
+  &--small &__body {
+    padding: 12rpx 0;
+  }
+  &--large &__body {
+    padding: 24rpx 0;
+  }
+  &--clickable {
+    cursor: pointer;
+    &:active {
+      opacity: 0.75;
+    }
+  }
+}

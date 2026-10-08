@@ -4,6 +4,7 @@
     <view
       v-if="text"
       class="c-watermark__layer"
+      aria-hidden="true"
     >
       <view
         v-for="row in 10"

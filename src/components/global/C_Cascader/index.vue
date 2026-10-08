@@ -5,9 +5,16 @@
   >
     <view
       class="c-cascader__overlay"
+      @touchmove.stop.prevent
+      @wheel.stop.prevent
       @click="onClose"
     />
-    <view class="c-cascader__panel">
+    <view
+      class="c-cascader__panel"
+      role="dialog"
+      aria-modal="true"
+      :aria-label="title"
+    >
       <!-- 标题 -->
       <view class="c-cascader__header">
         <text class="c-cascader__title">{{ title }}</text>
@@ -91,7 +98,9 @@
           :class="[
             'c-cascader__option',
             isOptionSelected(item) && 'c-cascader__option--selected',
+            item.disabled && 'c-cascader__option--disabled',
           ]"
+          :aria-disabled="!!item.disabled"
           @click="onSelect(item)"
         >
           <text class="c-cascader__option-text">{{ item[labelKey] }}</text>
@@ -108,17 +117,8 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, computed, watch, type PropType } from 'vue'
-  import { defaultProps, flattenOptions } from './data'
-
-  interface CascaderOption {
-    [key: string]: any
-  }
-
-  interface CascaderTab {
-    value: any
-    label: string
-  }
+  import type { PropType } from 'vue'
+  import { defaultProps, useCascader, type CascaderOption } from './data'
 
   const props = defineProps({
     /** 是否显示 */
@@ -151,172 +151,19 @@
 
   const emit = defineEmits(['update:visible', 'confirm', 'change', 'close'])
 
-  // Tab 数据 [{ value, label }]
-  const tabs = ref<CascaderTab[]>([{ value: null, label: '' }])
-  const activeTab = ref(0)
-  const keyword = ref('')
-
-  // 当前层级选项
-  const currentOptions = computed(() => {
-    let list = props.options
-    for (let i = 0; i < activeTab.value; i++) {
-      const selected = list.find(
-        item => item[props.valueKey] === tabs.value[i].value
-      )
-      if (!selected) break
-      list = selected[props.childrenKey] || []
-    }
-    return list
-  })
-
-  // 搜索结果
-  const flatList = computed(() =>
-    flattenOptions(props.options, {
-      valueKey: props.valueKey,
-      labelKey: props.labelKey,
-      childrenKey: props.childrenKey,
-    })
-  )
-
-  const searchList = computed(() => {
-    if (!keyword.value) return []
-    const kw = keyword.value.toLowerCase()
-    return flatList.value.filter(item => item.label.toLowerCase().includes(kw))
-  })
-
-  // 初始化
-  watch(
-    () => props.visible,
-    val => {
-      if (val) {
-        keyword.value = ''
-        initFromDefault()
-      } else if (props.resetOnClose) {
-        tabs.value = [{ value: null, label: '' }]
-        activeTab.value = 0
-      }
-    },
-    { immediate: true }
-  )
-
-  /**
-   *
-   */
-  function initFromDefault() {
-    if (!props.defaultValue || props.defaultValue.length === 0) {
-      tabs.value = [{ value: null, label: '' }]
-      activeTab.value = 0
-      return
-    }
-
-    const newTabs: CascaderTab[] = []
-    let currentList = props.options
-
-    for (const val of props.defaultValue) {
-      const item = currentList.find(opt => opt[props.valueKey] === val)
-      if (!item) break
-      newTabs.push({ value: item[props.valueKey], label: item[props.labelKey] })
-      currentList = item[props.childrenKey] || []
-    }
-
-    if (currentList.length > 0) {
-      newTabs.push({ value: null, label: '' })
-    }
-
-    tabs.value = newTabs
-    activeTab.value = newTabs.length - 1
-  }
-
-  /**
-   *
-   */
-  function isOptionSelected(item) {
-    return tabs.value[activeTab.value]?.value === item[props.valueKey]
-  }
-
-  /**
-   *
-   */
-  function onTabClick(index) {
-    activeTab.value = index
-  }
-
-  /**
-   *
-   */
-  function onSelect(item) {
-    const children = item[props.childrenKey] || []
-
-    // 更新当前 tab
-    tabs.value[activeTab.value] = {
-      value: item[props.valueKey],
-      label: item[props.labelKey],
-    }
-
-    // 清除后续 tab
-    tabs.value = tabs.value.slice(0, activeTab.value + 1)
-
-    if (children.length > 0) {
-      // 有子级 — 新增一个 tab
-      tabs.value.push({ value: null, label: '' })
-      activeTab.value = tabs.value.length - 1
-      emitChange()
-    } else {
-      // 叶子节点 — 完成选择
-      emitChange()
-      emitConfirm()
-    }
-  }
-
-  /**
-   *
-   */
-  function onSelectSearch(item) {
-    // 搜索模式直接选中叶子
-    const newTabs = item.labelPath.map((label, i) => ({
-      value: item.valuePath[i],
-      label,
-    }))
-    tabs.value = newTabs
-    activeTab.value = newTabs.length - 1
-    keyword.value = ''
-    emitChange()
-    emitConfirm()
-  }
-
-  /**
-   *
-   */
-  function onSearch(e) {
-    keyword.value = e.detail.value
-  }
-
-  /**
-   *
-   */
-  function emitChange() {
-    const values = tabs.value.filter(t => t.value !== null).map(t => t.value)
-    const labels = tabs.value.filter(t => t.value !== null).map(t => t.label)
-    emit('change', { values, labels })
-  }
-
-  /**
-   *
-   */
-  function emitConfirm() {
-    const values = tabs.value.filter(t => t.value !== null).map(t => t.value)
-    const labels = tabs.value.filter(t => t.value !== null).map(t => t.label)
-    emit('confirm', { values, labels })
-    onClose()
-  }
-
-  /**
-   *
-   */
-  function onClose() {
-    emit('close')
-    emit('update:visible', false)
-  }
+  const {
+    tabs,
+    activeTab,
+    keyword,
+    currentOptions,
+    searchList,
+    onClose,
+    onSearch,
+    onSelectSearch,
+    onTabClick,
+    isOptionSelected,
+    onSelect,
+  } = useCascader(props, emit)
 </script>
 
 <style lang="scss" scoped>

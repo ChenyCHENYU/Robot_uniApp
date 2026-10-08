@@ -3,6 +3,8 @@
     v-if="innerVisible"
     :class="['c-notify', `c-notify--${position}`]"
     :style="notifyStyle"
+    role="status"
+    aria-live="polite"
     @touchstart="onTouchStart"
     @touchmove="onTouchMove"
     @touchend="onTouchEnd"
@@ -73,6 +75,7 @@
    *
    */
   function close() {
+    if (!innerVisible.value) return
     clearTimer()
     innerVisible.value = false
     emit('update:visible', false)
@@ -114,10 +117,18 @@
         innerVisible.value = true
         startTimer()
       } else {
-        close()
+        clearTimer()
+        innerVisible.value = false
       }
     },
     { immediate: true }
+  )
+
+  watch(
+    () => [props.message, props.duration],
+    () => {
+      if (innerVisible.value) startTimer()
+    }
   )
 
   onBeforeUnmount(clearTimer)

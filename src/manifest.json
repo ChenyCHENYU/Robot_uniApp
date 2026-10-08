@@ -2,8 +2,8 @@
   "name": "Robot App",
   "appid": "",
   "description": "Robot_uniApp - 企业级跨平台应用开发框架",
-  "versionName": "1.6.0",
-  "versionCode": "160",
+  "versionName": "1.7.0",
+  "versionCode": "170",
   "app-plus": {
     "usingComponents": true,
     "nvueStyleCompiler": "uni-app",

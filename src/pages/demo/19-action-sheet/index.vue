@@ -1,37 +1,31 @@
 <template>
   <C_Layout>
-    <view class="max-w-4xl mx-auto p-5 bg-gray-50 min-h-screen">
-      <view class="text-center mb-8">
-        <C_Title
-          title="C_ActionSheet 操作面板"
-          subtitle="底部弹出的操作菜单"
-          type="primary"
-          :level="3"
-          size="large"
-          align="center"
-          left-icon="i-mdi-menu"
-          :show-decoration="true"
-          :show-divider="true"
-        />
+    <view class="demo-page demo-action-sheet">
+      <view class="demo-hero">
+        <view class="demo-hero__eyebrow"
+          ><text>{{ PAGE_META.category }}</text
+          ><text>{{ PAGE_META.component }}</text></view
+        >
+        <text class="demo-hero__title">{{ PAGE_META.title }}</text>
+        <text class="demo-hero__desc">{{ PAGE_META.summary }}</text>
       </view>
+      <view class="demo-tip"
+        ><C_Icon
+          name="i-mdi-gesture-tap"
+          :size="16"
+        /><text>{{ PAGE_META.instruction }}</text></view
+      >
 
-      <view class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <view class="demo-grid">
         <!-- 基础用法 -->
-        <view class="bg-white rounded-lg shadow-md p-6">
-          <C_Title
-            title="基础操作面板"
-            subtitle="常用操作选项"
-            :level="4"
-            type="primary"
-            align="center"
-            left-icon="i-mdi-gesture-tap"
-            :show-decoration="true"
-          />
-          <view class="my-6 p-4 bg-gray-50 rounded-lg text-center">
-            <text
-              class="text-sm text-white bg-blue-500 px-6 py-2.5 rounded-full"
+        <view class="demo-section">
+          <text class="section-title">基础操作面板</text>
+          <text class="section-desc">常用操作选项</text>
+          <view class="demo-preview text-center">
+            <button
+              class="demo-button"
               @click="showBasic = true"
-              >打开基础面板</text
+              >打开基础面板</button
             >
           </view>
           <C_ActionSheet
@@ -42,21 +36,14 @@
         </view>
 
         <!-- 带标题 -->
-        <view class="bg-white rounded-lg shadow-md p-6">
-          <C_Title
-            title="带标题面板"
-            subtitle="title 属性"
-            :level="4"
-            type="success"
-            align="center"
-            left-icon="i-mdi-format-title"
-            :show-decoration="true"
-          />
-          <view class="my-6 p-4 bg-gray-50 rounded-lg text-center">
-            <text
-              class="text-sm text-white bg-green-500 px-6 py-2.5 rounded-full"
+        <view class="demo-section">
+          <text class="section-title">带标题面板</text>
+          <text class="section-desc">title 属性</text>
+          <view class="demo-preview text-center">
+            <button
+              class="demo-button"
               @click="showTitle = true"
-              >带标题面板</text
+              >带标题面板</button
             >
           </view>
           <C_ActionSheet
@@ -68,21 +55,14 @@
         </view>
 
         <!-- 带图标 -->
-        <view class="bg-white rounded-lg shadow-md p-6">
-          <C_Title
-            title="带图标选项"
-            subtitle="item.icon 属性"
-            :level="4"
-            type="warning"
-            align="center"
-            left-icon="i-mdi-emoticon-outline"
-            :show-decoration="true"
-          />
-          <view class="my-6 p-4 bg-gray-50 rounded-lg text-center">
-            <text
-              class="text-sm text-white bg-amber-500 px-6 py-2.5 rounded-full"
+        <view class="demo-section">
+          <text class="section-title">带图标选项</text>
+          <text class="section-desc">item.icon 属性</text>
+          <view class="demo-preview text-center">
+            <button
+              class="demo-button demo-button--quiet"
               @click="showIcon = true"
-              >带图标面板</text
+              >带图标面板</button
             >
           </view>
           <C_ActionSheet
@@ -94,21 +74,14 @@
         </view>
 
         <!-- 危险操作 -->
-        <view class="bg-white rounded-lg shadow-md p-6">
-          <C_Title
-            title="危险操作"
-            subtitle="item.danger 样式"
-            :level="4"
-            type="danger"
-            align="center"
-            left-icon="i-mdi-alert-outline"
-            :show-decoration="true"
-          />
-          <view class="my-6 p-4 bg-gray-50 rounded-lg text-center">
-            <text
-              class="text-sm text-white bg-red-500 px-6 py-2.5 rounded-full"
+        <view class="demo-section">
+          <text class="section-title">危险操作</text>
+          <text class="section-desc">item.danger 样式</text>
+          <view class="demo-preview text-center">
+            <button
+              class="demo-button demo-button--danger"
               @click="showDanger = true"
-              >危险操作面板</text
+              >危险操作面板</button
             >
           </view>
           <C_ActionSheet
@@ -124,74 +97,35 @@
       <!-- 选择结果 -->
       <view
         v-if="selectedAction"
-        class="mt-6 bg-white rounded-lg shadow-md p-4"
+        class="mt-6 demo-surface rounded-lg p-4"
       >
         <view class="flex items-center gap-2 justify-center">
           <text class="text-blue-500">→</text>
-          <text class="text-sm text-gray-600"
+          <text class="text-sm demo-regular"
             >您选择了：{{ selectedAction }}</text
           >
         </view>
-      </view>
-
-      <view class="mt-8 text-center">
-        <C_Title
-          title="底部弹出，操作便捷"
-          subtitle="基础 · 标题 · 图标 · 危险操作 · 取消按钮"
-          :level="5"
-          type="info"
-          align="center"
-          :show-divider="true"
-          divider-position="top"
-        />
       </view>
     </view>
   </C_Layout>
 </template>
 
 <script setup lang="ts">
-  import { ref } from 'vue'
-
-  const showBasic = ref(false)
-  const showTitle = ref(false)
-  const showIcon = ref(false)
-  const showDanger = ref(false)
-  const selectedAction = ref('')
-
-  const basicItems = [
-    { name: '选项一' },
-    { name: '选项二' },
-    { name: '选项三' },
-  ]
-
-  const shareItems = [
-    { name: '微信好友', icon: 'i-mdi-wechat' },
-    { name: '朋友圈', icon: 'i-mdi-account-group' },
-    { name: '复制链接', icon: 'i-mdi-link-variant' },
-    { name: '保存图片', icon: 'i-mdi-download' },
-  ]
-
-  const iconItems = [
-    { name: '编辑', icon: 'i-mdi-pencil' },
-    { name: '复制', icon: 'i-mdi-content-copy' },
-    { name: '移动', icon: 'i-mdi-folder-move' },
-    { name: '重命名', icon: 'i-mdi-rename-box' },
-  ]
-
-  const dangerItems = [
-    { name: '置顶聊天' },
-    { name: '标为已读' },
-    { name: '删除聊天', danger: true },
-    { name: '举报', danger: true },
-  ]
-
-  /**
-   *
-   */
-  function onSelect(item: { name?: string; text?: string }) {
-    selectedAction.value = item.name || item.text || ''
-    setTimeout(() => {
-      selectedAction.value = ''
-    }, 2000)
-  }
+  import { PAGE_META, useDemo } from './data'
+  const {
+    showBasic,
+    showTitle,
+    showIcon,
+    showDanger,
+    selectedAction,
+    basicItems,
+    shareItems,
+    iconItems,
+    dangerItems,
+    onSelect,
+  } = useDemo()
 </script>
+
+<style lang="scss" scoped>
+  @import './index.scss';
+</style>

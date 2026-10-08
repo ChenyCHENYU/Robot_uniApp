@@ -13,7 +13,7 @@
       <wd-icon
         name="close"
         :size="size === 'small' ? '10px' : '12px'"
-        :color="colorSet.text"
+        :color="plain ? colorSet.text : '#fff'"
       />
     </view>
   </view>
@@ -46,9 +46,9 @@
   const colorSet = computed(() => {
     if (props.color) {
       return {
-        bg: `${props.color}1a`,
+        bg: 'var(--r-bg-hover)',
         text: props.color,
-        border: `${props.color}4d`,
+        border: props.color,
       }
     }
     return TAG_COLORS[props.type] || TAG_COLORS.primary

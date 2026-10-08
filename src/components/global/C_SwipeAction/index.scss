@@ -20,12 +20,10 @@
 
   &__left {
     left: 0;
-    transform: translateX(-100%);
   }
 
   &__right {
     right: 0;
-    transform: translateX(100%);
   }
 
   &__btn {
@@ -33,7 +31,9 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
     width: 160rpx;
+    box-sizing: border-box;
     padding: 0 20rpx;
     background: var(--r-color-info);
     color: #fff;

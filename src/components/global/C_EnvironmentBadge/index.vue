@@ -1,11 +1,16 @@
 <!--
- * @Description: 环境角标 — 非生产环境右上角悬浮显示环境标识（防呆：避免误把测试环境当生产）
+ * @Description: 非生产环境标识，跟随导航标题占位。
 -->
 <template>
   <view
     v-if="visible"
     class="c-env-badge"
     :class="`c-env-badge--${env}`"
+    role="button"
+    tabindex="0"
+    :aria-label="`环境 ${badgeText}，查看详情`"
+    @keydown.enter="toggleDetail"
+    @keydown.space.prevent="toggleDetail"
     @click="toggleDetail"
   >
     <text class="c-env-badge__text">{{ badgeText }}</text>
@@ -57,27 +62,30 @@
 
 <style lang="scss" scoped>
   .c-env-badge {
-    position: fixed;
-    top: calc(var(--status-bar-height, 0px) + 12rpx);
-    right: 16rpx;
+    position: relative;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
     z-index: var(--r-z-popup, 100);
-    padding: 4rpx 14rpx;
-    border-radius: var(--r-radius-round, 999rpx);
-    background: rgba(255, 149, 0, 0.85);
-    box-shadow: var(--r-shadow-sm);
+    padding: 2rpx 8rpx;
+    border-radius: 8rpx;
+    background: var(--r-color-warning-soft);
+    color: var(--r-color-warning);
 
     &--test {
-      background: rgba(0, 122, 255, 0.85);
+      background: var(--r-color-primary-soft);
+      color: var(--r-color-primary);
     }
 
     &--staging {
-      background: rgba(175, 82, 222, 0.85);
+      background: var(--r-color-primary-soft);
+      color: var(--r-color-primary);
     }
 
     &__text {
-      font-size: 18rpx;
+      font-size: 16rpx;
       font-weight: 700;
-      color: #ffffff;
+      color: inherit;
       letter-spacing: 1rpx;
     }
 

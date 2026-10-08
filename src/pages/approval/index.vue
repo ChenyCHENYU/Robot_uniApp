@@ -2,7 +2,11 @@
  * @Description: 审批流模板页 - 审批工作流展示
 -->
 <template>
-  <C_Layout>
+  <C_Layout
+    :refresher-enabled="true"
+    :refresher-triggered="refreshing"
+    @refresh="handleRefresh"
+  >
     <view class="approval-page">
       <!-- 加载/空态 -->
       <view
@@ -10,27 +14,31 @@
         class="approval-loading"
       >
         <text class="loading-text">{{
-          loading ? '加载中...' : '审批单不存在'
-        }}</text>
+          loading ? '正在加载审批详情…' : errorText
+        }}</text
+        ><button
+          v-if="!loading"
+          class="retry-btn"
+          @click="retry"
+          >重新加载</button
+        >
       </view>
 
       <template v-if="detail">
         <!-- 审批头部 -->
         <view
           class="approval-header"
-          :style="{ background: statusConfig[detail.status].bg }"
+          :class="detail.status"
         >
           <view class="header-content">
             <view class="status-icon-wrap">
               <wd-icon
-                :name="statusConfig[detail.status].icon"
-                size="32px"
-                color="#fff"
+                :name="approvalState.icon"
+                size="28px"
+                color="var(--r-color-primary)"
               />
             </view>
-            <text class="approval-status">{{
-              statusConfig[detail.status].label
-            }}</text>
+            <text class="approval-status">{{ approvalState.label }}</text>
             <text class="approval-title">{{ detail.title }}</text>
           </view>
         </view>
@@ -63,7 +71,11 @@
         <!-- 审批流程 -->
         <view class="flow-card">
           <text class="card-title">审批流程</text>
-          <view class="flow-list">
+          <text
+            v-if="flowNodes.length === 0"
+            class="section-empty"
+            >暂无审批流程记录</text
+          ><view class="flow-list">
             <view
               v-for="(node, index) in flowNodes"
               :key="index"
@@ -125,6 +137,7 @@
         >
           <view
             class="action-btn reject"
+            :class="{ disabled: acting }"
             @click="handleReject"
           >
             <wd-icon
@@ -136,6 +149,7 @@
           </view>
           <view
             class="action-btn approve"
+            :class="{ disabled: acting }"
             @click="handleApprove"
           >
             <wd-icon
@@ -143,7 +157,9 @@
               size="18px"
               color="#fff"
             />
-            <text class="btn-text approve">通过</text>
+            <text class="btn-text approve">{{
+              acting ? '处理中…' : '通过审批'
+            }}</text>
           </view>
         </view>
       </template>
@@ -152,418 +168,23 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, computed } from 'vue'
-  import { onLoad, onPullDownRefresh } from '@dcloudio/uni-app'
-  import { getApprovalDetail, approveItem, type ApprovalItem } from '@/api'
+  import { useApprovalPage } from './data'
 
-  interface FlowNode {
-    title: string
-    user: string
-    status: string
-    time?: string
-    remark?: string
-  }
-
-  interface ApprovalDetail extends ApprovalItem {
-    content?: string
-    department?: string
-    type?: string
-    flowNodes?: FlowNode[]
-  }
-
-  const statusConfig: Record<
-    string,
-    { label: string; icon: string; bg: string }
-  > = {
-    pending: {
-      label: '审批中',
-      icon: 'time',
-      bg: 'var(--r-gradient-info)',
-    },
-    approved: {
-      label: '已通过',
-      icon: 'check',
-      bg: 'var(--r-gradient-success)',
-    },
-    rejected: {
-      label: '已驳回',
-      icon: 'close',
-      bg: 'linear-gradient(135deg, #f5576c, #f093fb)',
-    },
-  }
-
-  const nodeStatusMap: Record<string, string> = {
-    approved: '已通过',
-    rejected: '已驳回',
-    pending: '待审批',
-    waiting: '等待中',
-  }
-
-  const detail = ref<ApprovalDetail | null>(null)
-  const loading = ref(true)
-  const acting = ref(false)
-
-  const flowNodes = computed<FlowNode[]>(() => detail.value?.flowNodes || [])
-
-  const infoFields = computed(() => {
-    const d = detail.value
-    if (!d) return []
-    return [
-      { label: '申请人', value: d.applicant || '-' },
-      { label: '申请部门', value: d.department || '-' },
-      { label: '申请时间', value: d.createTime || '-' },
-      { label: '审批编号', value: d.id || '-' },
-      { label: '审批类型', value: d.type ? `${d.type}审批` : '-' },
-    ]
-  })
-
-  const loadDetail = async (id: string) => {
-    loading.value = true
-    try {
-      const res = await getApprovalDetail({ id })
-      if (!res) {
-        uni.showToast({ title: '审批单不存在', icon: 'none' })
-        return
-      }
-      detail.value = res
-    } catch {
-      // http 层已提示
-    } finally {
-      loading.value = false
-    }
-  }
-
-  onLoad(query => {
-    if (query?.id) {
-      loadDetail(String(query.id))
-    } else {
-      // 兼容直接打开（无 id）：默认取第一条演示数据
-      loadDetail('ap_001')
-    }
-  })
-
-  /** 审批操作（通过/驳回），成功后刷新详情 */
-  const doAction = async (action: 'approve' | 'reject') => {
-    if (!detail.value || acting.value) return
-    acting.value = true
-    try {
-      await approveItem({ id: detail.value.id, action })
-      uni.showToast({
-        title: action === 'approve' ? '审批通过' : '已驳回',
-        icon: action === 'approve' ? 'success' : 'none',
-      })
-      await loadDetail(detail.value.id)
-    } catch {
-      // http 层已提示
-    } finally {
-      acting.value = false
-    }
-  }
-
-  // 下拉刷新详情
-  onPullDownRefresh(async () => {
-    if (detail.value?.id) {
-      await loadDetail(detail.value.id).catch(() => {})
-    }
-    uni.stopPullDownRefresh()
-  })
-
-  const handleApprove = () => {
-    uni.showModal({
-      title: '确认通过',
-      content: '确定通过该审批？',
-      success: res => {
-        if (res.confirm) doAction('approve')
-      },
-    })
-  }
-
-  const handleReject = () => {
-    uni.showModal({
-      title: '确认驳回',
-      content: '确定驳回该审批？',
-      success: res => {
-        if (res.confirm) doAction('reject')
-      },
-    })
-  }
+  const {
+    nodeStatusMap,
+    detail,
+    loading,
+    acting,
+    errorText,
+    approvalState,
+    retry,
+    flowNodes,
+    infoFields,
+    handleApprove,
+    handleReject,
+    refreshing,
+    handleRefresh,
+  } = useApprovalPage()
 </script>
 
-<style lang="scss" scoped>
-  .approval-page {
-    background: var(--r-bg-page);
-    min-height: 100vh;
-    padding-bottom: 160rpx;
-  }
-
-  .approval-loading {
-    padding: 200rpx 0;
-    text-align: center;
-
-    .loading-text {
-      font-size: 26rpx;
-      color: var(--r-text-secondary);
-    }
-  }
-
-  .approval-header {
-    padding: 60rpx 32rpx 48rpx;
-    position: relative;
-
-    &::after {
-      content: '';
-      position: absolute;
-      bottom: -20rpx;
-      left: 0;
-      right: 0;
-      height: 40rpx;
-      background: var(--r-bg-page);
-      border-radius: 32rpx 32rpx 0 0;
-    }
-
-    .header-content {
-      text-align: center;
-    }
-
-    .status-icon-wrap {
-      width: 100rpx;
-      height: 100rpx;
-      margin: 0 auto 16rpx;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba(255, 255, 255, 0.2);
-      border-radius: 50%;
-    }
-
-    .approval-status {
-      display: block;
-      font-size: 32rpx;
-      font-weight: 700;
-      color: #fff;
-      margin-bottom: 8rpx;
-    }
-
-    .approval-title {
-      font-size: 26rpx;
-      color: rgba(255, 255, 255, 0.8);
-    }
-  }
-
-  .info-card,
-  .content-card,
-  .flow-card {
-    margin: 20rpx 24rpx;
-    padding: 28rpx;
-    background: var(--r-bg-card);
-    border-radius: 20rpx;
-    box-shadow: var(--r-shadow-sm);
-  }
-
-  .info-card {
-    margin-top: 8rpx;
-
-    .info-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 16rpx 0;
-      border-bottom: 1rpx solid var(--r-border-light);
-
-      &:last-child {
-        border-bottom: none;
-      }
-
-      .info-label {
-        font-size: 26rpx;
-        color: var(--r-text-secondary);
-      }
-
-      .info-value {
-        font-size: 26rpx;
-        color: var(--r-text-primary);
-        font-weight: 500;
-      }
-    }
-  }
-
-  .card-title {
-    display: block;
-    font-size: 30rpx;
-    font-weight: 600;
-    color: var(--r-text-primary);
-    margin-bottom: 16rpx;
-  }
-
-  .content-text {
-    font-size: 28rpx;
-    color: var(--r-text-secondary);
-    line-height: 1.7;
-  }
-
-  .amount-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 20rpx;
-    padding-top: 20rpx;
-    border-top: 1rpx solid var(--r-border-light);
-
-    .amount-label {
-      font-size: 26rpx;
-      color: var(--r-text-secondary);
-    }
-
-    .amount-value {
-      font-size: 36rpx;
-      font-weight: 700;
-      color: #f56c6c;
-    }
-  }
-
-  .flow-list {
-    .flow-node {
-      display: flex;
-      gap: 20rpx;
-
-      .node-indicator {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-
-        .node-dot {
-          width: 36rpx;
-          height: 36rpx;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          background: #e0e0e0;
-          flex-shrink: 0;
-
-          &.approved {
-            background: #43e97b;
-          }
-          &.rejected {
-            background: #f56c6c;
-          }
-          &.pending {
-            background: #4facfe;
-          }
-        }
-
-        .node-line {
-          width: 2rpx;
-          flex: 1;
-          min-height: 40rpx;
-          background: #e0e0e0;
-
-          &.approved {
-            background: #43e97b;
-          }
-        }
-      }
-
-      .node-content {
-        flex: 1;
-        padding-bottom: 28rpx;
-
-        .node-header {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          margin-bottom: 4rpx;
-
-          .node-title {
-            font-size: 28rpx;
-            font-weight: 600;
-            color: var(--r-text-primary);
-          }
-
-          .node-status-text {
-            font-size: 22rpx;
-
-            &.approved {
-              color: #43e97b;
-            }
-            &.rejected {
-              color: #f56c6c;
-            }
-            &.pending {
-              color: #4facfe;
-            }
-            &.waiting {
-              color: #ccc;
-            }
-          }
-        }
-
-        .node-user {
-          display: block;
-          font-size: 24rpx;
-          color: var(--r-text-secondary);
-        }
-
-        .node-time {
-          font-size: 22rpx;
-          color: var(--r-text-placeholder);
-        }
-
-        .node-remark {
-          display: block;
-          font-size: 24rpx;
-          color: var(--r-text-secondary);
-          margin-top: 8rpx;
-          padding: 12rpx 16rpx;
-          background: var(--r-bg-page);
-          border-radius: 8rpx;
-        }
-      }
-    }
-  }
-
-  .action-bar {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 50;
-    display: flex;
-    gap: 20rpx;
-    padding: 16rpx 32rpx;
-    padding-bottom: calc(env(safe-area-inset-bottom) + 16rpx);
-    background: var(--r-bg-card);
-    box-shadow: 0 -2rpx 16rpx rgba(0, 0, 0, 0.06);
-
-    .action-btn {
-      flex: 1;
-      height: 88rpx;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8rpx;
-      border-radius: 16rpx;
-
-      &.reject {
-        background: rgba(245, 108, 108, 0.1);
-        border: 1rpx solid rgba(245, 108, 108, 0.3);
-      }
-
-      &.approve {
-        background: var(--r-gradient-success);
-      }
-
-      .btn-text {
-        font-size: 28rpx;
-        font-weight: 600;
-
-        &.reject {
-          color: #f56c6c;
-        }
-        &.approve {
-          color: #fff;
-        }
-      }
-    }
-  }
-</style>
+<style lang="scss" scoped src="./index.scss"></style>

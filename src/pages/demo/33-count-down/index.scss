@@ -1,1 +1,9 @@
-/* 33-count-down 演示页样式 */
+.count-down-danger :deep(.c-count-down__text) {
+  color: var(--r-color-error);
+}
+.count-down-success :deep(.c-count-down__text) {
+  color: var(--r-color-success);
+}
+.count-down-large :deep(.c-count-down__text) {
+  font-size: 40rpx;
+}

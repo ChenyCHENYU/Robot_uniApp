@@ -15,6 +15,10 @@
         <view
           v-if="showBack"
           class="c-header__btn"
+          role="button"
+          tabindex="0"
+          aria-label="返回"
+          @keydown.enter="handleBack"
           hover-class="c-header__btn--hover"
           :hover-stay-time="80"
           @click="handleBack"
@@ -31,17 +35,31 @@
           @click="emit('userClick')"
         >
           <image
+            v-if="avatarSrc !== defaultAvatar"
             class="c-header__avatar"
             :src="avatarSrc"
             mode="aspectFill"
+            @error="handleAvatarError"
           />
-          <view class="c-header__online"></view>
+          <text
+            v-else
+            class="c-header__avatar-initial"
+            >{{ displayNickname.slice(0, 1) }}</text
+          >
+          <view
+            v-if="showStatus && networkConnected"
+            class="c-header__online"
+            aria-label="网络已连接"
+          ></view>
         </view>
       </view>
 
       <!-- 中区：标题 -->
       <view class="c-header__center">
-        <text class="c-header__title">{{ displayTitle }}</text>
+        <view class="c-header__heading">
+          <text class="c-header__title">{{ displayTitle }}</text>
+          <slot name="environment" />
+        </view>
         <text
           v-if="displaySubtitle"
           class="c-header__subtitle"
@@ -95,8 +113,15 @@
   const props = defineProps(headerProps)
   const emit = defineEmits(headerEmits)
 
-  const { displayTitle, displaySubtitle, avatarSrc, handleBack } =
-    useHeaderData(props, emit)
+  const {
+    displayTitle,
+    displaySubtitle,
+    displayNickname,
+    avatarSrc,
+    networkConnected,
+    handleBack,
+    handleAvatarError,
+  } = useHeaderData(props, emit)
 
   /** 图标色：跟随主题文字色（亮色深字/暗色浅字） */
   const iconColor = computed(() => 'var(--r-text-regular, #3c3c43)')

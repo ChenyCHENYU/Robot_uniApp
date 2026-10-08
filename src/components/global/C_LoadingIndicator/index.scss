@@ -1,0 +1,75 @@
+.c-loading-indicator {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  gap: 8rpx;
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 50%;
+  background: var(--r-color-primary-soft, #ebf4fd);
+
+  &__orbit {
+    position: absolute;
+    inset: -2rpx;
+    border-radius: 50%;
+    border: 2rpx solid var(--r-border-color, rgba(0, 0, 0, 0.08));
+    border-top-color: var(--feedback-dot-color);
+    border-right-color: var(--r-color-primary-soft, #ebf4fd);
+    animation: feedback-orbit-turn 2.4s linear infinite;
+  }
+
+  &__dot {
+    width: 10rpx;
+    height: 10rpx;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: var(--feedback-dot-color);
+    animation: feedback-dot-breath 1.6s ease-in-out infinite;
+
+    &--second {
+      animation-delay: 0.18s;
+    }
+    &--third {
+      animation-delay: 0.36s;
+    }
+  }
+
+  &--small {
+    width: auto;
+    height: 24rpx;
+    background: transparent;
+
+    .c-loading-indicator__dot {
+      width: 6rpx;
+      height: 6rpx;
+    }
+  }
+}
+
+@keyframes feedback-dot-breath {
+  0%,
+  100% {
+    transform: scale(0.8);
+    opacity: 0.45;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes feedback-orbit-turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .c-loading-indicator__dot,
+  .c-loading-indicator__orbit {
+    animation: none;
+    opacity: 0.8;
+  }
+}

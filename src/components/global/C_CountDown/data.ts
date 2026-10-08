@@ -29,6 +29,7 @@ export const defaultProps = {
  * @returns {{ days: number, hours: number, minutes: number, seconds: number, milliseconds: number }}
  */
 export function parseTime(ms) {
+  ms = Number.isFinite(ms) ? Math.max(0, ms) : 0
   const days = Math.floor(ms / 86400000)
   const hours = Math.floor((ms % 86400000) / 3600000)
   const minutes = Math.floor((ms % 3600000) / 60000)
@@ -45,15 +46,16 @@ export function parseTime(ms) {
  */
 export function formatTime(fmt, t) {
   let str = fmt
+  let { hours } = t
 
   if (str.includes('DD')) {
     str = str.replace('DD', padZero(t.days))
   } else {
     // 天数合并到小时
-    t.hours += t.days * 24
+    hours += t.days * 24
   }
 
-  str = str.replace('HH', padZero(t.hours))
+  str = str.replace('HH', padZero(hours))
   str = str.replace('mm', padZero(t.minutes))
   str = str.replace('ss', padZero(t.seconds))
   str = str.replace('SSS', padZero(t.milliseconds, 3))

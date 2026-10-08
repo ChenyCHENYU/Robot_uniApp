@@ -12,20 +12,20 @@
 
 ### Props
 
-| 参数          | 说明           | 类型      | 默认值      |
-| ------------- | -------------- | --------- | ----------- |
-| modelValue    | 当前值         | `Number`  | `0`         |
-| count         | 星星总数       | `Number`  | `5`         |
-| size          | 图标尺寸 (rpx) | `Number`  | `44`        |
-| gap           | 间距 (rpx)     | `Number`  | `8`         |
-| activeColor   | 选中颜色       | `String`  | 警告色      |
-| inactiveColor | 未选中颜色     | `String`  | `#ccc`      |
-| activeIcon    | 选中图标名     | `String`  | `star-fill` |
-| inactiveIcon  | 未选中图标名   | `String`  | `star`      |
-| allowHalf     | 是否允许半星   | `Boolean` | `false`     |
-| readonly      | 是否只读       | `Boolean` | `false`     |
-| disabled      | 是否禁用       | `Boolean` | `false`     |
-| clearable     | 是否允许归零   | `Boolean` | `false`     |
+| 参数          | 说明           | 类型      | 默认值        |
+| ------------- | -------------- | --------- | ------------- |
+| modelValue    | 当前值         | `Number`  | `0`           |
+| count         | 星星总数       | `Number`  | `5`           |
+| size          | 图标尺寸 (rpx) | `Number`  | `44`          |
+| gap           | 间距 (rpx)     | `Number`  | `8`           |
+| activeColor   | 选中颜色       | `String`  | 警告色        |
+| inactiveColor | 未选中颜色     | `String`  | `#ccc`        |
+| activeIcon    | 选中图标名     | `String`  | `star-filled` |
+| inactiveIcon  | 未选中图标名   | `String`  | `star`        |
+| allowHalf     | 是否允许半星   | `Boolean` | `false`       |
+| readonly      | 是否只读       | `Boolean` | `false`       |
+| disabled      | 是否禁用       | `Boolean` | `false`       |
+| clearable     | 是否允许归零   | `Boolean` | `false`       |
 
 ### Events
 

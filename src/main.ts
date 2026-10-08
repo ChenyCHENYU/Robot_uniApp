@@ -6,6 +6,10 @@ import { installDirectives } from './directives'
 import { setupErrorHandler } from './utils/error-handler'
 import App from './App.vue'
 import 'virtual:uno.css'
+import { installUniFeedback } from './utils/feedback'
+// #ifdef H5
+import { installH5Feedback } from './utils/feedback-h5'
+// #endif
 
 /** 创建 uni-app 应用实例 */
 export function createApp() {
@@ -16,6 +20,11 @@ export function createApp() {
 
   // 初始化 Pinia
   app.use(pinia)
+  installUniFeedback()
+
+  // #ifdef H5
+  installH5Feedback(app)
+  // #endif
 
   // 注册指令
   installDirectives(app)

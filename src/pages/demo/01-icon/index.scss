@@ -1,1 +1,193 @@
-/* 01-icon 演示页样式 */
+/* 图标样例使用中性留白，突出图形本身与当前选择。 */
+.icon-playground__selection {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  margin-bottom: 28rpx;
+}
+.icon-playground__preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 144rpx;
+  height: 144rpx;
+  margin: 0;
+  padding: 0;
+  border-radius: var(--r-radius-md);
+  background: var(--r-bg-grey);
+}
+.icon-playground__detail {
+  min-width: 0;
+}
+.icon-playground__label {
+  display: block;
+  margin-bottom: 8rpx;
+  font-size: 30rpx;
+  font-weight: 650;
+  color: var(--r-text-primary);
+}
+.icon-playground__name {
+  display: block;
+  font-size: 22rpx;
+  line-height: 1.5;
+  word-break: break-all;
+  overflow-wrap: anywhere;
+  color: var(--r-text-secondary);
+}
+.icon-playground__status {
+  display: block;
+  margin-top: 10rpx;
+  font-size: 22rpx;
+  color: var(--r-color-primary);
+}
+.icon-control {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  margin-top: 16rpx;
+}
+.icon-control__label {
+  flex-shrink: 0;
+  font-size: 24rpx;
+  color: var(--r-text-secondary);
+}
+.icon-control__options {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  gap: 8rpx;
+}
+.icon-option {
+  flex: 1;
+  min-width: 0;
+  min-height: 88rpx;
+  margin: 0;
+  padding: 0 4rpx;
+  font-size: 24rpx;
+  line-height: 88rpx;
+  color: var(--r-text-secondary);
+  background: var(--r-bg-grey);
+  border: 1rpx solid transparent;
+  border-radius: var(--r-radius-sm);
+}
+.icon-option--selected {
+  color: var(--r-color-primary);
+  background: var(--r-color-primary-soft);
+  border-color: var(--r-color-primary);
+}
+.icon-option[disabled] {
+  opacity: 0.5;
+}
+.icon-playground__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12rpx;
+  margin-top: 20rpx;
+}
+.icon-playground__note {
+  font-size: 22rpx;
+  line-height: 1.5;
+  color: var(--r-text-secondary);
+}
+.icon-copy {
+  margin: 0;
+  padding: 16rpx 4rpx;
+  min-height: 88rpx;
+  line-height: 1.5;
+  font-size: 24rpx;
+  color: var(--r-color-primary);
+  background: transparent;
+  flex-shrink: 0;
+}
+.icon-collection__heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+  margin-bottom: 16rpx;
+}
+.icon-collection__title {
+  font-size: 28rpx;
+  font-weight: 650;
+  color: var(--r-text-primary);
+}
+.icon-collection__kind {
+  font-size: 22rpx;
+  color: var(--r-text-secondary);
+}
+.icon-sample-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8rpx;
+}
+.icon-sample {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16rpx;
+  min-width: 0;
+  min-height: 144rpx;
+  margin: 0;
+  padding: 16rpx 0;
+  background: transparent;
+  color: var(--r-text-primary);
+  border: 1rpx solid transparent;
+  border-radius: var(--r-radius-md);
+}
+.icon-sample--selected {
+  background: var(--r-color-primary-soft);
+  border-color: var(--r-border-color);
+}
+.icon-sample__label {
+  font-size: 22rpx;
+  line-height: 1.5;
+  color: var(--r-text-secondary);
+}
+.icon-resource-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28rpx 16rpx;
+}
+.icon-resource {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 20rpx;
+  min-height: 140rpx;
+  font-size: 22rpx;
+  color: var(--r-text-secondary);
+}
+.icon-custom-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24rpx;
+}
+.icon-letter,
+.icon-composed {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: var(--r-radius-sm);
+}
+.icon-letter {
+  color: var(--r-color-primary);
+  background: var(--r-color-primary-soft);
+  font-size: 36rpx;
+  font-weight: 650;
+}
+.icon-composed {
+  border: 1rpx solid var(--r-color-success);
+  background: var(--r-color-success-soft);
+}
+.demo-icon button::after {
+  border: 0;
+}
+.demo-icon button:active {
+  opacity: 0.72;
+}

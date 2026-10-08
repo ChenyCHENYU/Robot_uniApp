@@ -1,1 +1,27 @@
-/* C_Icon — 组件使用 UnoCSS 原子类，此文件为结构占位 */
+.c-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  vertical-align: middle;
+  line-height: 1;
+}
+.c-icon__glyph,
+.c-icon__image {
+  display: block;
+  flex-shrink: 0;
+}
+/* 不重设 glyph 的 background 或 mask，保留 Fluent Color 的多色 SVG。 */
+.c-icon__fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: 1rpx solid var(--r-color-error);
+  border-radius: 6rpx;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--r-color-error);
+  background: var(--r-bg-card);
+}

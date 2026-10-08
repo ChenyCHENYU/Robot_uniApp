@@ -1,37 +1,31 @@
 <template>
   <C_Layout>
-    <view class="max-w-4xl mx-auto p-5 bg-gray-50 min-h-screen">
-      <view class="text-center mb-8">
-        <C_Title
-          title="C_Modal 模态框"
-          subtitle="信息确认与交互弹窗"
-          type="primary"
-          :level="3"
-          size="large"
-          align="center"
-          left-icon="i-mdi-card-text-outline"
-          :show-decoration="true"
-          :show-divider="true"
-        />
+    <view class="demo-page demo-modal">
+      <view class="demo-hero">
+        <view class="demo-hero__eyebrow"
+          ><text>{{ PAGE_META.category }}</text
+          ><text>{{ PAGE_META.component }}</text></view
+        >
+        <text class="demo-hero__title">{{ PAGE_META.title }}</text>
+        <text class="demo-hero__desc">{{ PAGE_META.summary }}</text>
       </view>
+      <view class="demo-tip"
+        ><C_Icon
+          name="i-mdi-gesture-tap"
+          :size="16"
+        /><text>{{ PAGE_META.instruction }}</text></view
+      >
 
-      <view class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <view class="demo-grid">
         <!-- 确认弹窗 -->
-        <view class="bg-white rounded-lg shadow-md p-6">
-          <C_Title
-            title="确认弹窗"
-            subtitle="双按钮模式"
-            :level="4"
-            type="primary"
-            align="center"
-            left-icon="i-mdi-help-circle-outline"
-            :show-decoration="true"
-          />
-          <view class="my-6 p-4 bg-gray-50 rounded-lg text-center">
-            <text
-              class="text-sm text-white bg-blue-500 px-6 py-2.5 rounded-full"
+        <view class="demo-section">
+          <text class="section-title">确认弹窗</text>
+          <text class="section-desc">双按钮模式</text>
+          <view class="demo-preview text-center">
+            <button
+              class="demo-button"
               @click="showConfirm = true"
-              >打开确认弹窗</text
+              >打开确认弹窗</button
             >
           </view>
           <C_Modal
@@ -41,30 +35,23 @@
             cancelText="取消"
             :showCancel="true"
             @confirm="onConfirm"
-            @cancel="showConfirm = false"
+            @cancel="onCancel"
           >
-            <text class="text-sm text-gray-600"
-              >确定要执行此操作吗？此操作不可撤销。</text
+            <text class="text-sm demo-regular"
+              >确认后会在当前页面显示操作结果。</text
             >
           </C_Modal>
         </view>
 
         <!-- 提示弹窗 -->
-        <view class="bg-white rounded-lg shadow-md p-6">
-          <C_Title
-            title="提示弹窗"
-            subtitle="单按钮模式"
-            :level="4"
-            type="success"
-            align="center"
-            left-icon="i-mdi-information-outline"
-            :show-decoration="true"
-          />
-          <view class="my-6 p-4 bg-gray-50 rounded-lg text-center">
-            <text
-              class="text-sm text-white bg-green-500 px-6 py-2.5 rounded-full"
+        <view class="demo-section">
+          <text class="section-title">提示弹窗</text>
+          <text class="section-desc">单按钮模式</text>
+          <view class="demo-preview text-center">
+            <button
+              class="demo-button"
               @click="showAlert = true"
-              >打开提示弹窗</text
+              >打开提示弹窗</button
             >
           </view>
           <C_Modal
@@ -74,28 +61,19 @@
             :showCancel="false"
             @confirm="showAlert = false"
           >
-            <text class="text-sm text-gray-600"
-              >您的数据已成功保存到服务器。</text
-            >
+            <text class="text-sm demo-regular">这是一条演示成功提示。</text>
           </C_Modal>
         </view>
 
         <!-- 自定义内容 -->
-        <view class="bg-white rounded-lg shadow-md p-6">
-          <C_Title
-            title="自定义内容"
-            subtitle="丰富的弹窗内容"
-            :level="4"
-            type="warning"
-            align="center"
-            left-icon="i-mdi-pencil-box-outline"
-            :show-decoration="true"
-          />
-          <view class="my-6 p-4 bg-gray-50 rounded-lg text-center">
-            <text
-              class="text-sm text-white bg-amber-500 px-6 py-2.5 rounded-full"
+        <view class="demo-section">
+          <text class="section-title">自定义内容</text>
+          <text class="section-desc">丰富的弹窗内容</text>
+          <view class="demo-preview text-center">
+            <button
+              class="demo-button demo-button--quiet"
               @click="showCustom = true"
-              >自定义内容弹窗</text
+              >自定义内容弹窗</button
             >
           </view>
           <C_Modal
@@ -107,15 +85,19 @@
           >
             <view class="space-y-3">
               <view class="flex items-center gap-3 p-3 bg-blue-50 rounded-lg">
-                <text class="text-2xl">🚀</text>
+                <C_Icon
+                  name="i-mdi-rocket-launch-outline"
+                  :size="24"
+                  class="demo-feature-icon"
+                />
                 <view>
                   <text class="text-sm font-bold block">v2.0.0 新版本</text>
-                  <text class="text-xs text-gray-500">包含多项功能改进</text>
+                  <text class="text-xs demo-muted">包含多项功能改进</text>
                 </view>
               </view>
-              <view class="text-sm text-gray-600 space-y-1">
+              <view class="text-sm demo-regular space-y-1">
                 <text class="block">• 全新界面设计</text>
-                <text class="block">• 性能优化提升 50%</text>
+                <text class="block">• 更流畅的操作反馈</text>
                 <text class="block">• 修复已知问题</text>
               </view>
             </view>
@@ -123,21 +105,14 @@
         </view>
 
         <!-- 关闭按钮 -->
-        <view class="bg-white rounded-lg shadow-md p-6">
-          <C_Title
-            title="关闭按钮"
-            subtitle="showClose 属性"
-            :level="4"
-            type="danger"
-            align="center"
-            left-icon="i-mdi-close-circle-outline"
-            :show-decoration="true"
-          />
-          <view class="my-6 p-4 bg-gray-50 rounded-lg text-center">
-            <text
-              class="text-sm text-white bg-red-500 px-6 py-2.5 rounded-full"
+        <view class="demo-section">
+          <text class="section-title">关闭按钮</text>
+          <text class="section-desc">showClose 属性</text>
+          <view class="demo-preview text-center">
+            <button
+              class="demo-button demo-button--danger"
               @click="showClose = true"
-              >带关闭按钮</text
+              >带关闭按钮</button
             >
           </view>
           <C_Modal
@@ -148,7 +123,7 @@
             confirmText="好的"
             @confirm="showClose = false"
           >
-            <text class="text-sm text-gray-600"
+            <text class="text-sm demo-regular"
               >您有一条新的系统通知，请查看并处理。</text
             >
           </C_Modal>
@@ -158,45 +133,30 @@
       <!-- 交互结果 -->
       <view
         v-if="actionResult"
-        class="mt-6 bg-white rounded-lg shadow-md p-4"
+        class="mt-6 demo-surface rounded-lg p-4"
       >
         <view class="flex items-center gap-2 justify-center">
           <text class="text-green-500">✓</text>
-          <text class="text-sm text-gray-600">{{ actionResult }}</text>
+          <text class="text-sm demo-regular">{{ actionResult }}</text>
         </view>
-      </view>
-
-      <view class="mt-8 text-center">
-        <C_Title
-          title="灵活弹窗，交互清晰"
-          subtitle="确认 · 提示 · 自定义内容 · 关闭按钮 · 遮罩控制"
-          :level="5"
-          type="info"
-          align="center"
-          :show-divider="true"
-          divider-position="top"
-        />
       </view>
     </view>
   </C_Layout>
 </template>
 
 <script setup lang="ts">
-  import { ref } from 'vue'
-  const showConfirm = ref(false)
-  const showAlert = ref(false)
-  const showCustom = ref(false)
-  const showClose = ref(false)
-  const actionResult = ref('')
-
-  /**
-   *
-   */
-  function onConfirm() {
-    showConfirm.value = false
-    actionResult.value = '您点击了确认按钮'
-    setTimeout(() => {
-      actionResult.value = ''
-    }, 2000)
-  }
+  import { PAGE_META, useDemo } from './data'
+  const {
+    showConfirm,
+    showAlert,
+    showCustom,
+    showClose,
+    actionResult,
+    onConfirm,
+    onCancel,
+  } = useDemo()
 </script>
+
+<style lang="scss" scoped>
+  @import './index.scss';
+</style>

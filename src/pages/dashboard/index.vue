@@ -2,7 +2,11 @@
  * @Description: 数据看板模板页 - 数据分析展示
 -->
 <template>
-  <C_Layout>
+  <C_Layout
+    :refresher-enabled="true"
+    :refresher-triggered="refreshing"
+    @refresh="handleRefresh"
+  >
     <view class="dashboard-page">
       <!-- 顶部概览 -->
       <view class="overview-header">
@@ -23,16 +27,40 @@
         </view>
       </view>
 
+      <view class="refresh-row"
+        ><text>{{ loading ? '正在更新数据…' : '核心指标与访问趋势' }}</text
+        ><button
+          class="refresh-btn"
+          :disabled="loading"
+          @click="loadData"
+          >刷新</button
+        ></view
+      >
       <!-- 核心指标卡片 -->
-      <view class="kpi-grid">
+      <C_Skeleton
+        v-if="statsLoading && kpiCards.length === 0"
+        :rows="3"
+      /><view
+        v-if="!statsLoading && kpiCards.length === 0"
+        class="empty-panel"
+        ><text>暂无指标数据</text
+        ><button
+          class="retry-btn"
+          @click="loadData"
+          >重新加载</button
+        ></view
+      ><view class="kpi-grid">
         <view
           v-for="kpi in kpiCards"
           :key="kpi.label"
           class="kpi-card"
-          :style="{ background: kpi.bg }"
         >
           <view class="kpi-icon">
-            <text>{{ kpi.icon }}</text>
+            <C_Icon
+              :name="kpiIcons[kpi.label]"
+              :size="24"
+              color="var(--r-color-primary)"
+            />
           </view>
           <text class="kpi-value">{{ kpi.value }}</text>
           <text class="kpi-label">{{ kpi.label }}</text>
@@ -51,15 +79,20 @@
       <view class="chart-card">
         <view class="chart-header">
           <text class="chart-title">访问趋势</text>
-          <text class="chart-subtitle">近7天数据</text>
+          <text class="chart-subtitle">{{ chartSubtitle }}</text>
         </view>
-        <view class="bar-chart">
+        <text
+          v-if="chartData.length === 0"
+          class="section-empty"
+          >{{ loading ? '正在加载趋势…' : '暂无趋势数据' }}</text
+        ><view class="bar-chart">
           <view
             v-for="bar in chartData"
             :key="bar.label"
             class="bar-item"
           >
-            <view class="bar-track">
+            <text class="bar-value">{{ bar.value }}</text
+            ><view class="bar-track">
               <view
                 class="bar-fill"
                 :style="{ height: bar.percent + '%' }"
@@ -73,9 +106,13 @@
       <!-- 数据排行 -->
       <view class="rank-card">
         <view class="chart-header">
-          <text class="chart-title">模块访问排行</text>
+          <text class="chart-title">访问量排行</text>
         </view>
-        <view class="rank-list">
+        <text
+          v-if="rankList.length === 0"
+          class="section-empty"
+          >暂无排行数据</text
+        ><view class="rank-list">
           <view
             v-for="(item, index) in rankList"
             :key="item.name"
@@ -108,11 +145,12 @@
             class="action-item"
             @click="handleAction(action)"
           >
-            <view
-              class="action-icon"
-              :style="{ background: action.bg }"
-            >
-              <text class="icon-text">{{ action.icon }}</text>
+            <view class="action-icon">
+              <C_Icon
+                :name="action.icon"
+                :size="22"
+                color="var(--r-color-primary)"
+              />
             </view>
             <text class="action-label">{{ action.label }}</text>
           </view>
@@ -123,337 +161,26 @@
 </template>
 
 <script setup lang="ts">
-  import { ref } from 'vue'
-  import { onLoad, onPullDownRefresh } from '@dcloudio/uni-app'
-  import { useDashboardData } from '@/composables/useDashboardData'
+  import { useDashboardPage } from './data'
 
-  const today = new Date().toLocaleDateString('zh-CN', {
-    month: 'long',
-    day: 'numeric',
-    weekday: 'long',
-  })
-  const period = ref('week')
-
-  const periods = [
-    { label: '日', value: 'day' },
-    { label: '周', value: 'week' },
-    { label: '月', value: 'month' },
-  ]
-
-  // ==================== 看板数据（useDashboardData 共享实现） ====================
-
-  const { kpiCards, chartData, rankList, loadOverview } = useDashboardData()
-
-  const loadData = async () => {
-    await loadOverview(period.value)
-  }
-
-  onLoad(() => {
-    loadData()
-  })
-
-  // 下拉刷新
-  onPullDownRefresh(async () => {
-    await loadData().catch(() => {})
-    uni.stopPullDownRefresh()
-  })
-
-  const handlePeriodChange = (p: { value: string }) => {
-    period.value = p.value
-    loadData()
-  }
-
-  const quickActions = ref([
-    {
-      label: '导出报告',
-      icon: '📋',
-      bg: 'var(--r-gradient-primary)',
-    },
-    {
-      label: '用户分析',
-      icon: '👤',
-      bg: 'var(--r-gradient-danger)',
-    },
-    {
-      label: '系统日志',
-      icon: '📝',
-      bg: 'var(--r-gradient-info)',
-    },
-    {
-      label: '性能监控',
-      icon: '⚡',
-      bg: 'var(--r-gradient-success)',
-    },
-  ])
-
-  const handleAction = (action: { label: string }) => {
-    uni.showToast({ title: action.label, icon: 'none' })
-  }
+  const {
+    today,
+    period,
+    periods,
+    kpiCards,
+    chartData,
+    rankList,
+    statsLoading,
+    loading,
+    chartSubtitle,
+    kpiIcons,
+    loadData,
+    handlePeriodChange,
+    quickActions,
+    handleAction,
+    refreshing,
+    handleRefresh,
+  } = useDashboardPage()
 </script>
 
-<style lang="scss" scoped>
-  .dashboard-page {
-    padding: 24rpx;
-    background: var(--r-bg-page);
-    min-height: 100vh;
-  }
-
-  .overview-header {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    margin-bottom: 24rpx;
-    padding: 8rpx;
-
-    .greeting-text {
-      display: block;
-      font-size: 36rpx;
-      font-weight: 700;
-      color: var(--r-text-primary);
-    }
-
-    .greeting-date {
-      font-size: 24rpx;
-      color: var(--r-text-secondary);
-    }
-
-    .period-tabs {
-      display: flex;
-      gap: 4rpx;
-      background: var(--r-bg-card);
-      padding: 4rpx;
-      border-radius: 12rpx;
-
-      .period-tab {
-        padding: 8rpx 20rpx;
-        border-radius: 8rpx;
-
-        &.active {
-          background: #667eea;
-          .tab-text {
-            color: #fff;
-          }
-        }
-
-        .tab-text {
-          font-size: 22rpx;
-          color: var(--r-text-secondary);
-        }
-      }
-    }
-  }
-
-  .kpi-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16rpx;
-    margin-bottom: 24rpx;
-
-    .kpi-card {
-      padding: 24rpx;
-      border-radius: 20rpx;
-      position: relative;
-      overflow: hidden;
-
-      .kpi-icon {
-        font-size: 36rpx;
-        margin-bottom: 12rpx;
-      }
-
-      .kpi-value {
-        display: block;
-        font-size: 36rpx;
-        font-weight: 700;
-        color: #fff;
-      }
-
-      .kpi-label {
-        display: block;
-        font-size: 22rpx;
-        color: rgba(255, 255, 255, 0.8);
-        margin-top: 4rpx;
-      }
-
-      .kpi-trend {
-        position: absolute;
-        top: 24rpx;
-        right: 24rpx;
-        padding: 4rpx 12rpx;
-        border-radius: 8rpx;
-
-        &.up {
-          background: rgba(255, 255, 255, 0.2);
-        }
-        &.down {
-          background: rgba(245, 108, 108, 0.3);
-        }
-
-        .trend-text {
-          font-size: 20rpx;
-          color: #fff;
-          font-weight: 600;
-        }
-      }
-    }
-  }
-
-  .chart-card,
-  .rank-card {
-    padding: 28rpx;
-    background: var(--r-bg-card);
-    border-radius: 20rpx;
-    box-shadow: var(--r-shadow-sm);
-    margin-bottom: 24rpx;
-
-    .chart-header {
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      margin-bottom: 24rpx;
-
-      .chart-title {
-        font-size: 30rpx;
-        font-weight: 600;
-        color: var(--r-text-primary);
-      }
-
-      .chart-subtitle {
-        font-size: 22rpx;
-        color: var(--r-text-secondary);
-      }
-    }
-  }
-
-  .bar-chart {
-    display: flex;
-    align-items: flex-end;
-    gap: 16rpx;
-    height: 280rpx;
-
-    .bar-item {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      height: 100%;
-
-      .bar-track {
-        flex: 1;
-        width: 100%;
-        display: flex;
-        align-items: flex-end;
-
-        .bar-fill {
-          width: 100%;
-          background: linear-gradient(180deg, #667eea, #764ba2);
-          border-radius: 8rpx 8rpx 0 0;
-          min-height: 8rpx;
-          transition: height 0.5s ease;
-        }
-      }
-
-      .bar-label {
-        font-size: 20rpx;
-        color: var(--r-text-placeholder);
-        margin-top: 8rpx;
-      }
-    }
-  }
-
-  .rank-list {
-    .rank-item {
-      display: flex;
-      align-items: center;
-      gap: 16rpx;
-      padding: 14rpx 0;
-
-      .rank-num {
-        width: 40rpx;
-        font-size: 24rpx;
-        font-weight: 700;
-        color: var(--r-text-placeholder);
-        text-align: center;
-
-        &.top {
-          color: #667eea;
-        }
-      }
-
-      .rank-name {
-        width: 140rpx;
-        font-size: 26rpx;
-        color: var(--r-text-primary);
-      }
-
-      .rank-bar-wrap {
-        flex: 1;
-        height: 12rpx;
-        background: var(--r-bg-page);
-        border-radius: 6rpx;
-        overflow: hidden;
-
-        .rank-bar {
-          height: 100%;
-          background: linear-gradient(90deg, #667eea, #764ba2);
-          border-radius: 6rpx;
-          transition: width 0.5s ease;
-        }
-      }
-
-      .rank-value {
-        width: 120rpx;
-        text-align: right;
-        font-size: 24rpx;
-        color: var(--r-text-secondary);
-        font-weight: 500;
-      }
-    }
-  }
-
-  .quick-actions {
-    margin-bottom: 24rpx;
-
-    .actions-title {
-      display: block;
-      font-size: 30rpx;
-      font-weight: 600;
-      color: var(--r-text-primary);
-      margin-bottom: 16rpx;
-    }
-
-    .actions-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 16rpx;
-
-      .action-item {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 10rpx;
-        padding: 24rpx 0;
-        background: var(--r-bg-card);
-        border-radius: 16rpx;
-        box-shadow: var(--r-shadow-sm);
-
-        .action-icon {
-          width: 72rpx;
-          height: 72rpx;
-          border-radius: 18rpx;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-
-          .icon-text {
-            font-size: 32rpx;
-          }
-        }
-
-        .action-label {
-          font-size: 22rpx;
-          color: var(--r-text-secondary);
-        }
-      }
-    }
-  }
-</style>
+<style lang="scss" scoped src="./index.scss"></style>

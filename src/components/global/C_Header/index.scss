@@ -38,7 +38,8 @@
 .c-header__left {
   display: flex;
   align-items: center;
-  min-width: 136rpx;
+  width: 144rpx;
+  flex-shrink: 0;
 }
 
 .c-header__avatar-box {
@@ -79,12 +80,25 @@
 .c-header__title {
   max-width: 320rpx;
   font-size: 30rpx;
-  font-weight: 600;
+  font-weight: 650;
   color: var(--r-text-primary, #1c1c1e);
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
   display: block;
+}
+
+.c-header__heading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10rpx;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.c-header__heading .c-header__title {
+  min-width: 0;
 }
 
 .c-header__subtitle {
@@ -103,7 +117,8 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  min-width: 136rpx;
+  width: 144rpx;
+  flex-shrink: 0;
 }
 
 .c-header__btn {
@@ -142,4 +157,17 @@
   font-weight: 600;
   color: #ffffff;
   line-height: 1;
+}
+
+.c-header__avatar-initial {
+  display: flex;
+  width: 60rpx;
+  height: 60rpx;
+  align-items: center;
+  justify-content: center;
+  background: var(--r-color-primary-soft);
+  color: var(--r-color-primary);
+  font-size: 26rpx;
+  font-weight: 650;
+  border-radius: 20rpx;
 }

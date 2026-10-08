@@ -18,6 +18,8 @@ export interface UserStoreState {
   permissions: string[]
   roles: string[]
   loginTime: string | null
+  loginAccount: string
+  identityVersion: number
 }
 
 export interface LoginCredentials {
@@ -39,6 +41,8 @@ export interface PageResult<T = any> {
 export interface AppStoreState {
   systemInfo: UniApp.GetSystemInfoResult | null
   networkType: string
+  networkConnected: boolean | null
+  networkVersion: number
   statusBarHeight: number
   globalLoading: boolean
 }

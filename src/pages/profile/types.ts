@@ -10,7 +10,6 @@ export interface ProfileMenuItem {
   path?: string
   badge?: number
   extra?: string
-  [key: string]: any
 }
 
 export interface MenuGroup {

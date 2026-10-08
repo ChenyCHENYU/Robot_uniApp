@@ -84,6 +84,7 @@ export function setupMock() {
               ? JSON.parse(options.data)
               : options.data,
           url: options.url,
+          header: options.header,
         })
 
         logger.log(`[Mock] ✅ ${key}`, mockData)

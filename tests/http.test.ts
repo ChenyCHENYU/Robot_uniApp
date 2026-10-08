@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
 
 /**
@@ -18,7 +18,9 @@ vi.stubGlobal('uni', {
   showLoading: () => {},
   hideLoading: () => {},
   showToast: vi.fn(),
-  reLaunch: vi.fn(),
+  reLaunch: vi.fn((options: any) =>
+    options.complete?.({ errMsg: 'reLaunch:ok' })
+  ),
   setStorageSync: uni.setStorageSync,
   getStorageSync: uni.getStorageSync,
 })
@@ -47,6 +49,10 @@ describe('http 层行为', () => {
     setActivePinia(createPinia())
     vi.clearAllMocks()
     uni.clearStorageSync()
+  })
+
+  afterEach(() => {
+    vi.useRealTimers()
   })
 
   it('成功协议：HTTP 200 + code 0 → 返回 data 体', async () => {
@@ -105,9 +111,9 @@ describe('http 层行为', () => {
         options.success?.({ statusCode: 403, data: {} })
       }, 0)
     }
-    await expect(http.get('/forbidden', undefined, { retryDelay: 1 })).rejects.toMatchObject(
-      { code: 403 }
-    )
+    await expect(
+      http.get('/forbidden', undefined, { retryDelay: 1 })
+    ).rejects.toMatchObject({ code: 403 })
     expect(calls).toBe(1)
 
     calls = 0
@@ -154,12 +160,156 @@ describe('http 层行为', () => {
       }, 10)
     }
 
-    const [a, b] = await Promise.all([
-      http.get('/dedupe'),
-      http.get('/dedupe'),
-    ])
+    const [a, b] = await Promise.all([http.get('/dedupe'), http.get('/dedupe')])
     expect(calls).toBe(1)
     expect(a).toBe(b)
   })
 
+  it.each([
+    {
+      name: '业务401',
+      statusCode: 200,
+      data: { code: 401, message: '旧令牌过期' },
+    },
+    { name: 'HTTP401', statusCode: 401, data: {} },
+    {
+      name: '成功资料',
+      statusCode: 200,
+      data: { code: 0, data: { username: '旧账号' } },
+    },
+  ])(
+    '切换账号后旧 $name 响应作为取消处理，不清新会话或回写旧结果',
+    async response => {
+      let oldRequest: any
+      requestImpl = options => {
+        oldRequest = options
+      }
+      const store = useUserStore()
+      store.token = 'old_account_token'
+      const pending = http.get('/old-response', undefined, {
+        retry: 0,
+        cancelable: false,
+      })
+      const cancelled = expect(pending).rejects.toMatchObject({
+        code: -1,
+        message: '请求已取消',
+        retryable: false,
+      })
+
+      store.clearUserInfo()
+      store.token = 'new_account_token'
+      oldRequest.success(response)
+      await cancelled
+
+      expect(store.token).toBe('new_account_token')
+      expect(uni.reLaunch).not.toHaveBeenCalled()
+      expect(uni.showToast).not.toHaveBeenCalled()
+      expect(http.loadingCount).toBe(0)
+    }
+  )
+
+  it('旧GET网络退避期间切换账号，不携带新账号令牌重发旧请求', async () => {
+    vi.useFakeTimers()
+    const sentTokens: string[] = []
+    let firstRequest: any
+    requestImpl = options => {
+      sentTokens.push(options.header.Authorization)
+      firstRequest = options
+    }
+    const store = useUserStore()
+    store.token = 'old_account_token'
+    const pending = http.get('/retry-old-account', undefined, {
+      retry: 1,
+      retryDelay: 10,
+      silent: true,
+      cancelable: false,
+    })
+    const cancelled = expect(pending).rejects.toMatchObject({
+      code: -1,
+      message: '请求已取消',
+    })
+    firstRequest.fail({ errMsg: 'request:fail timeout' })
+    await vi.advanceTimersByTimeAsync(0)
+
+    store.clearUserInfo()
+    store.token = 'new_account_token'
+    await vi.advanceTimersByTimeAsync(10)
+    await cancelled
+
+    expect(sentTokens).toEqual(['Bearer old_account_token'])
+    expect(store.token).toBe('new_account_token')
+    expect(uni.reLaunch).not.toHaveBeenCalled()
+    expect(uni.showToast).not.toHaveBeenCalled()
+  })
+
+  it('同一会话更新令牌仍允许合法重试使用最新令牌', async () => {
+    vi.useFakeTimers()
+    const sentTokens: string[] = []
+    let firstRequest: any
+    requestImpl = options => {
+      sentTokens.push(options.header.Authorization)
+      if (sentTokens.length === 1) firstRequest = options
+      else
+        options.success({ statusCode: 200, data: { code: 0, data: 'renewed' } })
+    }
+    const store = useUserStore()
+    store.token = 'original_token'
+    const pending = http.get('/same-session-renewal', undefined, {
+      retry: 1,
+      retryDelay: 10,
+      silent: true,
+      cancelable: false,
+    })
+    firstRequest.fail({ errMsg: 'request:fail timeout' })
+    await vi.advanceTimersByTimeAsync(0)
+    store.token = 'renewed_token'
+    await vi.advanceTimersByTimeAsync(10)
+
+    await expect(pending).resolves.toBe('renewed')
+    expect(sentTokens).toEqual([
+      'Bearer original_token',
+      'Bearer renewed_token',
+    ])
+  })
+
+  it('旧上传401与进度回调不会清新会话或覆盖新账号界面', async () => {
+    let uploadOptions: any
+    let progressCallback: (value: { progress: number }) => void = () => {}
+    const onProgress = vi.fn()
+    uni.uploadFile = vi.fn((options: any) => {
+      uploadOptions = options
+      return {
+        onProgressUpdate: (callback: typeof progressCallback) => {
+          progressCallback = callback
+        },
+      }
+    }) as typeof uni.uploadFile
+    const store = useUserStore()
+    store.token = 'old_upload_token'
+    const pending = http.upload(
+      '/upload-old-account',
+      '/local/file.png',
+      {},
+      { onProgress }
+    )
+    const cancelled = expect(pending).rejects.toMatchObject({
+      code: -1,
+      message: '请求已取消',
+    })
+    progressCallback({ progress: 25 })
+
+    store.clearUserInfo()
+    store.token = 'new_account_token'
+    progressCallback({ progress: 90 })
+    await uploadOptions.success({ statusCode: 401, data: '{}' })
+    uploadOptions.complete()
+    await cancelled
+
+    expect(onProgress).toHaveBeenCalledTimes(1)
+    expect(onProgress).toHaveBeenCalledWith(25)
+    expect(store.token).toBe('new_account_token')
+    expect(uni.reLaunch).not.toHaveBeenCalled()
+    expect(uni.showToast).not.toHaveBeenCalled()
+    expect(http.loadingCount).toBe(0)
+  })
 })

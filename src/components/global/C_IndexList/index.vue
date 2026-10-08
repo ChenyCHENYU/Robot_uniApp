@@ -45,6 +45,7 @@
           activeIndex === group[indexKey] &&
             'c-index-list__sidebar-item--active',
         ]"
+        @click="selectIndex(group[indexKey])"
         :style="
           activeIndex === group[indexKey] && activeColor
             ? { color: activeColor }
@@ -66,7 +67,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, getCurrentInstance as vueGetCurrentInstance } from 'vue'
+  import { ref, nextTick, getCurrentInstance } from 'vue'
   import { defaultProps } from './data'
 
   interface IndexGroup {
@@ -90,6 +91,7 @@
 
   const emit = defineEmits(['select'])
 
+  const instance = getCurrentInstance()
   const scrollTarget = ref('')
   const activeIndex = ref('')
   const touching = ref(false)
@@ -102,7 +104,7 @@
     return new Promise(resolve => {
       uni
         .createSelectorQuery()
-        .in(getComponentProxy())
+        .in(instance?.proxy)
         .select('.c-index-list__sidebar')
         .boundingClientRect(rect => {
           resolve(rect as { top: number; height: number } | null)
@@ -125,14 +127,13 @@
     if (!sidebarRect || !itemHeight) return
 
     const touch = e.touches[0]
+    if (!touch) return
     const offsetY = touch.clientY - sidebarRect.top
     const idx = Math.floor(offsetY / itemHeight)
 
     if (idx >= 0 && idx < props.data.length) {
       const letter = props.data[idx][props.indexKey]
-      activeIndex.value = letter
-      scrollTarget.value = `idx-${letter}`
-      emit('select', letter)
+      selectIndex(letter)
     }
   }
 
@@ -142,10 +143,13 @@
     sidebarRect = null
   }
 
-  /** 获取组件实例代理（用于 createSelectorQuery） */
-  function getComponentProxy() {
-    const { proxy } = vueGetCurrentInstance()!
-    return proxy
+  /** 点击或触摸索引，重复选择也能回到同一分组。 */
+  async function selectIndex(letter: string) {
+    activeIndex.value = letter
+    scrollTarget.value = ''
+    await nextTick()
+    scrollTarget.value = `idx-${letter}`
+    emit('select', letter)
   }
 </script>
 

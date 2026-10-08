@@ -1,1 +1,27 @@
-/* 13-number-keyboard 演示页样式 */
+.keyboard-input,
+.keyboard-pin {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  min-height: 88rpx;
+  border: 1rpx solid var(--r-border-color);
+  border-radius: 16rpx;
+  background: var(--r-bg-card);
+  color: var(--r-text-primary);
+  font-size: 28rpx;
+}
+.keyboard-input {
+  width: 100%;
+  padding: 20rpx;
+  box-sizing: border-box;
+}
+.keyboard-pin {
+  width: 68rpx;
+  padding: 0;
+  flex: 1;
+}
+.keyboard-input::after,
+.keyboard-pin::after {
+  border: 0;
+}

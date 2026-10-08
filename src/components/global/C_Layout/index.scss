@@ -1,214 +1,48 @@
-/**
- * @Description: C_Layout 组件样式 - 纯净白色背景（类名统一 c-layout__ 前缀 + scoped）
- */
-
-// =================================
-// 变量定义
-// =================================
-$layout-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-$content-bg: var(--r-bg-page, #f2f2f7); // 页面底色（跟随主题）
-$loading-bg: rgba(0, 0, 0, 0.3);
-$loading-backdrop-blur: 10rpx;
-$tabbar-height: 110rpx;
-
-// =================================
-// 主布局容器
-// =================================
+/** 内容区承担滚动，导航栏在布局流中占位，避免重叠与重复安全区留白。 */
 .c-layout {
   height: 100vh;
   height: 100dvh;
-  display: flex;
-  flex-direction: column;
-  background-color: $content-bg;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--r-bg-page);
   position: relative;
-  overflow-x: hidden;
-
-  // 无Layout样式（登录页、引导页等）
-  &.layout-none {
-    .c-layout__content {
-      flex: 1;
-      width: 100%;
-      height: 100vh;
-      overflow: hidden;
-      position: relative;
-      background-color: $content-bg;
-    }
+  :deep(.c-layout__provider) {
+    height: 100%;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
   }
-
-  // 只有Header的样式（详情页、设置页等）
-  &.layout-header-only {
-    .c-layout__content {
-      flex: 1;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-      background-color: $content-bg;
-      position: relative;
-      z-index: 1;
-    }
-  }
-
-  // 完整布局样式（TabBar页面）
-  &.layout-full {
-    .c-layout__content {
-      flex: 1;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-      background-color: $content-bg;
-      padding-bottom: $tabbar-height;
-      position: relative;
-      z-index: 1;
-    }
-  }
-
-  // 状态修饰符
-  &.has-header {
-    .c-layout__content {
-      position: relative;
-      z-index: 1;
-      background-color: $content-bg;
-    }
-  }
-
-  &.has-tabbar {
-    .c-layout__content {
-      padding-bottom: $tabbar-height;
-      background-color: $content-bg;
-      padding-bottom: calc(
-        #{$tabbar-height} + constant(safe-area-inset-bottom)
-      );
-      padding-bottom: calc(#{$tabbar-height} + env(safe-area-inset-bottom));
-    }
-  }
-
-  // Header 和 TabBar 同时存在
-  &.has-header.has-tabbar {
-    .c-layout__content {
-      height: calc(100vh - #{$tabbar-height});
-      max-height: calc(100vh - #{$tabbar-height});
-    }
-  }
-
-  &.has-header:not(.has-tabbar) {
-    .c-layout__content {
-      height: auto;
-      min-height: calc(100vh - 200rpx);
-    }
-  }
-
-  &.has-tabbar:not(.has-header) {
-    .c-layout__content {
-      padding-top: 0;
-      height: calc(100vh - #{$tabbar-height});
-    }
+  :deep(.c-header),
+  :deep(.c-tabbar) {
+    flex-shrink: 0;
   }
 }
-
-// =================================
-// 内容区域
-// =================================
 .c-layout__content {
   flex: 1;
-  position: relative;
-  z-index: 1;
-  transition: $layout-transition;
-  background-color: $content-bg;
-  animation: c-layout-enter 0.32s cubic-bezier(0.32, 0.72, 0, 1) both;
-
-  // 滚动优化
+  height: 0;
+  min-height: 0;
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
-  min-height: 0; // 修复flex布局下的滚动问题
-
-  // 无间距内容
-  &.no-padding {
-    padding: 0 !important;
-  }
-
-  // 自定义间距
-  &.custom-padding {
-    padding: var(--layout-padding, 40rpx);
-  }
-
-  // 带边距的内容区域
-  &.with-margin {
-    margin: 20rpx;
-    border-radius: 20rpx;
-    box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
-  }
+  overscroll-behavior-y: contain;
+  background: var(--r-bg-page);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
-
-// =================================
-// Header区域增强（子组件根元素会携带父作用域属性）
-// =================================
-.c-layout .c-header {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  flex-shrink: 0;
-  width: 100%;
+.has-tabbar .c-layout__content {
+  padding-bottom: 0;
 }
-
-// =================================
-// Tabbar区域增强
-// =================================
-.c-layout .c-tabbar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 99;
-  flex-shrink: 0;
-}
-
-// =================================
-// 全局Loading遮罩
-// =================================
 .c-layout__loading {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: var(--r-z-modal, 300);
-  background: $loading-bg;
-  backdrop-filter: blur($loading-backdrop-blur);
-  -webkit-backdrop-filter: blur($loading-backdrop-blur);
+  inset: 0;
+  z-index: var(--r-z-modal);
+  background: var(--r-bg-mask);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 16rpx;
-
-  .c-layout__loading-text {
-    color: var(--r-text-inverse, #ffffff);
-    font-size: 28rpx;
-  }
+  gap: 24rpx;
 }
-
-// =================================
-// 动画性能优化（仅作用于组件内部元素）
-// =================================
-@media (prefers-reduced-motion: reduce) {
-  .c-layout,
-  .c-layout__content,
-  .c-layout .c-header,
-  .c-layout .c-tabbar {
-    transition: none !important;
-    animation: none !important;
-    transform: none !important;
-    will-change: auto !important;
-  }
-}
-
-/* 页面入场过渡（轻微上浮淡入） */
-@keyframes c-layout-enter {
-  from {
-    opacity: 0;
-    transform: translateY(16rpx);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.c-layout__loading-text {
+  color: #fff;
+  font-size: 28rpx;
 }

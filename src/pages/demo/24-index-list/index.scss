@@ -1,1 +1,8 @@
-/* 24-index-list 演示页样式 */
+.demo-index-list :deep(.c-index-list__sidebar),
+.demo-index-list :deep(.c-index-list__tooltip) {
+  position: absolute;
+}
+.demo-index-list :deep(.c-index-list__scroll) {
+  padding-right: 40rpx;
+  box-sizing: border-box;
+}

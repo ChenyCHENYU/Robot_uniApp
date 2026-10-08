@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <rect width="800" height="600" fill="#eaf5f4"/>
+  <circle cx="128" cy="150" r="112" fill="#d8eeeb"/>
+  <circle cx="682" cy="488" r="140" fill="#dff0ec"/>
+  <rect x="114" y="94" width="572" height="414" rx="32" fill="#fff" stroke="#d6eae5" stroke-width="3"/>
+  <rect x="150" y="130" width="178" height="24" rx="8" fill="#1d4d52"/>
+  <rect x="150" y="171" width="236" height="12" rx="6" fill="#b6d6d0"/>
+  <rect x="150" y="222" width="234" height="250" rx="20" fill="#f0f8f6"/>
+  <circle cx="267" cy="334" r="73" fill="none" stroke="#d8ebe6" stroke-width="28"/>
+  <circle cx="267" cy="334" r="73" fill="none" stroke="#169c82" stroke-width="28" stroke-dasharray="310 459" transform="rotate(-90 267 334)"/>
+  <circle cx="267" cy="334" r="73" fill="none" stroke="#3563e9" stroke-width="28" stroke-dasharray="104 459" stroke-dashoffset="-310" transform="rotate(-90 267 334)"/>
+  <text x="267" y="345" text-anchor="middle" font-family="Arial,sans-serif" font-size="34" font-weight="700" fill="#1d4d52">68%</text>
+  <rect x="414" y="222" width="236" height="62" rx="16" fill="#f0f8f6"/>
+  <circle cx="445" cy="253" r="10" fill="#169c82"/>
+  <rect x="470" y="246" width="136" height="13" rx="6" fill="#8dbeb2"/>
+  <rect x="414" y="302" width="236" height="62" rx="16" fill="#edf2fe"/>
+  <circle cx="445" cy="333" r="10" fill="#3563e9"/>
+  <rect x="470" y="326" width="111" height="13" rx="6" fill="#9fb6e8"/>
+  <rect x="414" y="382" width="236" height="90" rx="16" fill="#f0f8f6"/>
+  <path d="m438 441 27-12 24 7 28-24 23 6 39-23 43 9" fill="none" stroke="#169c82" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="400" y="548" text-anchor="middle" font-family="Arial,sans-serif" font-size="22" font-weight="600" letter-spacing="5" fill="#5b8b83">INSIGHTS</text>
+</svg>

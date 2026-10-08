@@ -1,6 +1,6 @@
 <template>
   <view
-    class="c-divider"
+    :class="['c-divider', `c-divider--${textPosition}`]"
     :style="{ margin: `${margin}rpx 0` }"
   >
     <view

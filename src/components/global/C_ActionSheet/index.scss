@@ -18,6 +18,9 @@
     border-radius: var(--r-radius-xl) var(--r-radius-xl) 0 0;
     z-index: calc(var(--r-z-popup) + 1);
     animation: sheet-up 0.25s ease;
+    max-height: 85%;
+    overflow-y: auto;
+    overscroll-behavior: contain;
     padding-bottom: env(safe-area-inset-bottom);
   }
 
@@ -33,11 +36,15 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 112rpx;
+    min-height: 104rpx;
+    padding: 20rpx 32rpx;
+    box-sizing: border-box;
     font-size: var(--r-font-size-lg);
     color: var(--r-text-primary);
     border-bottom: 1rpx solid var(--r-border-light);
     gap: 16rpx;
+    flex-wrap: wrap;
+    overflow-wrap: anywhere;
 
     &:active {
       background: var(--r-bg-hover);
@@ -70,7 +77,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 112rpx;
+    min-height: 104rpx;
+    padding: 20rpx 32rpx;
+    box-sizing: border-box;
     font-size: var(--r-font-size-lg);
     color: var(--r-text-primary);
 

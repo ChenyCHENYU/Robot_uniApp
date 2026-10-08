@@ -51,18 +51,18 @@
   &__title {
     font-size: 28rpx;
     font-weight: 500;
-    color: var(--r-text-color-primary, #1a1a1a);
+    color: var(--r-text-primary, #1a1a1a);
     line-height: 32rpx;
   }
 
   &__item--pending &__title {
-    color: var(--r-text-color-secondary, #999);
+    color: var(--r-text-secondary, #999);
   }
 
   &__desc {
     display: block;
     font-size: 24rpx;
-    color: var(--r-text-color-secondary, #666);
+    color: var(--r-text-secondary, #666);
     margin-top: 8rpx;
     line-height: 36rpx;
   }
@@ -70,7 +70,7 @@
   &__time {
     display: block;
     font-size: 22rpx;
-    color: var(--r-text-color-placeholder, #999);
+    color: var(--r-text-placeholder, #999);
     margin-top: 8rpx;
   }
 }

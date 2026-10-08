@@ -3,11 +3,18 @@
     <!-- 遮罩 -->
     <view
       class="c-action-sheet__overlay"
+      @touchmove.stop.prevent
+      @wheel.stop.prevent
       @click="onOverlayClick"
     />
 
     <!-- 面板 -->
-    <view class="c-action-sheet__panel">
+    <view
+      class="c-action-sheet__panel"
+      role="dialog"
+      aria-modal="true"
+      :aria-label="title || '选择操作'"
+    >
       <view
         v-if="title"
         class="c-action-sheet__title"

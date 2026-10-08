@@ -43,7 +43,7 @@ export const useSettingsStore = defineStore('settings', {
         >
       )[state.fontSize] || '标准',
     languageLabel: state =>
-      state.language === 'zh-CN' ? '简体中文' : 'English',
+      state.language === 'zh-CN' ? '简体中文' : '繁體中文',
   },
 
   actions: {

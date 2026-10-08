@@ -3,7 +3,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 80rpx 40rpx;
+  padding: 64rpx 40rpx;
 
   &__illustration {
     margin-bottom: 32rpx;
@@ -20,109 +20,13 @@
     .c-empty__icon-circle {
       position: absolute;
       inset: 0;
-      border-radius: 50%;
-      background: linear-gradient(
-        135deg,
-        rgba(160, 174, 192, 0.1),
-        rgba(160, 174, 192, 0.05)
-      );
-      border: 1rpx solid rgba(160, 174, 192, 0.1);
+      border-radius: 40rpx;
+      background: var(--r-bg-hover);
+      border: 1rpx solid var(--r-border-light);
     }
 
     .c-empty__icon-dots {
-      position: absolute;
-      inset: -16rpx;
-
-      .dot {
-        position: absolute;
-        border-radius: 50%;
-        background: rgba(160, 174, 192, 0.2);
-
-        &--1 {
-          width: 8rpx;
-          height: 8rpx;
-          top: 8rpx;
-          right: 16rpx;
-        }
-
-        &--2 {
-          width: 12rpx;
-          height: 12rpx;
-          bottom: 4rpx;
-          left: 12rpx;
-        }
-
-        &--3 {
-          width: 6rpx;
-          height: 6rpx;
-          top: 40%;
-          left: -4rpx;
-        }
-      }
-    }
-
-    // 各类型的颜色主题
-    &--network,
-    &--error {
-      .c-empty__icon-circle {
-        background: linear-gradient(
-          135deg,
-          rgba(245, 108, 108, 0.1),
-          rgba(245, 108, 108, 0.03)
-        );
-        border-color: rgba(245, 108, 108, 0.1);
-      }
-
-      .dot {
-        background: rgba(245, 108, 108, 0.15);
-      }
-    }
-
-    &--search,
-    &--message {
-      .c-empty__icon-circle {
-        background: linear-gradient(
-          135deg,
-          rgba(64, 158, 255, 0.1),
-          rgba(64, 158, 255, 0.03)
-        );
-        border-color: rgba(64, 158, 255, 0.1);
-      }
-
-      .dot {
-        background: rgba(64, 158, 255, 0.15);
-      }
-    }
-
-    &--permission,
-    &--collect {
-      .c-empty__icon-circle {
-        background: linear-gradient(
-          135deg,
-          rgba(230, 162, 60, 0.1),
-          rgba(230, 162, 60, 0.03)
-        );
-        border-color: rgba(230, 162, 60, 0.1);
-      }
-
-      .dot {
-        background: rgba(230, 162, 60, 0.15);
-      }
-    }
-
-    &--cart {
-      .c-empty__icon-circle {
-        background: linear-gradient(
-          135deg,
-          rgba(103, 194, 58, 0.1),
-          rgba(103, 194, 58, 0.03)
-        );
-        border-color: rgba(103, 194, 58, 0.1);
-      }
-
-      .dot {
-        background: rgba(103, 194, 58, 0.15);
-      }
+      display: none;
     }
   }
 
@@ -152,8 +56,12 @@
     font-weight: 500;
     color: var(--r-color-primary, #409eff);
     border: 1rpx solid var(--r-color-primary, #409eff);
-    border-radius: 40rpx;
-    background: transparent;
+    border-radius: var(--r-radius-md);
+    min-height: 88rpx;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    background: var(--r-bg-card);
     transition: all 0.3s ease;
 
     &:active {

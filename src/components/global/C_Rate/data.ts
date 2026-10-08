@@ -15,9 +15,9 @@ export const defaultProps = {
   /** 选中颜色 */
   activeColor: 'var(--r-color-warning, #ff9f0a)',
   /** 未选中颜色 */
-  inactiveColor: 'var(--r-text-color-placeholder, #ccc)',
+  inactiveColor: 'var(--r-text-placeholder, #ccc)',
   /** 选中图标 */
-  activeIcon: 'star-fill',
+  activeIcon: 'star-filled',
   /** 未选中图标 */
   inactiveIcon: 'star',
   /** 是否允许半星 */

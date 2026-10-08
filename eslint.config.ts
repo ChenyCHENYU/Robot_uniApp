@@ -100,6 +100,8 @@ export default [
             'web-view',
             'swiper',
             'swiper-item',
+            'movable-area',
+            'movable-view',
             'v-md-editor',
           ],
         },

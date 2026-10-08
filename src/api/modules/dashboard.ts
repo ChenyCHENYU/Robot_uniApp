@@ -32,5 +32,6 @@ export const getDashboardStats = api.get<DashboardStats>('/dashboard/stats', {
 })
 export const getDashboardChart = api.get<DashboardChart>('/dashboard/chart')
 export const getDashboardActivities = api.get<PageResult<DashboardActivity>>(
-  '/dashboard/activities'
+  '/dashboard/activities',
+  { silent: true }
 )

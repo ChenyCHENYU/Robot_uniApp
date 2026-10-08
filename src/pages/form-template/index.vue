@@ -19,7 +19,12 @@
               v-model="form.name"
               placeholder="请输入姓名"
               class="form-input"
-            />
+              @blur="validateField('name')"
+            /><text
+              v-if="errors.name"
+              class="field-error"
+              >{{ errors.name }}</text
+            >
           </view>
           <view class="form-item">
             <text class="form-label"
@@ -28,9 +33,15 @@
             <input
               v-model="form.phone"
               type="number"
+              maxlength="11"
               placeholder="请输入手机号"
               class="form-input"
-            />
+              @blur="validateField('phone')"
+            /><text
+              v-if="errors.phone"
+              class="field-error"
+              >{{ errors.phone }}</text
+            >
           </view>
           <view class="form-item">
             <text class="form-label">邮箱</text>
@@ -38,7 +49,12 @@
               v-model="form.email"
               placeholder="请输入邮箱地址"
               class="form-input"
-            />
+              @blur="validateField('email')"
+            /><text
+              v-if="errors.email"
+              class="field-error"
+              >{{ errors.email }}</text
+            >
           </view>
           <view class="form-item">
             <text class="form-label">性别 <text class="required">*</text></text>
@@ -48,12 +64,16 @@
                 :key="opt.value"
                 class="radio-item"
                 :class="{ active: form.gender === opt.value }"
-                @click="form.gender = opt.value"
+                @click="selectGender(opt.value)"
               >
                 <view class="radio-dot"></view>
                 <text class="radio-text">{{ opt.label }}</text>
-              </view>
-            </view>
+              </view> </view
+            ><text
+              v-if="errors.gender"
+              class="field-error"
+              >{{ errors.gender }}</text
+            >
           </view>
         </view>
       </view>
@@ -75,8 +95,12 @@
                 name="arrow-right"
                 size="14px"
                 color="#ccc"
-              />
-            </view>
+              /> </view
+            ><text
+              v-if="errors.department"
+              class="field-error"
+              >{{ errors.department }}</text
+            >
           </view>
           <view class="form-item">
             <text class="form-label">职位</text>
@@ -88,19 +112,21 @@
           </view>
           <view class="form-item">
             <text class="form-label">入职日期</text>
-            <view
-              class="select-input"
-              @click="pickDate"
-            >
-              <text :class="['select-text', { placeholder: !form.joinDate }]">
-                {{ form.joinDate || '请选择日期' }}
-              </text>
-              <wd-icon
-                name="calendar"
-                size="14px"
-                color="#ccc"
-              />
-            </view>
+            <!-- eslint-disable-next-line vue/component-name-in-template-casing -->
+            <picker
+              mode="date"
+              :value="form.joinDate"
+              @change="handleDateChange"
+              ><view class="select-input">
+                <text :class="['select-text', { placeholder: !form.joinDate }]">
+                  {{ form.joinDate || '请选择日期' }}
+                </text>
+                <wd-icon
+                  name="calendar"
+                  size="14px"
+                  color="#ccc"
+                /> </view
+            ></picker>
           </view>
         </view>
       </view>
@@ -146,12 +172,13 @@
         </view>
         <view
           class="submit-btn primary"
+          :class="{ disabled: submitting }"
           @click="handleSubmit"
         >
-          <wd-loading
+          <C_LoadingIndicator
             v-if="submitting"
-            :size="18"
-            color="#fff"
+            size="small"
+            color="var(--r-on-primary, #fff)"
           />
           <text class="btn-text white">{{
             submitting ? '提交中...' : '提交'
@@ -170,309 +197,25 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, reactive } from 'vue'
-  import { submitForm } from '@/api'
+  import { useFormTemplatePage } from './data'
+  import C_LoadingIndicator from '@/components/global/C_LoadingIndicator/index.vue'
 
-  const submitting = ref(false)
-  const showDeptPicker = ref(false)
-
-  const pickDate = () => {
-    const today = new Date()
-    const dateStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
-    form.joinDate = dateStr
-    uni.showToast({ title: `已选择 ${dateStr}`, icon: 'none' })
-  }
-
-  const form = reactive({
-    name: '',
-    phone: '',
-    email: '',
-    gender: '',
-    department: '',
-    position: '',
-    joinDate: '',
-    skills: [] as string[],
-    remark: '',
-  })
-
-  const genderOptions = [
-    { label: '男', value: 'male' },
-    { label: '女', value: 'female' },
-  ]
-
-  const deptActions = [
-    { name: '技术部' },
-    { name: '产品部' },
-    { name: '设计部' },
-    { name: '市场部' },
-    { name: '运营部' },
-  ]
-
-  const skillTags = [
-    'Vue',
-    'React',
-    'UniApp',
-    'TypeScript',
-    'Node.js',
-    'Python',
-    'Java',
-    'Go',
-  ]
-
-  const toggleSkill = (tag: string) => {
-    const idx = form.skills.indexOf(tag)
-    if (idx > -1) {
-      form.skills.splice(idx, 1)
-    } else {
-      form.skills.push(tag)
-    }
-  }
-
-  const onDeptSelect = (item: { name: string }) => {
-    form.department = item.name
-    showDeptPicker.value = false
-  }
-
-  const handleReset = () => {
-    Object.assign(form, {
-      name: '',
-      phone: '',
-      email: '',
-      gender: '',
-      department: '',
-      position: '',
-      joinDate: '',
-      skills: [],
-      remark: '',
-    })
-  }
-
-  const handleSubmit = async () => {
-    if (!form.name || !form.phone || !form.gender || !form.department) {
-      uni.showToast({ title: '请填写必填项', icon: 'none' })
-      return
-    }
-    if (!/^1\d{10}$/.test(form.phone)) {
-      uni.showToast({ title: '请输入正确的手机号', icon: 'none' })
-      return
-    }
-    submitting.value = true
-    try {
-      await submitForm({ ...form })
-      uni.showToast({ title: '提交成功', icon: 'success' })
-      handleReset()
-    } catch {
-      // 错误提示由 http 层处理
-    } finally {
-      submitting.value = false
-    }
-  }
+  const {
+    submitting,
+    showDeptPicker,
+    form,
+    errors,
+    genderOptions,
+    deptActions,
+    skillTags,
+    validateField,
+    toggleSkill,
+    onDeptSelect,
+    selectGender,
+    handleDateChange,
+    handleReset,
+    handleSubmit,
+  } = useFormTemplatePage()
 </script>
 
-<style lang="scss" scoped>
-  .form-page {
-    padding: 24rpx;
-    padding-bottom: 140rpx;
-    background: var(--r-bg-page);
-    min-height: 100vh;
-  }
-
-  .form-header {
-    padding: 20rpx 8rpx 32rpx;
-
-    .form-title {
-      display: block;
-      font-size: 40rpx;
-      font-weight: 700;
-      color: var(--r-text-primary);
-    }
-
-    .form-subtitle {
-      display: block;
-      font-size: 26rpx;
-      color: var(--r-text-secondary);
-      margin-top: 8rpx;
-    }
-  }
-
-  .form-section {
-    margin-bottom: 28rpx;
-
-    .section-title {
-      display: block;
-      font-size: 28rpx;
-      font-weight: 600;
-      color: var(--r-text-primary);
-      margin-bottom: 16rpx;
-      padding-left: 8rpx;
-    }
-
-    .section-card {
-      padding: 8rpx 28rpx;
-      background: var(--r-bg-card);
-      border-radius: 20rpx;
-      box-shadow: var(--r-shadow-sm);
-    }
-  }
-
-  .form-item {
-    padding: 24rpx 0;
-    border-bottom: 1rpx solid var(--r-border-light);
-
-    &:last-child {
-      border-bottom: none;
-    }
-
-    .form-label {
-      display: block;
-      font-size: 26rpx;
-      color: var(--r-text-secondary);
-      margin-bottom: 12rpx;
-
-      .required {
-        color: #f56c6c;
-      }
-    }
-
-    .form-input {
-      width: 100%;
-      height: 72rpx;
-      font-size: 28rpx;
-      color: var(--r-text-primary);
-    }
-
-    .select-input {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: 72rpx;
-
-      .select-text {
-        font-size: 28rpx;
-        color: var(--r-text-primary);
-
-        &.placeholder {
-          color: var(--r-text-placeholder);
-        }
-      }
-    }
-  }
-
-  .radio-group {
-    display: flex;
-    gap: 32rpx;
-
-    .radio-item {
-      display: flex;
-      align-items: center;
-      gap: 10rpx;
-
-      .radio-dot {
-        width: 36rpx;
-        height: 36rpx;
-        border-radius: 50%;
-        border: 2rpx solid #ddd;
-        position: relative;
-      }
-
-      &.active .radio-dot {
-        border-color: #667eea;
-
-        &::after {
-          content: '';
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          width: 20rpx;
-          height: 20rpx;
-          border-radius: 50%;
-          background: #667eea;
-        }
-      }
-
-      .radio-text {
-        font-size: 28rpx;
-        color: var(--r-text-primary);
-      }
-    }
-  }
-
-  .tags-wrap {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12rpx;
-
-    .skill-tag {
-      padding: 10rpx 24rpx;
-      border-radius: 24rpx;
-      background: var(--r-bg-page);
-      border: 1rpx solid transparent;
-
-      &.active {
-        background: rgba(102, 126, 234, 0.1);
-        border-color: #667eea;
-
-        .tag-text {
-          color: #667eea;
-        }
-      }
-
-      .tag-text {
-        font-size: 24rpx;
-        color: var(--r-text-secondary);
-      }
-    }
-  }
-
-  .form-textarea {
-    width: 100%;
-    height: 200rpx;
-    font-size: 28rpx;
-    color: var(--r-text-primary);
-    line-height: 1.6;
-  }
-
-  .word-count {
-    display: block;
-    text-align: right;
-    font-size: 22rpx;
-    color: var(--r-text-placeholder);
-    margin-top: 8rpx;
-  }
-
-  .submit-section {
-    display: flex;
-    gap: 20rpx;
-    padding: 20rpx 0;
-
-    .submit-btn {
-      flex: 1;
-      height: 92rpx;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8rpx;
-      border-radius: 18rpx;
-
-      &.secondary {
-        background: var(--r-bg-card);
-        border: 1rpx solid var(--r-border-light);
-      }
-
-      &.primary {
-        background: var(--r-gradient-primary);
-      }
-
-      .btn-text {
-        font-size: 30rpx;
-        font-weight: 600;
-        color: var(--r-text-primary);
-
-        &.white {
-          color: #fff;
-        }
-      }
-    }
-  }
-</style>
+<style lang="scss" scoped src="./index.scss"></style>

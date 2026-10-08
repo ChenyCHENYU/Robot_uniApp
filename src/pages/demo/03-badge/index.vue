@@ -1,35 +1,27 @@
 <template>
   <C_Layout>
-    <view class="max-w-4xl mx-auto p-5 bg-gray-50 min-h-screen">
-      <view class="text-center mb-8">
-        <C_Title
-          title="C_Badge 徽标"
-          subtitle="消息提示与数字标记"
-          type="primary"
-          :level="3"
-          size="large"
-          align="center"
-          left-icon="i-mdi-bell-badge"
-          :show-decoration="true"
-          :show-divider="true"
-        />
+    <view class="demo-page demo-badge">
+      <view class="demo-hero">
+        <view class="demo-hero__eyebrow"
+          ><text>{{ PAGE_META.category }}</text
+          ><text>{{ PAGE_META.component }}</text></view
+        >
+        <text class="demo-hero__title">{{ PAGE_META.title }}</text>
+        <text class="demo-hero__desc">{{ PAGE_META.summary }}</text>
       </view>
+      <view class="demo-tip"
+        ><C_Icon
+          name="i-mdi-gesture-tap"
+          :size="16"
+        /><text>{{ PAGE_META.instruction }}</text></view
+      >
 
-      <view class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <view class="demo-grid">
         <!-- 基础用法 -->
-        <view class="bg-white rounded-lg shadow-md p-6">
-          <C_Title
-            title="基础用法"
-            subtitle="数字徽标"
-            :level="4"
-            type="primary"
-            align="center"
-            left-icon="i-mdi-numeric"
-            :show-decoration="true"
-          />
-          <view
-            class="flex justify-center items-center gap-8 my-6 p-4 bg-gray-50 rounded-lg"
-          >
+        <view class="demo-section">
+          <text class="section-title">基础用法</text>
+          <text class="section-desc">数字徽标</text>
+          <view class="flex justify-center items-center gap-8 demo-preview">
             <C_Badge :value="5">
               <view
                 class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center"
@@ -55,19 +47,10 @@
         </view>
 
         <!-- 最大值 -->
-        <view class="bg-white rounded-lg shadow-md p-6">
-          <C_Title
-            title="最大值"
-            subtitle="超出显示 max+"
-            :level="4"
-            type="success"
-            align="center"
-            left-icon="i-mdi-counter"
-            :show-decoration="true"
-          />
-          <view
-            class="flex justify-center items-center gap-8 my-6 p-4 bg-gray-50 rounded-lg"
-          >
+        <view class="demo-section">
+          <text class="section-title">最大值</text>
+          <text class="section-desc">超出显示 max+</text>
+          <view class="flex justify-center items-center gap-8 demo-preview">
             <C_Badge
               :value="120"
               :max="99"
@@ -102,19 +85,10 @@
         </view>
 
         <!-- 圆点模式 -->
-        <view class="bg-white rounded-lg shadow-md p-6">
-          <C_Title
-            title="小圆点模式"
-            subtitle="dot 属性"
-            :level="4"
-            type="warning"
-            align="center"
-            left-icon="i-mdi-circle-small"
-            :show-decoration="true"
-          />
-          <view
-            class="flex justify-center items-center gap-8 my-6 p-4 bg-gray-50 rounded-lg"
-          >
+        <view class="demo-section">
+          <text class="section-title">小圆点模式</text>
+          <text class="section-desc">dot 属性</text>
+          <view class="flex justify-center items-center gap-8 demo-preview">
             <C_Badge dot>
               <view
                 class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center"
@@ -146,19 +120,10 @@
         </view>
 
         <!-- 自定义颜色 -->
-        <view class="bg-white rounded-lg shadow-md p-6">
-          <C_Title
-            title="自定义颜色"
-            subtitle="color 属性"
-            :level="4"
-            type="danger"
-            align="center"
-            left-icon="i-mdi-palette"
-            :show-decoration="true"
-          />
-          <view
-            class="flex justify-center items-center gap-8 my-6 p-4 bg-gray-50 rounded-lg"
-          >
+        <view class="demo-section">
+          <text class="section-title">自定义颜色</text>
+          <text class="section-desc">color 属性</text>
+          <view class="flex justify-center items-center gap-8 demo-preview">
             <C_Badge
               :value="8"
               color="#409eff"
@@ -166,7 +131,7 @@
               <view
                 class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center"
               >
-                <text class="i-mdi-heart text-xl text-gray-500"></text>
+                <text class="i-mdi-heart text-xl demo-muted"></text>
               </view>
             </C_Badge>
             <C_Badge
@@ -176,7 +141,7 @@
               <view
                 class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center"
               >
-                <text class="i-mdi-heart text-xl text-gray-500"></text>
+                <text class="i-mdi-heart text-xl demo-muted"></text>
               </view>
             </C_Badge>
             <C_Badge
@@ -186,71 +151,55 @@
               <view
                 class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center"
               >
-                <text class="i-mdi-heart text-xl text-gray-500"></text>
+                <text class="i-mdi-heart text-xl demo-muted"></text>
               </view>
             </C_Badge>
           </view>
         </view>
 
         <!-- 动态交互 -->
-        <view class="bg-white rounded-lg shadow-md p-6 lg:col-span-2">
-          <C_Title
-            title="动态交互"
-            subtitle="点击增减徽标数值"
-            :level="4"
-            type="info"
-            align="center"
-            left-icon="i-mdi-gesture-tap"
-            :show-decoration="true"
-          />
-          <view
-            class="flex justify-center items-center gap-6 my-6 p-4 bg-gray-50 rounded-lg"
-          >
-            <view
-              class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center"
-              @click="badgeCount > 0 && badgeCount--"
+        <view class="demo-section">
+          <text class="section-title">动态交互</text>
+          <text class="section-desc">点击增减徽标数值</text>
+          <view class="flex justify-center items-center gap-6 demo-preview">
+            <button
+              class="demo-button"
+              @click="decreaseBadge"
+              :disabled="badgeCount === 0"
             >
-              <text class="text-white text-lg font-bold">-</text>
-            </view>
+              <text class="text-lg font-bold">-</text>
+            </button>
             <C_Badge
               :value="badgeCount"
               :max="99"
             >
               <view
-                class="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl flex items-center justify-center shadow-lg"
+                class="w-12 h-12 badge-preview-symbol rounded-xl flex items-center justify-center"
               >
                 <text class="i-mdi-email text-2xl text-white"></text>
               </view>
             </C_Badge>
-            <view
-              class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center"
-              @click="badgeCount++"
+            <button
+              class="demo-button"
+              @click="increaseBadge"
             >
-              <text class="text-white text-lg font-bold">+</text>
-            </view>
+              <text class="text-lg font-bold">+</text>
+            </button>
           </view>
           <view class="text-center">
-            <text class="text-sm text-gray-500">当前值：{{ badgeCount }}</text>
+            <text class="text-sm demo-muted">当前值：{{ badgeCount }}</text>
           </view>
         </view>
-      </view>
-
-      <view class="mt-8 text-center">
-        <C_Title
-          title="消息提醒，一目了然"
-          subtitle="数字 · 圆点 · 最大值 · 自定义颜色"
-          :level="5"
-          type="info"
-          align="center"
-          :show-divider="true"
-          divider-position="top"
-        />
       </view>
     </view>
   </C_Layout>
 </template>
 
 <script setup lang="ts">
-  import { ref } from 'vue'
-  const badgeCount = ref(5)
+  import { PAGE_META, useDemo } from './data'
+  const { badgeCount, increaseBadge, decreaseBadge } = useDemo()
 </script>
+
+<style lang="scss" scoped>
+  @import './index.scss';
+</style>

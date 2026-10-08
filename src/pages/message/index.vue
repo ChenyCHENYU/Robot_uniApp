@@ -2,16 +2,37 @@
  * @Description: 消息中心页面
 -->
 <template>
-  <C_Layout @settings-click="handleSettingsClick">
-    <view class="message-page">
+  <C_Layout
+    :refresher-enabled="true"
+    :refresher-triggered="refreshing"
+    @refresh="handleRefresh"
+    @reach-bottom="loadMore"
+    @settings-click="handleSettingsClick"
+  >
+    <view class="message-page"
+      ><view class="page-heading"
+        ><text class="page-eyebrow">NOTIFICATIONS</text
+        ><text class="page-title">消息中心</text
+        ><text class="page-description"
+          >查看通知详情，集中处理未读消息</text
+        ></view
+      >
       <!-- 消息分类 -->
-      <view class="message-tabs">
+      <view
+        class="message-tabs"
+        role="tablist"
+        aria-label="消息分类"
+      >
         <view
           v-for="tab in messageTabs"
           :key="tab.key"
           class="tab-item"
           :class="{ active: activeTab === tab.key }"
+          role="tab"
+          :aria-selected="activeTab === tab.key"
+          tabindex="0"
           @click="activeTab = tab.key"
+          @keydown.enter="activeTab = tab.key"
         >
           <text class="tab-text">{{ tab.label }}</text>
           <view
@@ -49,7 +70,7 @@
             <wd-icon
               name="check"
               size="14px"
-              color="#667eea"
+              color="var(--r-color-primary)"
             />
             <text class="action-text">全部已读</text>
           </view>
@@ -57,7 +78,10 @@
       </view>
 
       <!-- 消息列表 -->
-      <view class="message-list">
+      <C_Skeleton
+        v-if="busy && filteredMessages.length === 0"
+        :rows="4"
+      /><view class="message-list">
         <view
           v-for="msg in filteredMessages"
           :key="msg.id"
@@ -69,14 +93,11 @@
             @click="handleMessageClick(msg)"
             @longpress="handleLongPress(msg)"
           >
-            <view
-              class="msg-icon-wrap"
-              :style="{ background: msg.iconBg }"
-            >
-              <wd-icon
-                :name="msg.icon"
-                size="20px"
-                color="#fff"
+            <view class="msg-icon-wrap">
+              <C_Icon
+                :name="messageIcon(msg.type)"
+                :size="22"
+                color="var(--r-color-primary)"
               />
             </view>
             <view class="msg-body">
@@ -107,18 +128,36 @@
 
       <!-- 空状态 -->
       <view
-        v-if="filteredMessages.length === 0"
+        v-if="filteredMessages.length === 0 && !busy"
         class="empty-state"
       >
         <wd-icon
           name="chat"
           size="64px"
-          color="#ddd"
+          color="var(--r-text-placeholder)"
         />
         <text class="empty-text">暂无消息</text>
-        <text class="empty-desc">当前分类下没有新消息</text>
+        <text class="empty-desc">{{
+          errorText ||
+          (hasMore
+            ? '当前已载入消息中没有该分类，可加载更多'
+            : '当前分类下没有消息')
+        }}</text
+        ><button
+          v-if="errorText"
+          class="retry-btn"
+          @click="loadMessages"
+          >重新加载</button
+        >
       </view>
 
+      <button
+        v-if="hasMore"
+        class="load-more-btn"
+        :disabled="busy"
+        @click="loadMore"
+        >{{ busy ? '加载中…' : '加载更多消息' }}</button
+      >
       <!-- 消息详情弹窗 -->
       <wd-action-sheet
         v-model="showDetail"
@@ -131,345 +170,29 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, computed } from 'vue'
-  import { onShow, onPullDownRefresh, onReachBottom } from '@dcloudio/uni-app'
-  import { useMessageStore, type MessageItem } from '@/stores/modules/message'
+  import { useMessagePage } from './data'
 
-  const messageStore = useMessageStore()
-
-  const activeTab = ref('all')
-  const showDetail = ref(false)
-  const currentMsg = ref<MessageItem | null>(null)
-  const loading = ref(false)
-
-  // 进入页面拉取最新消息（静默失败，保留本地缓存展示）
-  const loadMessages = async () => {
-    if (loading.value) return
-    loading.value = true
-    try {
-      await messageStore.fetchMessages()
-    } catch {
-      // 错误提示由 http 层处理
-    } finally {
-      loading.value = false
-    }
-  }
-
-  onShow(() => {
-    loadMessages()
-  })
-
-  // 下拉刷新
-  onPullDownRefresh(async () => {
-    await loadMessages().catch(() => {})
-    uni.stopPullDownRefresh()
-  })
-
-  // 触底加载更多
-  onReachBottom(() => {
-    messageStore.loadMore()
-  })
-
-  const detailActions = [
-    { name: '标记为已读', value: 'read' },
-    { name: '删除该消息', value: 'delete', color: '#f5576c' },
-  ]
-
-  const tabKeys = [
-    { key: 'all', label: '全部' },
-    { key: 'system', label: '系统' },
-    { key: 'notify', label: '通知' },
-    { key: 'todo', label: '待办' },
-    { key: 'interact', label: '互动' },
-  ]
-
-  const messageTabs = computed(() =>
-    tabKeys.map(t => ({
-      ...t,
-      count:
-        t.key === 'all'
-          ? messageStore.totalUnread
-          : messageStore.unreadByType[t.key] || 0,
-    }))
-  )
-
-  const filteredMessages = computed(() => {
-    if (activeTab.value === 'all') return messageStore.messages
-    return messageStore.messages.filter(msg => msg.type === activeTab.value)
-  })
-
-  const markAllRead = () => {
-    messageStore.markAllRead()
-    uni.showToast({ title: '已全部标记为已读', icon: 'none' })
-  }
-
-  const handleClearRead = () => {
-    const readCount = messageStore.messages.filter(m => m.read).length
-    if (readCount === 0) {
-      uni.showToast({ title: '没有已读消息', icon: 'none' })
-      return
-    }
-    uni.showModal({
-      title: '清除已读消息',
-      content: `确定删除 ${readCount} 条已读消息？`,
-      success: ({ confirm }) => {
-        if (confirm) {
-          messageStore.deleteReadMessages()
-          uni.showToast({ title: '已清除', icon: 'success' })
-        }
-      },
-    })
-  }
-
-  const handleMessageClick = (msg: MessageItem) => {
-    if (!msg.read) messageStore.markRead(msg.id)
-
-    if (msg.actionUrl) {
-      uni.navigateTo({ url: msg.actionUrl })
-      return
-    }
-
-    uni.showModal({
-      title: msg.title,
-      content: msg.content,
-      showCancel: false,
-      confirmText: '知道了',
-    })
-  }
-
-  const handleLongPress = (msg: MessageItem) => {
-    currentMsg.value = msg
-    showDetail.value = true
-  }
-
-  const handleDetailAction = ({ value }: { value: string }) => {
-    if (!currentMsg.value) return
-    if (value === 'read') {
-      messageStore.markRead(currentMsg.value.id)
-    } else if (value === 'delete') {
-      messageStore.deleteMessage(currentMsg.value.id)
-      uni.showToast({ title: '已删除', icon: 'success' })
-    }
-  }
-
-  const handleSettingsClick = () => {
-    uni.navigateTo({ url: '/pages/settings/index' })
-  }
+  const {
+    messageIcon,
+    activeTab,
+    showDetail,
+    errorText,
+    hasMore,
+    busy,
+    loadMessages,
+    loadMore,
+    detailActions,
+    messageTabs,
+    filteredMessages,
+    markAllRead,
+    handleClearRead,
+    handleMessageClick,
+    handleLongPress,
+    handleDetailAction,
+    handleSettingsClick,
+    refreshing,
+    handleRefresh,
+  } = useMessagePage()
 </script>
 
-<style lang="scss" scoped>
-  .message-page {
-    background: var(--r-bg-page, #f5f7fa);
-    padding-bottom: 32rpx;
-  }
-
-  .message-tabs {
-    display: flex;
-    padding: 24rpx 32rpx;
-    gap: 16rpx;
-    background: var(--r-bg-card);
-    border-bottom: 1rpx solid var(--r-divider);
-    overflow-x: auto;
-    overscroll-behavior-x: contain;
-
-    .tab-item {
-      position: relative;
-      padding: 16rpx 28rpx;
-      border-radius: 40rpx;
-      background: var(--r-bg-hover);
-      border: 1rpx solid transparent;
-      transition: all 0.3s ease;
-      flex-shrink: 0;
-
-      &.active {
-        background: var(--r-bg-hover);
-        border-color: var(--r-border-color);
-
-        .tab-text {
-          color: var(--r-color-primary);
-          font-weight: 600;
-        }
-      }
-
-      .tab-text {
-        font-size: 26rpx;
-        color: var(--r-text-regular);
-      }
-
-      .tab-badge {
-        position: absolute;
-        top: -8rpx;
-        right: -8rpx;
-        min-width: 32rpx;
-        height: 32rpx;
-        padding: 0 8rpx;
-        background: var(--r-color-error);
-        border-radius: 16rpx;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        .badge-text {
-          font-size: 20rpx;
-          color: var(--r-text-inverse);
-          font-weight: 600;
-        }
-      }
-    }
-  }
-
-  .action-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20rpx 32rpx;
-
-    .msg-count {
-      font-size: 24rpx;
-      color: var(--r-text-secondary);
-    }
-
-    .action-right-group {
-      display: flex;
-      gap: 16rpx;
-
-      .action-btn {
-        display: flex;
-        align-items: center;
-        gap: 8rpx;
-        padding: 8rpx 16rpx;
-        border-radius: 20rpx;
-        background: var(--r-bg-hover);
-
-        .action-text {
-          font-size: 24rpx;
-          color: var(--r-color-primary);
-          font-weight: 500;
-
-          &.secondary {
-            color: var(--r-text-secondary);
-          }
-        }
-      }
-    }
-  }
-
-  .message-list {
-    padding: 0 32rpx;
-
-    .message-card-wrapper {
-      margin-bottom: 16rpx;
-    }
-
-    .message-card {
-      display: flex;
-      align-items: center;
-      padding: 28rpx;
-      background: var(--r-bg-card);
-      border-radius: 20rpx;
-      border: 1rpx solid var(--r-divider);
-      box-shadow: var(--r-shadow-sm);
-      transition: all 0.3s ease;
-
-      &.unread {
-        background: var(--r-bg-card);
-        border-color: var(--r-border-color);
-      }
-
-      &:active {
-        transform: scale(0.98);
-      }
-
-      .msg-icon-wrap {
-        width: 80rpx;
-        height: 80rpx;
-        border-radius: 20rpx;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-      }
-
-      .msg-body {
-        flex: 1;
-        min-width: 0;
-        flex: 1;
-        margin-left: 24rpx;
-        overflow: hidden;
-
-        .msg-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 8rpx;
-
-          .msg-title {
-        min-width: 0;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-            font-size: 28rpx;
-            font-weight: 600;
-            color: var(--r-text-primary);
-          }
-          .msg-time {
-            font-size: 22rpx;
-            color: var(--r-text-secondary);
-            flex-shrink: 0;
-          }
-        }
-
-        .msg-content {
-          display: block;
-          width: 100%;
-          font-size: 24rpx;
-          color: var(--r-text-regular);
-          overflow: hidden;
-          white-space: nowrap;
-          text-overflow: ellipsis;
-        }
-
-        .msg-action {
-          display: flex;
-          align-items: center;
-          gap: 4rpx;
-          margin-top: 12rpx;
-
-          .msg-action-text {
-            font-size: 22rpx;
-            color: var(--r-color-primary);
-            font-weight: 500;
-          }
-        }
-      }
-
-      .unread-dot {
-        width: 16rpx;
-        height: 16rpx;
-        background: var(--r-color-error);
-        border-radius: 50%;
-        flex-shrink: 0;
-        margin-left: 16rpx;
-      }
-    }
-  }
-
-  .empty-state {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 120rpx 0;
-
-    .empty-text {
-      font-size: 30rpx;
-      color: var(--r-text-secondary);
-      margin-top: 24rpx;
-    }
-    .empty-desc {
-      font-size: 24rpx;
-      color: var(--r-text-placeholder);
-      margin-top: 8rpx;
-    }
-  }
-</style>
+<style lang="scss" scoped src="./index.scss"></style>

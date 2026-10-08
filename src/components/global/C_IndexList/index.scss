@@ -1,9 +1,12 @@
 .c-index-list {
   position: relative;
   height: 100%;
+  min-height: 0;
 
   &__scroll {
     height: 100%;
+    padding-right: 48rpx;
+    box-sizing: border-box;
   }
 
   &__title {
@@ -29,7 +32,7 @@
 
   // 右侧索引栏
   &__sidebar {
-    position: fixed;
+    position: absolute;
     right: 8rpx;
     top: 50%;
     transform: translateY(-50%);
@@ -57,7 +60,7 @@
 
   // 触摸提示气泡
   &__tooltip {
-    position: fixed;
+    position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);

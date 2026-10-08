@@ -26,7 +26,7 @@
       "style": {
         "navigationBarTitleText": "消息中心",
         "navigationStyle": "custom",
-        "enablePullDownRefresh": true
+        "enablePullDownRefresh": false
       }
     },
     {
@@ -334,7 +334,7 @@
           "style": {
             "navigationBarTitleText": "数据列表",
             "navigationStyle": "custom",
-            "enablePullDownRefresh": true
+            "enablePullDownRefresh": false
           }
         }
       ]
@@ -347,7 +347,7 @@
           "style": {
             "navigationBarTitleText": "详情页",
             "navigationStyle": "custom",
-            "enablePullDownRefresh": true
+            "enablePullDownRefresh": false
           }
         }
       ]
@@ -372,7 +372,7 @@
           "style": {
             "navigationBarTitleText": "审批流",
             "navigationStyle": "custom",
-            "enablePullDownRefresh": true
+            "enablePullDownRefresh": false
           }
         }
       ]
@@ -385,7 +385,7 @@
           "style": {
             "navigationBarTitleText": "数据看板",
             "navigationStyle": "custom",
-            "enablePullDownRefresh": true
+            "enablePullDownRefresh": false
           }
         }
       ]

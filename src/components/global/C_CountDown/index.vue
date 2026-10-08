@@ -26,7 +26,9 @@
 
   const emit = defineEmits(['finish', 'change'])
 
-  const remaining = ref(props.time)
+  const remaining = ref(
+    Number.isFinite(props.time) ? Math.max(0, props.time) : 0
+  )
   let endTime = 0
   let timer: ReturnType<typeof setTimeout> | null = null
   let counting = false
@@ -48,6 +50,7 @@
    *
    */
   function pause() {
+    if (counting) remaining.value = Math.max(0, endTime - Date.now())
     counting = false
     if (timer) {
       clearTimeout(timer)
@@ -60,7 +63,7 @@
    */
   function reset() {
     pause()
-    remaining.value = props.time
+    remaining.value = Number.isFinite(props.time) ? Math.max(0, props.time) : 0
     if (props.autoStart) start()
   }
 
@@ -80,7 +83,7 @@
       return
     }
 
-    const interval = props.millisecond ? 30 : 1000
+    const interval = Math.min(remaining.value, props.millisecond ? 30 : 1000)
     timer = setTimeout(tick, interval)
   }
 

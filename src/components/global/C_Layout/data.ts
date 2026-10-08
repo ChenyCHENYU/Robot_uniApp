@@ -1,10 +1,13 @@
-import { computed, ref } from 'vue'
+import pagesConfig from '@/pages.json'
+import { computed, ref, reactive } from 'vue'
 import { defaultTabList } from '../C_Tabbar/data'
 
 // =================================
 // 配置定义
 // =================================
 export const layoutProps = {
+  refresherEnabled: { type: Boolean, default: false },
+  refresherTriggered: { type: Boolean, default: false },
   globalLoading: { type: Boolean, default: false },
   notificationCount: { type: Number, default: 0 },
   forceLayoutType: {
@@ -26,6 +29,8 @@ export const layoutProps = {
 }
 
 export const layoutEmits = [
+  'refresh',
+  'reachBottom',
   'userClick',
   'notificationClick',
   'settingsClick',
@@ -38,12 +43,13 @@ export const layoutEmits = [
   'backFail',
 ]
 
-export const tabbarConfig = {
+export const tabbarConfig = reactive({
   tabList: defaultTabList,
-  fixed: true,
-  activeColor: '#007AFF',
-  inactiveColor: '#8E8E93',
-}
+  fixed: false,
+  mode: 'flat' as const,
+  activeColor: 'var(--r-color-primary)',
+  inactiveColor: 'var(--r-text-secondary)',
+})
 
 // 特殊页面配置
 export const noLayoutPages = [
@@ -130,39 +136,9 @@ export const getSmartLayoutType = currentPath => {
 // H5刷新修复的返回按钮判断
 export const shouldShowBackButton = currentPath => {
   const path = cleanPath(currentPath)
-  const { canGoBack, isFirstPage } = getPageStackInfo()
-
-  // TabBar页面和特殊页面不显示返回
-  if (isTabBarPage(path) || noBackPages.includes(path)) return false
-
-  // 正常页面栈情况
-  if (canGoBack) return true
-
-  // H5刷新修复逻辑
-  if (isFirstPage) {
-    // #ifdef H5
-    // 检查URL参数
-    if (getUrlParams().from) return true
-
-    // 检查导航历史
-    if (getNavHistory().length > 1) return true
-
-    // 检查页面特征（详情类页面）
-    const detailPatterns = [
-      '/detail/',
-      '/info/',
-      '/edit/',
-      '/settings/',
-      '/profile/',
-      '/order/',
-      '/user/',
-    ]
-    if (detailPatterns.some(pattern => path.includes(pattern))) return true
-    // #endif
-    return false
-  }
-
-  return canGoBack
+  return (
+    !isTabBarPage(path) && !isNoLayoutPage(path) && !noBackPages.includes(path)
+  )
 }
 
 /** 模块名 → 中文标题 */
@@ -171,6 +147,16 @@ const MODULE_TITLE_MAP = {
   profile: '个人中心',
   message: '消息中心',
   robot: '组件库',
+  index: '工作台',
+  demo: '组件演示',
+  about: '关于',
+  approval: '审批中心',
+  dashboard: '数据看板',
+  'crud-list': '业务列表',
+  'form-template': '表单模板',
+  'search-result': '搜索',
+  scan: '扫一扫',
+  webview: '网页浏览',
   order: '订单',
   user: '用户',
 }
@@ -194,6 +180,21 @@ function deriveTitleFromPath(path) {
   return pageTitle ? `${moduleTitle}${pageTitle}` : moduleTitle
 }
 
+const routeTitles = new Map([
+  ...pagesConfig.pages.map(
+    page => [`/${page.path}`, page.style.navigationBarTitleText] as const
+  ),
+  ...pagesConfig.subPackages.flatMap(group =>
+    group.pages.map(
+      page =>
+        [
+          `/${group.root}/${page.path}`,
+          page.style.navigationBarTitleText,
+        ] as const
+    )
+  ),
+])
+
 // 智能标题生成
 export const getSmartPageTitle = (currentPath, propsTitle = '') => {
   if (propsTitle?.trim()) return propsTitle.trim()
@@ -202,7 +203,7 @@ export const getSmartPageTitle = (currentPath, propsTitle = '') => {
   const specialTitle = specialHeaderConfigs[path]?.title
   if (specialTitle) return specialTitle
 
-  return deriveTitleFromPath(path) || '页面'
+  return routeTitles.get(path) || deriveTitleFromPath(path) || '页面'
 }
 
 // Header配置生成
@@ -232,7 +233,10 @@ export const getSmartHeaderConfig = (
 
     ...specialHeaderConfigs[cleanPath(currentPath)],
     ...Object.fromEntries(
-      Object.entries(props).filter(([_, value]) => value !== undefined)
+      Object.entries(props).filter(
+        ([key, value]) =>
+          value !== undefined && !(key === 'title' && !String(value).trim())
+      )
     ),
   }
 }
@@ -327,7 +331,7 @@ export function useSmartLayout(props) {
       : '/pages/index/index'
   }
 
-  const currentPath = computed(() => getCurrentPath())
+  const currentPath = ref(getCurrentPath())
   const layoutType = computed(
     () => props.forceLayoutType || getSmartLayoutType(currentPath.value)
   )
@@ -351,11 +355,7 @@ export function useSmartLayout(props) {
     'has-tabbar': showTabbar.value,
   }))
 
-  const contentStyles = computed(() => {
-    const styles: Record<string, string> = {}
-    if (showTabbar.value) styles.paddingBottom = '160rpx'
-    return styles
-  })
+  const contentStyles = computed(() => ({}))
 
   const canGoBack = () => getPageStackInfo().canGoBack
 

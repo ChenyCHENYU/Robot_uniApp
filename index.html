@@ -1,20 +1,367 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
     <script>
-      var coverSupport = 'CSS' in window && typeof CSS.supports === 'function' && (CSS.supports('top: env(a)') ||
-        CSS.supports('top: constant(a)'))
+      var coverSupport =
+        'CSS' in window &&
+        typeof CSS.supports === 'function' &&
+        (CSS.supports('top: env(a)') || CSS.supports('top: constant(a)'))
       document.write(
         '<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0' +
-        (coverSupport ? ', viewport-fit=cover' : '') + '" />')
+          (coverSupport ? ', viewport-fit=cover' : '') +
+          '" />'
+      )
     </script>
-    <title></title>
+    <title>Robot App</title>
+    <script>
+      // 同步恢复主题，避免首次刷新加载屏闪白。
+      try {
+        const raw = JSON.parse(localStorage.getItem('settings-store') || '{}')
+        const setting =
+          typeof raw.data === 'string' ? JSON.parse(raw.data) : raw.data || raw
+        const dark =
+          setting.theme === 'dark' ||
+          (setting.theme === 'system' &&
+            matchMedia('(prefers-color-scheme: dark)').matches)
+        document.documentElement.dataset.theme = dark ? 'dark' : 'light'
+      } catch (_) {}
+    </script>
+    <style id="app-shell-style">
+      :root {
+        --boot-bg: #f5f5f7;
+        --boot-text: #1d1d1f;
+        --boot-muted: #6e6e73;
+        --boot-accent: #0071e3;
+        --boot-surface: rgba(255, 255, 255, 0.82);
+        --boot-border: rgba(0, 0, 0, 0.06);
+        --boot-shadow: 0 8px 32px rgba(29, 29, 31, 0.06);
+      }
+      html[data-theme='dark'] {
+        --boot-bg: #000;
+        --boot-text: #f5f5f7;
+        --boot-muted: #98989d;
+        --boot-accent: #0a84ff;
+        --boot-surface: rgba(28, 28, 30, 0.82);
+        --boot-border: rgba(255, 255, 255, 0.1);
+        --boot-shadow: 0 8px 32px rgba(0, 0, 0, 0.24);
+      }
+      #app-shell {
+        position: fixed;
+        inset: 0;
+        z-index: 2147483640;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        background: var(--boot-bg);
+        color: var(--boot-text);
+        font-family:
+          -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+        transition:
+          opacity 0.45s ease,
+          transform 0.45s ease;
+      }
+      #app-shell.shell-exit {
+        opacity: 0;
+        transform: scale(1.01);
+        pointer-events: none;
+      }
+      .shell-ambient {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        pointer-events: none;
+      }
+      .shell-blob {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(90px);
+        opacity: 0.16;
+        animation: shell-float 18s ease-in-out infinite;
+      }
+      html[data-theme='dark'] .shell-blob {
+        opacity: 0.12;
+      }
+      .shell-blob--1 {
+        width: 320px;
+        height: 320px;
+        top: -100px;
+        left: -80px;
+        background: radial-gradient(circle, #7551cd, transparent 70%);
+      }
+      .shell-blob--2 {
+        width: 280px;
+        height: 280px;
+        right: -60px;
+        bottom: -80px;
+        background: radial-gradient(circle, #0071e3, transparent 70%);
+        animation-delay: -6s;
+      }
+      .shell-blob--3 {
+        width: 200px;
+        height: 200px;
+        left: 60%;
+        top: 45%;
+        background: radial-gradient(circle, #5ac8fa, transparent 70%);
+        animation-delay: -12s;
+      }
+      .shell-center {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        width: 220px;
+        max-width: calc(100% - 48px);
+        padding: 28px 24px 24px;
+        box-sizing: border-box;
+        border: 1px solid var(--boot-border);
+        border-radius: 24px;
+        background: var(--boot-bg);
+        background: var(--boot-surface);
+        backdrop-filter: blur(14px) saturate(140%);
+        -webkit-backdrop-filter: blur(14px) saturate(140%);
+        box-shadow: var(--boot-shadow);
+        text-align: center;
+        animation: shell-enter 0.45s ease both;
+      }
+      .shell-logo-wrap {
+        position: relative;
+        width: 68px;
+        height: 68px;
+        border-radius: 20px;
+        overflow: hidden;
+        background: var(--boot-accent);
+        box-shadow: 0 6px 18px rgba(0, 113, 227, 0.12);
+      }
+      .shell-logo-wrap::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 200%;
+        height: 200%;
+        background: var(--boot-accent);
+        background: conic-gradient(
+          var(--boot-accent),
+          #7551cd,
+          #5ac8fa,
+          var(--boot-accent)
+        );
+        animation: shell-ring 2.4s linear infinite;
+      }
+      .shell-logo-wrap img {
+        position: relative;
+        display: block;
+        width: 64px;
+        height: 64px;
+        margin: 2px;
+        border-radius: 18px;
+      }
+      .shell-brand {
+        font-size: 16px;
+        font-weight: 600;
+        letter-spacing: 0.4px;
+        color: var(--boot-text);
+      }
+      .shell-dots {
+        display: flex;
+        gap: 6px;
+      }
+      .shell-dots span {
+        width: 4px;
+        height: 4px;
+        border-radius: 50%;
+        background: var(--boot-accent);
+        animation: shell-breath 1.6s ease-in-out infinite;
+      }
+      .shell-dots span:nth-child(2) {
+        animation-delay: 0.18s;
+      }
+      .shell-dots span:nth-child(3) {
+        animation-delay: 0.36s;
+      }
+      .shell-status {
+        margin: 0;
+        color: var(--boot-muted);
+        font-size: 12px;
+        line-height: 1.6;
+      }
+      .shell-retry {
+        display: none;
+        padding: 10px 20px;
+        border: 0;
+        border-radius: 12px;
+        background: var(--boot-accent);
+        color: #fff;
+        font: inherit;
+        cursor: pointer;
+      }
+      .shell-slow .shell-retry {
+        display: block;
+      }
+      .shell-footer {
+        position: absolute;
+        bottom: calc(28px + env(safe-area-inset-bottom, 0px));
+        color: var(--boot-muted);
+        font-size: 11px;
+        letter-spacing: 2px;
+      }
+      #robot-startup-notice {
+        position: fixed;
+        top: 16px;
+        left: 50%;
+        z-index: 2147483641;
+        transform: translateX(-50%);
+        width: max-content;
+        max-width: calc(100% - 32px);
+        padding: 12px 16px;
+        border-radius: 12px;
+        background: var(--boot-bg);
+        color: var(--boot-text);
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.14);
+        font:
+          13px/1.5 -apple-system,
+          sans-serif;
+      }
+      #robot-startup-notice button {
+        margin-left: 12px;
+        padding: 0;
+        background: none;
+        border: 0;
+        color: var(--boot-accent);
+        font: inherit;
+        cursor: pointer;
+      }
+      @keyframes shell-float {
+        0%,
+        100% {
+          transform: translate(0, 0) scale(1);
+        }
+        50% {
+          transform: translate(24px, 24px) scale(1.08);
+        }
+      }
+      @keyframes shell-ring {
+        from {
+          transform: translate(-50%, -50%) rotate(0deg);
+        }
+        to {
+          transform: translate(-50%, -50%) rotate(360deg);
+        }
+      }
+      @keyframes shell-breath {
+        0%,
+        100% {
+          transform: scale(0.8);
+          opacity: 0.45;
+        }
+        50% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+      @keyframes shell-enter {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        #app-shell,
+        .shell-center,
+        .shell-blob,
+        .shell-logo-wrap::before,
+        .shell-dots span {
+          animation: none;
+          transition: none;
+        }
+      }
+    </style>
     <!--preload-links-->
     <!--app-context-->
   </head>
   <body>
+    <div
+      id="app-shell"
+      role="status"
+      aria-live="polite"
+      aria-label="Robot App 正在启动"
+    >
+      <div class="shell-ambient"
+        ><div class="shell-blob shell-blob--1"></div
+        ><div class="shell-blob shell-blob--2"></div
+        ><div class="shell-blob shell-blob--3"></div
+      ></div>
+      <div class="shell-center">
+        <div class="shell-logo-wrap"
+          ><img
+            src="/static/loading-logo.svg"
+            alt=""
+        /></div>
+        <div class="shell-brand">Robot App</div>
+        <div
+          class="shell-dots"
+          aria-hidden="true"
+          ><span></span><span></span><span></span
+        ></div>
+        <p class="shell-status">正在准备你的工作空间</p>
+        <button
+          class="shell-retry"
+          type="button"
+          >重新加载</button
+        >
+      </div>
+      <div class="shell-footer">POWERED BY ROBOT</div>
+    </div>
     <div id="app"><!--app-html--></div>
-    <script type="module" src="/src/main.ts"></script>
+    <script>
+      ;(() => {
+        const shell = document.getElementById('app-shell')
+        const retry = () => location.reload()
+        shell.querySelector('.shell-retry').addEventListener('click', retry)
+        const slowTimer = setTimeout(() => {
+          shell.classList.add('shell-slow')
+          shell.querySelector('.shell-status').textContent =
+            '启动时间较长，你可以重新加载'
+        }, 10000)
+        let finished = false
+        const finish = () => {
+          if (finished) return
+          finished = true
+          clearTimeout(slowTimer)
+          clearTimeout(limitTimer)
+          shell.classList.add('shell-exit')
+          setTimeout(() => shell.remove(), 500)
+          document.getElementById('robot-startup-notice')?.remove()
+        }
+        // 最多遮盖20秒，加载异常时保留可操作的重试提示，不永久挡住页面。
+        const limitTimer = setTimeout(() => {
+          finish()
+          const notice = document.createElement('div')
+          notice.id = 'robot-startup-notice'
+          notice.setAttribute('role', 'alert')
+          notice.appendChild(document.createTextNode('页面加载较慢，请重试'))
+          const button = document.createElement('button')
+          button.textContent = '重新加载'
+          button.addEventListener('click', retry)
+          notice.appendChild(button)
+          document.body.appendChild(notice)
+        }, 20000)
+        window.addEventListener('robot:ready', () => {
+          finish()
+          document.getElementById('robot-startup-notice')?.remove()
+        })
+      })()
+    </script>
+    <script
+      type="module"
+      src="/src/main.ts"
+    ></script>
   </body>
 </html>

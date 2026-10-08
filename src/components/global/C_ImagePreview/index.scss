@@ -51,7 +51,7 @@
 
   &__indicator {
     position: absolute;
-    bottom: 120rpx;
+    bottom: calc(64rpx + env(safe-area-inset-bottom));
     left: 50%;
     transform: translateX(-50%);
     z-index: 2;
@@ -64,15 +64,21 @@
 
   &__close {
     position: absolute;
-    top: 100rpx;
-    right: 40rpx;
+    top: calc(24rpx + env(safe-area-inset-top));
+    right: 24rpx;
     z-index: 2;
-    width: 64rpx;
-    height: 64rpx;
+    width: 88rpx;
+    height: 88rpx;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.15);
     display: flex;
     align-items: center;
     justify-content: center;
   }
+}
+
+.c-image-preview__error {
+  color: #fff;
+  font-size: 28rpx;
+  padding: 32rpx;
 }

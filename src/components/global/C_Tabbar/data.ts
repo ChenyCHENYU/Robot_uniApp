@@ -33,7 +33,20 @@ export function useTabbarData(props, emit) {
     set: value => emit('update:modelValue', value),
   })
 
-  const safeAreaBottom = computed(() => appStore.safeArea.bottom || 0)
+  const safeAreaBottom = computed(() => {
+    // #ifdef H5
+    return 0
+    // #endif
+    return appStore.safeArea.bottom || 0
+  })
+  const tabbarStyle = computed(() => ({
+    '--tab-active-color': props.activeColor,
+    '--tab-inactive-color': props.inactiveColor,
+    paddingBottom:
+      safeAreaBottom.value > 0
+        ? `${safeAreaBottom.value}px`
+        : 'env(safe-area-inset-bottom, 0px)',
+  }))
 
   // 方法 - 仅发射事件，导航由C_Layout统一处理
   const handleTabClick = (item, index) => {
@@ -48,7 +61,7 @@ export function useTabbarData(props, emit) {
   const setBadge = (tabId, count) => {
     const tab = props.tabList.find(item => item.id === tabId)
     if (tab) {
-      tab.badge = count
+      tab.badge = Math.max(0, count)
     }
   }
 
@@ -63,6 +76,7 @@ export function useTabbarData(props, emit) {
     // 计算属性
     currentIndex,
     safeAreaBottom,
+    tabbarStyle,
 
     // 方法
     handleTabClick,
@@ -79,7 +93,7 @@ export const defaultTabList = [
     text: '首页',
     icon: 'home',
     activeIcon: 'home1',
-    unoIcon: 'i-fluent-color-home-28',
+    unoIcon: 'i-mdi-home-outline',
     path: '/pages/index/index',
     badge: 0,
   },
@@ -88,7 +102,7 @@ export const defaultTabList = [
     text: '消息',
     icon: 'chat',
     activeIcon: 'chat1',
-    unoIcon: 'i-fluent-color-chat-28',
+    unoIcon: 'i-mdi-message-text-outline',
     path: '/pages/message/index',
     badge: 0,
   },
@@ -97,7 +111,7 @@ export const defaultTabList = [
     text: '组件库',
     icon: 'app',
     activeIcon: 'app',
-    unoIcon: 'i-fluent-color-apps-28',
+    unoIcon: 'i-mdi-view-grid-outline',
     path: '/pages/robot/index',
     badge: 0,
   },
@@ -106,7 +120,7 @@ export const defaultTabList = [
     text: '我的',
     icon: 'user',
     activeIcon: 'user-circle',
-    unoIcon: 'i-fluent-color-person-28',
+    unoIcon: 'i-mdi-account-outline',
     path: '/pages/profile/index',
     badge: 0,
   },
@@ -127,17 +141,17 @@ export const tabbarProps = {
   // 风格模式: glass(苹果拟态玻璃) | flat(扁平简约)
   mode: {
     type: String as () => 'glass' | 'flat',
-    default: 'glass',
+    default: 'flat',
   },
   // 激活颜色
   activeColor: {
     type: String,
-    default: '#007AFF', // iOS Theme Blue
+    default: 'var(--r-color-primary)', // iOS Theme Blue
   },
   // 非激活颜色
   inactiveColor: {
     type: String,
-    default: '#8E8E93', // iOS Inactive Grey
+    default: 'var(--r-text-secondary)', // iOS Inactive Grey
   },
   // 是否固定在底部
   fixed: {

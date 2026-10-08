@@ -1,83 +1,76 @@
-<!--
- * @Description: 扫码页面 - 二维码/条形码扫描
--->
+<!-- @Description: 扫码工具与跨平台能力提示 -->
 <template>
   <view
     class="scan-page"
     :class="themeClass"
   >
-    <wd-config-provider :theme="wotTheme">
-      <!-- 扫描视图 -->
+    <wd-config-provider
+      :theme="wotTheme"
+      custom-style="height: 100%;"
+    >
       <view class="scan-view">
-        <!-- 顶部导航 -->
         <view class="scan-nav">
-          <view
+          <button
             class="nav-btn"
             @click="goBack"
-          >
-            <wd-icon
-              name="arrow-left"
-              size="22px"
+            ><C_Icon
+              name="i-mdi-chevron-left"
+              :size="26"
               color="#fff"
-            />
-          </view>
+          /></button>
           <text class="nav-title">扫一扫</text>
-          <view
-            class="nav-btn"
-            @click="toggleFlash"
-          >
-            <wd-icon
-              :name="flashOn ? 'fill-camera' : 'camera'"
-              size="22px"
-              color="#fff"
-            />
-          </view>
+          <view class="nav-spacer"></view>
         </view>
-
-        <!-- 扫描区域 -->
         <view class="scan-area">
-          <view class="scan-frame">
-            <view class="corner corner-tl"></view>
-            <view class="corner corner-tr"></view>
-            <view class="corner corner-bl"></view>
-            <view class="corner corner-br"></view>
-            <view class="scan-line"></view>
-          </view>
-          <text class="scan-tip">将二维码/条形码放入框内，即可自动扫描</text>
-        </view>
-
-        <!-- 底部操作 -->
-        <view class="scan-actions">
+          <text class="scan-eyebrow">SCAN & CONNECT</text>
+          <text class="scan-title">连接每一份信息</text>
           <view
-            class="action-item"
+            class="scan-frame"
+            :class="{ unavailable: !supported }"
+          >
+            <C_Icon
+              name="i-mdi-qrcode-scan"
+              :size="104"
+              color="#b4c8ff"
+            />
+            <view class="corner corner-tl"></view
+            ><view class="corner corner-tr"></view
+            ><view class="corner corner-bl"></view
+            ><view class="corner corner-br"></view>
+          </view>
+          <text class="scan-tip">{{ scanTip }}</text>
+          <button
+            class="start-btn"
+            :disabled="!supported || scanning"
+            @click="startScan"
+            >{{
+              scanning
+                ? '正在识别…'
+                : supported
+                  ? '开始扫码'
+                  : '请在小程序或 App 中使用'
+            }}</button
+          >
+          <button
+            v-if="supported"
+            class="album-btn"
+            :disabled="!supported || scanning"
             @click="handleAlbum"
+            ><C_Icon
+              name="i-mdi-image-outline"
+              :size="20"
+              color="#c5d2ef"
+            /><text>从相册识别</text></button
           >
-            <view class="action-icon">
-              <wd-icon
-                name="picture"
-                size="24px"
-                color="#fff"
-              />
-            </view>
-            <text class="action-text">相册</text>
-          </view>
-          <view
-            class="action-item"
-            @click="handleMyCode"
-          >
-            <view class="action-icon">
-              <wd-icon
-                name="qrcode"
-                size="24px"
-                color="#fff"
-              />
-            </view>
-            <text class="action-text">我的码</text>
-          </view>
         </view>
+        <view class="scan-footer"
+          ><C_Icon
+            name="i-mdi-shield-check-outline"
+            :size="16"
+            color="#8294bb"
+          /><text>打开扫描链接前，请确认来源可信</text></view
+        >
       </view>
-
-      <!-- 扫描结果弹出 -->
       <view
         v-if="scanResult"
         class="result-overlay"
@@ -87,404 +80,67 @@
           class="result-card"
           @click.stop
         >
-          <view class="result-header">
-            <wd-icon
-              name="check-circle"
-              size="48px"
-              color="#43e97b"
-            />
-            <text class="result-title">扫描成功</text>
-          </view>
-          <view class="result-content">
-            <text class="result-label">扫描内容</text>
-            <text class="result-text">{{ scanResult }}</text>
-          </view>
-          <view class="result-actions">
-            <view
+          <view class="result-header"
+            ><view class="result-icon"
+              ><C_Icon
+                name="i-mdi-check"
+                :size="30"
+                color="var(--r-color-success)" /></view
+            ><text class="result-title">识别成功</text
+            ><text class="result-caption">{{
+              isLink ? '链接已识别' : '文本内容已识别'
+            }}</text></view
+          >
+          <view class="result-content"
+            ><text class="result-label">扫描内容</text
+            ><text
+              class="result-text"
+              selectable
+              >{{ scanResult }}</text
+            ></view
+          >
+          <view class="result-actions"
+            ><button
               class="result-btn secondary"
               @click="handleCopy"
-            >
-              <text class="btn-text">复制</text>
-            </view>
-            <view
+              >复制内容</button
+            ><button
               class="result-btn primary"
               @click="handleOpen"
-            >
-              <text class="btn-text white">打开</text>
-            </view>
-          </view>
+              >{{ isLink ? '打开链接' : '复制并使用' }}</button
+            ></view
+          >
+          <button
+            class="close-result"
+            @click="scanResult = ''"
+            >完成</button
+          >
         </view>
       </view>
     </wd-config-provider>
+    <!-- #ifndef H5 -->
+    <C_NativeFeedbackHost />
+    <!-- #endif -->
   </view>
 </template>
-
 <script setup lang="ts">
-  import { useTheme } from '@/composables/useTheme'
-
-  const { themeClass, wotTheme } = useTheme()
-  import { ref, onMounted } from 'vue'
-  import { platform, PlatformError } from '@/platform'
-
-  const flashOn = ref(false)
-  const scanResult = ref('')
-
-  const goBack = () => {
-    const pages = getCurrentPages()
-    if (pages.length > 1) {
-      uni.navigateBack()
-    } else {
-      uni.reLaunch({ url: '/pages/index/index' })
-    }
-  }
-
-  const toggleFlash = () => {
-    flashOn.value = !flashOn.value
-    uni.showToast({
-      title: flashOn.value ? '闪光灯已开' : '闪光灯已关',
-      icon: 'none',
-    })
-  }
-
-  /** 相册选图后识别二维码（platform 能力层） */
-  const handleAlbum = async () => {
-    try {
-      const photo = await platform.takePhoto('album')
-      const scan = await platform.scanCode('album')
-      void photo
-      scanResult.value = scan.result
-    } catch (error) {
-      const err = error as PlatformError
-      uni.showToast({ title: err?.message || '未识别到二维码', icon: 'none' })
-    }
-  }
-
-  const handleMyCode = () => {
-    uni.showToast({ title: '我的二维码', icon: 'none' })
-  }
-
-  // 进入页面后自动唤起扫码（platform 能力层，错误已归一化）
-  const startScan = async () => {
-    try {
-      const scan = await platform.scanCode('camera')
-      scanResult.value = scan.result
-    } catch (error) {
-      const err = error as PlatformError
-      if (err?.code === 'permission_denied') {
-        uni.showToast({ title: '相机权限被拒绝，请在设置中开启', icon: 'none' })
-      } else if (err?.code !== 'user_cancel') {
-        uni.showToast({ title: '扫码失败，请重试', icon: 'none' })
-      }
-    }
-  }
-
-  // #ifdef APP-PLUS || MP
-  onMounted(() => {
-    startScan()
-  })
+  // #ifndef H5
+  import C_NativeFeedbackHost from '@/components/global/C_NativeFeedbackHost/index.vue'
   // #endif
-
-  const handleCopy = () => {
-    uni.setClipboardData({
-      data: scanResult.value,
-      success: () => uni.showToast({ title: '已复制', icon: 'success' }),
-    })
-  }
-
-  /** 打开扫码结果：URL 需用户确认后进入白名单 WebView */
-  const handleOpen = () => {
-    if (/^https?:\/\//i.test(scanResult.value)) {
-      let host = ''
-      try {
-        host = scanResult.value.split('/')[2] || ''
-      } catch {
-        host = ''
-      }
-      uni.showModal({
-        title: '打开外部链接',
-        content: `即将访问：${host}\n请确认链接来源可信`,
-        confirmText: '继续',
-        success: ({ confirm }) => {
-          if (confirm) {
-            uni.navigateTo({
-              url: `/pages/webview/index?url=${encodeURIComponent(scanResult.value)}`,
-            })
-          }
-        },
-      })
-    } else {
-      uni.showToast({ title: scanResult.value, icon: 'none' })
-    }
-  }
+  import { useScanPage } from './data'
+  const {
+    themeClass,
+    wotTheme,
+    scanResult,
+    scanning,
+    supported,
+    scanTip,
+    goBack,
+    startScan,
+    handleAlbum,
+    handleCopy,
+    isLink,
+    handleOpen,
+  } = useScanPage()
 </script>
-
-<style lang="scss" scoped>
-  .scan-page {
-    min-height: 100vh;
-    background: #000;
-    position: relative;
-  }
-
-  .scan-view {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .scan-nav {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 24rpx;
-    padding-top: calc(var(--status-bar-height, 0px) + 10rpx);
-    height: calc(var(--status-bar-height, 0px) + 88rpx);
-
-    .nav-btn {
-      width: 72rpx;
-      height: 72rpx;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .nav-title {
-      font-size: 32rpx;
-      font-weight: 600;
-      color: #fff;
-    }
-  }
-
-  .scan-area {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-
-    .scan-frame {
-      width: 480rpx;
-      height: 480rpx;
-      position: relative;
-
-      .corner {
-        position: absolute;
-        width: 40rpx;
-        height: 40rpx;
-
-        &::before,
-        &::after {
-          content: '';
-          position: absolute;
-          background: #667eea;
-        }
-
-        &-tl {
-          top: 0;
-          left: 0;
-          &::before {
-            width: 40rpx;
-            height: 6rpx;
-            top: 0;
-            left: 0;
-          }
-          &::after {
-            width: 6rpx;
-            height: 40rpx;
-            top: 0;
-            left: 0;
-          }
-        }
-        &-tr {
-          top: 0;
-          right: 0;
-          &::before {
-            width: 40rpx;
-            height: 6rpx;
-            top: 0;
-            right: 0;
-          }
-          &::after {
-            width: 6rpx;
-            height: 40rpx;
-            top: 0;
-            right: 0;
-          }
-        }
-        &-bl {
-          bottom: 0;
-          left: 0;
-          &::before {
-            width: 40rpx;
-            height: 6rpx;
-            bottom: 0;
-            left: 0;
-          }
-          &::after {
-            width: 6rpx;
-            height: 40rpx;
-            bottom: 0;
-            left: 0;
-          }
-        }
-        &-br {
-          bottom: 0;
-          right: 0;
-          &::before {
-            width: 40rpx;
-            height: 6rpx;
-            bottom: 0;
-            right: 0;
-          }
-          &::after {
-            width: 6rpx;
-            height: 40rpx;
-            bottom: 0;
-            right: 0;
-          }
-        }
-      }
-
-      .scan-line {
-        position: absolute;
-        top: 0;
-        left: 10rpx;
-        right: 10rpx;
-        height: 4rpx;
-        background: linear-gradient(90deg, transparent, #667eea, transparent);
-        animation: scanMove 2s linear infinite;
-      }
-    }
-
-    .scan-tip {
-      margin-top: 40rpx;
-      font-size: 26rpx;
-      color: rgba(255, 255, 255, 0.6);
-    }
-  }
-
-  @keyframes scanMove {
-    0% {
-      top: 0;
-    }
-    100% {
-      top: 100%;
-    }
-  }
-
-  .scan-actions {
-    display: flex;
-    justify-content: center;
-    gap: 120rpx;
-    padding: 48rpx 0;
-    padding-bottom: calc(env(safe-area-inset-bottom) + 48rpx);
-
-    .action-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 12rpx;
-
-      .action-icon {
-        width: 88rpx;
-        height: 88rpx;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.15);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .action-text {
-        font-size: 24rpx;
-        color: rgba(255, 255, 255, 0.8);
-      }
-    }
-  }
-
-  .result-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.6);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 100;
-    padding: 48rpx;
-
-    .result-card {
-      width: 100%;
-      background: var(--r-bg-card, #fff);
-      border-radius: 28rpx;
-      padding: 48rpx;
-    }
-
-    .result-header {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 12rpx;
-      margin-bottom: 32rpx;
-
-      .result-title {
-        font-size: 36rpx;
-        font-weight: 700;
-        color: var(--r-text-primary, #333);
-      }
-    }
-
-    .result-content {
-      margin-bottom: 32rpx;
-
-      .result-label {
-        display: block;
-        font-size: 24rpx;
-        color: var(--r-text-secondary, #999);
-        margin-bottom: 8rpx;
-      }
-
-      .result-text {
-        display: block;
-        font-size: 28rpx;
-        color: var(--r-text-primary, #333);
-        word-break: break-all;
-        padding: 20rpx;
-        background: var(--r-bg-page, #f5f5f5);
-        border-radius: 12rpx;
-      }
-    }
-
-    .result-actions {
-      display: flex;
-      gap: 20rpx;
-
-      .result-btn {
-        flex: 1;
-        height: 88rpx;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 16rpx;
-
-        &.secondary {
-          background: rgba(102, 126, 234, 0.1);
-        }
-        &.primary {
-          background: var(--r-gradient-primary);
-        }
-
-        .btn-text {
-          font-size: 28rpx;
-          font-weight: 600;
-          color: #667eea;
-
-          &.white {
-            color: #fff;
-          }
-        }
-      }
-    }
-  }
-</style>
+<style lang="scss" scoped src="./index.scss"></style>

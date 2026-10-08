@@ -1,33 +1,27 @@
 <template>
   <C_Layout>
-    <view class="max-w-4xl mx-auto p-5 bg-gray-50 min-h-screen">
-      <view class="text-center mb-8">
-        <C_Title
-          title="C_Skeleton 骨架屏"
-          subtitle="内容加载占位组件"
-          type="primary"
-          :level="3"
-          size="large"
-          align="center"
-          left-icon="i-mdi-blur-linear"
-          :show-decoration="true"
-          :show-divider="true"
-        />
+    <view class="demo-page demo-skeleton">
+      <view class="demo-hero">
+        <view class="demo-hero__eyebrow"
+          ><text>{{ PAGE_META.category }}</text
+          ><text>{{ PAGE_META.component }}</text></view
+        >
+        <text class="demo-hero__title">{{ PAGE_META.title }}</text>
+        <text class="demo-hero__desc">{{ PAGE_META.summary }}</text>
       </view>
+      <view class="demo-tip"
+        ><C_Icon
+          name="i-mdi-gesture-tap"
+          :size="16"
+        /><text>{{ PAGE_META.instruction }}</text></view
+      >
 
-      <view class="grid grid-cols-1 gap-6">
+      <view class="demo-grid">
         <!-- 基础骨架屏 -->
-        <view class="bg-white rounded-lg shadow-md p-6">
-          <C_Title
-            title="基础骨架屏"
-            subtitle="默认行数"
-            :level="4"
-            type="primary"
-            align="center"
-            left-icon="i-mdi-text-short"
-            :show-decoration="true"
-          />
-          <view class="my-6 p-4 bg-gray-50 rounded-lg">
+        <view class="demo-section">
+          <text class="section-title">基础骨架屏</text>
+          <text class="section-desc">默认行数</text>
+          <view class="demo-preview">
             <C_Skeleton
               :loading="true"
               :rows="3"
@@ -36,17 +30,10 @@
         </view>
 
         <!-- 带头像 -->
-        <view class="bg-white rounded-lg shadow-md p-6">
-          <C_Title
-            title="头像骨架屏"
-            subtitle="avatar 属性"
-            :level="4"
-            type="success"
-            align="center"
-            left-icon="i-mdi-account-circle"
-            :show-decoration="true"
-          />
-          <view class="my-6 p-4 bg-gray-50 rounded-lg">
+        <view class="demo-section">
+          <text class="section-title">头像骨架屏</text>
+          <text class="section-desc">avatar 属性</text>
+          <view class="demo-preview">
             <C_Skeleton
               :loading="true"
               :rows="3"
@@ -55,60 +42,48 @@
           </view>
         </view>
 
-        <!-- 预设模式 -->
-        <view class="bg-white rounded-lg shadow-md p-6">
-          <C_Title
-            title="预设模式"
-            subtitle="preset 属性"
-            :level="4"
-            type="warning"
-            align="center"
-            left-icon="i-mdi-view-module"
-            :show-decoration="true"
-          />
+        <!-- 内容组合 -->
+        <view class="demo-section">
+          <text class="section-title">内容组合</text>
+          <text class="section-desc">组合 rows / avatar / title</text>
           <view class="my-6 space-y-6">
-            <view class="p-4 bg-gray-50 rounded-lg">
-              <text class="text-xs text-gray-500 mb-2 block"
-                >preset="list"</text
+            <view class="p-4 demo-subtle rounded-lg">
+              <text class="text-xs demo-muted mb-2 block"
+                >简洁列表：仅展示两行内容</text
               >
               <C_Skeleton
                 :loading="true"
-                preset="list"
+                :rows="2"
+                :title="false"
               />
             </view>
-            <view class="p-4 bg-gray-50 rounded-lg">
-              <text class="text-xs text-gray-500 mb-2 block"
-                >preset="card"</text
+            <view class="p-4 demo-subtle rounded-lg">
+              <text class="text-xs demo-muted mb-2 block"
+                >内容卡片：标题与四行正文</text
               >
               <C_Skeleton
                 :loading="true"
-                preset="card"
+                :rows="4"
               />
             </view>
-            <view class="p-4 bg-gray-50 rounded-lg">
-              <text class="text-xs text-gray-500 mb-2 block"
-                >preset="profile"</text
+            <view class="p-4 demo-subtle rounded-lg">
+              <text class="text-xs demo-muted mb-2 block"
+                >用户资料：头像与两行文字</text
               >
               <C_Skeleton
                 :loading="true"
-                preset="profile"
+                :rows="2"
+                avatar
               />
             </view>
           </view>
         </view>
 
         <!-- 动画切换 -->
-        <view class="bg-white rounded-lg shadow-md p-6">
-          <C_Title
-            title="动画效果"
-            subtitle="点击切换 loading 状态"
-            :level="4"
-            type="danger"
-            align="center"
-            left-icon="i-mdi-animation-play"
-            :show-decoration="true"
-          />
-          <view class="my-6 p-4 bg-gray-50 rounded-lg">
+        <view class="demo-section">
+          <text class="section-title">动画效果</text>
+          <text class="section-desc">点击切换 loading 状态</text>
+          <view class="demo-preview">
             <C_Skeleton
               :loading="isLoading"
               :rows="3"
@@ -119,50 +94,38 @@
                 <view
                   class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center"
                 >
-                  <text class="text-xl">🤖</text>
+                  <C_Icon
+                    name="i-mdi-robot-outline"
+                    :size="24"
+                    class="demo-feature-icon"
+                  />
                 </view>
                 <view>
                   <text class="font-bold block">机器人助手</text>
-                  <text class="text-sm text-gray-500"
-                    >已加载完成的真实内容</text
-                  >
+                  <text class="text-sm demo-muted">已加载完成的真实内容</text>
                 </view>
               </view>
             </C_Skeleton>
             <view class="mt-4 text-center">
-              <text
-                class="text-sm text-white bg-blue-500 px-4 py-2 rounded-full"
+              <button
+                class="demo-button"
                 @click="toggleLoading"
               >
                 {{ isLoading ? '显示内容' : '切换为骨架屏' }}
-              </text>
+              </button>
             </view>
           </view>
         </view>
-      </view>
-
-      <view class="mt-8 text-center">
-        <C_Title
-          title="优雅加载，提升体验"
-          subtitle="多行 · 头像 · 预设模式 · 动画效果"
-          :level="5"
-          type="info"
-          align="center"
-          :show-divider="true"
-          divider-position="top"
-        />
       </view>
     </view>
   </C_Layout>
 </template>
 
 <script setup lang="ts">
-  import { ref } from 'vue'
-  const isLoading = ref(true)
-  /**
-   *
-   */
-  function toggleLoading() {
-    isLoading.value = !isLoading.value
-  }
+  import { PAGE_META, useDemo } from './data'
+  const { isLoading, toggleLoading } = useDemo()
 </script>
+
+<style lang="scss" scoped>
+  @import './index.scss';
+</style>

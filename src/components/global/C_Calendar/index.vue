@@ -5,9 +5,16 @@
   >
     <view
       class="c-calendar__overlay"
+      @touchmove.stop.prevent
+      @wheel.stop.prevent
       @click="onClose"
     />
-    <view class="c-calendar__panel">
+    <view
+      class="c-calendar__panel"
+      role="dialog"
+      aria-modal="true"
+      :aria-label="title"
+    >
       <!-- 标题 -->
       <view class="c-calendar__header">
         <text class="c-calendar__title">{{ title }}</text>
@@ -97,7 +104,11 @@
         class="c-calendar__footer"
       >
         <view
-          class="c-calendar__confirm"
+          :class="[
+            'c-calendar__confirm',
+            !canConfirm && 'c-calendar__confirm--disabled',
+          ]"
+          :aria-disabled="!canConfirm"
           @click="onConfirm"
         >
           <text class="c-calendar__confirm-text">{{ confirmText }}</text>
@@ -108,14 +119,8 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, computed, watch, type PropType } from 'vue'
-  import {
-    defaultProps,
-    WEEK_DAYS_MON,
-    WEEK_DAYS_SUN,
-    formatDate,
-    getDaysInMonth,
-  } from './data'
+  import { defaultProps, useCalendar } from './data'
+  import type { PropType } from 'vue'
 
   const props = defineProps({
     /** 是否显示 */
@@ -147,188 +152,24 @@
 
   const emit = defineEmits(['update:visible', 'confirm', 'select', 'close'])
 
-  const today = new Date()
-  const currentYear = ref(today.getFullYear())
-  const currentMonth = ref(today.getMonth() + 1)
-
-  // 已选日期
-  const selectedDates = ref<string[]>([])
-
-  // 初始化
-  watch(
-    () => props.visible,
-    val => {
-      if (val && props.defaultDate) {
-        if (Array.isArray(props.defaultDate)) {
-          selectedDates.value = [...props.defaultDate] as string[]
-        } else {
-          selectedDates.value = [props.defaultDate as string]
-        }
-        // 自动跳转到选中月份
-        const d = new Date(selectedDates.value[0])
-        currentYear.value = d.getFullYear()
-        currentMonth.value = d.getMonth() + 1
-      }
-    },
-    { immediate: true }
-  )
-
-  const weekDays = computed(() =>
-    props.firstDayOfWeek === 1 ? WEEK_DAYS_MON : WEEK_DAYS_SUN
-  )
-
-  const daysInMonth = computed(() =>
-    getDaysInMonth(currentYear.value, currentMonth.value)
-  )
-
-  const leadingBlanks = computed(() => {
-    const firstDay = new Date(
-      currentYear.value,
-      currentMonth.value - 1,
-      1
-    ).getDay()
-    if (props.firstDayOfWeek === 1) {
-      return firstDay === 0 ? 6 : firstDay - 1
-    }
-    return firstDay
-  })
-
-  /** 前一月 */
-  function prevMonth() {
-    if (currentMonth.value === 1) {
-      currentMonth.value = 12
-      currentYear.value--
-    } else {
-      currentMonth.value--
-    }
-  }
-
-  /** 后一月 */
-  function nextMonth() {
-    if (currentMonth.value === 12) {
-      currentMonth.value = 1
-      currentYear.value++
-    } else {
-      currentMonth.value++
-    }
-  }
-
-  /** 日期字符串 */
-  function getDateStr(day) {
-    return formatDate(new Date(currentYear.value, currentMonth.value - 1, day))
-  }
-
-  /** 是否禁用 */
-  function isDisabled(day) {
-    const dateStr = getDateStr(day)
-    if (props.minDate && dateStr < props.minDate) return true
-    if (props.maxDate && dateStr > props.maxDate) return true
-    return false
-  }
-
-  /** 是否选中 */
-  function isSelected(day) {
-    return selectedDates.value.includes(getDateStr(day))
-  }
-
-  /** 是否范围区间内 */
-  function isInRange(day) {
-    if (props.mode !== 'range' || selectedDates.value.length !== 2) return false
-    const dateStr = getDateStr(day)
-    return dateStr > selectedDates.value[0] && dateStr < selectedDates.value[1]
-  }
-
-  /** 是否范围起点 */
-  function isRangeStart(day) {
-    return props.mode === 'range' && getDateStr(day) === selectedDates.value[0]
-  }
-
-  /** 是否范围终点 */
-  function isRangeEnd(day) {
-    return (
-      props.mode === 'range' &&
-      selectedDates.value.length === 2 &&
-      getDateStr(day) === selectedDates.value[1]
-    )
-  }
-
-  /** 是否今天 */
-  function isToday(day) {
-    return getDateStr(day) === formatDate(today)
-  }
-
-  /** 日期 class */
-  function dayClass(day) {
-    return [
-      'c-calendar__day',
-      isDisabled(day) && 'c-calendar__day--disabled',
-      isSelected(day) && 'c-calendar__day--selected',
-      isInRange(day) && 'c-calendar__day--in-range',
-      isToday(day) && 'c-calendar__day--today',
-    ]
-  }
-
-  /** 是否有标记 */
-  function hasMark(day) {
-    return props.marks.some(m => m.date === getDateStr(day))
-  }
-
-  /** 获取标记颜色 */
-  function getMarkColor(day) {
-    const mark = props.marks.find(m => m.date === getDateStr(day))
-    return mark?.color || 'var(--r-color-primary)'
-  }
-
-  /** 选中日期 */
-  function onSelectDay(day) {
-    if (isDisabled(day)) return
-    const dateStr = getDateStr(day)
-
-    if (props.mode === 'single') {
-      selectedDates.value = [dateStr]
-      emit('select', dateStr)
-      if (!props.showConfirm) emit('confirm', dateStr)
-    } else if (props.mode === 'multiple') {
-      const idx = selectedDates.value.indexOf(dateStr)
-      if (idx > -1) {
-        selectedDates.value.splice(idx, 1)
-      } else {
-        selectedDates.value.push(dateStr)
-      }
-      emit('select', [...selectedDates.value])
-    } else if (props.mode === 'range') {
-      if (
-        selectedDates.value.length === 0 ||
-        selectedDates.value.length === 2
-      ) {
-        selectedDates.value = [dateStr]
-      } else {
-        const start = selectedDates.value[0]
-        if (dateStr < start) {
-          selectedDates.value = [dateStr]
-        } else {
-          selectedDates.value = [start, dateStr]
-        }
-      }
-      emit('select', [...selectedDates.value])
-    }
-  }
-
-  /** 确认 */
-  function onConfirm() {
-    const result =
-      props.mode === 'single'
-        ? selectedDates.value[0] || ''
-        : [...selectedDates.value]
-    emit('confirm', result)
-    onClose()
-  }
-
-  /** 关闭 */
-  function onClose() {
-    emit('close')
-    emit('update:visible', false)
-  }
+  const {
+    currentYear,
+    currentMonth,
+    weekDays,
+    leadingBlanks,
+    daysInMonth,
+    prevMonth,
+    nextMonth,
+    dayClass,
+    hasMark,
+    getMarkColor,
+    isRangeStart,
+    isRangeEnd,
+    onSelectDay,
+    onConfirm,
+    onClose,
+    canConfirm,
+  } = useCalendar(props, emit)
 </script>
 
 <style lang="scss" scoped>

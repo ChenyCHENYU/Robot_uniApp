@@ -1,1 +1,43 @@
-/* 06-layout 演示页样式 */
+.layout-options {
+  gap: 12rpx;
+}
+.layout-option--active {
+  color: var(--r-color-primary);
+  border-color: var(--r-color-primary);
+}
+.layout-sample {
+  margin-top: 28rpx;
+  border: 1rpx solid var(--r-border-color);
+  border-radius: 24rpx;
+  overflow: hidden;
+}
+.layout-sample__header,
+.layout-sample__tabbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24rpx;
+  color: var(--r-color-primary);
+  background: var(--r-bg-card);
+}
+.layout-sample__header {
+  border-bottom: 1rpx solid var(--r-border-light);
+  font-size: 26rpx;
+}
+.layout-sample__tabbar {
+  border-top: 1rpx solid var(--r-border-light);
+}
+.layout-sample__content {
+  min-height: 320rpx;
+  background: var(--r-bg-grey);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 18rpx;
+  color: var(--r-text-secondary);
+  font-size: 28rpx;
+}
+.layout-sample__hint {
+  font-size: 22rpx;
+}

@@ -19,7 +19,10 @@
 
 **Robot UniApp** 是基于 **Vue 3 + uni-app + TypeScript + UnoCSS + Pinia + wot-design-uni** 的跨平台移动应用模板，支持 H5 / 微信小程序 / App 多端开发。
 
+当前版本 **v1.7.0**：优化工作台、组件目录与业务模板界面，统一反馈与加载样式；详细变更见 [CHANGELOG.md](./CHANGELOG.md)。
+
 - H5 / 小程序 / App 共用一套业务代码，静态演示页隔离在独立分包
+- 首页工作台提供信息填报、数据管理、流程审批、扫一扫 4 个常用应用，以及个人资料与偏好设置入口；最近搜索读取本机历史，无记录时展示真实空状态
 - 请求层内置去重、指数退避重试（仅网络错误/5xx）、页面级取消、401 统一处理与登录回跳
 - 身份代次（request-context）：登出/切号自动中止在途请求并隔离去重缓存
 - 开发环境通过 `uni.addInterceptor` 拦截请求返回 Mock 数据（与 HTTP 层同协议：`code === 0` 为成功）
@@ -27,10 +30,20 @@
 - 平台能力抽象层（`src/platform`）：扫码/定位/拍照统一接口 + H5/小程序/App 实现 + 降级链
 - 断点续传上传（App/MP 分片+重试+持久化 job）、App 热更新服务（manifest + sha256 校验）
 - 简繁转换（`VITE_FEATURE_TW` 开关，opencc 字典懒加载，默认零包体成本）
-- 契约测试 5 项（版本同步/路由守卫/HTTP 协议/API↔Mock 同步/平台隔离）+ vitest 单测 52 例；包体预算门禁（`pnpm check:budget`）
+- 契约测试 5 项（版本同步/路由守卫/HTTP 协议/API↔Mock 同步/平台隔离）+ vitest 单测 205 例、22 个测试文件；包体预算门禁（`pnpm check:budget`）
 - 路由守卫采用「默认需登录 + 白名单放行」，并支持按页面配置角色/权限
-- 34 个自研 `C_*` 组件（easycom 自动注册）+ wot-design-uni 按需引入
+- 33 个公开 `C_*` 组件演示，按基础/布局/表单/展示/反馈独立分类，支持搜索；`C_Icon` 使用实际 SVG 图标资源，wot-design-uni 按需引入
+- 统一 Toast、可输入 Modal 与加载反馈，保留回调/Promise、弹窗队列及加载所有权，覆盖启动与行内加载
 - 类型检查（vue-tsc）、oxlint + ESLint、commitlint + husky 全链路质量保障
+
+<table>
+  <tr>
+    <td align="center"><img src="./docs/images/workbench.png" width="260" alt="浅色工作台，CHENY 开发演示账号与空搜索历史"><br>浅色工作台</td>
+    <td align="center"><img src="./docs/images/workbench-dark.png" width="260" alt="深色工作台，CHENY 开发演示账号与空搜索历史"><br>深色工作台</td>
+  </tr>
+</table>
+
+> 截图使用开发演示账号 CHENY，最近搜索为空，工作台不展示组件统计或演示待办。
 
 ---
 
@@ -38,8 +51,8 @@
 
 ### 环境要求
 
-- Node.js **≥ 18**（推荐 20+）
-- pnpm **≥ 10**
+- Node.js **20.19+（20.x） / 22.13+（22.x） / ≥24**（ESLint 10 要求；CI 使用 20.x）
+- pnpm **10.x**（与 CI 一致）
 
 ### 安装与启动
 
@@ -54,20 +67,20 @@ pnpm dev:app        # App 开发（需 HBuilderX）
 
 ### 常用命令
 
-| 命令 | 说明 |
-| --- | --- |
-| `pnpm dev` / `dev:wx` / `dev:app` | 各端开发模式（Mock 自动启用） |
-| `pnpm dev:test` / `dev:staging` | 测试/预发布环境 dev server |
-| `pnpm build` / `build:wx` / `build:app` | 生产构建 |
-| `pnpm build:test` / `build:staging` | 测试/预发布构建 |
-| `pnpm type-check` | vue-tsc 全量类型检查 |
-| `pnpm test` | 契约测试（守卫/协议/Mock 同步/平台隔离）+ 单元测试 |
-| `pnpm test:unit` | vitest 单元测试（tests/，纯逻辑层） |
-| `pnpm check:budget` | 构建产物包体预算门禁 |
-| `pnpm check:quality` | type-check + lint + test 一键全检 |
-| `pnpm lint` | oxlint + ESLint 检查并修复 |
-| `pnpm cz` | 交互式规范化提交 |
-| `pnpm push` | 推送当前分支到 origin |
+| 命令                                    | 说明                                               |
+| --------------------------------------- | -------------------------------------------------- |
+| `pnpm dev` / `dev:wx` / `dev:app`       | 各端开发模式（Mock 自动启用）                      |
+| `pnpm dev:test` / `dev:staging`         | 测试/预发布环境 dev server                         |
+| `pnpm build` / `build:wx` / `build:app` | 生产构建                                           |
+| `pnpm build:test` / `build:staging`     | 测试/预发布构建                                    |
+| `pnpm type-check`                       | vue-tsc 全量类型检查                               |
+| `pnpm test`                             | 5 项契约测试（版本/守卫/协议/Mock/平台）+ 单元测试 |
+| `pnpm test:unit`                        | vitest 单元测试（tests/）                          |
+| `pnpm check:budget`                     | 构建产物包体预算门禁                               |
+| `pnpm check:quality`                    | type-check + lint:check + test 一键全检            |
+| `pnpm lint`                             | oxlint + ESLint 检查并修复                         |
+| `pnpm cz`                               | 交互式规范化提交                                   |
+| `pnpm push`                             | 推送当前分支到 origin                              |
 
 ---
 
@@ -80,21 +93,26 @@ pnpm dev:app        # App 开发（需 HBuilderX）
 │   ├── .env.test / staging / production
 ├── src/
 │   ├── api/                  # API 工厂 + 业务接口模块（类型化）
-│   ├── components/global/    # 34 个 C_* 全局组件（easycom: C_Xxx → 自动注册）
+│   ├── components/global/    # 33 个公开演示组件 + 6 个内部设施（easycom 自动注册）
+│   ├── components/local/     # ComponentCatalog 组件目录
 │   ├── composables/          # useUpload / useWebSocket / useModal / usePagination ...
 │   ├── config/env.ts         # 读取 VITE_* 并导出类型化运行时配置
 │   ├── constants/            # RESPONSE_CODE / 业务枚举 / 正则
 │   ├── directives/           # v-auth / v-role 权限指令（仅 H5，小程序用 v-if 方案）
 │   ├── mock/                 # Mock 拦截器（DEV 自动挂载，code:0 协议）
-│   ├── pages/                # 主包 7 页 + 12 个分包（demo 33 页独立分包）
+│   ├── pages/                # 主包 7 页 + 12 个分包 45 页，共 52 页
 │   ├── stores/               # Pinia + 持久化（uni storage 适配器）
 │   ├── styles/               # 设计 token（:root + page 双挂载）/ reset / mixins
 │   ├── types/                # UserInfo / LoginResult / PageResult 等共享类型
 │   ├── utils/                # http(+helpers/types) / router(守卫) / url-policy / logger / format / error-handler
-│   └── main.ts               # 入口：错误处理 → Pinia → 守卫依赖注入 → Mock 挂载
+│   └── main.ts               # 入口：错误处理 → Pinia/反馈 → 守卫依赖注入 → DEV Mock
 ├── uno.config.js             # UnoCSS（图标集显式声明，避免环境性加载失败）
 └── vite.config.js            # envDir=env / AutoImport / 生产 drop console
 ```
+
+页面按 `index.vue`（模板与解构）、`data.ts`（状态与业务逻辑）、`index.scss`（样式）、`api.md`（接口契约）组织。组件目录与首页工作台各有独立职责，新增页面沿用现有约定。
+
+`components/global` 当前共 39 个目录：33 个公开演示组件，另有环境标识、退出过渡、虚拟状态栏及 `C_FeedbackHost`、`C_NativeFeedbackHost`、`C_LoadingIndicator` 6 个内部设施；内部设施不计入组件目录的 33 项。
 
 ---
 
@@ -118,6 +136,14 @@ pnpm dev:app        # App 开发（需 HBuilderX）
 - 仅 `import.meta.env.DEV` 生效，`main.ts` 动态挂载（生产构建不打包）
 - 拦截 `uni.request`，按 `METHOD /path` 匹配（自动剥离 baseURL 前缀）
 - 与业务层同一成功协议（`success()` 返回 `code: 0`）
+- DEV Mock 用于交互演示与契约验证；生产构建请求 `env/` 配置的后端，演示账号与 Mock 数据不作为生产服务
+
+### 统一反馈（`src/utils/feedback.ts`）
+
+- 启动时接管 `uni.showToast/showModal/showLoading/hideLoading/hideToast`，保留 success/complete 回调及 Promise 调用方式；可输入弹窗返回 `content`，弹窗按队列展示
+- H5 使用持久化 `C_FeedbackHost`；小程序/App 由当前页面的 `C_NativeFeedbackHost` 展示，避免缓存页面重复弹出
+- 手动、HTTP、组件与启动加载分别维护 owner，结束自己的加载不会关闭其他任务；全局与按钮/列表行内加载共用 `C_LoadingIndicator`
+- 反馈、工作台与业务页共用设计 token，视觉参考 RobotH5 与 wl-mbase，并保留当前 uni-app 页面及接口约定
 
 ### 环境配置
 
@@ -143,20 +169,20 @@ pnpm dev:app        # App 开发（需 HBuilderX）
   注入组件库，业务 token 与组件库 token 单向统一
 - 主题模式：浅色 / 深色 / 跟随系统（`uni.onThemeChange` 实时跟随），设置页可切换，选择持久化
 - 组件内请使用 `var(--r-color-primary)` 等 token，避免硬编码色值（破坏暗色）
-- 全局网络状态监听：断网/恢复 toast 提示（App.vue）
+- 应用级网络状态由 app store 管理：合并 Uni 网络事件与 H5 online/offline 事件，连接状态切换时去重提示，卸载时清理监听
 
 ---
 
 ## 📱 页面一览
 
-| 分类 | 页面 | 数据来源 |
-| --- | --- | --- |
-| 主包 | 登录（账号/短信）、首页主控台、消息中心、组件库、个人中心、设置、修改密码 | 真实 API（登录/用户/消息） |
-| 业务模板 | crud-list 列表 / form-template 表单 / approval 审批 / dashboard 看板 / detail 详情 | 真实 API（crud/approval/dashboard/form） |
-| 功能 | scan 扫码（URL 确认）/ webview（白名单）/ guide 首次启动引导 / about / register | register 接真实 API |
-| 组件演示 | `pages/demo` 分包，33 个组件逐一演示 | 本地演示数据 |
+| 分类         | 页面                                                                                                 | 数据来源                                                               |
+| ------------ | ---------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| 主包（7 页） | 登录（账号/短信）、首页工作台、消息中心、组件库、个人中心、设置、修改密码                            | 业务 API（登录/用户/消息）；工作台入口与本机搜索历史；组件目录本地数据 |
+| 业务模板     | crud-list 列表 / form-template 表单 / approval 审批 / dashboard 看板 / detail 详情                   | 真实 API（crud/approval/dashboard/form）                               |
+| 功能         | scan 扫码（URL 确认）/ webview（白名单）/ guide 首次启动引导 / about / register / search-result 搜索 | 注册接业务 API；其余使用设备能力、配置或本地数据                       |
+| 组件演示     | `pages/demo` 独立分包，1 个目录页 + 33 个组件演示页                                                  | 本地演示数据                                                           |
 
-> 「真实 API」在开发环境由 `src/mock` 供应（同一 `code:0` 协议），接入真实后端只需替换 `env/` 中的 API 地址并核对返回结构。
+> `pages.json` 共登记 52 页（主包 7 页，12 个分包合计 45 页）。业务 API 在开发环境由 `src/mock` 供应（同一 `code:0` 协议）；生产接入需配置 `env/` 地址并核对接口字段、认证与权限。
 
 ---
 
@@ -164,11 +190,14 @@ pnpm dev:app        # App 开发（需 HBuilderX）
 
 ```bash
 pnpm type-check   # vue-tsc --noEmit（0 错误）
-pnpm lint         # oxlint + eslint
+pnpm lint:check   # oxlint + eslint（只检查）
+pnpm test         # 5 项契约测试 + 205 例单测（22 个测试文件）
 pnpm build:h5     # H5 生产构建
-pnpm build:wx     # 微信小程序构建（主包约 1MB，含分包优化/按需注入/预下载配置）
+pnpm build:wx     # 微信小程序生产构建 + WXSS 后处理与校验
 ```
 
+- v1.7.0 微信生产构建覆盖 52 个登记页面，WXSS 后处理校验 101 个样式文件，包含扩展名还原、引用核对及不支持样式清理
+- H5 开发页面已完成交互与亮/暗主题验收；微信小程序/App 真机键盘、安全区与 WebView 原生层遮挡仍待设备验收
 - 提交：husky + lint-staged（本地 `pnpm exec`，无需联网）+ commitlint
 - CI：GitHub Actions（lint → type-check → test → 双端构建 → 包体预算），见 `.github/workflows/ci.yml`
 - 变更记录：[CHANGELOG.md](./CHANGELOG.md)
@@ -184,7 +213,7 @@ pnpm build:wx     # 微信小程序构建（主包约 1MB，含分包优化/按�
 3. 在 `src/manifest.json` 填入微信 `appid`（或使用 CI 注入），并按需调整 App 权限
 4. 对照 `src/api/modules/` 替换真实接口定义与返回类型（各页已按类型消费）
 5. 按需调整 `src/utils/router.ts` 的 `WHITE_LIST` 与 `PERMISSION_PAGES`
-6. 首页待办（todoList）、设置页附件等少量纯演示区块按需接入业务
+6. 按业务需要替换模板数据与交互，首页最近搜索继续使用本机历史；新增入口须与 `pages.json` 已登记路由一致
 
 ---
 

@@ -15,7 +15,12 @@ export const defaultProps = {
  */
 export const getSearchHistory = () => {
   try {
-    return JSON.parse(uni.getStorageSync(STORAGE_KEYS.SEARCH_HISTORY) || '[]')
+    const parsed = JSON.parse(
+      uni.getStorageSync(STORAGE_KEYS.SEARCH_HISTORY) || '[]'
+    )
+    return Array.isArray(parsed)
+      ? parsed.filter(item => typeof item === 'string' && item.trim())
+      : []
   } catch {
     return []
   }
@@ -25,11 +30,12 @@ export const getSearchHistory = () => {
  * 保存搜索关键词到历史
  */
 export const saveSearchHistory = (keyword, max = 10) => {
-  if (!keyword.trim()) return
+  keyword = keyword.trim()
+  if (!keyword) return getSearchHistory()
   let history = getSearchHistory()
   history = history.filter(item => item !== keyword)
   history.unshift(keyword)
-  if (history.length > max) history = history.slice(0, max)
+  history = history.slice(0, Math.max(0, max))
   uni.setStorageSync(STORAGE_KEYS.SEARCH_HISTORY, JSON.stringify(history))
   return history
 }

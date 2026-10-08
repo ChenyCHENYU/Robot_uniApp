@@ -1,0 +1,193 @@
+/** 组件演示页共享内容结构，具体示例继续使用各页的局部样式。 */
+.demo-page {
+  padding: 32rpx;
+  color: var(--r-text-primary);
+}
+.demo-section {
+  padding: 32rpx;
+  margin-bottom: 24rpx;
+  border: 1rpx solid var(--r-border-light);
+  border-radius: var(--r-radius-lg);
+  background: var(--r-bg-card);
+}
+.section-title {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 650;
+  margin-bottom: 24rpx;
+  color: var(--r-text-primary);
+}
+.section-desc {
+  display: block;
+  font-size: 24rpx;
+  line-height: 1.7;
+  color: var(--r-text-secondary);
+  margin-bottom: 24rpx;
+}
+.demo-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 24rpx;
+}
+.demo-tip {
+  display: block;
+  font-size: 24rpx;
+  line-height: 1.7;
+  color: var(--r-text-secondary);
+}
+/* 键盘焦点与触摸反馈使用同一品牌体系。 */
+button:focus-visible,
+[role='button']:focus-visible {
+  outline: 2px solid var(--r-color-primary);
+  outline-offset: 2px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .demo-page *,
+  .c-layout * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+.demo-hero {
+  margin-bottom: 32rpx;
+  padding: 8rpx 0;
+}
+.demo-hero__title,
+.demo-hero-title {
+  display: block;
+  font-size: 40rpx;
+  font-weight: 750;
+  letter-spacing: -1rpx;
+  color: var(--r-text-primary);
+}
+.demo-hero__name,
+.demo-hero-name {
+  display: block;
+  margin-bottom: 12rpx;
+  font-size: 22rpx;
+  letter-spacing: 2rpx;
+  color: var(--r-color-primary);
+}
+.demo-hero__desc,
+.demo-hero-desc {
+  display: block;
+  margin-top: 12rpx;
+  font-size: 24rpx;
+  line-height: 1.7;
+  color: var(--r-text-secondary);
+}
+.demo-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 24rpx;
+}
+.demo-preview {
+  margin-top: 24rpx;
+  padding: 24rpx;
+  border-radius: 20rpx;
+  background: var(--r-bg-grey);
+  overflow: hidden;
+}
+.demo-button {
+  min-height: 88rpx;
+  padding: 20rpx 28rpx;
+  font-size: 26rpx;
+  font-weight: 600;
+  border-radius: 20rpx;
+  color: var(--r-color-primary);
+  background: var(--r-color-primary-soft);
+}
+.demo-button:active {
+  opacity: 0.8;
+}
+.demo-status {
+  display: block;
+  margin-top: 24rpx;
+  font-size: 24rpx;
+  color: var(--r-color-primary);
+}
+
+.demo-muted {
+  color: var(--r-text-secondary);
+}
+.demo-regular {
+  color: var(--r-text-regular);
+}
+.demo-surface {
+  background: var(--r-bg-card);
+}
+.demo-subtle {
+  background: var(--r-bg-grey);
+}
+.demo-feature-icon {
+  display: inline-flex;
+  color: var(--r-color-primary);
+  margin-bottom: 16rpx;
+}
+.demo-button--quiet {
+  color: var(--r-text-regular);
+  background: var(--r-bg-grey);
+}
+.demo-button--danger {
+  color: var(--r-color-error);
+  background: var(--r-bg-hover);
+}
+.demo-hero__eyebrow {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 16rpx;
+  font-size: 22rpx;
+  color: var(--r-text-secondary);
+}
+.demo-hero__eyebrow text:first-child {
+  color: var(--r-color-primary);
+}
+.demo-tip {
+  display: flex;
+  align-items: flex-start;
+  gap: 12rpx;
+  margin-bottom: 28rpx;
+}
+.demo-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.4;
+  box-sizing: border-box;
+  border: 1rpx solid transparent;
+}
+.demo-button::after {
+  border: 0;
+}
+.demo-button[disabled] {
+  opacity: 0.45;
+}
+.demo-grid > .demo-section {
+  margin-bottom: 0;
+}
+.page-heading {
+  margin: 12rpx 0 36rpx;
+}
+.page-eyebrow {
+  display: block;
+  font-size: 20rpx;
+  font-weight: 650;
+  letter-spacing: 3rpx;
+  color: var(--r-color-primary);
+  margin-bottom: 14rpx;
+}
+.page-title {
+  display: block;
+  font-size: 48rpx;
+  font-weight: 750;
+  letter-spacing: -1rpx;
+  color: var(--r-text-primary);
+}
+.page-description {
+  display: block;
+  margin-top: 14rpx;
+  font-size: 26rpx;
+  line-height: 1.7;
+  color: var(--r-text-secondary);
+}

@@ -1,0 +1,132 @@
+.settings-page {
+  padding: 32rpx;
+}
+.avatar-section {
+  background: var(--r-bg-card);
+  border: 1rpx solid var(--r-border-light);
+  border-radius: 32rpx;
+  padding: 30rpx;
+  margin-bottom: 32rpx;
+}
+.avatar-content {
+  display: flex;
+  align-items: center;
+  gap: 30rpx;
+}
+.avatar-wrapper {
+  position: relative;
+}
+.avatar-ring {
+  display: flex;
+  border: 4rpx solid var(--r-color-primary-soft);
+  padding: 4rpx;
+  border-radius: 50%;
+}
+.avatar-img {
+  width: 114rpx;
+  height: 114rpx;
+  border-radius: 50%;
+}
+.avatar-initial {
+  width: 114rpx;
+  height: 114rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--r-color-primary-soft);
+  color: var(--r-color-primary);
+  font-size: 42rpx;
+  font-weight: 700;
+}
+.avatar-edit-icon {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 42rpx;
+  height: 42rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--r-color-primary);
+  border: 3rpx solid var(--r-bg-card);
+}
+.avatar-tip {
+  color: var(--r-text-secondary);
+  font-size: 26rpx;
+}
+.settings-group {
+  margin-bottom: 30rpx;
+}
+.group-title {
+  display: block;
+  margin-bottom: 18rpx;
+  color: var(--r-text-primary);
+  font-size: 28rpx;
+  font-weight: 600;
+}
+.group-card {
+  background: var(--r-bg-card);
+  border: 1rpx solid var(--r-border-light);
+  border-radius: 30rpx;
+  overflow: hidden;
+}
+.setting-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18rpx;
+  padding: 25rpx 26rpx;
+  min-height: 62rpx;
+  border-bottom: 1rpx solid var(--r-border-light);
+}
+.setting-item:last-child {
+  border: 0;
+}
+.item-left,
+.item-right {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  min-width: 0;
+}
+.item-left {
+  flex: 1;
+}
+.item-right {
+  max-width: 44%;
+  justify-content: flex-end;
+}
+.item-icon {
+  width: 60rpx;
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 18rpx;
+  background: var(--r-color-primary-soft);
+  flex-shrink: 0;
+}
+.item-label {
+  font-size: 27rpx;
+  color: var(--r-text-primary);
+  white-space: nowrap;
+}
+.item-value {
+  font-size: 24rpx;
+  color: var(--r-text-secondary);
+  text-align: right;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.item-text {
+  min-width: 0;
+}
+.item-note {
+  display: block;
+  margin-top: 4rpx;
+  color: var(--r-text-secondary);
+  font-size: 18rpx;
+}

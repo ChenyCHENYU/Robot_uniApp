@@ -2,10 +2,13 @@
   <view
     :class="['c-float-button', dragging && 'c-float-button--dragging']"
     :style="btnStyle"
-    @click="$emit('click')"
+    role="button"
+    aria-label="快捷操作"
+    @click="onClick"
     @touchstart="onTouchStart"
     @touchmove.prevent="onTouchMove"
     @touchend="onTouchEnd"
+    @touchcancel="onTouchEnd"
   >
     <slot>
       <wd-icon
@@ -18,8 +21,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, computed } from 'vue'
-  import { defaultProps } from './data'
+  import { defaultProps, useFloatButton } from './data'
 
   const props = defineProps({
     /** 图标名 */
@@ -38,48 +40,10 @@
     draggable: { type: Boolean, default: false },
   })
 
-  defineEmits(['click'])
+  const emit = defineEmits(['click'])
 
-  const dragging = ref(false)
-  const offsetX = ref(0)
-  const offsetY = ref(0)
-  let startX = 0
-  let startY = 0
-
-  const btnStyle = computed(() => {
-    const style: Record<string, string> = {
-      width: `${props.size}rpx`,
-      height: `${props.size}rpx`,
-      bottom: `calc(${props.bottom}rpx + env(safe-area-inset-bottom))`,
-      // 拖拽偏移统一用 transform（px 与触摸事件单位一致）
-      transform: `translate(${offsetX.value}px, ${offsetY.value}px)`,
-    }
-    if (props.position === 'left-bottom') {
-      style.left = `${props.left}rpx`
-    } else {
-      style.right = `${props.right}rpx`
-    }
-    return style
-  })
-
-  const onTouchStart = (e: TouchEvent) => {
-    if (!props.draggable) return
-    const touch = e.touches[0]
-    startX = touch.clientX - offsetX.value
-    startY = touch.clientY - offsetY.value
-    dragging.value = true
-  }
-
-  const onTouchMove = (e: TouchEvent) => {
-    if (!props.draggable || !dragging.value) return
-    const touch = e.touches[0]
-    offsetX.value = touch.clientX - startX
-    offsetY.value = touch.clientY - startY
-  }
-
-  const onTouchEnd = () => {
-    dragging.value = false
-  }
+  const { dragging, btnStyle, onClick, onTouchStart, onTouchMove, onTouchEnd } =
+    useFloatButton(props, emit)
 </script>
 
 <style lang="scss" scoped>

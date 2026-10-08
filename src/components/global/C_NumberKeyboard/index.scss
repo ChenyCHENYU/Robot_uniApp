@@ -13,7 +13,9 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: #f2f3f5;
+    background: var(--r-bg-grey);
+    border-radius: var(--r-radius-xl) var(--r-radius-xl) 0 0;
+    overflow: hidden;
     z-index: calc(var(--r-z-popup) + 1);
     padding-bottom: env(safe-area-inset-bottom);
     animation: kb-up 0.2s ease;
@@ -35,7 +37,7 @@
   &__done {
     font-size: var(--r-font-size-md);
     color: var(--r-color-primary);
-    padding: 8rpx 16rpx;
+    padding: 20rpx 16rpx;
   }
 
   &__grid {
@@ -61,7 +63,7 @@
     }
 
     &--delete {
-      background: #e0e1e3;
+      background: var(--r-bg-hover);
     }
 
     &--empty {

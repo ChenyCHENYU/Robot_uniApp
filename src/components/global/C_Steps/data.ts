@@ -5,6 +5,6 @@
 export const defaultProps = {
   current: 0,
   direction: 'horizontal', // horizontal / vertical
-  activeColor: '#007aff',
-  inactiveColor: '#c0c4cc',
+  activeColor: 'var(--r-color-primary)',
+  inactiveColor: 'var(--r-text-placeholder)',
 }

@@ -1,181 +1,146 @@
 <template>
   <C_Layout>
-    <view class="max-w-4xl mx-auto p-5 bg-gray-50 min-h-screen">
-      <view class="text-center mb-8">
-        <C_Title
-          title="C_Calendar 日历"
-          subtitle="日期选择日历组件"
-          type="primary"
-          :level="3"
-          size="large"
-          align="center"
-          left-icon="i-mdi-calendar-month"
-          :show-decoration="true"
-          :show-divider="true"
-        />
+    <view class="demo-page demo-calendar">
+      <view class="demo-hero">
+        <view class="demo-hero__eyebrow"
+          ><text>{{ PAGE_META.category }}</text
+          ><text>{{ PAGE_META.component }}</text></view
+        >
+        <text class="demo-hero__title">{{ PAGE_META.title }}</text>
+        <text class="demo-hero__desc">{{ PAGE_META.summary }}</text>
       </view>
+      <view class="demo-tip"
+        ><C_Icon
+          name="i-mdi-gesture-tap"
+          :size="16"
+        /><text>{{ PAGE_META.instruction }}</text></view
+      >
 
-      <view class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <view class="demo-grid">
         <!-- 单选模式 -->
-        <view class="bg-white rounded-lg shadow-md p-6">
-          <C_Title
-            title="单选模式"
-            subtitle="选择一个日期"
-            :level="4"
-            type="primary"
-            align="center"
-            left-icon="i-mdi-calendar"
-            :show-decoration="true"
-          />
-          <view class="my-6 p-4 bg-gray-50 rounded-lg text-center">
-            <text
-              class="text-sm text-white bg-blue-500 px-6 py-2.5 rounded-full"
+        <view class="demo-section">
+          <text class="section-title">单选模式</text>
+          <text class="section-desc">选择一个日期</text>
+          <view class="demo-preview text-center">
+            <button
+              class="demo-button"
               @click="showSingle = true"
             >
               {{ selectedDate || '选择日期' }}
-            </text>
+            </button>
           </view>
           <C_Calendar
             v-model:visible="showSingle"
             mode="single"
+            :defaultDate="selectedDate"
             @confirm="onSingleConfirm"
           />
         </view>
 
         <!-- 区间选择 -->
-        <view class="bg-white rounded-lg shadow-md p-6">
-          <C_Title
-            title="区间选择"
-            subtitle="选择日期范围"
-            :level="4"
-            type="success"
-            align="center"
-            left-icon="i-mdi-calendar-range"
-            :show-decoration="true"
-          />
-          <view class="my-6 p-4 bg-gray-50 rounded-lg text-center">
-            <text
-              class="text-sm text-white bg-green-500 px-6 py-2.5 rounded-full"
+        <view class="demo-section">
+          <text class="section-title">区间选择</text>
+          <text class="section-desc">选择日期范围</text>
+          <view class="demo-preview text-center">
+            <button
+              class="demo-button"
               @click="showRange = true"
-              >选择日期范围</text
+              >选择日期范围</button
             >
             <text
               v-if="rangeText"
-              class="text-xs text-gray-500 block mt-3"
+              class="text-xs demo-muted block mt-3"
               >{{ rangeText }}</text
             >
           </view>
           <C_Calendar
             v-model:visible="showRange"
             mode="range"
+            :defaultDate="selectedRange"
             @confirm="onRangeConfirm"
           />
         </view>
 
         <!-- 自定义颜色 -->
-        <view class="bg-white rounded-lg shadow-md p-6">
-          <C_Title
-            title="自定义主题色"
-            subtitle="color 属性"
-            :level="4"
-            type="warning"
-            align="center"
-            left-icon="i-mdi-palette"
-            :show-decoration="true"
-          />
-          <view class="my-6 p-4 bg-gray-50 rounded-lg text-center">
-            <text
-              class="text-sm text-white bg-amber-500 px-6 py-2.5 rounded-full"
+        <view class="demo-section">
+          <text class="section-title">自定义主题色</text>
+          <text class="section-desc">通过主题变量设置</text>
+          <view class="demo-preview text-center">
+            <button
+              class="demo-button demo-button--quiet"
               @click="showCustom = true"
-              >自定义主题色</text
+              >{{ customDate || '选择主题日期' }}</button
             >
           </view>
           <C_Calendar
             v-model:visible="showCustom"
             mode="single"
-            color="#07c160"
+            class="calendar-custom"
+            :defaultDate="customDate"
             @confirm="onCustomConfirm"
           />
         </view>
 
         <!-- 功能特性 -->
-        <view class="bg-white rounded-lg shadow-md p-6">
-          <C_Title
-            title="功能特性"
-            :level="4"
-            type="info"
-            align="center"
-            left-icon="i-mdi-star-outline"
-            :show-decoration="true"
-          />
+        <view class="demo-section">
+          <text class="section-title">功能特性</text>
           <view class="my-6 space-y-3">
-            <view class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-              <text class="text-lg">📅</text>
+            <view class="flex items-center gap-3 p-3 demo-subtle rounded-lg">
+              <C_Icon
+                name="i-mdi-calendar-month-outline"
+                :size="24"
+                class="demo-feature-icon"
+              />
               <view>
                 <text class="text-sm font-bold block">多种模式</text>
-                <text class="text-xs text-gray-500">单选 / 多选 / 区间</text>
+                <text class="text-xs demo-muted">单选 / 多选 / 区间</text>
               </view>
             </view>
-            <view class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-              <text class="text-lg">📌</text>
+            <view class="flex items-center gap-3 p-3 demo-subtle rounded-lg">
+              <C_Icon
+                name="i-mdi-pin-outline"
+                :size="24"
+                class="demo-feature-icon"
+              />
               <view>
                 <text class="text-sm font-bold block">日期标记</text>
-                <text class="text-xs text-gray-500">打点、文字标注</text>
+                <text class="text-xs demo-muted">用圆点标记日期</text>
               </view>
             </view>
-            <view class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-              <text class="text-lg">🔒</text>
+            <view class="flex items-center gap-3 p-3 demo-subtle rounded-lg">
+              <C_Icon
+                name="i-mdi-lock-outline"
+                :size="24"
+                class="demo-feature-icon"
+              />
               <view>
                 <text class="text-sm font-bold block">范围限制</text>
-                <text class="text-xs text-gray-500">minDate / maxDate</text>
+                <text class="text-xs demo-muted">minDate / maxDate</text>
               </view>
             </view>
           </view>
         </view>
-      </view>
-
-      <view class="mt-8 text-center">
-        <C_Title
-          title="日期选择，灵活多变"
-          subtitle="单选 · 多选 · 区间 · 主题色 · 范围限制"
-          :level="5"
-          type="info"
-          align="center"
-          :show-divider="true"
-          divider-position="top"
-        />
       </view>
     </view>
   </C_Layout>
 </template>
 
 <script setup lang="ts">
-  import { ref } from 'vue'
-
-  const showSingle = ref(false)
-  const showRange = ref(false)
-  const showCustom = ref(false)
-  const selectedDate = ref('')
-  const rangeText = ref('')
-
-  /**
-   *
-   */
-  function onSingleConfirm(date: string) {
-    selectedDate.value = date
-  }
-
-  /**
-   *
-   */
-  function onRangeConfirm(dates: string[]) {
-    rangeText.value = `${dates[0]} 至 ${dates[1]}`
-  }
-
-  /**
-   *
-   */
-  function onCustomConfirm(date: string) {
-    uni.showToast({ title: `选择: ${date}`, icon: 'none' })
-  }
+  import { PAGE_META, useDemo } from './data'
+  const {
+    showSingle,
+    showRange,
+    showCustom,
+    selectedDate,
+    customDate,
+    rangeText,
+    selectedRange,
+    onSingleConfirm,
+    onRangeConfirm,
+    onCustomConfirm,
+  } = useDemo()
 </script>
+
+<style lang="scss" scoped>
+  @import './index.scss';
+</style>

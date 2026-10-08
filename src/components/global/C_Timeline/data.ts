@@ -15,7 +15,7 @@ export const defaultProps = {
   /** 已完成步骤颜色 */
   finishedColor: 'var(--r-color-primary, #2b6bff)',
   /** 未完成步骤颜色 */
-  pendingColor: 'var(--r-text-color-placeholder, #ccc)',
+  pendingColor: 'var(--r-text-placeholder, #ccc)',
 }
 
 /** 节点状态 */

@@ -5,12 +5,15 @@
   >
     <scroll-view
       class="c-tab-nav__scroll"
-      scroll-x
+      :scroll-x="scrollable"
       :scroll-left="scrollLeft"
       scroll-with-animation
     >
       <view
-        :class="['c-tab-nav__list', equalWidth && 'c-tab-nav__list--equal']"
+        :class="[
+          'c-tab-nav__list',
+          (equalWidth || !scrollable) && 'c-tab-nav__list--equal',
+        ]"
       >
         <view
           v-for="tab in tabs"
@@ -22,6 +25,11 @@
           ]"
           @click="onTabClick(tab)"
         >
+          <view
+            v-if="showLine && modelValue === tab.value"
+            class="c-tab-nav__line"
+            :style="{ width: lineWidth + 'rpx' }"
+          />
           <text class="c-tab-nav__label">{{ tab.label }}</text>
           <view
             v-if="tab.badge"
@@ -30,13 +38,6 @@
             <text class="c-tab-nav__badge-text">{{ tab.badge }}</text>
           </view>
         </view>
-
-        <!-- 下划线 -->
-        <view
-          v-if="showLine"
-          class="c-tab-nav__line"
-          :style="lineStyle"
-        />
       </view>
     </scroll-view>
   </view>
@@ -48,6 +49,7 @@
     computed,
     watch,
     nextTick,
+    onMounted,
     getCurrentInstance,
     type PropType,
   } from 'vue'
@@ -85,8 +87,6 @@
   const emit = defineEmits(['update:modelValue', 'change'])
 
   const scrollLeft = ref(0)
-  const lineOffset = ref(0)
-  const lineWidthPx = ref(0)
 
   const instance = getCurrentInstance()
 
@@ -94,11 +94,6 @@
     if (!props.sticky) return {}
     return { top: `${props.stickyOffset}px` }
   })
-
-  const lineStyle = computed(() => ({
-    width: `${lineWidthPx.value || props.lineWidth}rpx`,
-    transform: `translateX(${lineOffset.value}px)`,
-  }))
 
   const activeIndex = computed(() =>
     props.tabs.findIndex(t => t.value === props.modelValue)
@@ -113,52 +108,35 @@
     emit('change', tab.value)
   }
 
-  /** 计算下划线位置 */
-  function calcLine() {
-    if (!props.showLine || activeIndex.value < 0) return
-
-    nextTick(() => {
-      if (!instance?.proxy) return
-      const query = uni.createSelectorQuery().in(instance.proxy)
-      query
-        .selectAll('.c-tab-nav__item')
-        .boundingClientRect(rects => {
-          if (!rects || !rects[activeIndex.value]) return
-          const rect = rects[activeIndex.value] as UniApp.NodeInfo
-          if (!instance?.proxy) return
-          const containerQuery = uni.createSelectorQuery().in(instance.proxy)
-          containerQuery
-            .select('.c-tab-nav__scroll')
-            .boundingClientRect(containerResult => {
-              const containerRect = containerResult as UniApp.NodeInfo
-              if (!containerRect) return
-              const itemCenter =
-                (rect.left ?? 0) -
-                (containerRect.left ?? 0) +
-                (rect.width ?? 0) / 2
-              // 转换下划线宽度 rpx -> px
-              const sysInfo = uni.getSystemInfoSync()
-              const linePx = (props.lineWidth / 750) * sysInfo.windowWidth
-              lineWidthPx.value = props.lineWidth
-              lineOffset.value = itemCenter - linePx / 2
-
-              // 滚动居中
-              if (props.scrollable) {
-                scrollLeft.value =
-                  (rect.left ?? 0) -
-                  (containerRect.left ?? 0) -
-                  (containerRect.width ?? 0) / 2 +
-                  (rect.width ?? 0) / 2
-              }
-            })
-            .exec()
-        })
-        .exec()
+  /** 以列表内容坐标计算滚动位置，避免已滚动后坐标累加错误。 */
+  async function calcLine() {
+    if (!props.scrollable || activeIndex.value < 0) return
+    await nextTick()
+    if (!instance?.proxy) return
+    const query = uni.createSelectorQuery().in(instance.proxy)
+    query.selectAll('.c-tab-nav__item').boundingClientRect()
+    query.select('.c-tab-nav__list').boundingClientRect()
+    query.select('.c-tab-nav__scroll').boundingClientRect()
+    query.exec(results => {
+      const items = results[0] as UniApp.NodeInfo[]
+      const list = results[1] as UniApp.NodeInfo
+      const container = results[2] as UniApp.NodeInfo
+      const active = items?.[activeIndex.value]
+      if (!active || !list || !container) return
+      scrollLeft.value = Math.max(
+        0,
+        (active.left ?? 0) -
+          (list.left ?? 0) +
+          (active.width ?? 0) / 2 -
+          (container.width ?? 0) / 2
+      )
     })
   }
 
-  watch(() => props.modelValue, calcLine, { immediate: true })
-  watch(() => props.tabs, calcLine)
+  onMounted(calcLine)
+  watch(() => [props.modelValue, props.tabs, props.scrollable], calcLine, {
+    deep: true,
+  })
 </script>
 
 <style lang="scss" scoped>

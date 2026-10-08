@@ -56,8 +56,8 @@
   })
 
   const offsetStyle = computed(() => ({
-    marginRight: `${-props.offset[0]}rpx`,
-    marginTop: `${props.offset[1]}rpx`,
+    marginRight: `${-(props.offset[0] ?? 0)}rpx`,
+    marginTop: `${props.offset[1] ?? 0}rpx`,
   }))
 </script>
 

@@ -13,7 +13,7 @@ export const defaultProps = {
   /** 线条颜色 */
   lineColor: 'var(--r-border-color, #eee)',
   /** 文字颜色 */
-  textColor: 'var(--r-text-color-secondary, #999)',
+  textColor: 'var(--r-text-secondary, #999)',
   /** 文字大小 rpx */
   textSize: 24,
   /** 上下间距 rpx */

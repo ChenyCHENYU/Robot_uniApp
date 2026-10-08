@@ -1,1 +1,15 @@
-/* 17-watermark 演示页样式 */
+.watermark-sample {
+  padding: 0;
+}
+.watermark-sample :deep(.c-watermark__layer) {
+  opacity: 0.28;
+}
+.watermark-caption {
+  position: relative;
+  z-index: 2;
+  padding: 12rpx 20rpx;
+  border-radius: 12rpx;
+  font-size: 26rpx;
+  color: var(--r-text-regular);
+  background: var(--r-bg-card);
+}

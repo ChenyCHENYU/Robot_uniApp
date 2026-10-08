@@ -2,14 +2,17 @@
   <view v-if="visible">
     <view
       class="c-number-keyboard__overlay"
+      @touchmove.stop.prevent
+      @wheel.stop.prevent
       @click="close"
     />
-    <view class="c-number-keyboard__panel">
+    <view
+      class="c-number-keyboard__panel"
+      role="dialog"
+      :aria-label="title || '数字键盘'"
+    >
       <!-- 标题栏 -->
-      <view
-        v-if="title"
-        class="c-number-keyboard__header"
-      >
+      <view class="c-number-keyboard__header">
         <text class="c-number-keyboard__title">{{ title }}</text>
         <text
           class="c-number-keyboard__done"
@@ -31,7 +34,7 @@
         >
           <wd-icon
             v-if="key.type === 'delete'"
-            name="arrow-left"
+            name="delete"
             size="22px"
           />
           <text v-else>{{ key.text }}</text>

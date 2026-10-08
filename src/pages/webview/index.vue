@@ -6,7 +6,10 @@
     class="webview-page"
     :class="themeClass"
   >
-    <wd-config-provider :theme="wotTheme">
+    <wd-config-provider
+      :theme="wotTheme"
+      custom-style="height: 100%; display: flex; flex-direction: column;"
+    >
       <!-- 顶部导航栏 -->
       <view class="nav-bar">
         <view class="nav-left">
@@ -26,11 +29,10 @@
           <view
             v-if="loading"
             class="loading-indicator"
+            role="status"
+            aria-label="正在加载网页"
           >
-            <wd-loading
-              :size="12"
-              color="var(--r-color-primary)"
-            />
+            <C_LoadingIndicator size="small" />
           </view>
         </view>
         <view class="nav-right">
@@ -57,7 +59,7 @@
         </view>
       </view>
 
-      <!-- 进度条（真实加载态，@load 后隐藏；5s 兜底超时） -->
+      <!-- 进度条由真实加载事件控制，部分平台以超时结束提示。 -->
       <view
         v-if="loading"
         class="progress-bar"
@@ -65,220 +67,70 @@
         <view class="progress-fill"></view>
       </view>
 
+      <view
+        v-if="errorText"
+        class="webview-error"
+        ><C_Icon
+          name="i-mdi-web-off"
+          :size="52"
+          color="var(--r-text-secondary)"
+        /><text class="error-title">网页暂不可用</text
+        ><text class="error-text">{{ errorText }}</text
+        ><view class="error-actions"
+          ><button
+            v-if="url"
+            class="retry-btn"
+            @click="handleRefresh"
+            >重新加载</button
+          ><button
+            class="back-btn"
+            @click="goBack"
+            >返回</button
+          ></view
+        ></view
+      >
       <!-- WebView（仅加载白名单内地址） -->
       <web-view
-        v-if="url"
+        v-if="url && !errorText"
+        :key="viewKey"
         :src="url"
+        :fullscreen="false"
+        class="webview-frame"
+        style="width: 100%; height: 100%"
         @load="onLoadComplete"
         @error="onLoadError"
         @message="onMessage"
       ></web-view>
     </wd-config-provider>
+    <!-- #ifndef H5 -->
+    <C_NativeFeedbackHost />
+    <!-- #endif -->
   </view>
 </template>
 
 <script setup lang="ts">
-  import { useTheme } from '@/composables/useTheme'
+  // #ifndef H5
+  import C_NativeFeedbackHost from '@/components/global/C_NativeFeedbackHost/index.vue'
+  // #endif
+  import { useWebviewPage } from './data'
+  import C_LoadingIndicator from '@/components/global/C_LoadingIndicator/index.vue'
 
-  const { themeClass, wotTheme } = useTheme()
-  import { ref, computed, onUnmounted } from 'vue'
-  import { onLoad } from '@dcloudio/uni-app'
-  import { isUrlAllowed } from '@/utils/url-policy'
-
-  const url = ref('')
-  const pageTitle = ref('')
-  const loading = ref(false)
-  /** 兜底超时：部分平台不触发 @load，5s 后强制结束加载态 */
-  let fallbackTimer: ReturnType<typeof setTimeout> | null = null
-
-  /** 当前页面的域名（标题缺省时展示） */
-  const host = computed(() => {
-    if (!url.value) return ''
-    try {
-      return url.value.split('/')[2] || ''
-    } catch {
-      return ''
-    }
-  })
-
-  const startLoading = () => {
-    loading.value = true
-    if (fallbackTimer) clearTimeout(fallbackTimer)
-    fallbackTimer = setTimeout(() => {
-      loading.value = false
-    }, 5000)
-  }
-
-  onLoad(query => {
-    if (query?.url) {
-      const target = decodeURIComponent(query.url)
-      // 安全校验：强制 https + 域名白名单
-      if (!isUrlAllowed(target)) {
-        uni.showToast({ title: '不允许打开该链接', icon: 'none' })
-        setTimeout(
-          () =>
-            uni.navigateBack({
-              fail: () => uni.reLaunch({ url: '/pages/index/index' }),
-            }),
-          600
-        )
-        return
-      }
-      url.value = target
-      startLoading()
-    }
-    if (query?.title) {
-      pageTitle.value = decodeURIComponent(query.title)
-    }
-  })
-
-  const onLoadComplete = () => {
-    if (fallbackTimer) {
-      clearTimeout(fallbackTimer)
-      fallbackTimer = null
-    }
-    loading.value = false
-  }
-
-  const onLoadError = () => {
-    onLoadComplete()
-    uni.showToast({ title: '页面加载失败', icon: 'none' })
-  }
-
-  const onMessage = (e: { detail: { data: unknown[] } }) => {
-    const { data } = e.detail
-    if (data && data.length > 0) {
-      const msg = data[data.length - 1] as Record<string, string>
-      if (msg.title) {
-        pageTitle.value = msg.title
-      }
-    }
-  }
-
-  const goBack = () => {
-    const pages = getCurrentPages()
-    if (pages.length > 1) {
-      uni.navigateBack()
-    } else {
-      uni.reLaunch({ url: '/pages/index/index' })
-    }
-  }
-
-  const handleRefresh = () => {
-    // 通过重新设置 src 触发刷新
-    const currentUrl = url.value
-    url.value = ''
-    setTimeout(() => {
-      url.value = currentUrl
-      startLoading()
-    }, 100)
-  }
-
-  const handleMore = () => {
-    uni.showActionSheet({
-      itemList: ['复制链接', '在浏览器中打开'],
-      success: res => {
-        if (res.tapIndex === 0) {
-          uni.setClipboardData({ data: url.value })
-        } else if (res.tapIndex === 1) {
-          // url 已通过白名单校验
-          // #ifdef H5
-          window.open(url.value, '_blank', 'noopener')
-          // #endif
-          // #ifndef H5
-          uni.showToast({ title: '请复制链接后使用浏览器打开', icon: 'none' })
-          // #endif
-        }
-      },
-    })
-  }
-
-  onUnmounted(() => {
-    if (fallbackTimer) {
-      clearTimeout(fallbackTimer)
-      fallbackTimer = null
-    }
-  })
+  const {
+    themeClass,
+    wotTheme,
+    url,
+    pageTitle,
+    loading,
+    errorText,
+    viewKey,
+    host,
+    onLoadComplete,
+    onLoadError,
+    onMessage,
+    goBack,
+    handleRefresh,
+    handleMore,
+  } = useWebviewPage()
 </script>
 
-<style lang="scss" scoped>
-  .webview-page {
-    min-height: 100vh;
-    background: var(--r-bg-page);
-  }
-
-  .nav-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 16rpx;
-    height: 88rpx;
-    padding-top: var(--status-bar-height, 0px);
-    background: var(--r-bg-card);
-    box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
-    position: relative;
-    z-index: 10;
-
-    .nav-left,
-    .nav-right {
-      display: flex;
-      align-items: center;
-      gap: 4rpx;
-    }
-
-    .nav-btn {
-      width: 72rpx;
-      height: 72rpx;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .nav-title-wrap {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8rpx;
-      overflow: hidden;
-
-      .nav-title {
-        font-size: 30rpx;
-        font-weight: 600;
-        color: var(--r-text-primary);
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        max-width: 400rpx;
-      }
-    }
-  }
-
-  .progress-bar {
-    height: 4rpx;
-    background: transparent;
-    position: relative;
-    z-index: 10;
-    overflow: hidden;
-
-    .progress-fill {
-      height: 100%;
-      width: 40%;
-      background: linear-gradient(
-        90deg,
-        var(--r-color-primary),
-        var(--r-color-primary-dark)
-      );
-      animation: webview-loading 1.2s ease-in-out infinite;
-    }
-  }
-
-  @keyframes webview-loading {
-    0% {
-      transform: translateX(-100%);
-    }
-    100% {
-      transform: translateX(350%);
-    }
-  }
-</style>
+<style lang="scss" scoped src="./index.scss"></style>

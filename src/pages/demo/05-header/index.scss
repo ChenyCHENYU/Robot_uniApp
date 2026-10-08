@@ -1,1 +1,18 @@
-/* 05-header 演示页样式 */
+.header-sample {
+  padding: 0;
+  overflow: hidden;
+  border: 1rpx solid var(--r-border-light);
+}
+.header-sample :deep(.c-header) {
+  --status-bar-height: 0px;
+  z-index: 1;
+}
+.header-sample :deep(.c-header__left) {
+  width: 88rpx;
+}
+.header-sample :deep(.c-header__bar) {
+  padding: 0 8rpx;
+}
+.header-sample :deep(.c-header__btn) {
+  min-width: 76rpx;
+}

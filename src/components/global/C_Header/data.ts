@@ -1,5 +1,6 @@
 import { computed, ref } from 'vue'
 import { useUserStore } from '@/stores/modules/user'
+import { useAppStore } from '@/stores/modules/app'
 import type { UserInfo } from '@/types/store'
 
 // Props定义
@@ -48,8 +49,12 @@ const greetingTimeRanges = [
  */
 export function useHeaderData(props, emit) {
   const userStore = useUserStore()
+  const appStore = useAppStore()
   const aiStatus = ref('online')
   const avatarError = ref(false)
+  const networkConnected = computed(
+    () => !['none', 'unknown'].includes(appStore.networkType)
+  )
 
   // 计算属性
   const userInfo = computed(
@@ -81,9 +86,7 @@ export function useHeaderData(props, emit) {
   })
 
   const displayNickname = computed(() => {
-    return (
-      userInfo.value?.nickname || userInfo.value?.name || props.defaultNickname
-    )
+    return userStore.nickname || userInfo.value?.name || props.defaultNickname
   })
 
   const greeting = computed(() => {
@@ -162,6 +165,7 @@ export function useHeaderData(props, emit) {
     // 响应式数据
     aiStatus,
     avatarError,
+    networkConnected,
 
     // 计算属性
     displayTitle,

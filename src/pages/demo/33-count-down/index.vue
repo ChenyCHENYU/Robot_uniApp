@@ -1,51 +1,38 @@
 <template>
   <C_Layout>
-    <view class="max-w-4xl mx-auto p-5 bg-gray-50 min-h-screen">
-      <view class="text-center mb-8">
-        <C_Title
-          title="C_CountDown 倒计时"
-          subtitle="实时倒计时展示组件"
-          type="primary"
-          :level="3"
-          size="large"
-          align="center"
-          left-icon="i-mdi-timer-sand"
-          :show-decoration="true"
-          :show-divider="true"
-        />
+    <view class="demo-page demo-count-down">
+      <view class="demo-hero">
+        <view class="demo-hero__eyebrow"
+          ><text>{{ PAGE_META.category }}</text
+          ><text>{{ PAGE_META.component }}</text></view
+        >
+        <text class="demo-hero__title">{{ PAGE_META.title }}</text>
+        <text class="demo-hero__desc">{{ PAGE_META.summary }}</text>
       </view>
+      <view class="demo-tip"
+        ><C_Icon
+          name="i-mdi-gesture-tap"
+          :size="16"
+        /><text>{{ PAGE_META.instruction }}</text></view
+      >
 
-      <view class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <view class="demo-grid">
         <!-- 基础用法 -->
-        <view class="bg-white rounded-lg shadow-md p-6">
-          <C_Title
-            title="基础倒计时"
-            subtitle="默认格式"
-            :level="4"
-            type="primary"
-            align="center"
-            left-icon="i-mdi-timer"
-            :show-decoration="true"
-          />
-          <view class="my-6 p-4 bg-gray-50 rounded-lg text-center">
+        <view class="demo-section">
+          <text class="section-title">基础倒计时</text>
+          <text class="section-desc">默认格式</text>
+          <view class="demo-preview text-center">
             <C_CountDown :time="30 * 60 * 60 * 1000" />
           </view>
         </view>
 
         <!-- 自定义格式 -->
-        <view class="bg-white rounded-lg shadow-md p-6">
-          <C_Title
-            title="自定义格式"
-            subtitle="format 属性"
-            :level="4"
-            type="success"
-            align="center"
-            left-icon="i-mdi-clock-edit-outline"
-            :show-decoration="true"
-          />
+        <view class="demo-section">
+          <text class="section-title">自定义格式</text>
+          <text class="section-desc">format 属性</text>
           <view class="my-6 space-y-4">
-            <view class="p-3 bg-gray-50 rounded-lg text-center">
-              <text class="text-xs text-gray-400 block mb-1"
+            <view class="p-3 demo-subtle rounded-lg text-center">
+              <text class="text-xs demo-muted block mb-1"
                 >DD 天 HH 时 mm 分 ss 秒</text
               >
               <C_CountDown
@@ -53,8 +40,8 @@
                 format="DD 天 HH 时 mm 分 ss 秒"
               />
             </view>
-            <view class="p-3 bg-gray-50 rounded-lg text-center">
-              <text class="text-xs text-gray-400 block mb-1">ss 秒</text>
+            <view class="p-3 demo-subtle rounded-lg text-center">
+              <text class="text-xs demo-muted block mb-1">ss 秒</text>
               <C_CountDown
                 :time="60 * 1000"
                 format="ss 秒"
@@ -64,17 +51,10 @@
         </view>
 
         <!-- 毫秒级 -->
-        <view class="bg-white rounded-lg shadow-md p-6">
-          <C_Title
-            title="毫秒级精度"
-            subtitle="millisecond 属性"
-            :level="4"
-            type="warning"
-            align="center"
-            left-icon="i-mdi-speedometer"
-            :show-decoration="true"
-          />
-          <view class="my-6 p-4 bg-gray-50 rounded-lg text-center">
+        <view class="demo-section">
+          <text class="section-title">毫秒级精度</text>
+          <text class="section-desc">millisecond 属性</text>
+          <view class="demo-preview text-center">
             <C_CountDown
               :time="30 * 60 * 60 * 1000"
               millisecond
@@ -84,112 +64,83 @@
         </view>
 
         <!-- 自定义样式 -->
-        <view class="bg-white rounded-lg shadow-md p-6">
-          <C_Title
-            title="自定义样式"
-            subtitle="颜色 & 大小"
-            :level="4"
-            type="danger"
-            align="center"
-            left-icon="i-mdi-palette"
-            :show-decoration="true"
-          />
+        <view class="demo-section">
+          <text class="section-title">自定义样式</text>
+          <text class="section-desc">颜色 & 大小</text>
           <view class="my-6 space-y-4">
-            <view class="p-3 bg-gray-50 rounded-lg text-center">
+            <view class="p-3 demo-subtle rounded-lg text-center">
               <C_CountDown
                 :time="24 * 60 * 60 * 1000"
-                color="#ee0a24"
-                fontSize="40rpx"
+                class="count-down-large count-down-danger"
               />
             </view>
-            <view class="p-3 bg-gray-50 rounded-lg text-center">
+            <view class="p-3 demo-subtle rounded-lg text-center">
               <C_CountDown
                 :time="24 * 60 * 60 * 1000"
-                color="#07c160"
-                fontSize="32rpx"
+                class="count-down-success"
               />
             </view>
           </view>
         </view>
 
         <!-- 手动控制 -->
-        <view class="bg-white rounded-lg shadow-md p-6 lg:col-span-2">
-          <C_Title
-            title="手动控制"
-            subtitle="开始 / 暂停 / 重置"
-            :level="4"
-            type="info"
-            align="center"
-            left-icon="i-mdi-play-pause"
-            :show-decoration="true"
-          />
-          <view class="my-6 p-4 bg-gray-50 rounded-lg">
+        <view class="demo-section">
+          <text class="section-title">手动控制</text>
+          <text class="section-desc">开始 / 暂停 / 重置</text>
+          <view class="demo-preview">
             <view class="text-center mb-4">
               <C_CountDown
                 ref="countdownRef"
                 :time="10000"
                 :autoStart="false"
+                @finish="handleFinish"
                 format="ss:SSS"
                 millisecond
               />
             </view>
-            <view class="flex justify-center gap-3">
-              <text
-                class="text-sm text-white bg-green-500 px-5 py-2 rounded-full"
+            <text class="demo-status text-center block mb-3">{{
+              countdownState
+            }}</text>
+            <view class="demo-row justify-center">
+              <button
+                class="demo-button"
                 @click="handleStart"
-                >开始</text
+                :disabled="
+                  countdownState === '运行中' || countdownState === '已结束'
+                "
+                >开始</button
               >
-              <text
-                class="text-sm text-white bg-amber-500 px-5 py-2 rounded-full"
+              <button
+                class="demo-button demo-button--quiet"
                 @click="handlePause"
-                >暂停</text
+                :disabled="countdownState !== '运行中'"
+                >暂停</button
               >
-              <text
-                class="text-sm text-white bg-gray-500 px-5 py-2 rounded-full"
+              <button
+                class="demo-button demo-button--quiet"
                 @click="handleReset"
-                >重置</text
+                >重置</button
               >
             </view>
           </view>
         </view>
-      </view>
-
-      <view class="mt-8 text-center">
-        <C_Title
-          title="精准计时，灵活控制"
-          subtitle="格式化 · 毫秒级 · 自定义样式 · 手动控制"
-          :level="5"
-          type="info"
-          align="center"
-          :show-divider="true"
-          divider-position="top"
-        />
       </view>
     </view>
   </C_Layout>
 </template>
 
 <script setup lang="ts">
-  import { ref } from 'vue'
-
-  const countdownRef = ref()
-
-  /**
-   *
-   */
-  function handleStart() {
-    countdownRef.value?.start()
-  }
-  /**
-   *
-   */
-  function handlePause() {
-    countdownRef.value?.pause()
-  }
-  /**
-   *
-   */
-  function handleReset() {
-    countdownRef.value?.reset()
-  }
+  import { PAGE_META, useDemo } from './data'
+  const {
+    countdownRef,
+    countdownState,
+    handleStart,
+    handlePause,
+    handleReset,
+    handleFinish,
+  } = useDemo()
 </script>
+
+<style lang="scss" scoped>
+  @import './index.scss';
+</style>

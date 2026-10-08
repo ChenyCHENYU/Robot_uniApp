@@ -6,7 +6,7 @@
         <wd-icon
           name="search"
           size="18px"
-          color="#909399"
+          color="var(--r-text-secondary)"
           class="c-search__icon"
         />
         <input
@@ -16,11 +16,11 @@
           confirm-type="search"
           @input="onInput"
           @confirm="onSearch"
-          @focus="focused = true"
         />
         <view
           v-if="keyword"
           class="c-search__clear"
+          aria-label="清空搜索内容"
           @click="onClear"
         >
           <wd-icon
@@ -91,8 +91,7 @@
   const emit = defineEmits(['search', 'input', 'clear'])
 
   const keyword = ref('')
-  const focused = ref(false)
-  const historyList = ref([])
+  const historyList = ref<string[]>([])
   let debounceTimer: ReturnType<typeof setTimeout> | null = null
 
   onMounted(() => {
@@ -109,12 +108,18 @@
 
   const onSearch = () => {
     if (!keyword.value.trim()) return
+    if (debounceTimer) clearTimeout(debounceTimer)
+    debounceTimer = null
+    keyword.value = keyword.value.trim()
     historyList.value = saveSearchHistory(keyword.value, props.maxHistory)
     emit('search', keyword.value)
   }
 
   const onClear = () => {
+    if (debounceTimer) clearTimeout(debounceTimer)
+    debounceTimer = null
     keyword.value = ''
+    emit('input', '')
     emit('clear')
   }
 

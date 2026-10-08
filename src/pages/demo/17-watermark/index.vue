@@ -1,172 +1,153 @@
 <template>
   <C_Layout>
-    <view class="max-w-4xl mx-auto p-5 bg-gray-50 min-h-screen">
-      <view class="text-center mb-8">
-        <C_Title
-          title="C_Watermark 水印"
-          subtitle="页面安全水印组件"
-          type="primary"
-          :level="3"
-          size="large"
-          align="center"
-          left-icon="i-mdi-water-outline"
-          :show-decoration="true"
-          :show-divider="true"
-        />
+    <view class="demo-page demo-watermark">
+      <view class="demo-hero">
+        <view class="demo-hero__eyebrow"
+          ><text>{{ PAGE_META.category }}</text
+          ><text>{{ PAGE_META.component }}</text></view
+        >
+        <text class="demo-hero__title">{{ PAGE_META.title }}</text>
+        <text class="demo-hero__desc">{{ PAGE_META.summary }}</text>
       </view>
+      <view class="demo-tip"
+        ><C_Icon
+          name="i-mdi-gesture-tap"
+          :size="16"
+        /><text>{{ PAGE_META.instruction }}</text></view
+      >
 
-      <view class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <view class="demo-grid">
         <!-- 基础水印 -->
-        <view class="bg-white rounded-lg shadow-md p-6">
-          <C_Title
-            title="基础水印"
-            subtitle="默认文字水印"
-            :level="4"
-            type="primary"
-            align="center"
-            left-icon="i-mdi-text"
-            :show-decoration="true"
-          />
-          <view class="my-6 rounded-lg overflow-hidden">
-            <C_Watermark text="机器人助手">
+        <view class="demo-section">
+          <text class="section-title">基础水印</text>
+          <text class="section-desc">默认文字水印</text>
+          <view class="demo-preview watermark-sample">
+            <C_Watermark
+              text="机器人助手"
+              color="var(--r-text-secondary)"
+            >
               <view
                 class="flex items-center justify-center"
-                style="height: 200px"
+                style="height: 160px"
               >
-                <text class="text-gray-400 text-sm">内容区域</text>
+                <text class="watermark-caption">内容区域</text>
               </view>
             </C_Watermark>
           </view>
         </view>
 
         <!-- 自定义颜色 -->
-        <view class="bg-white rounded-lg shadow-md p-6">
-          <C_Title
-            title="自定义颜色"
-            subtitle="color 属性"
-            :level="4"
-            type="success"
-            align="center"
-            left-icon="i-mdi-palette"
-            :show-decoration="true"
-          />
-          <view class="my-6 rounded-lg overflow-hidden">
+        <view class="demo-section">
+          <text class="section-title">自定义颜色</text>
+          <text class="section-desc">color 属性</text>
+          <view class="demo-preview watermark-sample">
             <C_Watermark
               text="Robot App"
-              color="rgba(22, 119, 255, 0.12)"
+              color="var(--r-color-primary)"
             >
               <view
                 class="flex items-center justify-center"
-                style="height: 200px"
+                style="height: 160px"
               >
-                <text class="text-gray-400 text-sm">蓝色水印</text>
+                <text class="watermark-caption">蓝色水印</text>
               </view>
             </C_Watermark>
           </view>
         </view>
 
         <!-- 旋转角度 -->
-        <view class="bg-white rounded-lg shadow-md p-6">
-          <C_Title
-            title="旋转角度"
-            subtitle="rotate 属性"
-            :level="4"
-            type="warning"
-            align="center"
-            left-icon="i-mdi-rotate-right"
-            :show-decoration="true"
-          />
-          <view class="my-6 rounded-lg overflow-hidden">
+        <view class="demo-section">
+          <text class="section-title">旋转角度</text>
+          <text class="section-desc">rotate 属性</text>
+          <view class="demo-preview watermark-sample">
             <C_Watermark
               text="自定义角度"
+              color="var(--r-text-secondary)"
               :rotate="-15"
             >
               <view
                 class="flex items-center justify-center"
-                style="height: 200px"
+                style="height: 160px"
               >
-                <text class="text-gray-400 text-sm">rotate = -15°</text>
+                <text class="watermark-caption">rotate = -15°</text>
               </view>
             </C_Watermark>
           </view>
         </view>
 
         <!-- 自定义间距 -->
-        <view class="bg-white rounded-lg shadow-md p-6">
-          <C_Title
-            title="密集水印"
-            subtitle="gap 属性"
-            :level="4"
-            type="danger"
-            align="center"
-            left-icon="i-mdi-grid-large"
-            :show-decoration="true"
-          />
-          <view class="my-6 rounded-lg overflow-hidden">
+        <view class="demo-section">
+          <text class="section-title">密集水印</text>
+          <text class="section-desc">gap 属性</text>
+          <view class="demo-preview watermark-sample">
             <C_Watermark
               text="CONFIDENTIAL"
+              color="var(--r-text-secondary)"
               :gap="[60, 60]"
               :fontSize="12"
             >
               <view
                 class="flex items-center justify-center"
-                style="height: 200px"
+                style="height: 160px"
               >
-                <text class="text-gray-400 text-sm">密集排列效果</text>
+                <text class="watermark-caption">密集排列效果</text>
               </view>
             </C_Watermark>
           </view>
         </view>
 
         <!-- 全页水印 -->
-        <view class="bg-white rounded-lg shadow-md p-6 lg:col-span-2">
-          <C_Title
-            title="功能特性"
-            subtitle="安全、灵活、可配置"
-            :level="4"
-            type="info"
-            align="center"
-            left-icon="i-mdi-shield-check-outline"
-            :show-decoration="true"
-          />
+        <view class="demo-section">
+          <text class="section-title">功能特性</text>
+          <text class="section-desc">安全、灵活、可配置</text>
           <view class="my-6 grid grid-cols-2 gap-4">
-            <view class="p-4 bg-gray-50 rounded-lg text-center">
-              <text class="text-2xl block mb-2">🔒</text>
-              <text class="text-sm font-bold block">安全防护</text>
-              <text class="text-xs text-gray-500">防止截图泄露</text>
+            <view class="p-4 demo-subtle rounded-lg text-center">
+              <C_Icon
+                name="i-mdi-lock-outline"
+                :size="24"
+                class="demo-feature-icon"
+              />
+              <text class="text-sm font-bold block">来源标记</text>
+              <text class="text-xs demo-muted">截图中标记内容来源</text>
             </view>
-            <view class="p-4 bg-gray-50 rounded-lg text-center">
-              <text class="text-2xl block mb-2">🎨</text>
+            <view class="p-4 demo-subtle rounded-lg text-center">
+              <C_Icon
+                name="i-mdi-palette-outline"
+                :size="24"
+                class="demo-feature-icon"
+              />
               <text class="text-sm font-bold block">自定义样式</text>
-              <text class="text-xs text-gray-500">颜色、大小、间距</text>
+              <text class="text-xs demo-muted">颜色、大小、间距</text>
             </view>
-            <view class="p-4 bg-gray-50 rounded-lg text-center">
-              <text class="text-2xl block mb-2">📐</text>
+            <view class="p-4 demo-subtle rounded-lg text-center">
+              <C_Icon
+                name="i-mdi-rotate-left"
+                :size="24"
+                class="demo-feature-icon"
+              />
               <text class="text-sm font-bold block">旋转角度</text>
-              <text class="text-xs text-gray-500">自由设置倾斜度</text>
+              <text class="text-xs demo-muted">自由设置倾斜度</text>
             </view>
-            <view class="p-4 bg-gray-50 rounded-lg text-center">
-              <text class="text-2xl block mb-2">📄</text>
+            <view class="p-4 demo-subtle rounded-lg text-center">
+              <C_Icon
+                name="i-mdi-file-document-outline"
+                :size="24"
+                class="demo-feature-icon"
+              />
               <text class="text-sm font-bold block">全页覆盖</text>
-              <text class="text-xs text-gray-500">fullPage 模式</text>
+              <text class="text-xs demo-muted">fullPage 模式</text>
             </view>
           </view>
         </view>
-      </view>
-
-      <view class="mt-8 text-center">
-        <C_Title
-          title="安全水印，防止泄露"
-          subtitle="文字 · 颜色 · 旋转 · 间距 · 全页覆盖"
-          :level="5"
-          type="info"
-          align="center"
-          :show-divider="true"
-          divider-position="top"
-        />
       </view>
     </view>
   </C_Layout>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+  import { PAGE_META } from './data'
+</script>
+
+<style lang="scss" scoped>
+  @import './index.scss';
+</style>

@@ -13,7 +13,7 @@
  */
 import config from '@/config/env'
 import { RESPONSE_CODE } from '@/constants/business'
-import { useUserStore } from '@/stores'
+import { useUserStore } from '@/stores/modules/user'
 import {
   getRequestContextEpoch,
   onRequestContextChange,
@@ -27,11 +27,13 @@ import {
   isCancelledError,
 } from './http-helpers'
 import type { HttpError, RequestOptions } from './http-types'
+import { showRequestLoading, hideRequestLoading } from './feedback'
 
 export type { HttpError, RequestOptions }
 
 /** 请求执行上下文（拆分自 request 以收敛复杂度） */
 interface ExecContext {
+  contextEpoch: number
   url: string
   method: string
   data: Record<string, any>
@@ -56,6 +58,7 @@ function normalizeContext(url: string, options: RequestOptions): ExecContext {
   } = options
 
   return {
+    contextEpoch: getRequestContextEpoch(),
     url: url.startsWith('http') ? url : http.baseURL + url,
     method,
     data,
@@ -69,7 +72,14 @@ function normalizeContext(url: string, options: RequestOptions): ExecContext {
 
 /** 生成请求唯一标识（含身份代次：登出/切号后不复用旧请求） */
 function genRequestKey(ctx: ExecContext): string {
-  return `${getRequestContextEpoch()}:${ctx.method}:${ctx.url}:${JSON.stringify(ctx.data || {})}`
+  return `${ctx.contextEpoch}:${ctx.method}:${ctx.url}:${JSON.stringify(ctx.data || {})}`
+}
+
+/** 页面取消可关闭；账号切换仍必须隔离旧请求、重试和响应。 */
+function assertRequestContext(contextEpoch: number) {
+  if (contextEpoch !== getRequestContextEpoch()) {
+    throw httpError(-1, '请求已取消')
+  }
 }
 
 class Http {
@@ -102,7 +112,7 @@ class Http {
   /** 显示loading（引用计数） */
   showLoading() {
     if (this.loadingCount === 0) {
-      uni.showLoading({ title: '加载中...', mask: true })
+      showRequestLoading()
     }
     this.loadingCount++
   }
@@ -112,7 +122,7 @@ class Http {
     this.loadingCount--
     if (this.loadingCount <= 0) {
       this.loadingCount = 0
-      uni.hideLoading()
+      hideRequestLoading()
     }
   }
 
@@ -184,6 +194,7 @@ class Http {
     try {
       return await this._doRequest(ctx, ctx.retry, ctx.retryDelay)
     } catch (error: any) {
+      assertRequestContext(ctx.contextEpoch)
       return this._handleError(error as HttpError, ctx.silent)
     } finally {
       if (!ctx.silent) this.hideLoading()
@@ -198,13 +209,16 @@ class Http {
   ): Promise<any> {
     try {
       const response = await this._send(ctx)
+      assertRequestContext(ctx.contextEpoch)
       return this._handleResponse(response)
     } catch (error: any) {
+      assertRequestContext(ctx.contextEpoch)
       if (!error?.retryable || retriesLeft <= 0) throw error
 
       // 指数退避
       const delay = retryDelay * Math.pow(2, ctx.rest._retryAttempt || 0)
       await new Promise(r => setTimeout(r, delay))
+      assertRequestContext(ctx.contextEpoch)
 
       ctx.rest._retryAttempt = (ctx.rest._retryAttempt || 0) + 1
       return this._doRequest(ctx, retriesLeft - 1, retryDelay)
@@ -215,6 +229,7 @@ class Http {
   private _send(
     ctx: ExecContext
   ): Promise<UniApp.RequestSuccessCallbackResult> {
+    assertRequestContext(ctx.contextEpoch)
     const userStore = useUserStore()
     const header: Record<string, string> = {
       'Content-Type': 'application/json',
@@ -385,6 +400,7 @@ class Http {
     options: RequestOptions & { onProgress?: (progress: number) => void } = {}
   ): Promise<T> {
     const { onProgress, silent = false } = options
+    const contextEpoch = getRequestContextEpoch()
     const fullURL = url.startsWith('http') ? url : this.baseURL + url
 
     const userStore = useUserStore()
@@ -403,6 +419,12 @@ class Http {
         formData,
         header,
         success: async res => {
+          try {
+            assertRequestContext(contextEpoch)
+          } catch (error) {
+            reject(error)
+            return
+          }
           // HTTP 状态码校验
           if (res.statusCode !== 200) {
             const error = httpError(
@@ -424,7 +446,14 @@ class Http {
             reject(error)
           }
         },
-        fail: err => reject(httpError(-1, err.errMsg || '上传失败', true)),
+        fail: err => {
+          try {
+            assertRequestContext(contextEpoch)
+            reject(httpError(-1, err.errMsg || '上传失败', true))
+          } catch (error) {
+            reject(error)
+          }
+        },
         complete: () => {
           if (!silent) this.hideLoading()
         },
@@ -433,7 +462,8 @@ class Http {
       // 上传进度
       if (onProgress && uploadTask) {
         uploadTask.onProgressUpdate(res => {
-          onProgress(res.progress)
+          if (contextEpoch === getRequestContextEpoch())
+            onProgress(res.progress)
         })
       }
     })

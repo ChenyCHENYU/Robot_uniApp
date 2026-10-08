@@ -2,6 +2,8 @@
   <view
     v-if="loading"
     :class="['c-skeleton', animate && 'c-skeleton--animate']"
+    aria-busy="true"
+    aria-label="正在加载"
   >
     <view
       v-if="avatar"

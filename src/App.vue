@@ -15,22 +15,39 @@
 
 <script setup lang="ts">
   import { onLaunch, onShow } from '@dcloudio/uni-app'
+  import { onUnmounted } from 'vue'
   import { useAppStore } from '@/stores/modules/app'
   import { useUserStore } from '@/stores/modules/user'
   import { initLocale } from '@/composables/locale'
   import { initTheme } from '@/composables/useTheme'
   import { installH5FrameShell } from '@/utils/h5-frameshell'
   import { logger } from '@/utils/logger'
+  import { feedback } from '@/utils/feedback'
 
   const appStore = useAppStore()
   const userStore = useUserStore()
 
   // 应用启动
-  onLaunch(() => {
-    initApp()
+  onLaunch(async () => {
+    // #ifndef H5
+    feedback.showLoading({ title: '正在准备工作空间', mask: true }, 'startup')
+    const startupTimer = setTimeout(
+      () => feedback.hideLoading({}, 'startup'),
+      20000
+    )
+    // #endif
+    try {
+      await initApp()
+    } finally {
+      // #ifndef H5
+      clearTimeout(startupTimer)
+      feedback.hideLoading({}, 'startup')
+      // #endif
+    }
   })
 
   onShow(() => {})
+  onUnmounted(() => appStore.stopNetworkMonitoring())
 
   // 初始化应用
   const initApp = async () => {
@@ -46,15 +63,7 @@
     installH5FrameShell()
     // #endif
 
-    // 全局网络状态监听（断网/恢复提示）
-    uni.onNetworkStatusChange(({ isConnected, networkType }) => {
-      appStore.networkType = networkType
-      if (!isConnected) {
-        uni.showToast({ title: '网络已断开，请检查网络连接', icon: 'none' })
-      } else if (networkType !== 'none') {
-        uni.showToast({ title: '网络已恢复', icon: 'success' })
-      }
-    })
+    appStore.startNetworkMonitoring()
 
     // 首次启动进入引导页（未完成引导且未登录）
     const guided = uni.getStorageSync('guide_completed')

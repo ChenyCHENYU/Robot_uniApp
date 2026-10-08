@@ -11,6 +11,7 @@
  * 同时常驻虚拟状态栏（时间/信号/电池/灵动岛听筒）。
  */
 
+// #ifdef H5
 const STYLE_ID = 'robot-h5-frameshell-style'
 const BAR_ID = 'robot-h5-statusbar'
 
@@ -20,8 +21,8 @@ const CSS = `
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: calc(44px * var(--r-fs-inv, 1));
-    padding: 0 calc(28px * var(--r-fs-inv, 1));
+    height: 44px;
+    padding: 0 28px;
     position: fixed;
     top: 0;
     left: 0;
@@ -32,7 +33,7 @@ const CSS = `
     background: var(--r-bg-page);
   }
   #robot-h5-statusbar .sb-time {
-    font-size: calc(15px * var(--r-fs-inv, 1));
+    font-size: 15px;
     font-weight: 600;
     color: var(--r-text-primary, #1c1c1e);
     font-variant-numeric: tabular-nums;
@@ -40,15 +41,15 @@ const CSS = `
   #robot-h5-statusbar .sb-right {
     display: flex;
     align-items: center;
-    gap: calc(6px * var(--r-fs-inv, 1));
+    gap: 6px;
   }
   #robot-h5-statusbar .sb-signal {
     display: flex;
     align-items: flex-end;
-    gap: calc(2px * var(--r-fs-inv, 1));
+    gap: 2px;
   }
   #robot-h5-statusbar .sb-bar {
-    width: calc(3px * var(--r-fs-inv, 1));
+    width: 3px;
     border-radius: 1px;
     background: var(--r-text-disabled, #d1d1d6);
   }
@@ -56,34 +57,35 @@ const CSS = `
     background: var(--r-color-success, #34c759);
   }
   #robot-h5-statusbar .sb-net {
-    font-size: calc(13px * var(--r-fs-inv, 1));
+    font-size: 13px;
     font-weight: 700;
     color: var(--r-text-primary, #1c1c1e);
     letter-spacing: 0.5px;
   }
   #robot-h5-statusbar .sb-shell {
-    width: calc(22px * var(--r-fs-inv, 1));
-    height: calc(11px * var(--r-fs-inv, 1));
-    border: calc(1.5px * var(--r-fs-inv, 1)) solid var(--r-text-secondary, #8e8e93);
-    border-radius: calc(3px * var(--r-fs-inv, 1));
+    width: 22px;
+    height: 11px;
+    border: 1.5px solid var(--r-text-secondary, #8e8e93);
+    border-radius: 3px;
     padding: 1px;
     box-sizing: border-box;
   }
   #robot-h5-statusbar .sb-batt {
-    font-size: calc(12px * var(--r-fs-inv, 1));
+    font-size: 12px;
     font-weight: 600;
     color: var(--r-text-primary, #1c1c1e);
     margin-left: 2px;
   }
   #robot-h5-statusbar .sb-fill {
+    display: block;
     width: 98%;
     height: 100%;
     border-radius: 1px;
     background: var(--r-text-primary, #1c1c1e);
   }
   #robot-h5-statusbar .sb-tip {
-    width: calc(1.5px * var(--r-fs-inv, 1));
-    height: calc(4px * var(--r-fs-inv, 1));
+    width: 1.5px;
+    height: 4px;
     border-radius: 0 1px 1px 0;
     background: var(--r-text-secondary, #8e8e93);
   }
@@ -91,11 +93,11 @@ const CSS = `
   #robot-h5-statusbar::before {
     content: '';
     position: absolute;
-    top: calc(11px * var(--r-fs-inv, 1));
+    top: 11px;
     left: 50%;
     transform: translateX(-50%);
-    width: calc(92px * var(--r-fs-inv, 1));
-    height: calc(22px * var(--r-fs-inv, 1));
+    width: 92px;
+    height: 22px;
     border-radius: 999px;
     background: var(--r-frame-border, #1d1d1f);
   }
@@ -124,9 +126,10 @@ function applyFrameVars() {
   root.setProperty('--r-frame-w', `${FRAME_W}px`)
   root.setProperty('--r-frame-h', `${FRAME_H}px`)
   root.setProperty('--r-frame-scale', String(scale))
-  root.setProperty('--r-fs-inv', String((1 / scale).toFixed(4)))
   root.setProperty('--r-frame-mt', `${margin.toFixed(1)}px`)
 }
+
+// #endif
 
 /** 安装手机机身壳（幂等；仅 H5） */
 export function installH5FrameShell() {
@@ -147,6 +150,7 @@ export function installH5FrameShell() {
   // #endif
 }
 
+// #ifdef H5
 /** 虚拟状态栏（机身内常驻，路由重建后自动重挂） */
 function installStatusBar() {
   if (document.getElementById(BAR_ID)) return
@@ -158,10 +162,6 @@ function installStatusBar() {
   time.className = 'sb-time'
   const right = document.createElement('span')
   right.className = 'sb-right'
-
-  const net = document.createElement('span')
-  net.className = 'sb-net'
-  net.textContent = '5G'
 
   const signal = document.createElement('span')
   signal.className = 'sb-signal'
@@ -180,7 +180,6 @@ function installStatusBar() {
   const tip = document.createElement('i')
   tip.className = 'sb-tip'
 
-  right.appendChild(net)
   right.appendChild(signal)
   right.appendChild(shell)
   right.appendChild(tip)
@@ -203,7 +202,10 @@ function installStatusBar() {
   window.setInterval(updateTime, 30000)
 
   const mount = () => {
-    const host = document.querySelector('uni-page-body') || document.body
+    const pages = Array.from(document.querySelectorAll('uni-page-body'))
+    const host =
+      pages.reverse().find(page => page.getBoundingClientRect().height > 0) ||
+      document.body
     if (host && !host.contains(bar)) {
       host.insertBefore(bar, host.firstChild)
     }
@@ -212,3 +214,5 @@ function installStatusBar() {
   const observer = new MutationObserver(() => mount())
   observer.observe(document.body, { childList: true, subtree: true })
 }
+
+// #endif

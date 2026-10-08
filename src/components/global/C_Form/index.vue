@@ -42,11 +42,17 @@
 
   /** 值是否为空（required 判定用） */
   const isEmptyValue = value =>
-    value === '' || value === null || value === undefined
+    value === '' ||
+    value === null ||
+    value === undefined ||
+    (Array.isArray(value) && value.length === 0)
 
   /** 正则规则是否不匹配 */
-  const isPatternFail = (rule, value) =>
-    Boolean(rule.pattern) && !rule.pattern.test(String(value))
+  const isPatternFail = (rule, value) => {
+    if (!rule.pattern || isEmptyValue(value)) return false
+    rule.pattern.lastIndex = 0
+    return !rule.pattern.test(String(value))
+  }
 
   /** 单条规则检查：返回错误文案，通过返回 null */
   const checkRule = (rule, value, model) => {
@@ -65,7 +71,10 @@
   /** 校验单个字段 */
   const validateField = prop => {
     const rules = props.rules[prop]
-    if (!rules) return true
+    if (!rules) {
+      errors[prop] = ''
+      return true
+    }
     const value = props.model[prop]
 
     for (const rule of Array.isArray(rules) ? rules : [rules]) {
@@ -82,7 +91,7 @@
   /** 校验全部 */
   const validate = () => {
     let valid = true
-    for (const prop in props.rules) {
+    for (const prop of Object.keys(props.rules)) {
       if (!validateField(prop)) valid = false
     }
     return valid
@@ -90,7 +99,7 @@
 
   /** 重置校验 */
   const resetValidation = () => {
-    for (const key in errors) {
+    for (const key of Object.keys(errors)) {
       errors[key] = ''
     }
   }

@@ -1,0 +1,133 @@
+.webview-page {
+  height: 100vh;
+  height: 100dvh;
+  background: var(--r-bg-page);
+  overflow: hidden;
+}
+.nav-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: env(safe-area-inset-top) 18rpx 0;
+  background: var(--r-bg-card);
+  border-bottom: 1rpx solid var(--r-border-light);
+  min-height: 118rpx;
+  box-sizing: content-box;
+  gap: 16rpx;
+  position: relative;
+  z-index: 10;
+}
+.nav-left,
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 4rpx;
+}
+.nav-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 70rpx;
+  height: 84rpx;
+  border-radius: 18rpx;
+}
+.nav-title-wrap {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14rpx;
+}
+.nav-title {
+  display: block;
+  color: var(--r-text-primary);
+  font-size: 28rpx;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.loading-indicator {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  min-height: 32rpx;
+}
+.progress-bar {
+  position: absolute;
+  height: 4rpx;
+  left: 0;
+  right: 0;
+  background: var(--r-bg-grey);
+  overflow: hidden;
+  z-index: 10;
+}
+.progress-fill {
+  height: 100%;
+  width: 40%;
+  background: var(--r-color-primary);
+  animation: webview-loading 1.2s ease-in-out infinite;
+}
+.webview-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 140rpx 40rpx;
+  text-align: center;
+  gap: 22rpx;
+}
+.error-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: var(--r-text-primary);
+}
+.error-text {
+  font-size: 25rpx;
+  line-height: 1.7;
+  color: var(--r-text-secondary);
+}
+.error-actions {
+  display: flex;
+  gap: 20rpx;
+  margin-top: 16rpx;
+}
+.retry-btn,
+.back-btn {
+  margin: 0;
+  padding: 18rpx 28rpx;
+  line-height: 1.5;
+  border-radius: 18rpx;
+  color: var(--r-color-primary);
+  background: var(--r-color-primary-soft);
+  font-size: 25rpx;
+}
+.webview-frame {
+  display: block;
+  background: var(--r-bg-card);
+}
+button::after {
+  border: 0;
+}
+@keyframes webview-loading {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(350%);
+  }
+}
+
+.nav-bar {
+  flex-shrink: 0;
+}
+.webview-frame {
+  flex: 1;
+  min-height: 0;
+}
+@media screen and (min-width: 600px) {
+  .webview-page {
+    height: 100% !important;
+    min-height: 0 !important;
+  }
+}

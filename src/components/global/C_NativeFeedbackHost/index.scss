@@ -1,0 +1,21 @@
+@import '../C_FeedbackHost/index.scss';
+
+.robot-feedback {
+  .robot-feedback__field-label {
+    flex-shrink: 0;
+    color: var(--r-text-secondary);
+  }
+  .robot-feedback__field-value {
+    flex: 1;
+    text-align: right;
+    word-break: break-all;
+  }
+  .robot-feedback__title,
+  .robot-feedback__body {
+    display: block;
+  }
+  .robot-feedback__input {
+    min-height: 160rpx;
+    height: 160rpx;
+  }
+}

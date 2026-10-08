@@ -5,6 +5,7 @@
   >
     <!-- wot-design-uni 官方主题接入：theme 切换暗色，themeVars 注入品牌 token -->
     <wd-config-provider
+      custom-class="c-layout__provider"
       :theme="wotTheme"
       :theme-vars="wotThemeVars"
     >
@@ -14,20 +15,31 @@
         ref="headerRef"
         v-bind="headerConfig"
         :notification-count="realNotificationCount"
-        @user-click="emit('userClick', $event)"
+        @user-click="handleUserClick"
         @notification-click="handleNotificationClick"
         @settings-click="handleSettingsClick"
         @status-click="emit('statusClick', $event)"
         @back-click="handleBackClick"
-      />
+      >
+        <template #environment>
+          <C_EnvironmentBadge />
+        </template>
+      </C_Header>
 
       <!-- 页面内容区域 -->
-      <view
+      <scroll-view
+        scroll-y
+        :refresher-enabled="refresherEnabled"
+        :refresher-triggered="refresherTriggered"
+        :refresher-default-style="wotTheme === 'dark' ? 'white' : 'black'"
+        :lower-threshold="100"
+        @refresherrefresh="emit('refresh')"
+        @scrolltolower="emit('reachBottom')"
         class="c-layout__content"
         :style="contentStyles"
       >
         <slot />
-      </view>
+      </scroll-view>
 
       <!-- Tabbar区域 -->
       <C_Tabbar
@@ -37,22 +49,10 @@
         v-bind="tabbarConfig"
         @change="handleTabChange"
       />
-
-      <!-- 环境角标（非生产环境显示） -->
-      <C_EnvironmentBadge />
-
-      <!-- 全局Loading -->
-      <view
-        v-if="globalLoading"
-        class="c-layout__loading"
-      >
-        <wd-loading
-          :size="60"
-          color="var(--r-color-primary, #007AFF)"
-        />
-        <text class="c-layout__loading-text">加载中...</text>
-      </view>
     </wd-config-provider>
+    <!-- #ifndef H5 -->
+    <C_NativeFeedbackHost />
+    <!-- #endif -->
   </view>
 </template>
 
@@ -72,9 +72,17 @@
   import C_Header from '../C_Header/index.vue'
   import C_Tabbar from '../C_Tabbar/index.vue'
   import C_EnvironmentBadge from '../C_EnvironmentBadge/index.vue'
+  import { useFeedbackLoading } from '@/utils/feedback'
+  // #ifndef H5
+  import C_NativeFeedbackHost from '../C_NativeFeedbackHost/index.vue'
+  // #endif
 
   const props = defineProps(layoutProps)
   const emit = defineEmits(layoutEmits)
+  useFeedbackLoading(
+    () => props.globalLoading,
+    () => '正在加载'
+  )
 
   // 全局未读消息数（优先使用 store，允许 prop 覆盖）
   const messageStore = useMessageStore()
@@ -119,6 +127,11 @@
     { immediate: true }
   )
 
+  const handleUserClick = data => {
+    emit('userClick', data)
+    uni.switchTab({ url: '/pages/profile/index' })
+  }
+
   // 同步 tabbar 消息角标
   const syncMessageBadge = () => {
     const msgTab = tabbarConfig.tabList.find(t => t.id === 'message')
@@ -127,6 +140,7 @@
 
   // 页面再次显示时重新同步 tab 索引（修复缓存页面 tab 高亮不一致）
   onShow(() => {
+    currentPath.value = getCurrentPath()
     if (showTabbar.value) {
       const path = getCurrentPath()
       const activeIndex = getCurrentTabIndex(path)
@@ -134,19 +148,20 @@
         currentTabIndex.value = activeIndex
       }
     }
-    // 同步消息 tabbar 角标
+    // 服务端未读总数与已加载分页解耦。
+    messageStore.refreshUnreadCount()
     syncMessageBadge()
   })
 
   // 页面卸载：取消该页面所有在飞请求，避免 setData 浪费与内存泄漏
   onUnload(() => {
-    const path = getCurrentPath()
+    const path = currentPath.value
     if (path) http.cancelPageRequests(path)
   })
 
   // H5 端组件卸载兜底（部分场景 onUnload 不触发）
   onUnmounted(() => {
-    const path = getCurrentPath()
+    const path = currentPath.value
     if (path) http.cancelPageRequests(path)
   })
 
@@ -206,6 +221,8 @@
   const handleTabChange = data => {
     const { item, index } = data
 
+    if (isNavigating.value) return
+    const previousIndex = getCurrentTabIndex(currentPath.value)
     currentTabIndex.value = index
 
     if (item.path === currentPath.value) {
@@ -227,8 +244,8 @@
         })
       },
       fail: () => {
-        // switchTab失败时降级使用reLaunch
-        uni.reLaunch({ url: item.path })
+        currentTabIndex.value = previousIndex
+        uni.showToast({ title: '切换失败，请重试', icon: 'none' })
       },
       complete: () => {
         nextTick(() =>
@@ -250,7 +267,7 @@
     const tab = tabbarConfig.tabList.find(item => item.id === tabId)
     if (tab) {
       tab.badge = count
-      tabbarRef.value?.updateBadge?.(tabId, count)
+      tabbarRef.value?.setBadge?.(tabId, count)
     }
   }
 

@@ -71,9 +71,9 @@ uni-page-body {
     box-shadow:
       0 0 0 2px rgba(255, 255, 255, 0.06),
       0 24px 80px rgba(0, 0, 0, 0.35);
-    overflow-y: auto;
-    overflow-x: hidden;
-    padding-top: calc(44px * var(--r-fs-inv, 1));
+    overflow: hidden;
+    padding-top: 44px;
+    box-sizing: border-box;
   }
 
   // 页面容器链与机身同宽
@@ -84,7 +84,6 @@ uni-page-body {
   }
 
   // 全高页面在机身内撑满机身高度
-  .c-layout,
   .guide-page,
   .login-page,
   .register-page,
@@ -96,14 +95,14 @@ uni-page-body {
     min-height: 100% !important;
   }
 
-  // 容器级 100vh 计算在桌面端改为贴合机身（避免把 footer 推出屏）
-  .login-container {
+  .c-layout {
+    height: 100% !important;
     min-height: 0 !important;
   }
 
-  // 环境角标避开虚拟状态栏
-  .c-env-badge {
-    top: calc(56px * var(--r-fs-inv, 1));
+  // 容器级 100vh 计算在桌面端改为贴合机身（避免把 footer 推出屏）
+  .login-container {
+    min-height: 0 !important;
   }
 }
 
@@ -132,14 +131,18 @@ image {
 }
 
 // 清除按钮默认样式
-button {
+button,
+uni-button {
   margin: 0;
+  // H5 基础按钮样式按页面延迟加载，统一清除其 auto 外边距与伪边框。
+  margin-left: 0 !important;
+  margin-right: 0 !important;
   padding: 0;
   background: none;
   border: none;
   line-height: inherit;
   font-size: inherit;
   &::after {
-    border: none;
+    border: none !important;
   }
 }

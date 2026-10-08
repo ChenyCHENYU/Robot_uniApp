@@ -2,10 +2,15 @@
   <view
     v-if="visible"
     class="c-modal__overlay"
+    @touchmove.self.stop.prevent
+    @wheel.self.stop.prevent
     @click.self="onOverlayClick"
   >
     <view
       class="c-modal__container"
+      role="dialog"
+      aria-modal="true"
+      :aria-label="title || '提示'"
       :style="{ width }"
     >
       <!-- 头部 -->
@@ -14,12 +19,14 @@
         <view
           v-if="showClose"
           class="c-modal__close"
+          role="button"
+          aria-label="关闭弹窗"
           @click="onClose"
         >
           <wd-icon
             name="close"
             size="20px"
-            color="#909399"
+            color="var(--r-text-secondary)"
           />
         </view>
       </view>

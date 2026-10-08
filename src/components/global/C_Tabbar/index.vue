@@ -4,8 +4,8 @@
 <template>
   <view
     class="c-tabbar"
-    :class="['is-fixed', `mode-${mode}`]"
-    :style="{ paddingBottom: safeAreaBottom + 'px' }"
+    :class="[{ 'is-fixed': fixed }, `mode-${mode}`]"
+    :style="tabbarStyle"
   >
     <view class="c-tabbar__container">
       <view
@@ -13,6 +13,12 @@
         v-for="(item, index) in tabList"
         :key="item.id"
         :class="{ 'is-active': currentIndex === index }"
+        :aria-label="item.text"
+        :aria-current="currentIndex === index ? 'page' : undefined"
+        role="button"
+        tabindex="0"
+        @keydown.enter="handleTabClick(item, index)"
+        @keydown.space.prevent="handleTabClick(item, index)"
         hover-class="c-tabbar__item--hover"
         :hover-stay-time="80"
         @click="handleTabClick(item, index)"
@@ -63,7 +69,7 @@
   const {
     isNavigating: _isNavigating,
     currentIndex,
-    safeAreaBottom,
+    tabbarStyle,
     handleTabClick,
     setBadge,
     setCurrentIndex,

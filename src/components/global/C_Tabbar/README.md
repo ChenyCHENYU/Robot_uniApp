@@ -12,26 +12,27 @@ C_Layout 已内置本组件（`tabbarConfig` 驱动），页面一般不直接�
 
 ## 模式
 
-| 模式 | 说明 |
-| --- | --- |
+| 模式    | 说明                                                                        |
+| ------- | --------------------------------------------------------------------------- |
 | `glass` | 玻璃拟态悬浮胶囊（backdrop-filter + 渐变描边），含暗色适配（`.theme-dark`） |
-| `flat` | 扁平简约（卡片底 + 顶部分隔线） |
+| `flat`  | 扁平简约（卡片底 + 顶部分隔线）                                             |
 
 ## 主要 Props
 
-| Prop | 类型 | 默认 | 说明 |
-| --- | --- | --- | --- |
-| `modelValue` | number | `0` | 当前索引（v-model） |
-| `mode` | `'glass'\|'flat'` | `'glass'` | 展示模式 |
-| `tabList` | TabItem[] | 内置四 Tab | `{ id, text, path, unoIcon, icon, activeIcon, badge }` |
+| Prop         | 类型              | 默认       | 说明                                                   |
+| ------------ | ----------------- | ---------- | ------------------------------------------------------ |
+| `modelValue` | number            | `0`        | 当前索引（v-model）                                    |
+| `mode`       | `'glass'\|'flat'` | `'flat'`   | 展示模式                                               |
+| `tabList`    | TabItem[]         | 内置四 Tab | `{ id, text, path, unoIcon, icon, activeIcon, badge }` |
+
+| `fixed` | boolean | `true` | 独立使用可固定定位；C_Layout 传 false，使底栏在布局中占位 |
 
 ## Events / Methods
 
-- `tab-click(item, index)`、`change(index)`
+- `tab-click({ item, index })`、`change({ item, index })`
 - `setBadge(tabId, count)`：设置角标
 - `setCurrentIndex(i)`：外部同步高亮
 
 ## 图标体系
 
-优先 `unoIcon`（Fluent Color 多色图标，未激活灰度化），
-降级 `wd-icon`（icon/activeIcon 双态）。
+优先 `unoIcon`，内置导航采用同一套 MDI 线形图标并通过文字色区分选中状态；降级使用 `wd-icon`（icon/activeIcon 双态）。支持点击、Enter 和空格键切换。

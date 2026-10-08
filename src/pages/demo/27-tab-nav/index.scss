@@ -1,1 +1,7 @@
-/* 27-tab-nav 演示页样式 */
+.tab-nav-segment :deep(.c-tab-nav__item) {
+  margin: 6rpx;
+  border-radius: 14rpx;
+}
+.tab-nav-segment :deep(.c-tab-nav__item--active) {
+  background: var(--r-bg-hover);
+}

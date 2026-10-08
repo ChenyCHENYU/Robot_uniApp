@@ -27,9 +27,9 @@ export const TYPE_COLORS = {
   primary: { bg: 'var(--r-color-primary, #2b6bff)', color: '#fff' },
   success: { bg: 'var(--r-color-success, #34c759)', color: '#fff' },
   warning: { bg: 'var(--r-color-warning, #ff9f0a)', color: '#fff' },
-  danger: { bg: 'var(--r-color-danger, #ff4d4f)', color: '#fff' },
+  danger: { bg: 'var(--r-color-error, #ff4d4f)', color: '#fff' },
   info: {
-    bg: 'var(--r-bg-color-secondary, #f5f5f5)',
-    color: 'var(--r-text-color-primary, #1a1a1a)',
+    bg: 'var(--r-bg-grey, #f5f5f5)',
+    color: 'var(--r-text-primary, #1a1a1a)',
   },
 }
