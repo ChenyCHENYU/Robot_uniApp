@@ -151,13 +151,13 @@ export function password(field = '密码') {
 }
 
 /**
- * @description: 强密码验证（包含大小写字母和数字，6-20位）
+ * @description: 强密码验证（包含字母和数字，6-20位）
  * @param field 字段名，默认为"密码"
  */
 export function strongPassword(field = '密码') {
   return createRule(
     value => !value || REGEX_PATTERNS.PASSWORD.test(value),
-    `${field}必须包含大小写字母和数字，长度6-20位`
+    `${field}必须包含字母和数字，长度6-20位`
   )
 }
 
@@ -299,59 +299,84 @@ export { REGEX_PATTERNS }
  * @param field 字段名
  * @returns {Object} { valid: boolean, message: string }
  */
-export function quickValidate(value, rules, field = '字段') {
+export function quickValidate(
+  value: any,
+  rules: any[],
+  field = '字段'
+): { valid: boolean; message: string } {
   if (!rules || rules.length === 0) {
     return { valid: true, message: '' }
   }
 
   for (const rule of rules) {
-    // 必填验证
-    if (rule.required && (!value || String(value).trim() === '')) {
-      return { valid: false, message: rule.message || `${field}不能为空` }
-    }
-
-    // 如果值为空且不是必填，跳过后续验证
-    if (!value && !rule.required) {
-      continue
-    }
-
-    // 自定义验证器
-    if (rule.validator && typeof rule.validator === 'function') {
-      let errorMsg = ''
-      try {
-        rule.validator(rule, value, error => {
-          if (error) {
-            errorMsg = error.message || error
-          }
-        })
-        if (errorMsg) {
-          return { valid: false, message: errorMsg }
-        }
-      } catch (err: any) {
-        return { valid: false, message: err.message || '验证失败' }
-      }
-    }
-
-    // 长度验证
-    if (value && rule.min !== undefined) {
-      const len = String(value).length
-      if (len < rule.min || (rule.max !== undefined && len > rule.max)) {
-        const message =
-          rule.message ||
-          (rule.max
-            ? `${field}长度需在${rule.min}-${rule.max}位之间`
-            : `${field}长度至少${rule.min}位`)
-        return { valid: false, message }
-      }
-    }
-
-    // 正则验证
-    if (value && rule.pattern && !rule.pattern.test(value)) {
-      return { valid: false, message: rule.message || `${field}格式错误` }
+    const error = validateRule(value, rule, field)
+    if (error) {
+      return { valid: false, message: error }
     }
   }
 
   return { valid: true, message: '' }
+}
+
+/** 单条规则校验：返回错误文案，通过返回 null */
+function validateRule(value: any, rule: any, field: string): string | null {
+  const isEmpty = !value || String(value).trim() === ''
+
+  // 必填：空值即失败
+  if (rule.required && isEmpty) {
+    return rule.message || `${field}不能为空`
+  }
+
+  // 非必填且为空：跳过后续格式校验
+  if (isEmpty) {
+    return null
+  }
+
+  return (
+    checkValidator(rule, value) ??
+    checkLength(value, rule, field) ??
+    checkPattern(value, rule, field)
+  )
+}
+
+/** 自定义验证器（同步 callback 风格） */
+function checkValidator(rule: any, value: any): string | null {
+  if (!rule.validator || typeof rule.validator !== 'function') return null
+
+  let errorMsg = ''
+  try {
+    rule.validator(rule, value, (error: Error | string | undefined) => {
+      if (error) {
+        errorMsg =
+          typeof error === 'string' ? error : (error as Error).message || ''
+      }
+    })
+  } catch (err: any) {
+    return err.message || '验证失败'
+  }
+  return errorMsg || null
+}
+
+/** 原生 min/max 长度规则 */
+function checkLength(value: any, rule: any, field: string): string | null {
+  if (rule.min === undefined) return null
+
+  const len = String(value).length
+  if (len >= rule.min && (rule.max === undefined || len <= rule.max)) {
+    return null
+  }
+  return (
+    rule.message ||
+    (rule.max
+      ? `${field}长度需在${rule.min}-${rule.max}位之间`
+      : `${field}长度至少${rule.min}位`)
+  )
+}
+
+/** 原生 pattern 正则规则 */
+function checkPattern(value: any, rule: any, field: string): string | null {
+  if (!rule.pattern || rule.pattern.test(value)) return null
+  return rule.message || `${field}格式错误`
 }
 
 /**

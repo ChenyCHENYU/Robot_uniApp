@@ -4,6 +4,7 @@
     scroll-y
     :style="{ height: '100%' }"
     :scroll-top="scrollTop"
+    :lower-threshold="offset"
     @scrolltolower="onScrollToLower"
     @refresherrefresh="onRefresh"
     @scroll="onScroll"
@@ -73,7 +74,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, computed } from 'vue'
+  import { ref, computed, onMounted, getCurrentInstance } from 'vue'
   import { defaultProps } from './data'
 
   const props = defineProps({
@@ -105,13 +106,34 @@
     itemHeight: { type: Number, default: 80 },
     /** 虚拟滚动缓冲区数量 */
     buffer: { type: Number, default: 10 },
+    /** 触底加载提前量(px) */
+    offset: { type: Number, default: 100 },
   })
 
   const emit = defineEmits(['load', 'refresh'])
 
+  const instance = getCurrentInstance()
   const refreshing = ref(false)
   const scrollTop = ref(0)
   const currentScrollTop = ref(0)
+  /** 容器实测可视高度（虚拟滚动窗口依据；回退 600px） */
+  const viewportHeight = ref(600)
+
+  onMounted(() => {
+    if (!props.virtual) return
+    // 实测容器高度，替代硬编码 600px（iPad/横屏/折叠屏适配）
+    uni
+      .createSelectorQuery()
+      .in(instance?.proxy)
+      .select('.c-list')
+      .boundingClientRect(rect => {
+        const height = (rect as { height?: number } | null)?.height
+        if (height && height > 0) {
+          viewportHeight.value = height
+        }
+      })
+      .exec()
+  })
 
   // 虚拟滚动计算
   const totalHeight = computed(() => props.items.length * props.itemHeight)
@@ -123,7 +145,7 @@
   })
 
   const endIndex = computed(() => {
-    const viewCount = Math.ceil(600 / props.itemHeight) // 约600px可视区域
+    const viewCount = Math.ceil(viewportHeight.value / props.itemHeight)
     const idx = startIndex.value + viewCount + props.buffer * 2
     return Math.min(props.items.length, idx)
   })

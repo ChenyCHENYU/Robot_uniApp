@@ -27,7 +27,7 @@
 - 平台能力抽象层（`src/platform`）：扫码/定位/拍照统一接口 + H5/小程序/App 实现 + 降级链
 - 断点续传上传（App/MP 分片+重试+持久化 job）、App 热更新服务（manifest + sha256 校验）
 - 简繁转换（`VITE_FEATURE_TW` 开关，opencc 字典懒加载，默认零包体成本）
-- 契约测试（`pnpm test`）：路由守卫/HTTP 协议/API↔Mock 同步/平台 API 隔离四项门禁；包体预算门禁（`pnpm check:budget`）
+- 契约测试 5 项（版本同步/路由守卫/HTTP 协议/API↔Mock 同步/平台隔离）+ vitest 单测 52 例；包体预算门禁（`pnpm check:budget`）
 - 路由守卫采用「默认需登录 + 白名单放行」，并支持按页面配置角色/权限
 - 34 个自研 `C_*` 组件（easycom 自动注册）+ wot-design-uni 按需引入
 - 类型检查（vue-tsc）、oxlint + ESLint、commitlint + husky 全链路质量保障

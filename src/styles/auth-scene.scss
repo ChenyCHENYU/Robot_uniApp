@@ -1,0 +1,42 @@
+/**
+ * 认证场景（登录/注册）共享样式
+ *
+ * 两页视觉为"同族不同款"（登录页更丰富），此处只收敛完全相同的部分：
+ * 页面根布局、背景容器定位与 float 动画关键帧。
+ * 形状（shape）与玻璃卡片样式各页自持，避免视觉趋同。
+ */
+
+@mixin auth-page-root {
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+@mixin auth-bg-container($position: fixed) {
+  position: $position;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+}
+
+@keyframes auth-float {
+  0%,
+  100% {
+    transform: translateY(0rpx) translateX(0rpx) rotate(0deg) scale(1);
+    opacity: 0.6;
+  }
+  25% {
+    transform: translateY(-40rpx) translateX(20rpx) rotate(90deg) scale(1.1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translateY(-10rpx) translateX(-30rpx) rotate(180deg) scale(0.9);
+    opacity: 0.4;
+  }
+  75% {
+    transform: translateY(30rpx) translateX(10rpx) rotate(270deg) scale(1.05);
+    opacity: 0.7;
+  }
+}

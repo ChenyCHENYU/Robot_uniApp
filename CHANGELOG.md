@@ -3,6 +3,32 @@
 本项目遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/) 格式，
 版本号语义遵循 [SemVer](https://semver.org/lang/zh-CN/)。
 
+## [1.6.0] - 2026-10-08
+
+### 新增
+
+- vitest 单元测试 52 例（纯逻辑层全覆盖），tests/setup 提供 uni 全局桩
+- 第 5 项契约测试：版本号三处同步（package.json ↔ manifest ↔ env）
+- GitHub Actions CI（质量门禁 + 双端构建 + 包体预算）
+- C_List 虚拟滚动容器实测高度 + offset 触底提前量 prop
+- CHANGELOG 与 C_Layout/C_Header/C_Tabbar/C_Title 组件文档
+
+### 修复（单测驱动发现）
+
+- NumberKeyboard 标准模式数字顺序错误（0-8+0 历史重构回归）
+- checkPermission 对带 query 路径误判
+- strongPassword 文案与正则语义不符（宣称大小写、实际字母+数字）
+- profile 消息角标非响应式（ref 初始值捕获一次）
+
+### 重构
+
+- v_verify quickValidate 复杂度 27→达标（行为由 15 例测试锁定后拆分）
+- index/profile 页面拆分 data.ts/types.ts（数据视图分离）
+- 品牌渐变 token 化（--r-gradient-* 8 个，15+ 文件收敛）
+- 认证场景共享样式 auth-scene.scss（根布局/容器/float 关键帧）
+- 骨架屏接入 message/crud-list 首刷；核心页 hover-class 按压态；
+  register 安全区适配
+
 ## [1.5.1] - 2026-10-07
 
 ### 新增
