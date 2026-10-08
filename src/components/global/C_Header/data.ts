@@ -8,6 +8,8 @@ export const headerProps = {
   defaultNickname: { type: String, default: 'CHENY' },
   showStatus: { type: Boolean, default: true },
   showBack: { type: Boolean, default: false },
+  showUser: { type: Boolean, default: true },
+  subtitle: { type: String, default: '' },
   isCompactMode: { type: Boolean, default: false },
   title: { type: String, default: '' },
   notificationCount: { type: Number, default: 0 },
@@ -152,12 +154,18 @@ export function useHeaderData(props, emit) {
     avatarError.value = false
   }
 
+  // 导航栏标题（新简洁风格）
+  const displayTitle = computed(() => props.title || 'Robot App')
+  const displaySubtitle = computed(() => props.subtitle || '')
+
   return {
     // 响应式数据
     aiStatus,
     avatarError,
 
     // 计算属性
+    displayTitle,
+    displaySubtitle,
     userInfo,
     safeAreaTop,
     avatarSrc,

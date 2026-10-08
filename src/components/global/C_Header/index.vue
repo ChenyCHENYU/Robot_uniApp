@@ -1,121 +1,87 @@
+<!--
+ * @Description: 顶部导航栏 — 简洁现代风格（token 驱动，亮/暗主题自适应）
+ * 左：返回/头像；中：标题+副标题；右：通知/设置
+-->
 <template>
-  <view
-    class="c-header"
-    :class="{ 'compact-mode': isCompactMode }"
-    :style="{ paddingTop: safeAreaTop + 'px' }"
-  >
-    <!-- 动态背景层 -->
-    <view class="c-header__bg-layers">
-      <view class="c-header__gradient"></view>
-      <view class="c-header__pattern"></view>
-      <view class="c-header__glass"></view>
-    </view>
+  <view class="c-header">
+    <view
+      class="c-header__bg"
+      aria-hidden="true"
+    ></view>
 
-    <!-- 内容区域 -->
-    <view class="c-header__content">
-      <!-- 返回按钮区域 -->
-      <view
-        v-if="showBack"
-        class="c-header__back-section"
-        @click="handleBack"
-      >
-        <view class="c-header__back-btn">
-          <view class="c-header__btn-glass">
-            <wd-icon
-              name="arrow-left"
-              :size="iconSize + 'px'"
-              color="#ffffff"
-            />
-          </view>
-        </view>
-        <text
-          v-if="title"
-          class="c-header__back-title"
-          >{{ title }}</text
-        >
-      </view>
-
-      <!-- 用户区域 -->
-      <view
-        v-else
-        class="c-header__user-section"
-        @click="handleUserClick"
-      >
-        <!-- 头像容器 -->
-        <view class="c-header__avatar-box">
-          <view class="c-header__avatar-ring">
-            <image
-              class="c-header__avatar"
-              :src="avatarSrc"
-              mode="aspectFill"
-              @error="handleAvatarError"
-            />
-            <view
-              class="c-header__online"
-              v-if="showStatus"
-            >
-              <view class="c-header__pulse-ring"></view>
-              <view class="c-header__status-dot"></view>
-            </view>
-          </view>
-        </view>
-
-        <!-- 用户信息 -->
-        <view class="c-header__user-info">
-          <text class="c-header__greeting">{{ greeting }}</text>
-          <text class="c-header__username">{{ displayNickname }}</text>
-        </view>
-      </view>
-
-      <!-- 操作区域 -->
-      <view class="c-header__actions">
-        <!-- 状态指示器 -->
+    <view class="c-header__bar">
+      <!-- 左区 -->
+      <view class="c-header__left">
         <view
-          v-if="showStatus && !showBack"
-          class="c-header__status-pill"
-          @click="handleStatusClick"
+          v-if="showBack"
+          class="c-header__btn"
+          hover-class="c-header__btn--hover"
+          :hover-stay-time="80"
+          @click="handleBack"
         >
-          <view class="c-header__status-pill-bg">
-            <view
-              class="c-header__status-dot"
-              :class="statusClass"
-            ></view>
-            <text class="c-header__status-text">{{ statusText }}</text>
-          </view>
-        </view>
-
-        <!-- 通知按钮 -->
-        <view
-          class="c-header__action-btn"
-          @click="handleNotification"
-        >
-          <view class="c-header__action-glass">
-            <wd-icon
-              name="notification"
-              :size="iconSize + 'px'"
-              color="#ffffff"
-            />
-          </view>
-          <wd-badge
-            v-if="notificationCount > 0"
-            :modelValue="notificationCount"
-            :max="99"
-            custom-style="position: absolute; top: 0px; right: 0px;"
+          <wd-icon
+            name="arrow-left"
+            size="20px"
+            :color="iconColor"
           />
         </view>
-
-        <!-- 设置按钮 -->
         <view
-          class="c-header__action-btn"
-          @click="handleSettings"
+          v-else-if="showUser"
+          class="c-header__avatar-box"
+          @click="emit('userClick')"
         >
-          <view class="c-header__action-glass">
-            <wd-icon
-              name="setting"
-              :size="iconSize + 'px'"
-              color="#ffffff"
-            />
+          <image
+            class="c-header__avatar"
+            :src="avatarSrc"
+            mode="aspectFill"
+          />
+          <view class="c-header__online"></view>
+        </view>
+      </view>
+
+      <!-- 中区：标题 -->
+      <view class="c-header__center">
+        <text class="c-header__title">{{ displayTitle }}</text>
+        <text
+          v-if="displaySubtitle"
+          class="c-header__subtitle"
+          >{{ displaySubtitle }}</text
+        >
+      </view>
+
+      <!-- 右区 -->
+      <view class="c-header__right">
+        <view
+          class="c-header__btn"
+          hover-class="c-header__btn--hover"
+          :hover-stay-time="80"
+          @click="emit('notificationClick')"
+        >
+          <wd-icon
+            name="notification"
+            size="20px"
+            :color="iconColor"
+          />
+          <view
+            v-if="notificationCount > 0"
+            class="c-header__dot"
+          >
+            <text class="c-header__dot-text">{{
+              notificationCount > 99 ? '99+' : notificationCount
+            }}</text>
           </view>
+        </view>
+        <view
+          class="c-header__btn"
+          hover-class="c-header__btn--hover"
+          :hover-stay-time="80"
+          @click="emit('settingsClick')"
+        >
+          <wd-icon
+            name="setting"
+            size="20px"
+            :color="iconColor"
+          />
         </view>
       </view>
     </view>
@@ -123,57 +89,17 @@
 </template>
 
 <script setup lang="ts">
-  import { computed } from 'vue' // 🔥 添加computed导入
-  import { useHeaderData, headerProps, headerEmits } from './data'
+  import { computed } from 'vue'
+  import { headerProps, headerEmits, useHeaderData } from './data'
 
-  // =================================
-  // 组件配置
-  // =================================
   const props = defineProps(headerProps)
   const emit = defineEmits(headerEmits)
 
-  // =================================
-  // 使用数据和逻辑
-  // =================================
-  const {
-    // 响应式数据
-    aiStatus,
-    avatarError: _avatarError,
+  const { displayTitle, displaySubtitle, avatarSrc, handleBack } =
+    useHeaderData(props, emit)
 
-    // 计算属性
-    userInfo,
-    safeAreaTop,
-    avatarSrc,
-    displayNickname,
-    greeting,
-    statusClass,
-    statusText,
-
-    // 方法
-    handleUserClick,
-    handleNotification,
-    handleSettings,
-    handleStatusClick,
-    handleBack,
-    handleAvatarError,
-    setAiStatus,
-    resetAvatarError,
-  } = useHeaderData(props, emit)
-
-  // 🔥 新增：紧凑模式计算属性
-  const isCompactMode = computed(() => props.isCompactMode)
-
-  // =================================
-  // 暴露给父组件的方法
-  // =================================
-  defineExpose({
-    setAiStatus,
-    resetAvatarError,
-
-    // 获取当前状态的方法
-    getCurrentStatus: () => aiStatus.value,
-    getUserInfo: () => userInfo.value,
-  })
+  /** 图标色：跟随主题文字色（亮色深字/暗色浅字） */
+  const iconColor = computed(() => 'var(--r-text-regular, #3c3c43)')
 </script>
 
 <style lang="scss" scoped>

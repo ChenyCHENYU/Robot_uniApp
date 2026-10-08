@@ -392,6 +392,8 @@
 
       .msg-body {
         flex: 1;
+        min-width: 0;
+        flex: 1;
         margin-left: 24rpx;
         overflow: hidden;
 
@@ -402,6 +404,10 @@
           margin-bottom: 8rpx;
 
           .msg-title {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
             font-size: 28rpx;
             font-weight: 600;
             color: var(--r-text-primary);
@@ -414,6 +420,8 @@
         }
 
         .msg-content {
+          display: block;
+          width: 100%;
           font-size: 24rpx;
           color: var(--r-text-regular);
           overflow: hidden;

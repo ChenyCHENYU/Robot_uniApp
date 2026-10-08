@@ -15,12 +15,9 @@
         <text class="greeting-sub">今日有 {{ todoCount }} 项待办</text>
       </view>
 
-      <!-- 核心指标卡片 — 横向滑动 -->
-      <scroll-view
+      <!-- 核心指标卡片 — 横向滑动（原生滚动，桌面滚轮/移动触摸均可用） -->
+      <view
         class="kpi-scroll"
-        scroll-x
-        enhanced
-        :show-scrollbar="false"
       >
         <view class="kpi-track">
           <view
@@ -63,7 +60,7 @@
             </view>
           </view>
         </view>
-      </scroll-view>
+      </view>
 
       <!-- 快捷操作 -->
       <view class="section">
@@ -290,6 +287,14 @@
   .kpi-scroll {
     margin: 0 -24rpx 28rpx;
     white-space: nowrap;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 
   .kpi-track {
