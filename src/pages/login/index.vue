@@ -82,25 +82,58 @@
                   placeholder-style="color: rgba(255,255,255,0.6)"
                   @blur="handleFieldBlur('username')"
                 />
+                <view
+                  v-if="form.username"
+                  class="input-action"
+                  @click="form.username = ''"
+                >
+                  <wd-icon
+                    name="close-circle-filled"
+                    size="16px"
+                    color="rgba(255,255,255,0.55)"
+                  />
+                </view>
               </view>
             </view>
 
-            <!-- 密码输入框 -->
+            <!-- 密码输入框（图标 + 清除 + 显示/隐藏） -->
             <view class="input-group">
               <view class="input-wrapper">
                 <wd-icon
-                  name="lock"
+                  name="lock-on"
                   size="20px"
                   color="rgba(255,255,255,0.7)"
                 ></wd-icon>
                 <input
                   v-model="form.password"
-                  type="password"
+                  :type="passwordVisible ? 'text' : 'password'"
+                  :password="!passwordVisible"
                   placeholder="密码"
                   class="glass-input"
                   placeholder-style="color: rgba(255,255,255,0.6)"
                   @blur="handleFieldBlur('password')"
                 />
+                <view
+                  v-if="form.password"
+                  class="input-action"
+                  @click="form.password = ''"
+                >
+                  <wd-icon
+                    name="close-circle-filled"
+                    size="16px"
+                    color="rgba(255,255,255,0.55)"
+                  />
+                </view>
+                <view
+                  class="input-action"
+                  @click="passwordVisible = !passwordVisible"
+                >
+                  <wd-icon
+                    :name="passwordVisible ? 'view' : 'eye-close'"
+                    size="18px"
+                    color="rgba(255,255,255,0.55)"
+                  />
+                </view>
               </view>
             </view>
           </template>
@@ -128,7 +161,7 @@
             <view class="input-group">
               <view class="input-wrapper sms-wrapper">
                 <wd-icon
-                  name="shield"
+                  name="secured"
                   size="20px"
                   color="rgba(255,255,255,0.7)"
                 ></wd-icon>
@@ -204,10 +237,11 @@
           class="demo-hint"
         >
           <text class="demo-hint-text"
-            >演示账号：admin / admin123（仅开发环境）</text
+            >演示账号：CHENY / 123456（仅开发环境）</text
           >
         </view>
 
+        <!-- #ifdef MP-WEIXIN -->
         <!-- 分割线 -->
         <view class="divider">
           <view class="divider-line"></view>
@@ -215,7 +249,7 @@
           <view class="divider-line"></view>
         </view>
 
-        <!-- 第三方登录 -->
+        <!-- 第三方登录（仅小程序） -->
         <view class="social-login">
           <view
             class="social-btn"
@@ -228,6 +262,7 @@
             <text>微信登录</text>
           </view>
         </view>
+        <!-- #endif -->
       </view>
     </view>
 
@@ -249,6 +284,9 @@
 
   // 登录方式切换
   const loginMode = ref<'account' | 'phone'>('account')
+
+  // 密码可见性切换（眼睛图标）
+  const passwordVisible = ref(false)
 
   // 手机登录（短信验证码走 /auth/sms-login）
   const { phoneForm, smsCountdown, sendSmsCode, handleSmsLogin } = useSmsLogin()

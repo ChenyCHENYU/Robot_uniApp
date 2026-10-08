@@ -412,7 +412,13 @@
       font-weight: 600;
     }
   }
-  .input-group {
+  .input-action {
+  padding: 8rpx 6rpx;
+  display: flex;
+  align-items: center;
+}
+
+.input-group {
     margin-bottom: 16rpx;
 
     .input-wrapper {

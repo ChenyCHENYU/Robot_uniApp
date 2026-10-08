@@ -35,7 +35,10 @@ function generateUserList(page: number, pageSize: number) {
 export const userMocks: Record<string, (options: any) => MockResponse> = {
   'POST /auth/login': options => {
     const { username, password } = options.data || {}
-    if (username === 'admin' && password === 'admin123') {
+    const ok =
+      (username === 'admin' && password === 'admin123') ||
+      (username === 'CHENY' && password === '123456')
+    if (ok) {
       return success({ token: mockToken })
     }
     return fail('用户名或密码错误')

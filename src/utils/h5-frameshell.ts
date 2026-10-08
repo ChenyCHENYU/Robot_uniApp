@@ -53,7 +53,13 @@ const CSS = `
     background: var(--r-text-disabled, #d1d1d6);
   }
   #robot-h5-statusbar .sb-bar.on {
-    background: var(--r-text-primary, #1c1c1e);
+    background: var(--r-color-success, #34c759);
+  }
+  #robot-h5-statusbar .sb-net {
+    font-size: calc(13px * var(--r-fs-inv, 1));
+    font-weight: 700;
+    color: var(--r-text-primary, #1c1c1e);
+    letter-spacing: 0.5px;
   }
   #robot-h5-statusbar .sb-shell {
     width: calc(22px * var(--r-fs-inv, 1));
@@ -63,8 +69,14 @@ const CSS = `
     padding: 1px;
     box-sizing: border-box;
   }
+  #robot-h5-statusbar .sb-batt {
+    font-size: calc(12px * var(--r-fs-inv, 1));
+    font-weight: 600;
+    color: var(--r-text-primary, #1c1c1e);
+    margin-left: 2px;
+  }
   #robot-h5-statusbar .sb-fill {
-    width: 80%;
+    width: 98%;
     height: 100%;
     border-radius: 1px;
     background: var(--r-text-primary, #1c1c1e);
@@ -98,19 +110,22 @@ const CSS = `
 /** 机身常量：375×812（html 字号钉 16px 后 rpx 即真机比例） */
 const FRAME_W = 375
 const FRAME_H = 812
-const FRAME_MARGIN = 32
 
-/** 计算并下发机身尺寸变量（超视口时整体缩放） */
+/** 计算并下发机身尺寸变量（超视口时整体缩放 + 垂直居中） */
 function applyFrameVars() {
   if (window.innerWidth < 600) return
 
-  const scale = Math.min(1, (window.innerHeight - FRAME_MARGIN * 2) / FRAME_H)
+  const scale = Math.min(1, (window.innerHeight - 48) / FRAME_H)
+  // 视觉高度（缩放后），用于计算上下居中的边距
+  const visualH = FRAME_H * scale + 12
+  const margin = Math.max(24, (window.innerHeight - visualH) / 2)
 
   const root = document.documentElement.style
   root.setProperty('--r-frame-w', `${FRAME_W}px`)
   root.setProperty('--r-frame-h', `${FRAME_H}px`)
   root.setProperty('--r-frame-scale', String(scale))
   root.setProperty('--r-fs-inv', String((1 / scale).toFixed(4)))
+  root.setProperty('--r-frame-mt', `${margin.toFixed(1)}px`)
 }
 
 /** 安装手机机身壳（幂等；仅 H5） */
@@ -144,11 +159,15 @@ function installStatusBar() {
   const right = document.createElement('span')
   right.className = 'sb-right'
 
+  const net = document.createElement('span')
+  net.className = 'sb-net'
+  net.textContent = '5G'
+
   const signal = document.createElement('span')
   signal.className = 'sb-signal'
   for (let i = 1; i <= 4; i++) {
     const b = document.createElement('i')
-    b.className = 'sb-bar' + (i <= 3 ? ' on' : '')
+    b.className = 'sb-bar on'
     b.style.height = `${(3 + i * 2) * 1}px`
     signal.appendChild(b)
   }
@@ -161,9 +180,16 @@ function installStatusBar() {
   const tip = document.createElement('i')
   tip.className = 'sb-tip'
 
+  right.appendChild(net)
   right.appendChild(signal)
   right.appendChild(shell)
   right.appendChild(tip)
+
+  // 电量文本 98%
+  const battText = document.createElement('span')
+  battText.className = 'sb-batt'
+  battText.textContent = '98%'
+  right.appendChild(battText)
   bar.appendChild(time)
   bar.appendChild(right)
 

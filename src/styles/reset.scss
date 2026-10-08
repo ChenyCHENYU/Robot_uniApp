@@ -57,7 +57,11 @@ uni-page-body {
     height: var(--r-frame-h, 844px) !important;
     min-height: 0 !important;
     max-width: calc(100vw - 48px);
-    margin: 32px auto calc(32px + (var(--r-frame-scale, 1) - 1) * var(--r-frame-h, 844px)) !important;
+    margin: var(--r-frame-mt, 32px) auto
+      calc(
+        var(--r-frame-mt, 32px) -
+          (var(--r-frame-h, 812px) * (1 - var(--r-frame-scale, 1)))
+      ) !important;
     transform: translateZ(0) scale(var(--r-frame-scale, 1));
     transform-origin: top center;
     background: var(--r-bg-page);

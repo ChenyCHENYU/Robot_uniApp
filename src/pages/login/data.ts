@@ -22,10 +22,10 @@ export function useLoginData() {
   const loading = ref(false)
   const rememberLogin = ref<string[]>([])
 
-  // 表单数据（不预填任何凭证）
+  // 表单数据（模板演示预填，生产接入时移除）
   const form = reactive({
-    username: '',
-    password: '',
+    username: 'CHENY',
+    password: '123456',
   })
 
   // 表单验证规则
