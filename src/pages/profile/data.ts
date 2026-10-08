@@ -170,7 +170,7 @@ export function useProfilePage() {
       changelog: () =>
         uni.showModal({
           title: '更新日志',
-          content: `v${APP_VERSION}\n- 精简首页工作台布局与快捷入口\n- 重设计组件库页面，修复导航与图标显示\n- 统一提示、弹窗、加载与启动体验，适配深色主题\n- 修复账号资料、缓存身份与消息状态同步\n- 完善搜索参数解析和网络断开、恢复提示`,
+          content: `v${APP_VERSION}\n- 四个 Tab 与普通页面打开、返回共用加载反馈\n- 缓存页面也完整呈现入场动画，重复点击当前 Tab 不触发加载\n- 目标页面准备与导航成功后结束，失败或超时自动释放\n- 导航与请求共享一层加载，互不误关\n- 浏览器、系统返回同步反馈，保留原有登录与权限守卫`,
           showCancel: false,
         }),
       feedback: () =>

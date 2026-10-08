@@ -19,7 +19,7 @@
 
 **Robot UniApp** 是基于 **Vue 3 + uni-app + TypeScript + UnoCSS + Pinia + wot-design-uni** 的跨平台移动应用模板，支持 H5 / 微信小程序 / App 多端开发。
 
-当前版本 **v1.7.0**：优化工作台、组件目录与业务模板界面，统一反馈与加载样式；详细变更见 [CHANGELOG.md](./CHANGELOG.md)。
+当前版本 **v1.7.1**：四个 Tab、普通页面打开与返回共用统一加载反馈，缓存页面也完整呈现入场动画；详细变更见 [CHANGELOG.md](./CHANGELOG.md)。
 
 - H5 / 小程序 / App 共用一套业务代码，静态演示页隔离在独立分包
 - 首页工作台提供信息填报、数据管理、流程审批、扫一扫 4 个常用应用，以及个人资料与偏好设置入口；最近搜索读取本机历史，无记录时展示真实空状态
@@ -30,10 +30,10 @@
 - 平台能力抽象层（`src/platform`）：扫码/定位/拍照统一接口 + H5/小程序/App 实现 + 降级链
 - 断点续传上传（App/MP 分片+重试+持久化 job）、App 热更新服务（manifest + sha256 校验）
 - 简繁转换（`VITE_FEATURE_TW` 开关，opencc 字典懒加载，默认零包体成本）
-- 契约测试 5 项（版本同步/路由守卫/HTTP 协议/API↔Mock 同步/平台隔离）+ vitest 单测 205 例、22 个测试文件；包体预算门禁（`pnpm check:budget`）
+- 契约测试 5 项（版本同步/路由守卫/HTTP 协议/API↔Mock 同步/平台隔离）+ vitest 单测 230 例、23 个测试文件；包体预算门禁（`pnpm check:budget`）
 - 路由守卫采用「默认需登录 + 白名单放行」，并支持按页面配置角色/权限
 - 33 个公开 `C_*` 组件演示，按基础/布局/表单/展示/反馈独立分类，支持搜索；`C_Icon` 使用实际 SVG 图标资源，wot-design-uni 按需引入
-- 统一 Toast、可输入 Modal 与加载反馈，保留回调/Promise、弹窗队列及加载所有权，覆盖启动与行内加载
+- 统一 Toast、可输入 Modal 与加载反馈，保留回调/Promise、弹窗队列及加载所有权，覆盖启动、页面导航与行内加载
 - 类型检查（vue-tsc）、oxlint + ESLint、commitlint + husky 全链路质量保障
 
 <table>
@@ -43,7 +43,7 @@
   </tr>
 </table>
 
-> 截图使用开发演示账号 CHENY，最近搜索为空，工作台不展示组件统计或演示待办。
+> 截图来自 v1.7.0，使用开发演示账号 CHENY，最近搜索为空，工作台不展示组件统计或演示待办。
 
 ---
 
@@ -142,7 +142,9 @@ pnpm dev:app        # App 开发（需 HBuilderX）
 
 - 启动时接管 `uni.showToast/showModal/showLoading/hideLoading/hideToast`，保留 success/complete 回调及 Promise 调用方式；可输入弹窗返回 `content`，弹窗按队列展示
 - H5 使用持久化 `C_FeedbackHost`；小程序/App 由当前页面的 `C_NativeFeedbackHost` 展示，避免缓存页面重复弹出
-- 手动、HTTP、组件与启动加载分别维护 owner，结束自己的加载不会关闭其他任务；全局与按钮/列表行内加载共用 `C_LoadingIndicator`
+- 手动、HTTP、导航、组件与启动加载分别维护 owner，合并展示一层加载；结束自己的加载不会关闭其他任务，全局与按钮/列表行内加载共用 `C_LoadingIndicator`
+- 四个 Tab 及 navigateTo/redirectTo/reLaunch/navigateBack 共用导航反馈；重复点击当前 Tab 不触发加载，首次页面由 onReady、缓存页面由 onShow 确认准备，两者均等待视图绘制与导航 API 成功，并保留 220ms 入场时间
+- 页面 onShow 的实际路径变化补齐浏览器历史、系统返回的加载反馈；同一路径回到前台不触发，导航失败或异常超时自动释放自己的加载，保留 SDK 回调、Promise 与登录/权限守卫
 - 反馈、工作台与业务页共用设计 token，视觉参考 RobotH5 与 wl-mbase，并保留当前 uni-app 页面及接口约定
 
 ### 环境配置
@@ -191,7 +193,7 @@ pnpm dev:app        # App 开发（需 HBuilderX）
 ```bash
 pnpm type-check   # vue-tsc --noEmit（0 错误）
 pnpm lint:check   # oxlint + eslint（只检查）
-pnpm test         # 5 项契约测试 + 205 例单测（22 个测试文件）
+pnpm test         # 5 项契约测试 + 230 例单测（23 个测试文件）
 pnpm build:h5     # H5 生产构建
 pnpm build:wx     # 微信小程序生产构建 + WXSS 后处理与校验
 ```

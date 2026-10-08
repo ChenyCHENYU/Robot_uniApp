@@ -7,6 +7,7 @@ import { setupErrorHandler } from './utils/error-handler'
 import App from './App.vue'
 import 'virtual:uno.css'
 import { installUniFeedback } from './utils/feedback'
+import { installNavigationFeedback } from './utils/navigation-feedback'
 // #ifdef H5
 import { installH5Feedback } from './utils/feedback-h5'
 // #endif
@@ -34,6 +35,7 @@ export function createApp() {
 
   // 初始化路由系统（守卫已在模块加载时安装）
   initRouter()
+  installNavigationFeedback(app)
 
   // 开发环境挂载 Mock 拦截器（动态 import 确保生产构建不打包 mock）
   if (import.meta.env.DEV) {
