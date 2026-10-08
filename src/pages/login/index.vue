@@ -72,7 +72,7 @@
               <view class="input-wrapper">
                 <wd-icon
                   name="user"
-                  size="20px"
+                  size="16px"
                   color="rgba(255,255,255,0.7)"
                 ></wd-icon>
                 <input
@@ -89,7 +89,7 @@
                 >
                   <wd-icon
                     name="close-circle-filled"
-                    size="16px"
+                    size="14px"
                     color="rgba(255,255,255,0.55)"
                   />
                 </view>
@@ -101,7 +101,7 @@
               <view class="input-wrapper">
                 <wd-icon
                   name="lock-on"
-                  size="20px"
+                  size="16px"
                   color="rgba(255,255,255,0.7)"
                 ></wd-icon>
                 <input
@@ -120,7 +120,7 @@
                 >
                   <wd-icon
                     name="close-circle-filled"
-                    size="16px"
+                    size="14px"
                     color="rgba(255,255,255,0.55)"
                   />
                 </view>
@@ -130,7 +130,7 @@
                 >
                   <wd-icon
                     :name="passwordVisible ? 'view' : 'eye-close'"
-                    size="18px"
+                    size="15px"
                     color="rgba(255,255,255,0.55)"
                   />
                 </view>
@@ -162,7 +162,7 @@
               <view class="input-wrapper sms-wrapper">
                 <wd-icon
                   name="secured"
-                  size="20px"
+                  size="16px"
                   color="rgba(255,255,255,0.7)"
                 ></wd-icon>
                 <input
