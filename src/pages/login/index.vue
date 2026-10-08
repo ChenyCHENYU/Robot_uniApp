@@ -24,20 +24,15 @@
 
     <!-- 主体内容 -->
     <view class="login-container">
-      <!-- Logo 区域 -->
-      <view class="logo-section">
-        <view class="logo-wrapper">
-          <view class="logo-bg">
-            <image
-              src="/static/images/logo.png"
-              style="width: 140rpx; height: 140rpx"
-              mode="aspectFit"
-            />
-          </view>
+      <!-- 品牌区 -->
+      <view class="brand">
+        <view class="brand__icon">
+          <view class="brand__antenna"></view>
+          <text class="brand__letter">R</text>
+          <view class="brand__gloss"></view>
         </view>
-        <text class="app-name">Robot App</text>
-        <text class="app-desc">机器人移动跨端应用框架</text>
-        <text class="app-version">让您的开发和体验更加丝滑</text>
+        <text class="brand__name">Robot App</text>
+        <text class="brand__tagline">企业级跨端移动应用框架</text>
       </view>
 
       <!-- 玻璃风登录卡片 -->
@@ -47,21 +42,25 @@
           <text class="card-subtitle">请使用您的账户登录</text>
         </view>
 
-        <!-- 登录方式切换 -->
-        <view class="login-mode-tabs">
+        <!-- 登录方式切换（滑动指示条） -->
+        <view class="seg">
           <view
-            class="mode-tab"
-            :class="{ active: loginMode === 'account' }"
+            class="seg__indicator"
+            :class="{ 'is-phone': loginMode === 'phone' }"
+          ></view>
+          <view
+            class="seg__item"
+            :class="{ 'is-active': loginMode === 'account' }"
             @click="loginMode = 'account'"
           >
-            <text class="mode-text">账号登录</text>
+            <text class="seg__text">账号登录</text>
           </view>
           <view
-            class="mode-tab"
-            :class="{ active: loginMode === 'phone' }"
+            class="seg__item"
+            :class="{ 'is-active': loginMode === 'phone' }"
             @click="loginMode = 'phone'"
           >
-            <text class="mode-text">手机登录</text>
+            <text class="seg__text">手机登录</text>
           </view>
         </view>
 

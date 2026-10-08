@@ -29,18 +29,51 @@ page {
 }
 
 /* #ifdef H5 */
-// H5 桌面端适配：限制页面最大宽度，居中显示，模拟移动端视觉
+// H5 移动端：整页铺满（默认形态）
 page {
-  background: var(--r-h5-outer-bg) !important;
+  background: var(--r-bg-page);
 }
 uni-page-body {
-  max-width: var(--r-h5-max-width);
-  margin: 0 auto;
   background: var(--r-bg-page);
-  min-height: 100vh;
-  position: relative;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.08);
-  overflow-x: hidden;
+}
+
+// H5 桌面端（≥600px）：手机外框形态 —— 机身边框 + 圆角 + 悬浮阴影 + 外层背景
+@media screen and (min-width: 600px) {
+  html,
+  page {
+    background: var(--r-h5-outer-bg) !important;
+    min-height: 100vh;
+  }
+
+  uni-page-body {
+    width: 400px;
+    max-width: 400px;
+    margin: 32px auto 48px;
+    min-height: calc(100vh - 80px);
+    background: var(--r-bg-page);
+    position: relative;
+    border: 6px solid var(--r-frame-border, #1d1d1f);
+    border-radius: 44px;
+    box-shadow:
+      0 0 0 2px rgba(255, 255, 255, 0.06),
+      0 24px 80px rgba(0, 0, 0, 0.35);
+    overflow: hidden;
+  }
+
+  // 机身顶部听筒点缀（伪元素画在页面容器上）
+  uni-page-body::before {
+    content: '';
+    position: absolute;
+    top: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 96px;
+    height: 22px;
+    background: var(--r-frame-border, #1d1d1f);
+    border-radius: 999px;
+    z-index: 9999;
+    pointer-events: none;
+  }
 }
 
 // 约束所有 fixed 定位的内容面板在页面最大宽度内

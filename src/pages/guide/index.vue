@@ -3,14 +3,14 @@
 -->
 <template>
   <view class="guide-page">
-    <Swiper
+    <swiper
       class="guide-swiper"
       :current="current"
       :indicator-dots="false"
       :circular="false"
       @change="onSwiperChange"
     >
-      <SwiperItem
+      <swiper-item
         v-for="(item, index) in steps"
         :key="index"
       >
@@ -38,8 +38,8 @@
             <text class="slide-desc">{{ item.desc }}</text>
           </view>
         </view>
-      </SwiperItem>
-    </Swiper>
+      </swiper-item>
+    </swiper>
 
     <!-- 指示器 -->
     <view class="indicator-bar">
@@ -159,13 +159,18 @@
 
 <style lang="scss" scoped>
   .guide-page {
-    min-height: 100vh;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding-top: var(--status-bar-height, 0px);
     background: linear-gradient(180deg, #f8faff 0%, #eef2ff 100%);
     position: relative;
   }
 
   .guide-swiper {
-    height: 75vh;
+    flex: 1;
+    min-height: 0;
   }
 
   .guide-slide {
@@ -247,74 +252,12 @@
     display: flex;
     justify-content: center;
     gap: 16rpx;
-
-    .indicator-dot {
-      width: 16rpx;
-      height: 16rpx;
-      border-radius: 8rpx;
-      background: #ddd;
-      transition: all 0.3s;
-
-      &.active {
-        width: 48rpx;
-        background: var(--r-gradient-primary);
-      }
-    }
+    padding: 24rpx 0 8rpx;
   }
+
 
   .bottom-actions {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 40rpx 48rpx;
-    padding-bottom: calc(env(safe-area-inset-bottom) + 40rpx);
-
-    .actions-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-
-      &.center {
-        justify-content: center;
-      }
-    }
-
-    .skip-btn {
-      font-size: 28rpx;
-      color: var(--r-text-placeholder, #999);
-      padding: 16rpx 24rpx;
-    }
-
-    .next-btn {
-      display: flex;
-      align-items: center;
-      gap: 8rpx;
-      padding: 20rpx 48rpx;
-      background: var(--r-gradient-primary);
-      border-radius: 48rpx;
-
-      .next-text {
-        font-size: 28rpx;
-        color: #fff;
-        font-weight: 600;
-      }
-    }
-
-    .start-btn {
-      width: 100%;
-      height: 96rpx;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: var(--r-gradient-primary);
-      border-radius: 48rpx;
-
-      .start-text {
-        font-size: 32rpx;
-        color: #fff;
-        font-weight: 600;
-      }
-    }
+    padding: 16rpx 48rpx calc(32rpx + env(safe-area-inset-bottom));
   }
+
 </style>

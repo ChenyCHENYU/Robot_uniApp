@@ -38,7 +38,6 @@
   background-size:
     150% 150%,
     400% 400%;
-  animation: gradientShift 20s ease infinite;
 
   /* 添加纹理效果 */
   &::before {
@@ -64,7 +63,6 @@
         rgba(0, 200, 255, 0.06) 0%,
         transparent 40%
       );
-    animation: textureFloat 25s ease-in-out infinite;
   }
 
   /* 添加光效层 */
@@ -87,78 +85,6 @@
         rgba(100, 150, 255, 0.03) 0%,
         transparent 70%
       );
-    animation: lightSweep 30s ease infinite;
-  }
-}
-
-@keyframes gradientShift {
-  0% {
-    background-position:
-      0% 50%,
-      0% 50%;
-    transform: scale(1);
-  }
-
-  25% {
-    background-position:
-      50% 25%,
-      25% 75%;
-    transform: scale(1.02);
-  }
-
-  50% {
-    background-position:
-      100% 50%,
-      100% 50%;
-    transform: scale(1);
-  }
-
-  75% {
-    background-position:
-      50% 75%,
-      75% 25%;
-    transform: scale(1.02);
-  }
-
-  100% {
-    background-position:
-      0% 50%,
-      0% 50%;
-    transform: scale(1);
-  }
-}
-
-@keyframes textureFloat {
-  0%,
-  100% {
-    transform: translate(0, 0) rotate(0deg);
-    opacity: 0.6;
-  }
-
-  33% {
-    transform: translate(30rpx, -20rpx) rotate(120deg);
-    opacity: 0.8;
-  }
-
-  66% {
-    transform: translate(-20rpx, 30rpx) rotate(240deg);
-    opacity: 0.4;
-  }
-}
-
-@keyframes lightSweep {
-  0% {
-    transform: translateX(-100%) rotate(45deg);
-    opacity: 0;
-  }
-
-  50% {
-    opacity: 1;
-  }
-
-  100% {
-    transform: translateX(100%) rotate(45deg);
-    opacity: 0;
   }
 }
 
@@ -266,21 +192,12 @@
 @keyframes float {
   0%,
   100% {
-    transform: translateY(0rpx) translateX(0rpx) rotate(0deg) scale(1);
-    opacity: 0.6;
-  }
-  25% {
-    transform: translateY(-40rpx) translateX(20rpx) rotate(90deg) scale(1.1);
-    opacity: 0.8;
+    transform: translateY(0) scale(1);
+    opacity: 0.55;
   }
   50% {
-    transform: translateY(-10rpx) translateX(-30rpx) rotate(180deg) scale(0.9);
-    opacity: 0.4;
-  }
-
-  75% {
-    transform: translateY(30rpx) translateX(10rpx) rotate(270deg) scale(1.05);
-    opacity: 0.7;
+    transform: translateY(-26rpx) scale(1.04);
+    opacity: 0.75;
   }
 }
 
@@ -293,127 +210,84 @@
   flex-direction: column;
 }
 
-.logo-section {
-  text-align: center;
-  margin-bottom: 60rpx;
+.brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 56rpx;
 
-  .logo-wrapper {
+  &__icon {
     position: relative;
-    display: inline-block;
-    margin-bottom: 32rpx;
+    width: 148rpx;
+    height: 148rpx;
+    border-radius: 38rpx;
+    background: linear-gradient(160deg, #4facfe 0%, #2b6bff 52%, #764ba2 100%);
+    box-shadow:
+      0 16rpx 40rpx rgba(43, 107, 255, 0.35),
+      inset 0 2rpx 0 rgba(255, 255, 255, 0.35),
+      inset 0 -3rpx 8rpx rgba(0, 0, 0, 0.18);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 28rpx;
+    overflow: visible;
+  }
 
-    .logo-bg {
-      width: 140rpx;
-      height: 140rpx;
-      background:
-        linear-gradient(
-          145deg,
-          rgba(255, 255, 255, 0.18) 0%,
-          rgba(255, 255, 255, 0.08) 100%
-        ),
-        radial-gradient(
-          circle at 30% 30%,
-          rgba(120, 160, 255, 0.15) 0%,
-          transparent 70%
-        );
-      border: 2rpx solid rgba(255, 255, 255, 0.25);
-      border-radius: 35rpx;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      backdrop-filter: blur(25rpx);
-      box-shadow:
-        0 8rpx 32rpx rgba(0, 0, 0, 0.3),
-        inset 0 1rpx 0 rgba(255, 255, 255, 0.3),
-        inset 0 -1rpx 0 rgba(0, 0, 0, 0.1);
-      position: relative;
-      overflow: hidden;
+  &__antenna {
+    position: absolute;
+    top: -16rpx;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 10rpx;
+    height: 16rpx;
+    border-radius: 6rpx 6rpx 0 0;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.4));
 
-      /* 增强的光泽效果 */
-      &::before {
-        content: '';
-        position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: linear-gradient(
-          45deg,
-          transparent 30%,
-          rgba(255, 255, 255, 0.2) 50%,
-          transparent 70%
-        );
-        animation: shine 4s ease-in-out infinite;
-      }
-
-      /* 添加内发光效果 */
-      &::after {
-        content: '';
-        position: absolute;
-        top: 4rpx;
-        left: 4rpx;
-        right: 4rpx;
-        bottom: 4rpx;
-        border-radius: 31rpx;
-        background: linear-gradient(
-          145deg,
-          rgba(255, 255, 255, 0.1) 0%,
-          rgba(255, 255, 255, 0.02) 100%
-        );
-        pointer-events: none;
-      }
+    &::after {
+      content: '';
+      position: absolute;
+      top: -10rpx;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 10rpx;
+      height: 10rpx;
+      border-radius: 50%;
+      background: #4facfe;
+      box-shadow: 0 0 12rpx rgba(79, 172, 254, 0.9);
     }
   }
 
-  .app-name {
-    display: block;
-    font-size: 56rpx;
-    font-weight: bold;
-    color: #fff;
-    margin-bottom: 16rpx;
-    text-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.3);
+  &__letter {
+    font-size: 76rpx;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: 2rpx;
+    text-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.25);
   }
 
-  .app-desc {
-    display: block;
-    font-size: 30rpx;
-    color: rgba(255, 255, 255, 0.9);
-    margin-bottom: 8rpx;
+  &__gloss {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 46%;
+    border-radius: 38rpx 38rpx 100% 100%;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.28), transparent);
+    pointer-events: none;
   }
 
-  .app-version {
-    display: block;
+  &__name {
+    font-size: 48rpx;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: 4rpx;
+    margin-bottom: 12rpx;
+  }
+
+  &__tagline {
     font-size: 24rpx;
-    color: rgba(255, 255, 255, 0.7);
-  }
-}
-
-@keyframes shine {
-  0% {
-    transform: translateX(-120%) translateY(-120%) rotate(45deg);
-    opacity: 0;
-  }
-
-  50% {
-    opacity: 1;
-  }
-
-  100% {
-    transform: translateX(120%) translateY(120%) rotate(45deg);
-    opacity: 0;
-  }
-}
-
-@keyframes cardGlow {
-  0%,
-  100% {
-    transform: translateX(-50%) translateY(-50%) scale(0.8);
-    opacity: 0.3;
-  }
-
-  50% {
-    transform: translateX(-50%) translateY(-50%) scale(1.2);
-    opacity: 0.1;
+    color: rgba(255, 255, 255, 0.62);
+    letter-spacing: 2rpx;
   }
 }
 
@@ -463,16 +337,16 @@
   &::after {
     content: '';
     position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(
-      circle,
-      rgba(255, 255, 255, 0.03) 0%,
-      transparent 70%
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.35),
+      transparent
     );
-    animation: cardGlow 8s ease-in-out infinite;
     pointer-events: none;
   }
   .card-header {
@@ -493,38 +367,49 @@
     }
   }
 
-  .login-mode-tabs {
+  .seg {
+    position: relative;
     display: flex;
-    gap: 0;
-    margin-bottom: 40rpx;
     background: rgba(255, 255, 255, 0.08);
-    border-radius: 40rpx;
+    border: 1rpx solid rgba(255, 255, 255, 0.1);
+    border-radius: 32rpx;
     padding: 6rpx;
-    border: 1rpx solid rgba(255, 255, 255, 0.12);
+    margin-bottom: 40rpx;
 
-    .mode-tab {
+    &__indicator {
+      position: absolute;
+      top: 6rpx;
+      bottom: 6rpx;
+      left: 6rpx;
+      width: calc(50% - 6rpx);
+      border-radius: 26rpx;
+      background: linear-gradient(135deg, #4facfe, #2b6bff);
+      box-shadow: 0 4rpx 16rpx rgba(43, 107, 255, 0.4);
+      transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+
+      &.is-phone {
+        transform: translateX(100%);
+      }
+    }
+
+    &__item {
+      position: relative;
       flex: 1;
       text-align: center;
-      padding: 18rpx 0;
-      border-radius: 36rpx;
-      transition: all 0.3s ease;
+      padding: 16rpx 0;
+      z-index: 1;
+    }
 
-      &.active {
-        background: rgba(0, 212, 255, 0.25);
-        border: 1rpx solid rgba(0, 212, 255, 0.4);
-        backdrop-filter: blur(10rpx);
-      }
+    &__text {
+      font-size: 26rpx;
+      color: rgba(255, 255, 255, 0.6);
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
 
-      .mode-text {
-        font-size: 26rpx;
-        color: rgba(255, 255, 255, 0.7);
-        font-weight: 500;
-      }
-
-      &.active .mode-text {
-        color: #00d4ff;
-        font-weight: 600;
-      }
+    &__item.is-active &__text {
+      color: #ffffff;
+      font-weight: 600;
     }
   }
   .input-group {
@@ -615,15 +500,10 @@
       gap: 12rpx;
       width: 100%;
       height: 96rpx;
-      background: linear-gradient(
-        135deg,
-        rgba(0, 212, 255, 0.8),
-        rgba(11, 11, 254, 0.8)
-      );
-      border: 1rpx solid rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(20rpx);
-      border-radius: 50rpx;
-      box-shadow: 0 8rpx 32rpx rgba(0, 212, 255, 0.3);
+      background: linear-gradient(135deg, #4facfe, #2b6bff);
+      border: none;
+      border-radius: 48rpx;
+      box-shadow: 0 10rpx 32rpx rgba(43, 107, 255, 0.45);
       transition: all 0.3s ease;
 
       &:active {

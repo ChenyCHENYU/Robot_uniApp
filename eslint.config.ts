@@ -98,6 +98,8 @@ export default [
             '/^wd-/',
             '/^scroll-/',
             'web-view',
+            'swiper',
+            'swiper-item',
             'v-md-editor',
           ],
         },

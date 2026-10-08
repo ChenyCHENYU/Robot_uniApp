@@ -19,6 +19,7 @@
   import { useUserStore } from '@/stores/modules/user'
   import { initLocale } from '@/composables/locale'
   import { initTheme } from '@/composables/useTheme'
+  import { installH5StatusBar } from '@/utils/h5-statusbar'
   import { logger } from '@/utils/logger'
 
   const appStore = useAppStore()
@@ -39,6 +40,11 @@
     // 恢复语言偏好（简/繁）与主题（亮/暗/跟随系统）
     initLocale()
     initTheme()
+
+    // H5 桌面端虚拟状态栏（手机外框点缀）
+    // #ifdef H5
+    installH5StatusBar()
+    // #endif
 
     // 全局网络状态监听（断网/恢复提示）
     uni.onNetworkStatusChange(({ isConnected, networkType }) => {
