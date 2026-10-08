@@ -165,6 +165,35 @@ export const shouldShowBackButton = currentPath => {
   return canGoBack
 }
 
+/** 模块名 → 中文标题 */
+const MODULE_TITLE_MAP = {
+  settings: '设置',
+  profile: '个人中心',
+  message: '消息中心',
+  robot: '组件库',
+  order: '订单',
+  user: '用户',
+}
+
+/** 页面名 → 中文后缀 */
+const PAGE_TITLE_MAP = {
+  detail: '详情',
+  edit: '编辑',
+  add: '添加',
+  list: '列表',
+}
+
+/** 由路径段派生标题（pages/<module>/<page> 结构） */
+function deriveTitleFromPath(path) {
+  const segments = path.split('/').filter(Boolean)
+  if (segments.length < 2) return null
+
+  const [, module, page = 'index'] = segments
+  const moduleTitle = MODULE_TITLE_MAP[module] || module
+  const pageTitle = PAGE_TITLE_MAP[page] || ''
+  return pageTitle ? `${moduleTitle}${pageTitle}` : moduleTitle
+}
+
 // 智能标题生成
 export const getSmartPageTitle = (currentPath, propsTitle = '') => {
   if (propsTitle?.trim()) return propsTitle.trim()
@@ -173,34 +202,7 @@ export const getSmartPageTitle = (currentPath, propsTitle = '') => {
   const specialTitle = specialHeaderConfigs[path]?.title
   if (specialTitle) return specialTitle
 
-  // 根据路径生成标题
-  const segments = path.split('/').filter(Boolean)
-  if (segments.length >= 2) {
-    const [, module, page = 'index'] = segments
-
-    const moduleMap = {
-      settings: '设置',
-      profile: '个人中心',
-      message: '消息中心',
-      robot: '组件库',
-      order: '订单',
-      user: '用户',
-    }
-
-    const pageMap = {
-      detail: '详情',
-      edit: '编辑',
-      add: '添加',
-      list: '列表',
-    }
-
-    const moduleTitle = moduleMap[module] || module
-    const pageTitle = pageMap[page] || ''
-
-    return pageTitle ? `${moduleTitle}${pageTitle}` : moduleTitle
-  }
-
-  return '页面'
+  return deriveTitleFromPath(path) || '页面'
 }
 
 // Header配置生成

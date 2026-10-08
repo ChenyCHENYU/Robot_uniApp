@@ -40,6 +40,28 @@
     fields.value = fields.value.filter(f => f !== field)
   }
 
+  /** 值是否为空（required 判定用） */
+  const isEmptyValue = value =>
+    value === '' || value === null || value === undefined
+
+  /** 正则规则是否不匹配 */
+  const isPatternFail = (rule, value) =>
+    Boolean(rule.pattern) && !rule.pattern.test(String(value))
+
+  /** 单条规则检查：返回错误文案，通过返回 null */
+  const checkRule = (rule, value, model) => {
+    if (rule.required && isEmptyValue(value)) {
+      return rule.message || '此项为必填'
+    }
+    if (isPatternFail(rule, value)) {
+      return rule.message || '格式不正确'
+    }
+    if (rule.validator) {
+      return rule.validator(value, model) || null
+    }
+    return null
+  }
+
   /** 校验单个字段 */
   const validateField = prop => {
     const rules = props.rules[prop]
@@ -47,23 +69,10 @@
     const value = props.model[prop]
 
     for (const rule of Array.isArray(rules) ? rules : [rules]) {
-      if (
-        rule.required &&
-        (value === '' || value === null || value === undefined)
-      ) {
-        errors[prop] = rule.message || '此项为必填'
+      const error = checkRule(rule, value, props.model)
+      if (error) {
+        errors[prop] = error
         return false
-      }
-      if (rule.pattern && !rule.pattern.test(String(value))) {
-        errors[prop] = rule.message || '格式不正确'
-        return false
-      }
-      if (rule.validator) {
-        const msg = rule.validator(value, props.model)
-        if (msg) {
-          errors[prop] = msg
-          return false
-        }
       }
     }
     errors[prop] = ''

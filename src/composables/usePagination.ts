@@ -25,17 +25,23 @@ export function usePagination(
     total: 0,
   })
 
+  /** 归一化分页响应（rows/list/data 三种结构） */
+  const normalizePage = (res) => ({
+    rows: res.rows || res.list || res.data || [],
+    total: res.total || 0,
+  })
+
   const loadMore = async (params = {}) => {
     if (loading.value || finished.value) return
     loading.value = true
     try {
-      const res = await fetchFn({
+      const raw = await fetchFn({
         page: pagination.page,
         pageSize: pagination.pageSize,
         ...params,
       })
-      const rows = res.rows || res.list || res.data || []
-      pagination.total = res.total || 0
+      const { rows, total } = normalizePage(raw)
+      pagination.total = total
 
       if (refreshing.value) {
         list.value = rows

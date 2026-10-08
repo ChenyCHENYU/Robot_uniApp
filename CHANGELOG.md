@@ -3,6 +3,20 @@
 本项目遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/) 格式，
 版本号语义遵循 [SemVer](https://semver.org/lang/zh-CN/)。
 
+## [1.6.1] - 2026-10-08
+
+### 新增
+
+- store/http 行为测试：user store 登录/登出/权限同步 6 例；
+  http 协议/重试/401/去重 7 例（uni.request 桩驱动）——单测累计 69 例
+- resumable-upload 存储层测试 4 例（job 持久化/chunkSize 边界/状态流转）
+
+### 重构
+
+- 复杂度警告 4→0：C_Form validateField 拆 checkRule、usePagination 拆
+  normalizePage、crud-list 拆 buildQuery、C_Layout 拆 deriveTitleFromPath
+- tsconfig 标注 noImplicitAny 债务（174 处）与渐进开启路径
+
 ## [1.6.0] - 2026-10-08
 
 ### 新增

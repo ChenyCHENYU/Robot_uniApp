@@ -4,7 +4,7 @@
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "strict": true,
-    "noImplicitAny": false,
+    "noImplicitAny": false, // 已知债务：全库约 174 处隐式 any，按目录渐进开启（services → utils → components）
     "jsx": "preserve",
     "resolveJsonModule": true,
     "isolatedModules": true,

@@ -236,17 +236,20 @@
     status: item.status,
   })
 
+  /** 构建列表查询参数（关键词/状态筛选） */
+  const buildQuery = (pageNum: number) => ({
+    page: pageNum,
+    pageSize: PAGE_SIZE,
+    keyword: keyword.value || undefined,
+    status: filterStatus.value === '' ? undefined : filterStatus.value,
+  })
+
   const loadList = async (refresh = false) => {
     if (loading.value) return
     loading.value = true
     try {
       const nextPage = refresh ? 1 : page.value + 1
-      const res = await getCrudList({
-        page: refresh ? 1 : nextPage,
-        pageSize: PAGE_SIZE,
-        keyword: keyword.value || undefined,
-        status: filterStatus.value === '' ? undefined : filterStatus.value,
-      })
+      const res = await getCrudList(buildQuery(refresh ? 1 : nextPage))
       const list = (res.list || []).map(normalizeItem)
       dataList.value = refresh ? list : [...dataList.value, ...list]
       total.value = res.total || 0
