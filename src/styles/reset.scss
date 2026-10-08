@@ -37,7 +37,7 @@ uni-page-body {
   background: var(--r-bg-page);
 }
 
-// H5 桌面端（≥600px）：手机外框形态 —— 固定 390:844 比例，高度随视口封顶
+// H5 桌面端（≥600px）：手机机身壳 — 尺寸/缩放由 utils/h5-frameshell 探针驱动
 @media screen and (min-width: 600px) {
   html,
   page {
@@ -45,13 +45,21 @@ uni-page-body {
     min-height: 100vh;
   }
 
+  // uni-h5 将 rpx 编译为 rem 并按窗口宽度动态设置 html 字号（桌面被放大到 ~2x）。
+  // 钉死 16px = 375px 真机基准：桌面机身内呈现与手机完全一致的排版比例。
+  html {
+    font-size: 16px !important;
+  }
+
   uni-page-body {
-    // 由高度 + 宽高比推出宽度（390:844 ≈ 主流手机比例），杜绝细长变形
-    height: min(844px, calc(100dvh - 64px));
-    aspect-ratio: 390 / 844;
-    width: auto;
+    // 宽=实测 750rpx（内容铺满机身如真机），高按 390:844，超视口整体缩放
+    width: var(--r-frame-w, 420px) !important;
+    height: var(--r-frame-h, 844px) !important;
+    min-height: 0 !important;
     max-width: calc(100vw - 48px);
-    margin: 32px auto;
+    margin: 32px auto calc(32px + (var(--r-frame-scale, 1) - 1) * var(--r-frame-h, 844px)) !important;
+    transform: translateZ(0) scale(var(--r-frame-scale, 1));
+    transform-origin: top center;
     background: var(--r-bg-page);
     position: relative;
     border: 6px solid var(--r-frame-border, #1d1d1f);
@@ -59,13 +67,18 @@ uni-page-body {
     box-shadow:
       0 0 0 2px rgba(255, 255, 255, 0.06),
       0 24px 80px rgba(0, 0, 0, 0.35);
-    overflow-y: auto;
-    overflow-x: hidden;
-    // 成为 fixed 后代的包含块：tabbar/遮罩/角标全部锁定在机身内
-    transform: translateZ(0);
+    overflow: hidden;
+    padding-top: calc(44px * var(--r-fs-inv, 1));
   }
 
-  // 全高页面（100vh/100dvh）在机身内改为撑满机身高度，避免溢出变形
+  // 页面容器链与机身同宽
+  uni-page,
+  uni-page-wrapper,
+  uni-page-body {
+    max-width: 100%;
+  }
+
+  // 全高页面在机身内撑满机身高度
   .c-layout,
   .guide-page,
   .login-page,
@@ -74,51 +87,19 @@ uni-page-body {
   .scan-page,
   .detail-page,
   .approval-page {
-    height: auto;
-    min-height: 100%;
+    height: auto !important;
+    min-height: 100% !important;
+  }
+
+  // 容器级 100vh 计算在桌面端改为贴合机身（避免把 footer 推出屏）
+  .login-container {
+    min-height: 0 !important;
   }
 
   // 环境角标避开虚拟状态栏
   .c-env-badge {
-    top: 52px;
+    top: calc(56px * var(--r-fs-inv, 1));
   }
-}
-
-// 约束所有 fixed 定位的内容面板在页面最大宽度内
-// overlay/mask 类遮罩保持全屏，仅限制面板宽度
-.c-action-sheet__panel,
-.c-number-keyboard__panel,
-.c-notify,
-.c-float-button,
-.global-loading,
-.bottom-bar,
-.action-bar {
-  width: 100%;
-  max-width: var(--r-h5-max-width) !important;
-  left: 50% !important;
-  right: auto !important;
-  transform: translateX(-50%);
-}
-
-// Tabbar 使用 margin 居中（不用 transform，以兼容胶囊 + backdrop-filter）
-.c-tabbar {
-  max-width: var(--r-h5-max-width);
-  left: 0;
-  right: 0;
-  margin-left: auto;
-  margin-right: auto;
-}
-// 弹窗 overlay 遮罩约束宽度以避免扩散到外部背景
-.c-modal__overlay,
-.c-action-sheet__overlay,
-.c-image-preview,
-.c-calendar__mask,
-.c-cascader__mask,
-.c-number-keyboard__overlay {
-  max-width: var(--r-h5-max-width) !important;
-  left: 50% !important;
-  right: auto !important;
-  transform: translateX(-50%);
 }
 
 /* #endif */

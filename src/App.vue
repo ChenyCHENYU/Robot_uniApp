@@ -19,7 +19,7 @@
   import { useUserStore } from '@/stores/modules/user'
   import { initLocale } from '@/composables/locale'
   import { initTheme } from '@/composables/useTheme'
-  import { installH5StatusBar } from '@/utils/h5-statusbar'
+  import { installH5FrameShell } from '@/utils/h5-frameshell'
   import { logger } from '@/utils/logger'
 
   const appStore = useAppStore()
@@ -43,7 +43,7 @@
 
     // H5 桌面端虚拟状态栏（手机外框点缀）
     // #ifdef H5
-    installH5StatusBar()
+    installH5FrameShell()
     // #endif
 
     // 全局网络状态监听（断网/恢复提示）

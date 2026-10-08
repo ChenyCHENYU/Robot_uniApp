@@ -233,8 +233,7 @@
 
     <!-- 底部信息 -->
     <view class="footer">
-      <text class="copyright">© 2025 CHENY.智启未来</text>
-      <text class="version">Version {{ appVersion }}</text>
+      <text class="copyright">© 2025 CHENY.智启未来 · v{{ appVersion }}</text>
     </view>
   </view>
 </template>
