@@ -60,7 +60,7 @@
           <view class="text-center">
             <text class="text-sm text-gray-600 block mb-2">基础用法：</text>
             <view
-              class="bg-gray-100 rounded p-3 text-xs font-mono text-gray-800"
+              class="bg-gray-100 rounded p-3 text-xs font-mono break-all text-gray-800"
             >
               &lt;C_Icon name="i-mdi-home" :size="28" /&gt;
             </view>
@@ -113,7 +113,7 @@
           <view class="text-center">
             <text class="text-sm text-gray-600 block mb-2">基础用法：</text>
             <view
-              class="bg-gray-100 rounded p-3 text-xs font-mono text-gray-800"
+              class="bg-gray-100 rounded p-3 text-xs font-mono break-all text-gray-800"
             >
               &lt;C_Icon type="wot" name="home" /&gt;
             </view>
@@ -152,7 +152,7 @@
           <view class="text-center">
             <text class="text-sm text-gray-600 block mb-2">基础用法：</text>
             <view
-              class="bg-gray-100 rounded p-3 text-xs font-mono text-gray-800"
+              class="bg-gray-100 rounded p-3 text-xs font-mono break-all text-gray-800"
             >
               &lt;C_Icon type="svg" name="/static/icon.svg" /&gt;
             </view>
@@ -196,7 +196,7 @@
           <view class="text-center">
             <text class="text-sm text-gray-600 block mb-2">基础用法：</text>
             <view
-              class="bg-gray-100 rounded p-3 text-xs font-mono text-gray-800"
+              class="bg-gray-100 rounded p-3 text-xs font-mono break-all text-gray-800"
             >
               &lt;C_Icon type="image" name="/path/to/image.png" /&gt;
             </view>
@@ -244,7 +244,7 @@
           <view class="text-center">
             <text class="text-sm text-gray-600 block mb-2">基础用法：</text>
             <view
-              class="bg-gray-100 rounded p-3 text-xs font-mono text-gray-800"
+              class="bg-gray-100 rounded p-3 text-xs font-mono break-all text-gray-800"
             >
               &lt;C_Icon type="custom"&gt;🏠&lt;/C_Icon&gt;
             </view>
@@ -332,7 +332,7 @@
           <view class="text-center">
             <text class="text-sm text-gray-600 block mb-2">点击图标试试：</text>
             <view
-              class="bg-gray-100 rounded p-3 text-xs font-mono text-gray-800"
+              class="bg-gray-100 rounded p-3 text-xs font-mono break-all text-gray-800"
             >
               &lt;C_Icon name="i-mdi-heart" @click="handleClick" /&gt;
             </view>
